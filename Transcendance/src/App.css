@@ -1,10 +1,15 @@
+.homepage {
+
+  background: linear-gradient(249.66deg, #F5F5F5 29.05%, rgba(245, 245, 245, 0) 67.24%), linear-gradient(335.12deg, #B8E4E8 25.81%, #ADD7B6 43.04%, #ECDB9A 70.21%, #EFBD99 84.79%);
+}
+
 .homepage h1 {
 
   font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
-  font-size: 40px;
-  line-height: 48px;
+  font-size: 50px;
+  line-height: 68px;
   text-align: center;
 
   color: #000000;
@@ -12,15 +17,14 @@
 
 .signing-option button {
 
-  /* display: flex;
-  align-items: center;
-  justify-content: center; */
-
   width: 228px;
   height: 64px;
+
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   
-  background: #000000;
+  background: #FFFFFF;
   border-radius: 14px;
+  /* border: solid 2px; */
 
   /* Text */
   font-family: 'Inter';
@@ -29,6 +33,11 @@
   font-size: 25px;
   line-height: 30px;
   text-align: center;
-  color: #FFFFFF;
+  color: #000000;
+
 }
 
+.signing-option button:hover {
+  color: #FFFFFF;
+  background: #000000;
+}
