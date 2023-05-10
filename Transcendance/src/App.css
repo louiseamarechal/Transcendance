@@ -1,42 +1,46 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.homepage {
+
+  background: linear-gradient(249.66deg, #F5F5F5 29.05%, rgba(245, 245, 245, 0) 67.24%), linear-gradient(335.12deg, #B8E4E8 25.81%, #ADD7B6 43.04%, #ECDB9A 70.21%, #EFBD99 84.79%);
+}
+
+.homepage h1 {
+
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 50px;
+  line-height: 68px;
   text-align: center;
+
+  color: #000000;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.signing-option button {
+
+  width: 228px;
+  height: 64px;
+
+  /* filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25)); */
+  
+  background: #11ffee00;
+  border-radius: 50px;
+  border: solid 3px;
+  
+  /* Text */
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 30px;
+  text-align: center;
+  color: #000000;
+  
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.signing-option button:hover {
+  color: #FFFFFF;
+  border: solid 2px;
+  border-color: #000000;
+  background: #000000;
+  transition: all 0.6s ease;
 }
