@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+
+  postgres-service:
+    container_name: postgres
+    networks:
+      - transcendance
+    image: postgres:15-bullseye
+    volumes:
+      - postgres_volume:/var/lib/mysql
+    restart: on-failure
+    env_file: .env
+    expose: 
+      - "5432"
+
+  nginx-service:
+    container_name: nginx
+    networks:
+      - transcendance
+    depends_on: 
+      - transcendance-service
+    volumes:
+      - transcendance_volume:/var/www/transcendance
+    build: requirements/nginx
+    restart: on-failure
+    ports:
+      - "443:443"
+
+  transcendance-service:
+    container_name: transcendance
+    networks:
+      - transcendance
+    build: requirements/transcendance
+    depends_on:
+      - postgres-service
+    volumes:
+      - transcendance_volume:/var/www/transcendance
+    restart: on-failure
+    env_file: .env
+    expose:
+      - "9000"
+
+volumes:
+  mariadb_volume:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "/home/aalleon/data/mysql"
+  wordpress_volume:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "/home/aalleon/data/wordpress"
+
+networks:
+  inception:
+    name: transcendance
+    driver: bridge
