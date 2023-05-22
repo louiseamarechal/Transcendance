@@ -27,7 +27,7 @@ services:
     ports:
       - "443:443"
 
-  transcendance-service:
+  transcendance-service: # TODO: divide into back service and front service.
     container_name: transcendance
     networks:
       - transcendance
