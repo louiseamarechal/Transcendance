@@ -6,7 +6,7 @@ function App() {
 return (
   <div className='h-screen homepage flex flex-col justify-center items-center gap-y-20'>
     <div>
-      <h1>Welcome to our Pong Game : <br/> Transcendance</h1>
+      <h1>Transcendance</h1>
     </div>
     <div className='signing-option flex flex-col justify-center content-center gap-y-10'>
         <button>Sign in</button>
