@@ -1,5 +1,4 @@
 #root {
-
   background: linear-gradient(249.66deg, #F5F5F5 29.05%, rgba(245, 245, 245, 0) 67.24%), linear-gradient(335.12deg, #B8E4E8 25.81%, #ADD7B6 43.04%, #ECDB9A 70.21%, #EFBD99 84.79%);
 }
 
@@ -13,66 +12,16 @@
   text-align: center;
   letter-spacing: 0.11em;
 
-  color: #000000;
-}
-
-.signing-option button {
-
-  width: 228px;
-  height: 64px;
-
-  /* filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25)); */
-  
-  background: #11ffee00;
-  border-radius: 50px;
-  border: solid 3px;
-  
-  /* Text */
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 22px;
-  line-height: 30px;
-  text-align: center;
-  color: #000000;
-  
-}
-
-.signing-option button:hover {
-  color: #FFFFFF;
-  border: solid 2px;
-  border-color: #000000;
-  background: #000000;
-  transition: all 0.6s ease;
+  color: var(--black);
 }
 
 @media (min-width: 100px) and (max-width: 768px) {
   .homepage {
     row-gap: 30px !important;
   }
-  
-  .signing-option {
-    row-gap: 15px !important;
-  }
 
   .homepage h1 {
     font-size: 30px;
     line-height: 40px;
-  }
-
-  .signing-option button {
-
-    width: 150px;
-    height: 45px;
-      
-    background: #11ffee00;
-    border-radius: 50px;
-    border: solid 2px;
-
-    font-size: 15px;
-    text-align: center;
-    color: #000000;
-
-    
   }
 }
