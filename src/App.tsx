@@ -3,12 +3,12 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import React from 'react'
 
 // TypeScript
-import Homepage from './pages/HomePage.tsx'
+import WelcomePage from './pages/WelcomePage.tsx'
 
 // CSS
-import './components/style/buttons.css'
-import './components/style/color.css'
-import './App.css'
+import './style/components/buttons.css'
+import './style/pages/color.css'
+import './style/pages/App.css'
 
 function App() {
 
@@ -16,7 +16,7 @@ function App() {
     <>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Homepage />} />
+        <Route path="/" element={<WelcomePage />} />
       </Routes>
     </BrowserRouter>
       {/* <Homepage/> */}
