@@ -1,5 +1,5 @@
 // librairies
-// import { Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import React from 'react'
 
 // TypeScript
@@ -14,10 +14,12 @@ function App() {
 
   return (
     <>
-      {/* <Routes>
+    <BrowserRouter>
+      <Routes>
         <Route path="/" element={<Homepage />} />
-      </Routes> */}
-      <Homepage/>
+      </Routes>
+    </BrowserRouter>
+      {/* <Homepage/> */}
     </>
   )
 }
