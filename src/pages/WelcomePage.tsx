@@ -3,6 +3,8 @@ import Reveal from '../components/Reveal.tsx'
 import '../style/pages/WelcomePage.css'
 import NavBar from '../components/NavBar.tsx'
 
+// NavBar ne sera pas sur cette page, mais plus facile de circuler sur le site comme ca en attendant
+
 function WelcomePage() {
 
     return (

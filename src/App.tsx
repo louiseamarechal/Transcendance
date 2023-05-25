@@ -9,6 +9,7 @@ import Chat from './pages/Chat.tsx'
 import Friends from './pages/Friends.tsx'
 import Settings from './pages/Settings.tsx'
 import Profil from './pages/Profil.tsx'
+import Components from './pages/Components.tsx' 
 
 // CSS
 import './style/components/buttons.css'
@@ -27,6 +28,7 @@ function App() {
           <Route path='/game' element={<Game />} />
           <Route path='/profil' element={<Profil />} />
           <Route path='/settings' element={<Settings />} />
+          <Route path='/test' element={<Components />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -2,4 +2,11 @@
     --black: rgba(29, 29, 27);
     --faded-black: rgba(29, 29, 27, 0.5);
     --white: #F4F2EE;
+    --faded-blue: rgba(184, 228, 232);
+    --blue: rgb(165, 237, 244);
+    --faded-green: rgba(173, 215, 182);
+    --green: rgb(158, 226, 173);
+    /* --blue: #94dbe1; */
+    --dark-blue: #72B7BD;
+    --border: rgba(34, 29, 29, 0.08);
 }

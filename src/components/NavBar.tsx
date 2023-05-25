@@ -16,6 +16,7 @@ const NavBar = () => {
                     <Link to={'/chat'}>Chat</Link>
                     <Link to={'/friends'}>Friends</Link>
                     <Link to={'/settings'}>Settings</Link>
+                    <Link to={'/test'}>Test</Link>
                 </ul>
             </div>
         )
