@@ -27,6 +27,10 @@
     font-size: 30px;
 }
 
+.navbar-links a:hover {
+    color: var(--faded-black);
+}
+
 .avatar {
     width: 70px;
     height: 70px;

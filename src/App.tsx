@@ -4,6 +4,11 @@ import React from 'react'
 
 // TypeScript
 import WelcomePage from './pages/WelcomePage.tsx'
+import Game from './pages/Game.tsx'
+import Chat from './pages/Chat.tsx'
+import Friends from './pages/Friends.tsx'
+import Settings from './pages/Settings.tsx'
+import Profil from './pages/Profil.tsx'
 
 // CSS
 import './style/components/buttons.css'
@@ -14,12 +19,16 @@ function App() {
 
   return (
     <>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<WelcomePage />} />
-      </Routes>
-    </BrowserRouter>
-      {/* <Homepage/> */}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<WelcomePage />} />
+          <Route path='/chat' element={<Chat />} />
+          <Route path='/friends' element={<Friends />} />
+          <Route path='/game' element={<Game />} />
+          <Route path='/profil' element={<Profil />} />
+          <Route path='/settings' element={<Settings />} />
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }

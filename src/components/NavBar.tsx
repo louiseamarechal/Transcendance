@@ -1,20 +1,21 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import '../style/components/navbar.css'
 
 const NavBar = () => {
 
-    const [navbarState, setNavbarState] = useState(true); 
+    const [navbarState, setNavbarState] = useState(false); 
 
     if (navbarState === true)
         return (
             <div className="navbar-open">
                 <button className={"opened-nav-button fa-solid fa-xmark"} style={{color:"var(--black)"}} onClick={() => {setNavbarState(false)}}></button>
                 <ul className="navbar-links">
-                    <img className="avatar" alt="avatar" src="https://avatars.dicebear.com/api/adventurer-neutral/mail%40ashallendesign.co.uk.svg" />
-                    <li>Game</li>
-                    <li>Chat</li>
-                    <li>Friends</li>
-                    <li>Settings</li>
+                    <Link to={'/profil'}><img className="avatar" alt="avatar" src="https://avatars.dicebear.com/api/adventurer-neutral/mail%40ashallendesign.co.uk.svg" /></Link>
+                    <Link to={'/game'}>Game</Link>
+                    <Link to={'/chat'}>Chat</Link>
+                    <Link to={'/friends'}>Friends</Link>
+                    <Link to={'/settings'}>Settings</Link>
                 </ul>
             </div>
         )
