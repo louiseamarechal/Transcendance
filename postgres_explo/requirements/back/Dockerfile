@@ -9,13 +9,14 @@ RUN apt-get upgrade -y
 WORKDIR /app
 
 # Copy all necessary content to container.
-# COPY package*.json ./
-# COPY prisma/ /app/prisma/
+COPY package*.json ./
+COPY prisma/ /app/prisma/
 COPY .env ./
-# COPY tsconfig.json ./
+COPY tsconfig.json ./
+COPY . .
 
 # Install packages and deps.
 RUN npm install
 RUN npx prisma generate
 
-CMD ["npm start"]
+CMD ["npm", "start"]

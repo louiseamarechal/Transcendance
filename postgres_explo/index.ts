@@ -29,8 +29,9 @@ app.get("/api/users", async (req: Request, res: Response) => {
 });
 
 app.post("/api/users", async (req: Request, res: Response) => {
+    console.log("Got POST on URI: /api/users")
+    const { id, name, level } = req.body;
     try {
-        const { id, name, level } = req.body;
         const newUser = await prisma.users.create({
             data: {
                 id,
@@ -43,6 +44,7 @@ app.post("/api/users", async (req: Request, res: Response) => {
             data: newUser
         })
     } catch (error) {
+        console.log(`Error:\nid: ${id}\nname: ${name}\nlevel: ${level}`)
         return res.json({
             success: false,
             message: error

@@ -12,31 +12,20 @@ services:
       POSTGRES_DB: mydb
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    expose:
-     - "5432"
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
-    depends_on:
-      - db
     ports:
-      - "5555:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
-      PGADMIN_DEFAULT_PASSWORD: admin
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
-    restart: unless-stopped
+     - 5432:5432
 
   back:
     container_name: back
-    build: requirements/back/
+    stdin_open: true
+    build:
+      dockerfile: ./requirements/back/Dockerfile
     depends_on:
       - db
     restart: on-failure
     ports:
       - 8080:8080
+      - 5555:5555
 
 volumes:
   postgres-data:
