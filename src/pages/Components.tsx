@@ -1,6 +1,8 @@
 import React from 'react'
 import NavBar from '../components/NavBar.tsx';
 import ProgressBar from '../components/ProgressBar.tsx';
+import UserCard from '../components/UserCard.tsx';
+import '../style/components/net.css'
 
 function Components() {
 
@@ -15,8 +17,13 @@ function Components() {
                     <button className='play-game-button flex justify-center items-center'>
                         <div className='play-game-triangle'></div>
                     </button>
+                    <button className='decline-game'>X</button>
                     <ProgressBar completed={"15"}/>
+                    <UserCard/>
                     {/* <button className='fa-solid fa-circle-play fa-xl' style={{color: "var(--black)"}}></button> */}
+                    <div>
+                        <div className="net w-200px"></div>
+                    </div>
                 </div>
             </div>
         </>

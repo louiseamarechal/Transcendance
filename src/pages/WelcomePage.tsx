@@ -16,7 +16,9 @@ function WelcomePage() {
           </div>
           <div className='signin-button flex flex-col justify-center content-center gap-y-10'>
               <button>Sign in</button>
-              <button>Sign in with 42</button>
+              {/* <button>Sign in with 42</button> */}
+              {/* <>Sign in with 42</button> */}
+              <a href="https://api.intra.42.fr/oauth/authorize?client_id=e3cc4cd2c2bc7e57508c0ecc27b9dff133d03b28aaa52949357ca4e0310539fd&redirect_uri=https%3A%2F%2Fwww.qwant.com%2F&response_type=code"><button>Sign in with 42</button></a>
           </div>
         </div>
       </Reveal>
