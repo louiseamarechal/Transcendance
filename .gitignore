@@ -3,5 +3,5 @@
 postgres_explo
 build
 *build
-node_modules
+node_modules/
 *node_modules
