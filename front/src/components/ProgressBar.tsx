@@ -1,7 +1,7 @@
-import React from "react";
+// import React from "react";
 import '../style/components/progress-bar.css'
 
-function ProgressBar(props) {
+function ProgressBar(props: any) {
     const { completed } = props;
   
     const containerStyles = {

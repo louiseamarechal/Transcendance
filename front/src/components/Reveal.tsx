@@ -1,6 +1,6 @@
 import { motion, useInView, useAnimation } from 'framer-motion'
 import { useEffect, useRef } from 'react';
-import React from 'react';
+// import React from 'react';
 
 const Reveal = ({children, width}) => {
     const ref = useRef(null)

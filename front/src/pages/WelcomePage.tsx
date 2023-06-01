@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react'
 import Reveal from '../components/Reveal.tsx'
 import '../style/pages/WelcomePage.css'
 import NavBar from '../components/NavBar.tsx'

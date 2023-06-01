@@ -1,6 +1,6 @@
 // librairies
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import React from 'react'
+// import React from 'react'
 
 // TypeScript
 import WelcomePage from './pages/WelcomePage.tsx'
