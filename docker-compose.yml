@@ -3,8 +3,6 @@ version: '3.1'
 
 services:
 
-  nginx:
-    con
   db:
     container_name: postgres
     image: postgres:15-bullseye
@@ -21,7 +19,7 @@ services:
     container_name: back
     stdin_open: true
     build:
-
+      context: ./
       dockerfile: ./back/requirements/Dockerfile
     depends_on:
       - db

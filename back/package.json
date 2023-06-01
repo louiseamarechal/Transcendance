@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node index.ts",
-	"start:migrate:prod": "npx prisma migrate deploy && npm run start"
+    "start:migrate:prod": "npx prisma migrate deploy && npm run start"
   },
   "keywords": [],
   "author": "",
