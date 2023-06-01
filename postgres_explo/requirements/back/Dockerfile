@@ -17,6 +17,6 @@ COPY . .
 
 # Install packages and deps.
 RUN npm install
-RUN npx prisma generate
+# RUN npx prisma generate
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "start:migrate:prod"]

@@ -9,13 +9,13 @@ app.use(express.urlencoded({ extended: true }));
 
 const port: number = 8080;
 
-app.get("/", (_req, res: Response) => {
+app.get("/", (_req: Request, res: Response) => {
     res.send(`Server is running on port: ${port}`)
 });
 
-app.get("/api/users", async (req: Request, res: Response) => {
+app.get("/api/user", async (req: Request, res: Response) => {
     try {
-        const AllUsers = await prisma.users.findMany();
+        const AllUsers = await prisma.user.findMany();
         return res.json({
             success: true,
             data: AllUsers,
@@ -29,22 +29,18 @@ app.get("/api/users", async (req: Request, res: Response) => {
 });
 
 app.post("/api/users", async (req: Request, res: Response) => {
-    console.log("Got POST on URI: /api/users")
-    const { id, name, level } = req.body;
+    console.log("Got POST on URI: /api/user")
+    const { name, level } = req.body;
     try {
-        const newUser = await prisma.users.create({
-            data: {
-                id,
-                name,
-                level
-            }
+        const newUser = await prisma.user.create({
+            data: req.body
         });
         return res.json({
             success: true,
             data: newUser
         })
     } catch (error) {
-        console.log(`Error:\nid: ${id}\nname: ${name}\nlevel: ${level}`)
+        console.log(`Error:\n\nname: ${name}\nlevel: ${level}`)
         return res.json({
             success: false,
             message: error

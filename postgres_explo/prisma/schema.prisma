@@ -16,11 +16,11 @@ model User {
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   name            String @unique
-  level           Int
+  level           Int @default(1)
   avatar          String?
-  active2         Boolean
-  statTotalGame   Int
-  statTotalWin    Int
+  active2fa       Boolean @default(false)
+  statTotalGame   Int @default(0)
+  statTotalWin    Int @default(0)
 
   friendRequests  FriendRequest[]
   friends         User[] @relation("friends")
@@ -68,7 +68,7 @@ model Channel {
 
   password      Boolean
   passwordHash  String?
-  public        Boolean
+  public        Boolean @default(true)
 
   @@map("channels")
 }
