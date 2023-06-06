@@ -11,7 +11,7 @@ WORKDIR /app
 # Copy all necessary content to container.
 COPY ./back/ ./
 COPY ./back/prisma/ /app/prisma/
-COPY .env ./
+COPY ./back/.env ./
 
 # Install packages and deps.
 RUN npm install

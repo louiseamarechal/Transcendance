@@ -13,6 +13,18 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
+     - 5434:5432
+
+  test-db:
+    container_name: postgres
+    image: postgres:15-bullseye
+    restart: on-failure
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: mydb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
      - 5435:5432
 
   back:
