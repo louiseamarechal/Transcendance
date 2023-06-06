@@ -45,7 +45,7 @@ model FriendRequest {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
-  from            User  @relation(fields: [fromId], references: [id])
+  from            User  @relation(fields: [fromId], references: [id], onDelete: Cascade)
   fromId          Int   @map("from_user_id")
 
   request_pending Boolean
@@ -57,7 +57,7 @@ model Channel {
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
-  owner         User @relation(name: "channelOwner", fields: [ownerId], references: [id])
+  owner         User @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId       Int @map("owner_id")
 
   admins        AdminsOnChannels[]
@@ -74,27 +74,27 @@ model Channel {
 }
 
 model AdminsOnChannels {
-  channel Channel @relation(fields: [channelId], references: [id])
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId Int
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
   
   @@id([channelId, userId])
 }
 
 model MembersOnChannels {
-  channel Channel @relation(fields: [channelId], references: [id])
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId Int
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
   
   @@id([channelId, userId])
 }
 
 model BlockedOnChannels {
-  channel Channel @relation(fields: [channelId], references: [id])
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId Int
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
   
   @@id([channelId, userId])
@@ -105,10 +105,10 @@ model Message {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
 
-  sender    User  @relation(name: "sender", fields: [senderId], references: [id])
+  sender    User  @relation(name: "sender", fields: [senderId], references: [id], onDelete: Cascade)
   senderId  Int @map("sender_id")
 
-  channel   Channel @relation(name: "channel", fields: [channelId], references: [id])
+  channel   Channel @relation(name: "channel", fields: [channelId], references: [id], onDelete: Cascade)
   channelId Int @map("channel_id")
 
   body      String
@@ -121,13 +121,13 @@ model Game {
   createdAt DateTime @default(now()) @map("create_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  player1   User @relation(name: "player1", fields: [player1Id], references: [id])
+  player1   User @relation(name: "player1", fields: [player1Id], references: [id], onDelete: Cascade)
   player1Id Int @map("payer1_id")
 
-  player2   User @relation(name: "player2", fields: [player2Id], references: [id])
+  player2   User @relation(name: "player2", fields: [player2Id], references: [id], onDelete: Cascade)
   player2Id Int @map("player2_id")
 
-  winner    User @relation(name: "winner", fields: [winnerId], references: [id])
+  winner    User @relation(name: "winner", fields: [winnerId], references: [id], onDelete: Cascade)
   winnerId  Int @map("winner_id")
 
   score     String

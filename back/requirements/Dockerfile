@@ -15,6 +15,5 @@ COPY .env ./
 
 # Install packages and deps.
 RUN npm install
-RUN npx prisma generate
 
 CMD ["npm", "run", "start"]

@@ -1,2 +1,4 @@
 requirements
 package-lock.json
+test/
+.prettierrc
