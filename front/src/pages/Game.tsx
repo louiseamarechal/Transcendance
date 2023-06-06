@@ -6,7 +6,7 @@ function Game() {
     return (
         <>
             <NavBar/>
-            <div className='h-screen flex justify-center items-center'>Game Page</div>
+            <div className='h-screen flex justify-center items-center'>Game Page in progress</div>
         </>
     )
 }

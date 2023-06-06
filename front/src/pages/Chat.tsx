@@ -6,7 +6,7 @@ function Chat() {
     return (
         <>
             <NavBar/>
-            <div className='h-screen flex justify-center items-center'>Chat Page</div>
+            <div className='h-screen flex justify-center items-center'>Chat Page in progress</div>
         </>
     )
 }
