@@ -8,7 +8,7 @@ function Profil() {
     return (
         <>
             <NavBar/>
-            <div className='h-screen flex justify-center items-center'>Profil Page</div>
+            <div className='h-screen flex justify-center items-center'>Profil Page in progress</div>
         </>
     )
 }

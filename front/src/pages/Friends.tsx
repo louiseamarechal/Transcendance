@@ -6,7 +6,7 @@ function Friends() {
     return (
         <>
             <NavBar/>
-            <div className='h-screen flex justify-center items-center'>Friends Page</div>
+            <div className='h-screen flex justify-center items-center'>Friends Page in progress</div>
         </>
     )
 }
