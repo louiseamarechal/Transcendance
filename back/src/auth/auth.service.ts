@@ -1,11 +1,13 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import axios, { AxiosRequestConfig } from 'axios';
-import { catchError, lastValueFrom, map } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthDto } from './dto';
 import { Tokens } from './types';
+import * as argon from 'argon2';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -13,10 +15,12 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private config: ConfigService,
-    private httpService: HttpService
+    private http: HttpService,
+    private jwt: JwtService
   ) { }
 
-  async login(dto: AuthDto) {
+  async login(dto: AuthDto): Promise<Tokens> {
+
     // exchange code
     const token42 = await this.exchangeCode(dto.code);
     console.log({ token42 })
@@ -26,14 +30,15 @@ export class AuthService {
     console.log({ userLogin, userAvatar })
 
     // find or create user
-    const user = await this.prisma.user.findUnique({
+    let user = await this.prisma.user.findUnique({
       where: {
         login: userLogin
       }
     })
-    console.log({ user })
+
     if (!user) {
-      await this.prisma.user.create({
+      console.log('Creating user')
+      user = await this.prisma.user.create({
         data: {
           login: userLogin,
           name: userLogin,
@@ -41,13 +46,43 @@ export class AuthService {
         }
       })
     }
+    console.log({ user })
 
-    // returns jwts
+    // generate and returns jwts
+    const tokens = await this.getTokens(user.id)
+    await this.updateRtHash(user.id, tokens.refresh_token)
+    return tokens;
   }
 
-  logout() { }
+  async logout(userId: number) {
+    await this.prisma.user.updateMany({
+      where: {
+        id: userId,
+        hashedRt: {
+          not: null
+        }
+      },
+      data: {
+        hashedRt: null
+      }
+    })
+  }
 
-  refreshTokens() { }
+  async refreshTokens(userId: number, rt: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId
+      }
+    })
+    if (!user || !user.hashedRt) throw new ForbiddenException('Access Denied')
+
+    const rtMatches = await argon.verify(user.hashedRt, rt)
+    if (!rtMatches) throw new ForbiddenException('Access Denied')
+
+    const tokens = await this.getTokens(user.id)
+    await this.updateRtHash(user.id, tokens.refresh_token)
+    return tokens;
+  }
 
 
   // HELPER FUNCTIONS
@@ -99,5 +134,40 @@ export class AuthService {
     const userLogin = response.data?.login;
     const userAvatar = response.data?.image?.link;
     return { userLogin, userAvatar }
+  }
+
+  async getTokens(userId: number): Promise<Tokens> {
+    const [at, rt] = await Promise.all([
+      this.jwt.signAsync({
+        sub: userId
+      }, {
+        secret: this.config.get('JWT_ACCESS_SECRET'),
+        expiresIn: '15m'
+      }),
+      this.jwt.signAsync({
+        sub: userId
+      }, {
+        secret: this.config.get('JWT_REFRESH_SECRET'),
+        expiresIn: '7d'
+      })
+    ])
+
+    return {
+      access_token: at,
+      refresh_token: rt
+    }
+  }
+
+  async updateRtHash(userId: number, rt: string) {
+    const hash = await argon.hash(rt);
+    await this.prisma.user.update({
+      where: {
+        id: userId
+      },
+      data: {
+        hashedRt: hash
+      }
+    })
+
   }
 }
