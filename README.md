@@ -12,11 +12,12 @@
 => Lancer le back:
     
     cd back
-    npm run start:dev -> utilisation sans docker
-    npm run db:dev:up -> utilisation avec docker
+    npm run db:dev:up
+    npm run start
 
 => Lancer en mode test:
     npm run db:test:up
+		npm run start:dev
 
 => Redemarrer apres changement du schema de la db
     npm run db:dev/test:restart
