@@ -1,4 +1,4 @@
-.welcome-page h1 {
+.game-page h1 {
 
     font-family: 'Inter';
     font-style: normal;
@@ -12,11 +12,11 @@
   }
   
   @media (min-width: 100px) and (max-width: 768px) {
-    .welcome-page {
+    .game-page {
       row-gap: 30px !important;
     }
   ]
-    .welcome-page h1 {
+    .game-page h1 {
       font-size: 40px;
       line-height: 40px;
     }
