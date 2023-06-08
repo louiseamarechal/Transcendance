@@ -102,6 +102,7 @@
     line-height: 30px;
     text-align: center;
     color: var(--black);
+    padding: 5% 5%;
 }
 /* <button className='small-button' style={{backgroundColor:'var(--green)'}}> */
 
@@ -110,6 +111,7 @@
     width: 150px;
     height: 45px;
     font-size: 15px;
+    padding: 5% 5%;
   }
     
   .signin-button {
