@@ -11,126 +11,150 @@ datasource db {
 }
 
 model User {
-  id              Int @id @default(autoincrement())
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  name            String @unique
-  level           Int @default(1)
-  avatar          String?
-  active2fa       Boolean @default(false)
-  statTotalGame   Int @default(0)
-  statTotalWin    Int @default(0)
+  name     String  @unique
+  hashedRT String?
 
-  friendRequests  FriendRequest[]
-  friends         User[] @relation("friends")
-  friendOf        User[] @relation("friends")
+  level         Int       @default(1)
+  avatar        String?
+  s2fa          Status2fa @default(NOTSET)
+  statTotalGame Int       @default(0)
+  statTotalWin  Int       @default(0)
 
-  ownedChannels   Channel[] @relation("channelOwner")
+  friends  User[] @relation(name: "friends")
+  friendOf User[] @relation(name: "friends")
+
+  sentRequests     FriendRequest[] @relation("sender")
+  receivedRequests FriendRequest[] @relation("receiver")
+
+  ownedChannels   Channel[]           @relation("channelOwner")
   adminChannels   AdminsOnChannels[]
   memberChannels  MembersOnChannels[]
   blockedChannels BlockedOnChannels[]
 
-  sentMessages    Message[] @relation("sender")
+  sentMessages Message[] @relation("sender")
 
-  initGames       Game[] @relation("player1")
-  invitedGames    Game[] @relation("player2")
-  wonGames        Game[] @relation("winner")
+  initGames    Game[] @relation("player1")
+  invitedGames Game[] @relation("player2")
+  wonGames     Game[] @relation("winner")
 
   @@map("users")
 }
 
+enum Status2fa {
+  SET
+  NOTSET
+}
+
 model FriendRequest {
-  id              Int   @id @default(autoincrement())
-  createdAt       DateTime  @default(now()) @map("created_at")
-  updatedAt       DateTime  @updatedAt @map("updated_at")
+  id        Int      @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  from            User  @relation(fields: [fromId], references: [id], onDelete: Cascade)
-  fromId          Int   @map("from_user_id")
+  from   User @relation(name: "sender", fields: [fromId], references: [id], onDelete: Cascade)
+  fromId Int  @map("from_user_id")
+  to     User @relation(name: "receiver", fields: [toId], references: [id], onDelete: Cascade)
+  toId   Int  @map("to_user_id")
 
-  request_pending Boolean
+  status FRStatus @default(PENDING)
+
+  @@unique([fromId, toId])
   @@map("friend_requests")
 }
 
+enum FRStatus {
+  PENDING
+  REFUSED
+  ACCEPTED
+}
+
 model Channel {
-  id            Int @id @default(autoincrement())
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  owner         User @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId       Int @map("owner_id")
+  owner   User @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId Int  @map("owner_id")
 
-  admins        AdminsOnChannels[]
-  members       MembersOnChannels[]
-  blocked       BlockedOnChannels[]
+  admins  AdminsOnChannels[]
+  members MembersOnChannels[]
+  blocked BlockedOnChannels[]
 
-  messages      Message[] @relation("channel")
+  messages Message[] @relation("channel")
 
-  password      Boolean
-  passwordHash  String?
-  public        Boolean @default(true)
+  password     Boolean @default(false)
+  passwordHash String?
+  visibility   VisType @default(PUBLIC)
 
   @@map("channels")
 }
 
+enum VisType {
+  PUBLIC
+  PRIVATE
+}
+
 model AdminsOnChannels {
-  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId Int
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
-  
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+
   @@id([channelId, userId])
 }
 
 model MembersOnChannels {
-  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId Int
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
-  
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+
   @@id([channelId, userId])
 }
 
 model BlockedOnChannels {
-  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId Int
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
-  
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+
   @@id([channelId, userId])
 }
 
 model Message {
-  id        Int @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  sender    User  @relation(name: "sender", fields: [senderId], references: [id], onDelete: Cascade)
-  senderId  Int @map("sender_id")
+  sender   User @relation(name: "sender", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId Int  @map("sender_id")
 
   channel   Channel @relation(name: "channel", fields: [channelId], references: [id], onDelete: Cascade)
-  channelId Int @map("channel_id")
+  channelId Int     @map("channel_id")
 
-  body      String
+  body String
 
   @@map("messages")
 }
 
 model Game {
-  id        Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("create_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   player1   User @relation(name: "player1", fields: [player1Id], references: [id], onDelete: Cascade)
-  player1Id Int @map("payer1_id")
+  player1Id Int  @map("payer1_id")
 
   player2   User @relation(name: "player2", fields: [player2Id], references: [id], onDelete: Cascade)
-  player2Id Int @map("player2_id")
+  player2Id Int  @map("player2_id")
 
-  winner    User @relation(name: "winner", fields: [winnerId], references: [id], onDelete: Cascade)
-  winnerId  Int @map("winner_id")
+  winner   User @relation(name: "winner", fields: [winnerId], references: [id], onDelete: Cascade)
+  winnerId Int  @map("winner_id")
 
-  score     String
+  score String?
 
   @@map("games")
 }
