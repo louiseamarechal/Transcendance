@@ -89,9 +89,7 @@ export class AuthService {
 
   // HELPER FUNCTIONS
 
-  async exchangeCode(
-    code: string,
-  ): Promise<Response<string, Record<string, any>>> {
+  async exchangeCode(code: string): Promise<string> {
     const axiosConfig: AxiosRequestConfig = {
       method: 'post',
       url: 'https://api.intra.42.fr/oauth/token',
@@ -106,16 +104,15 @@ export class AuthService {
         'Content-Type': 'multipart/form-data',
       },
     };
-
-    // console.log({ axiosConfig });
-
     const response = await axios(axiosConfig).catch((err) => {
       console.log({ err });
       throw new UnauthorizedException('Nop! (exchangeCode)');
     });
-
-    // console.log({ response });
-    return response.data?.access_token;
+    if (!response.data) {
+      throw new UnauthorizedException('Nop! (exchangeCode)');
+    } else {
+      return response.data?.access_token;
+    }
   }
 
   async getUserInfo(
