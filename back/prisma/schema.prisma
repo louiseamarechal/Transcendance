@@ -15,6 +15,7 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  login    String
   name     String  @unique
   hashedRT String?
 
@@ -59,8 +60,7 @@ model FriendRequest {
   to     User @relation(name: "receiver", fields: [toId], references: [id], onDelete: Cascade)
   toId   Int  @map("to_user_id")
 
-  status FRStatus @default(PENDING)
-
+  status    FRStatus @default(PENDING)
   @@unique([fromId, toId])
   @@map("friend_requests")
 }
@@ -95,6 +95,7 @@ model Channel {
 enum VisType {
   PUBLIC
   PRIVATE
+	PROTECTED
 }
 
 model AdminsOnChannels {
