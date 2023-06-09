@@ -61,12 +61,12 @@ export class AuthService {
     await this.prisma.user.updateMany({
       where: {
         id: userId,
-        hashedRt: {
+        hashedRT: {
           not: null,
         },
       },
       data: {
-        hashedRt: null,
+        hashedRT: null,
       },
     });
   }
@@ -77,9 +77,9 @@ export class AuthService {
         id: userId,
       },
     });
-    if (!user || !user.hashedRt) throw new ForbiddenException('Access Denied');
+    if (!user || !user.hashedRT) throw new ForbiddenException('Access Denied');
 
-    const rtMatches = await argon.verify(user.hashedRt, rt);
+    const rtMatches = await argon.verify(user.hashedRT, rt);
     if (!rtMatches) throw new ForbiddenException('Access Denied');
 
     const tokens = await this.getTokens(user.id);
@@ -172,7 +172,7 @@ export class AuthService {
         id: userId,
       },
       data: {
-        hashedRt: hash,
+        hashedRT: hash,
       },
     });
   }
