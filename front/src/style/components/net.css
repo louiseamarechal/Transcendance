@@ -1,7 +1,11 @@
 .net {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: 6px dashed var(--black);
     transform: rotate(90deg);
-    width: 54vh;
+    width: 42vh;
     border-radius: 12px;
     position: absolute;
+    order: 1;
 }

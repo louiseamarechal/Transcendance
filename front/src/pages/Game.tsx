@@ -8,16 +8,17 @@ function Game() {
     return (
       <>
         <NavBar />
-        <div className="h-screen flex flex-col items-center game-page">
-          <h1 style={{ marginTop: '5%' }}>PONG</h1>
-          <div className="flex flex-col items-center"  >
-            <div className="net w-100px mb-4"style={{ marginTop: '25%' }}></div>
-           </div>
-          <div className="flex justify-center" style={{ marginTop: '15%' }}>
+        <div className="gamepage-container">
+          <h1 className="gamepage-title">PONG</h1>
+          <div className="net-container">
+            <div className="net"></div>
+            {/* <div className="flex justify-center" style={{ marginTop: '15%' }}> */}
             <button className="searchgame-button mr-2"style={{ marginRight: '40%' }}>Search Game</button>
             <button className="searchgame-button m1-2"style={{ marginLeft: '40%' }}>Invite Friends</button>
+          <div className="net w-100px mb-4"></div>
           </div>
         </div>
+        {/* </div> */}
       </>
     );
   }

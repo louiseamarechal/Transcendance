@@ -1,5 +1,39 @@
-.game-page h1 {
 
+.gamepage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 100vh;
+}
+
+.gamepage-title {
+  font-size: 46px;
+  font-weight: bold;
+  color: var(--black);
+  letter-spacing: 0.11em;
+  font-family: 'Inter';
+  font-style: normal;
+  justify-content: up;
+  margin-top: 20px;
+}
+
+.net-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* .gametitle {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-self: flex-start;
+  }
+   */
+/* .game-page h1 {
+  
     font-family: 'Inter';
     font-style: normal;
     font-weight: 600;
@@ -9,6 +43,8 @@
     letter-spacing: 0.11em;
   
     color: var(--black);
+    align-self: flex-start;
+    justify-content: flex-start;
   }
   
   @media (min-width: 100px) and (max-width: 768px) {
@@ -20,4 +56,4 @@
       font-size: 40px;
       line-height: 40px;
     }
-  }
+  } */
