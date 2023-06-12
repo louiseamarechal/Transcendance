@@ -25,6 +25,7 @@ const NavBar = () => {
                     <Link to={'/friends'}>Friends</Link>
                     <Link to={'/settings'}>Settings</Link>
                     <Link to={'/test'}>Test</Link>
+                    <Link to={'/FindFriends'}>FindFriends</Link>
                 </ul>
             </div>
         )
