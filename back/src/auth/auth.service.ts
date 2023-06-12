@@ -53,7 +53,7 @@ export class AuthService {
 
     // generate and returns jwts
     const tokens: Tokens = await this.getTokens(user.id);
-    await this.updateRtHash(user.id, tokens.refresh_token);
+    await this.updateRTHash(user.id, tokens.refresh_token);
     return tokens;
   }
 
@@ -83,7 +83,7 @@ export class AuthService {
     if (!rtMatches) throw new ForbiddenException('Access Denied');
 
     const tokens = await this.getTokens(user.id);
-    await this.updateRtHash(user.id, tokens.refresh_token);
+    await this.updateRTHash(user.id, tokens.refresh_token);
     return tokens;
   }
 
@@ -117,7 +117,7 @@ export class AuthService {
 
   async getUserInfo(
     token42: string,
-  ): Promise<{ userLogin: string; userAvatar: string }> {
+  ): Promise<{ userLogin: string, userAvatar: string }> {
     const axiosConfig: AxiosRequestConfig = {
       method: 'get',
       url: 'https://api.intra.42.fr/v2/me',
@@ -165,7 +165,7 @@ export class AuthService {
     };
   }
 
-  async updateRtHash(userId: number, rt: string) {
+  async updateRTHash(userId: number, rt: string) {
     const hash = await argon.hash(rt);
     await this.prisma.user.update({
       where: {

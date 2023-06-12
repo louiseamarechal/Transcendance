@@ -21,10 +21,12 @@ describe('PrismaService Int', () => {
       it('should create simple user', async () => {
         const newUser = await prisma.user.create({
           data: {
+            login: 'Jean',
             name: 'Jean',
           },
         });
         expect(newUser.name).toBe('Jean');
+        expect(newUser.login).toBe('Jean');
         expect(newUser.level).toBe(1);
         expect(newUser.s2fa).toBe(Status2fa.NOTSET);
         expect(newUser.statTotalGame).toBe(0);
@@ -33,20 +35,39 @@ describe('PrismaService Int', () => {
       it('should create second user', async () => {
         const newUser = await prisma.user.create({
           data: {
+            login: 'Michel',
             name: 'Michel',
+            avatar: 'myAvatar',
           },
         });
         expect(newUser.name).toBe('Michel');
+        expect(newUser.login).toBe('Michel');
+        expect(newUser.avatar).toBe('myAvatar');
         expect(newUser.level).toBe(1);
         expect(newUser.s2fa).toBe(Status2fa.NOTSET);
         expect(newUser.statTotalGame).toBe(0);
         expect(newUser.statTotalWin).toBe(0);
       });
-      it('should throw on duplicate user', async () => {
+      it('should throw on duplicate name', async () => {
         const newUser = await prisma.user
           .create({
             data: {
               name: 'Michel',
+              login: 'Michmich',
+            },
+          })
+          .then((user) => expect(user).toBeUndefined())
+          .catch((error) => {
+            expect(error instanceof PrismaClientKnownRequestError);
+            expect(error.code === 'P2002');
+          });
+      });
+      it('should throw on duplicate login', async () => {
+        const newUser = await prisma.user
+          .create({
+            data: {
+              name: 'Michou',
+              login: 'Michel',
             },
           })
           .then((user) => expect(user).toBeUndefined())
@@ -61,6 +82,7 @@ describe('PrismaService Int', () => {
         const newUser = await prisma.user.create({
           data: {
             name: 'Claude',
+            login: 'Claude'
           },
         });
         const user = await prisma.user.findUnique({
@@ -78,6 +100,19 @@ describe('PrismaService Int', () => {
         });
         expect(user).toBeDefined();
         expect(user?.name).toBe('Jean');
+        expect(user?.level).toBe(1);
+        expect(user?.s2fa).toBe(Status2fa.NOTSET);
+        expect(user?.statTotalGame).toBe(0);
+        expect(user?.statTotalWin).toBe(0);
+      });
+      it('Should get user by login', async () => {
+        const user = await prisma.user.findUnique({
+          where: {
+            login: 'Michel',
+          },
+        });
+        expect(user).toBeDefined();
+        expect(user?.name).toBe('Michel');
         expect(user?.level).toBe(1);
         expect(user?.s2fa).toBe(Status2fa.NOTSET);
         expect(user?.statTotalGame).toBe(0);
@@ -212,11 +247,13 @@ describe('PrismaService Int', () => {
       it('Should create request', async () => {
         const user1 = await prisma.user.create({
           data: {
+            login: 'Michel',
             name: 'Michel',
           },
         });
         const user2 = await prisma.user.create({
           data: {
+            login: 'Maurice',
             name: 'Maurice',
           },
         });
@@ -238,6 +275,7 @@ describe('PrismaService Int', () => {
       it('Should create request', async () => {
         const user3 = await prisma.user.create({
           data: {
+            login: 'Justin',
             name: 'Marcel',
           },
         });
@@ -344,11 +382,13 @@ describe('PrismaService Int', () => {
 			it('Should delete request after user delete', async () => {
         const user = await prisma.user.create({
           data: {
+            login: 'JJ',
             name: 'Michel',
           },
         });
 				const user2 = await prisma.user.create({
 					data: {
+            login: 'Marcel',
 						name: 'Marcel',
 					},
 				});
@@ -377,6 +417,7 @@ describe('PrismaService Int', () => {
       it('Should create channel', async () => {
         const user = await prisma.user.create({
           data: {
+            login: 'Mich',
             name: 'Michel',
           },
         });
@@ -394,6 +435,7 @@ describe('PrismaService Int', () => {
       it('Should create channel PUBLIC', async () => {
         const user = await prisma.user.create({
           data: {
+            login: 'Marcel',
             name: 'Marcel',
           },
         });
@@ -530,6 +572,7 @@ describe('PrismaService Int', () => {
       it('Should delete channel after user delete', async () => {
         const user = await prisma.user.create({
           data: {
+            login: 'Michael',
             name: 'Michel',
           },
         });
