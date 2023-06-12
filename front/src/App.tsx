@@ -10,6 +10,7 @@ import Friends from './pages/Friends.tsx'
 import Settings from './pages/Settings.tsx'
 import Profil from './pages/Profil.tsx'
 import Components from './pages/Components.tsx' 
+import Callback from './components/Callback.tsx'
 
 // CSS
 import './style/components/buttons.css'
@@ -28,6 +29,7 @@ function App() {
           <Route path='/game' element={<Game />} />
           <Route path='/profil' element={<Profil />} />
           <Route path='/settings' element={<Settings />} />
+          <Route path='/callback' element={<Callback />} />
           <Route path='/test' element={<Components />} />
         </Routes>
       </BrowserRouter>

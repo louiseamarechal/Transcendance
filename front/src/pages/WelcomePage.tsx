@@ -2,26 +2,31 @@
 import Reveal from '../components/Reveal.tsx'
 import '../style/pages/WelcomePage.css'
 import NavBar from '../components/NavBar.tsx'
+import { Link } from 'react-router-dom'
 
 // NavBar ne sera pas sur cette page, mais plus facile de circuler sur le site comme ca en attendant
 
 function WelcomePage() {
 
+  const api_42 = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-afbf3e19b9a03a7b667ba62a6aa61a65ee7142d01a65f7f7ca36e725f5344415&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fcallback&response_type=code";
     return (
-      <Reveal width={'100%'}>
+      <>
         <NavBar/>
-        <div className='h-screen welcome-page flex flex-col justify-center items-center gap-y-20'>
-          <div>
-            <h1>Transcendance</h1>
+        <Reveal width={'100%'}>
+          <div className='h-screen welcome-page flex flex-col justify-center items-center gap-y-10'>
+            <div>
+              <h1>Transcendance</h1>
+            </div>
+            <div className='signin-button flex flex-col justify-center content-center'>
+                {/* <button>Sign in</button> */}
+                {/* <button>Sign in with 42</button> */}
+                {/* <>Sign in with 42</button> */}
+                <a href={api_42}><button>Sign in with 42</button></a>
+                {/* <a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-afbf3e19b9a03a7b667ba62a6aa61a65ee7142d01a65f7f7ca36e725f5344415&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fcallback&response_type=code"><button>Sign in with 42</button></a> */}
+            </div>
           </div>
-          <div className='signin-button flex flex-col justify-center content-center gap-y-10'>
-              <button>Sign in</button>
-              {/* <button>Sign in with 42</button> */}
-              {/* <>Sign in with 42</button> */}
-              <a href="https://api.intra.42.fr/oauth/authorize?client_id=e3cc4cd2c2bc7e57508c0ecc27b9dff133d03b28aaa52949357ca4e0310539fd&redirect_uri=https%3A%2F%2Fwww.qwant.com%2F&response_type=code"><button>Sign in with 42</button></a>
-          </div>
-        </div>
-      </Reveal>
+        </Reveal>
+      </>
     )
   }
   
