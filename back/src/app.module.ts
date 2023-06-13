@@ -5,9 +5,11 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { AtGuard } from './common/guards';
 import { AppController } from './app.controller';
+import { UserModule } from './user/user.module';
+import { FriendRequestModule } from './friend-request/friend-request.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, UserModule, FriendRequestModule],
   controllers: [AppController],
   providers: [
     {

@@ -51,7 +51,7 @@ enum Status2fa {
 }
 
 model FriendRequest {
-  id        Int      @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -77,8 +77,9 @@ model Channel {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  owner   User @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId Int  @map("owner_id")
+  owner   User   @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId Int    @map("owner_id")
+  name    String @unique
 
   admins  AdminsOnChannels[]
   members MembersOnChannels[]

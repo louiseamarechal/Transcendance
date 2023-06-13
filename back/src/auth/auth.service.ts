@@ -13,6 +13,7 @@ import { AuthDto } from './dto';
 import { Tokens } from './types';
 import * as argon from 'argon2';
 import { Response } from 'express';
+import { createUserDto } from 'src/user/dto';
 
 @Injectable()
 export class AuthService {
@@ -29,23 +30,23 @@ export class AuthService {
     console.log({ token42 });
 
     // get info from 42 api
-    const { userLogin, userAvatar } = await this.getUserInfo(token42);
-    console.log({ userLogin, userAvatar });
+    const userDto: createUserDto = await this.getUserInfo(token42);
+    console.log(userDto);
 
     // find or create user
     let user = await this.prisma.user.findUnique({
       where: {
-        login: userLogin,
+        login: userDto.login,
       },
     });
 
     if (!user) {
-      console.log(`Creating user with login: ${userLogin}`);
+      console.log(`Creating user with login: ${userDto.login}`);
       user = await this.prisma.user.create({
         data: {
-          login: userLogin,
-          name: userLogin,
-          avatar: userAvatar,
+          login: userDto.login,
+          name: userDto.login,
+          avatar: userDto.avatar,
         },
       });
     }
@@ -117,7 +118,7 @@ export class AuthService {
 
   async getUserInfo(
     token42: string,
-  ): Promise<{ userLogin: string, userAvatar: string }> {
+  ): Promise<createUserDto> {
     const axiosConfig: AxiosRequestConfig = {
       method: 'get',
       url: 'https://api.intra.42.fr/v2/me',
@@ -132,9 +133,9 @@ export class AuthService {
     });
 
     // console.log({ response })
-    const userLogin = response.data?.login;
-    const userAvatar = response.data?.image?.link;
-    return { userLogin, userAvatar };
+    const login = response.data?.login;
+    const avatar = response.data?.image?.link;
+    return { login, avatar };
   }
 
   async getTokens(userId: number): Promise<Tokens> {

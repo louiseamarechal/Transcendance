@@ -1,2 +1,2 @@
-export * from './createUser.dto'
-export * from './editUser.dto'
+export * from './create-user.dto'
+export * from './edit-user.dto'
