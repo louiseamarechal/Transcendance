@@ -1,18 +1,18 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "../api/axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-export async function Callback () {
+export function Callback () {
     const [ searchParams ] = useSearchParams();
     const code = searchParams.get("code");
-    // const [ flag, setFlag ] = useState(true)
     const navigate = useNavigate();
 
     useEffect(() => {
-        async function getCode () : Promise<{ access_token: string, refresh_token: string}> {
+        // let isMounted = true;
+        const controller = new AbortController(); // to cancel our request if the component unMount
+
+        async function getCode () {
             try {
-                // if (flag === true)
-                // {
                 const response = await axios.post('/auth/login',
                     {
                         code
@@ -22,21 +22,25 @@ export async function Callback () {
                     }
                     );
                     
-                    // setFlag(false)
                     console.log(response);
                     navigate('/game');
-                    return (response.data)
+                    // return (response.data)
                 }
                 catch (err) {
                     console.log(err);
-                    return ()
-                };
+                }
         }
 
+        getCode();
+
+        return ( () => {
+                // isMounted = false;
+                controller.abort()
+            });
     }, []);
     
     return (
-        // <div className="h-screen flex items-center justify-center">Coucou c'est le callback</div>
+        <div className="h-screen flex items-center justify-center">Coucou c'est le callback</div>
 
     )
 }
