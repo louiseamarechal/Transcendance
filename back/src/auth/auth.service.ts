@@ -37,7 +37,7 @@ export class AuthService {
       where: {
         login: userLogin,
       },
-    });
+    }); 
 
     if (!user) {
       console.log(`Creating user with login: ${userLogin}`);
@@ -105,7 +105,8 @@ export class AuthService {
       },
     };
     const response = await axios(axiosConfig).catch((err) => {
-      console.log({ err });
+      // console.log({ err });
+      console.log('error bro')
       throw new UnauthorizedException('Nop! (exchangeCode)');
     });
     if (!response.data) {
