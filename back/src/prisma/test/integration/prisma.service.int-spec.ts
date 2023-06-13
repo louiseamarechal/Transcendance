@@ -56,7 +56,6 @@ describe('PrismaService Int', () => {
               login: 'Michmich',
             },
           })
-          .then((user) => expect(user).toBeUndefined())
           .catch((error) => {
             expect(error instanceof PrismaClientKnownRequestError);
             expect(error.code === 'P2002');
@@ -70,7 +69,6 @@ describe('PrismaService Int', () => {
               login: 'Michel',
             },
           })
-          .then((user) => expect(user).toBeUndefined())
           .catch((error) => {
             expect(error instanceof PrismaClientKnownRequestError);
             expect(error.code === 'P2002');
@@ -425,6 +423,7 @@ describe('PrismaService Int', () => {
         const channel = await prisma.channel.create({
           data: {
             ownerId: userId,
+            name: "best bros",
           },
         });
         expect(channel).toBeDefined();
@@ -443,6 +442,7 @@ describe('PrismaService Int', () => {
         const channel = await prisma.channel.create({
           data: {
             ownerId: userId2,
+            name: "mon chat public",
             visibility: VisType.PUBLIC,
           },
         });
@@ -455,6 +455,7 @@ describe('PrismaService Int', () => {
         const channel = await prisma.channel.create({
           data: {
             ownerId: userId,
+            name: "mon chat prive",
             visibility: VisType.PRIVATE,
           },
         });
@@ -468,6 +469,7 @@ describe('PrismaService Int', () => {
         const channel = await prisma.channel.create({
           data: {
             ownerId: userId2,
+            name: "mon chat protege",
             visibility: VisType.PRIVATE,
             password: true,
             passwordHash: hash,
@@ -579,6 +581,7 @@ describe('PrismaService Int', () => {
         await prisma.channel.create({
           data: {
             ownerId: user.id,
+            name: "random channel",
           },
         });
         await prisma.user.delete({

@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma, User } from '@prisma/client';
 import { UnauthorizedException } from '@nestjs/common';
 import { Tokens } from 'src/auth/types';
+import { createUserDto } from 'src/user/dto';
 
 async function exchangeCodeMock(code: string): Promise<string> {
   if (code === 'GoodCode') {
@@ -16,11 +17,11 @@ async function exchangeCodeMock(code: string): Promise<string> {
 
 async function getUserInfoMock(
   token42: string,
-): Promise<{ userLogin: string; userAvatar: string }> {
-  const userLogin: string = 'Michel';
-  const userAvatar: string = 'myAvatar';
+): Promise<createUserDto> {
+  const login: string = 'Michel';
+  const avatar: string = 'myAvatar';
   if (token42 === 'ValidAccessToken') {
-    return { userLogin, userAvatar };
+    return { login, avatar };
   } else {
     throw new UnauthorizedException('Nop! (getUserLogin)');
   }
@@ -28,7 +29,7 @@ async function getUserInfoMock(
 
 async function getUserInfoMockFailing(
   token42: string,
-): Promise<{ userLogin: string; userAvatar: string }> {
+): Promise<createUserDto> {
   throw new UnauthorizedException('Nop! (getUserLogin)');
 }
 

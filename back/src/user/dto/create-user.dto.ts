@@ -2,9 +2,9 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 export class createUserDto {
   @IsString()
-	@IsNotEmpty()
+  @IsNotEmpty()
   login: string;
 
-	@IsString()
-	avatar: string;
+  @IsString()
+  avatar: string;
 }
