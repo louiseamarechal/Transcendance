@@ -9,7 +9,7 @@ import Chat from './pages/Chat.tsx'
 import Friends from './pages/Friends.tsx'
 import Settings from './pages/Settings.tsx'
 import Profil from './pages/Profil.tsx'
-import FindFriends from './pages/FindFriends.tsx'
+import FindFriends from './pages/Findfriends.tsx'
 import Components from './pages/Components.tsx' 
 
 // CSS
