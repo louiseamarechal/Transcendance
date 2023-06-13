@@ -15,17 +15,21 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  login         String  @unique
-  name          String  @unique
-  level         Int     @default(1)
-  avatar        String?
-  active2fa     Boolean @default(false)
-  statTotalGame Int     @default(0)
-  statTotalWin  Int     @default(0)
+  login    String  @unique
+  name     String  @unique
+  hashedRT String?
 
-  friendRequests FriendRequest[]
-  friends        User[]          @relation("friends")
-  friendOf       User[]          @relation("friends")
+  level         Int       @default(1)
+  avatar        String?
+  s2fa          Status2fa @default(NOTSET)
+  statTotalGame Int       @default(0)
+  statTotalWin  Int       @default(0)
+
+  friends  User[] @relation(name: "friends")
+  friendOf User[] @relation(name: "friends")
+
+  sentRequests     FriendRequest[] @relation("sender")
+  receivedRequests FriendRequest[] @relation("receiver")
 
   ownedChannels   Channel[]           @relation("channelOwner")
   adminChannels   AdminsOnChannels[]
@@ -38,9 +42,12 @@ model User {
   invitedGames Game[] @relation("player2")
   wonGames     Game[] @relation("winner")
 
-  hashedRt String?
-
   @@map("users")
+}
+
+enum Status2fa {
+  SET
+  NOTSET
 }
 
 model FriendRequest {
@@ -48,12 +55,21 @@ model FriendRequest {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  from   User @relation(fields: [fromId], references: [id], onDelete: Cascade)
+  from   User @relation(name: "sender", fields: [fromId], references: [id], onDelete: Cascade)
   fromId Int  @map("from_user_id")
+  to     User @relation(name: "receiver", fields: [toId], references: [id], onDelete: Cascade)
+  toId   Int  @map("to_user_id")
 
-  request_pending Boolean
+  status FRStatus @default(PENDING)
 
+  @@unique([fromId, toId])
   @@map("friend_requests")
+}
+
+enum FRStatus {
+  PENDING
+  REFUSED
+  ACCEPTED
 }
 
 model Channel {
@@ -61,8 +77,9 @@ model Channel {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  owner   User @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId Int  @map("owner_id")
+  owner   User   @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId Int    @map("owner_id")
+  name    String @unique
 
   admins  AdminsOnChannels[]
   members MembersOnChannels[]
@@ -70,11 +87,17 @@ model Channel {
 
   messages Message[] @relation("channel")
 
-  password     Boolean
+  password     Boolean @default(false)
   passwordHash String?
-  public       Boolean @default(true)
+  visibility   VisType @default(PUBLIC)
 
   @@map("channels")
+}
+
+enum VisType {
+  PUBLIC
+  PRIVATE
+  PROTECTED
 }
 
 model AdminsOnChannels {
@@ -134,7 +157,7 @@ model Game {
   winner   User @relation(name: "winner", fields: [winnerId], references: [id], onDelete: Cascade)
   winnerId Int  @map("winner_id")
 
-  score String
+  score String?
 
   @@map("games")
 }
