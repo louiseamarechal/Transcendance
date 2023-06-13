@@ -26,6 +26,7 @@ export class PrismaService
 	}
 
 	cleanDb() {
+		if (process.env.NODE_ENV === 'production') return;
 		return this.$transaction([
 			this.game.deleteMany(),
 			this.message.deleteMany(),

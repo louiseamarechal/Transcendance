@@ -4,7 +4,6 @@ version: '3.1'
 services:
 
   db:
-    container_name: postgres
     image: postgres:15-bullseye
     restart: on-failure
     environment:
@@ -13,10 +12,9 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
-     - 5435:5432
+     - 5434:5432
 
   test-db:
-    container_name: postgres
     image: postgres:15-bullseye
     restart: on-failure
     environment:
