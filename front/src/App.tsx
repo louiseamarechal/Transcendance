@@ -1,5 +1,5 @@
 // librairies
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 // import React from 'react'
 
 // TypeScript
@@ -11,6 +11,7 @@ import Settings from './pages/Settings.tsx'
 import Profil from './pages/Profil.tsx'
 import Components from './pages/Components.tsx' 
 import Callback from './components/Callback.tsx'
+import RequireAuth from './components/RequireAuth.tsx'
 
 // CSS
 import './style/components/buttons.css'
@@ -21,18 +22,21 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<WelcomePage />} />
+      <Routes>
+        <Route path="/" element={<WelcomePage />} />
+        <Route path='/callback' element={<Callback />} />
+
+        {/* PROTECTED ROUTES */}
+        <Route element={<RequireAuth />}>
           <Route path='/chat' element={<Chat />} />
           <Route path='/friends' element={<Friends />} />
           <Route path='/game' element={<Game />} />
           <Route path='/profil' element={<Profil />} />
           <Route path='/settings' element={<Settings />} />
-          <Route path='/callback' element={<Callback />} />
           <Route path='/test' element={<Components />} />
-        </Routes>
-      </BrowserRouter>
+        </Route>
+
+      </Routes>
     </>
   )
 }

@@ -7,8 +7,8 @@ export function Callback () {
     const [ searchParams ] = useSearchParams();
     const code = searchParams.get("code");
     const navigate = useNavigate();
-    const setAuth = useAuth();
-
+    const { auth, setAuth } = useAuth();
+    
     useEffect(() => {
         // let isMounted = true;
         const controller = new AbortController(); // to cancel our request if the component unMount
@@ -23,15 +23,21 @@ export function Callback () {
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
                     }
                     );
-                    const tokens = response?.data;
-                    console.log(tokens);
-                    setAuth{ access_token: tokens.access_token, refresh_token: tokens.refresh_token };
+                    if (response) {
+                        if (response.data) {
+                            console.log({response_data: response.data});
+                            const access_token = response.data.access_token;
+                            const refresh_token = response.data.refresh_token;
+                            console.log({access_token});
+                            console.log({refresh_token});
+                            setAuth(response.data);
+                        }
+                    }
                     navigate('/game');
-                    // return (response.data)
-                }
-                catch (err) {
-                    console.log(err);
-                }
+            }
+            catch (err) {
+                console.log(err);
+            }
         }
 
         getCode();
