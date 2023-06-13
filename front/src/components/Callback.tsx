@@ -1,11 +1,13 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "../api/axios";
 import { useEffect } from "react";
+import useAuth from "../hooks/useAuth";
 
 export function Callback () {
     const [ searchParams ] = useSearchParams();
     const code = searchParams.get("code");
     const navigate = useNavigate();
+    const setAuth = useAuth();
 
     useEffect(() => {
         // let isMounted = true;
@@ -21,8 +23,9 @@ export function Callback () {
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
                     }
                     );
-                    
-                    console.log(response);
+                    const tokens = response?.data;
+                    console.log(tokens);
+                    setAuth{ access_token: tokens.access_token, refresh_token: tokens.refresh_token };
                     navigate('/game');
                     // return (response.data)
                 }
