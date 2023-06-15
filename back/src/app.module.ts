@@ -7,14 +7,22 @@ import { AtGuard } from './common/guards';
 import { AppController } from './app.controller';
 import { UserModule } from './user/user.module';
 import { FriendRequestModule } from './friend-request/friend-request.module';
+import { GatewayModule } from './gateway/gateway.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, UserModule, FriendRequestModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
+    AuthModule,
+    UserModule,
+    FriendRequestModule,
+    GatewayModule,
+  ],
   controllers: [AppController],
   providers: [
     {
       provide: APP_GUARD,
-      useClass: AtGuard, // Change name for global guard !
+      useClass: AtGuard,
     },
   ],
 })

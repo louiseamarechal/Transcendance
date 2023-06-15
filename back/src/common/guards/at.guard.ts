@@ -15,7 +15,17 @@ export class AtGuard extends AuthGuard('jwt') {
       context.getClass()
     ])
 
-    if (isPublic) return true
-    return super.canActivate(context)
+    if (isPublic) {
+      return true
+    }
+
+    const type: string = context.getType();
+    if (type === 'http') {
+      return super.canActivate(context)
+    } else if (type === 'ws') {
+      
+    }
+
+    return false
   }
 }
