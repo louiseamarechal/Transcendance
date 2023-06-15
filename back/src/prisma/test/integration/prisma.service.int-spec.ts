@@ -80,7 +80,7 @@ describe('PrismaService Int', () => {
         const newUser = await prisma.user.create({
           data: {
             name: 'Claude',
-            login: 'Claude'
+            login: 'Claude',
           },
         });
         const user = await prisma.user.findUnique({
@@ -97,11 +97,13 @@ describe('PrismaService Int', () => {
           },
         });
         expect(user).toBeDefined();
-        expect(user?.name).toBe('Jean');
-        expect(user?.level).toBe(1);
-        expect(user?.s2fa).toBe(Status2fa.NOTSET);
-        expect(user?.statTotalGame).toBe(0);
-        expect(user?.statTotalWin).toBe(0);
+        if (user) {
+          expect(user.name).toBe('Jean');
+          expect(user.level).toBe(1);
+          expect(user.s2fa).toBe(Status2fa.NOTSET);
+          expect(user.statTotalGame).toBe(0);
+          expect(user.statTotalWin).toBe(0);
+        }
       });
       it('Should get user by login', async () => {
         const user = await prisma.user.findUnique({
@@ -377,24 +379,24 @@ describe('PrismaService Int', () => {
         expect(users).toHaveLength(3);
         await prisma.cleanDb();
       });
-			it('Should delete request after user delete', async () => {
+      it('Should delete request after user delete', async () => {
         const user = await prisma.user.create({
           data: {
             login: 'JJ',
             name: 'Michel',
           },
         });
-				const user2 = await prisma.user.create({
-					data: {
+        const user2 = await prisma.user.create({
+          data: {
             login: 'Marcel',
-						name: 'Marcel',
-					},
-				});
+            name: 'Marcel',
+          },
+        });
         await prisma.friendRequest.create({
           data: {
             fromId: user.id,
-						toId: user2.id,
-					},
+            toId: user2.id,
+          },
         });
         await prisma.user.delete({
           where: {
@@ -403,7 +405,7 @@ describe('PrismaService Int', () => {
         });
         const requests = await prisma.friendRequest.findMany();
         expect(requests).toHaveLength(0);
-				await prisma.cleanDb();
+        await prisma.cleanDb();
       });
     });
   });
@@ -423,7 +425,7 @@ describe('PrismaService Int', () => {
         const channel = await prisma.channel.create({
           data: {
             ownerId: userId,
-            name: "best bros",
+            name: 'best bros',
           },
         });
         expect(channel).toBeDefined();
@@ -442,7 +444,7 @@ describe('PrismaService Int', () => {
         const channel = await prisma.channel.create({
           data: {
             ownerId: userId2,
-            name: "mon chat public",
+            name: 'mon chat public',
             visibility: VisType.PUBLIC,
           },
         });
@@ -455,7 +457,7 @@ describe('PrismaService Int', () => {
         const channel = await prisma.channel.create({
           data: {
             ownerId: userId,
-            name: "mon chat prive",
+            name: 'mon chat prive',
             visibility: VisType.PRIVATE,
           },
         });
@@ -469,7 +471,7 @@ describe('PrismaService Int', () => {
         const channel = await prisma.channel.create({
           data: {
             ownerId: userId2,
-            name: "mon chat protege",
+            name: 'mon chat protege',
             visibility: VisType.PRIVATE,
             password: true,
             passwordHash: hash,
@@ -581,7 +583,7 @@ describe('PrismaService Int', () => {
         await prisma.channel.create({
           data: {
             ownerId: user.id,
-            name: "random channel",
+            name: 'random channel',
           },
         });
         await prisma.user.delete({
