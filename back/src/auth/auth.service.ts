@@ -41,17 +41,23 @@ export class AuthService {
         login: userDto.login,
       },
     });
-
+  
     if (!user) {
+      let avatarPath = "http://localhost:3000/public/default.png";
+      this.downloadPhoto(userDto.login, userDto.avatar).then(() => {
+        avatarPath = `http://localhost:3000/public/${userDto.login}.jpg`;
+      }).catch((error) => {
+        console.log(`Unable to download avatar for user ${userDto.login}`);
+        console.log(error);
+      });
       console.log(`Creating user with login: ${userDto.login}`);
       user = await this.prisma.user.create({
         data: {
           login: userDto.login,
           name: userDto.login,
-          avatar: `http://localhost:3000/public/${userDto.login}.jpg`,
+          avatar: `${avatarPath}`,
         },
       });
-      this.downloadPhoto(userDto.login, userDto.avatar);
     }
     console.log({ user });
 
