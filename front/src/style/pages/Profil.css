@@ -1,0 +1,17 @@
+.profil-container{
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    height: 100vh;
+    flex-direction:column;
+    justify-content: space-evenly;
+
+}
+
+.profil-tab{
+    width  : 50%;
+    height : 50%;
+    border-radius: 50px;
+    border: solid 3px var(--black);
+    /* border : 25px solid transparent; */
+}

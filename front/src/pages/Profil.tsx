@@ -1,5 +1,8 @@
 // import React from "react";
 import NavBar from "../components/NavBar.tsx"
+import '../style/pages/Profil.css'
+import UserCard from '../components/UserCard.tsx';
+import ProgressBar from '../components/ProgressBar.tsx';
 
 function Profil() {
 
@@ -8,7 +11,15 @@ function Profil() {
     return (
         <>
             <NavBar/>
-            <div className='h-screen flex justify-center items-center'>Profil Page in progress</div>
+            <div className="profil-container">
+            <UserCard/>
+            <ProgressBar completed={"15"}/>
+            <div className="profil-tab">
+                <div className="profil-stat">
+                    victoires: 55
+                </div>
+            </div>
+            </div>
         </>
     )
 }
