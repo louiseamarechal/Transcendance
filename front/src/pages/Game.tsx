@@ -1,21 +1,31 @@
 // import React from 'react'
-import NavBar from '../components/NavBar.tsx';
-import useAuth from '../hooks/useAuth.tsx';
-
+import NavBar from "../components/NavBar.tsx";
+import useAuth from "../hooks/useAuth.ts";
+// import useRefreshToken from '../hooks/useRefreshToken.ts';
+import axios from "../api/axios.ts";
 
 function Game() {
+  const { auth } = useAuth();
+//   const refresh = useRefreshToken;
 
-    const { auth } = useAuth();
+  console.log({ auth_refresh_token: auth.refresh_token });
+  console.log({ auth_access_token: auth.access_token });
 
-    console.log({ auth_refresh_token: auth.refresh_token });
-    console.log({ auth_access_token: auth.access_token});
 
-    return (
-        <>
-            <NavBar/>
-            <div className='h-screen flex justify-center items-center'>Game Page in progress</div>
-        </>
-    )
+  const getUser = async () => {
+    const reponse = await axios.get('/user/me');
+    console.log(reponse);
+  }
+
+  return (
+    <>
+      <NavBar />
+      <div className="h-screen flex justify-center items-center">
+        Game Page in progress
+      </div>
+      <button onClick={() => getUser()}>User</button>
+    </>
+  );
 }
 
 export default Game;

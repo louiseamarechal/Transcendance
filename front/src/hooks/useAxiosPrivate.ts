@@ -12,12 +12,13 @@ const useAxiosPrivate = () => {
 
     useEffect(() => {
 
+        console.log("i'm in the useEffect");
         const requestIntercept = axiosPrivate.interceptors.request.use(
             config => {
-                if (!config.headers['Authorization']) // if this configuration headers does not exists we know it's not a retry but the first attempt so the configuration headers was not set
-                {
-                    config.headers['Authorization'] = `Bearer ${auth?.access_token}`; // if it doesnt exist we set the Authorization headers ourselves with the token inside the auth (from our Context)
-                }
+                // if (!config.headers['Authorization']) // if this configuration headers does not exists we know it's not a retry but the first attempt so the configuration headers was not set
+                // {
+                    config.headers['Authorization'] = `Bearer ${auth.access_token}`; // if it doesnt exist we set the Authorization headers ourselves with the token inside the auth (from our Context)
+                // }
                 return config;
             }, (error) => Promise.reject(error)
         );
@@ -26,6 +27,7 @@ const useAxiosPrivate = () => {
             response => response, // if the response is good we rturn the response
             async (error) => { // otherwise we have an async error handler if for exemple our acces has expired (if it has a short life span)
                 const prevRequest = error?.config; // we're getting the prev request
+                console.log(error.config);
                 // we check the error response status (we expect it to be a 403 if our failure is du to an expired access_token)
                 // we also check a custom property on the request that we'll set call sent (if sent does'nt exist or is not true)
                 if (error?.response?.status === 403 && !prevRequest?.sent) {

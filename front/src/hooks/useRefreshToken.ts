@@ -1,31 +1,27 @@
 import axios from "../api/axios";
-import useAuth from './useAuth'
+import useAuth from "./useAuth";
 
 // we use this function when the access token has expired
 const useRefreshToken = () => {
+  const { auth, setAuth } = useAuth();
 
-    const { setAuth } = useAuth();
+  // refresh function gives us a Refresh Token
+  const refresh = async () => {
+    console.log("Refresh function called !");
+    const response = await axios.post("/auth/refresh", {}, {headers: {
+        'Authorization': `Bearer ${auth.refresh_token}`,
+      }}
+    ); // this allow to get the secure cookie
+    setAuth({
+      access_token: response.data.access_token,
+      refresh_token: response.data.refresh_token,
+    }); // we return the previous state and we overwrite the accesToken
+    return response.data.access_token;
+  };
+  console.log({insideRefresh: auth.access_token});
+  console.log({insideRefresh: auth.refresh_token});
 
-    // refresh function gives us a Refresh Token
-    const refresh = async() => {
-        const response = await axios.get('/refresh', {
-            withCredentials: true
-                // `withCredentials` indique si les requêtes inter-site usant des headers
-                // Access-Control doivent inclure des informations d’identification.
-        }); // this allow to get the secure cookie
-        setAuth(prev => {
-            console.log(JSON.stringify(prev));
-            console.log(response.data.accesToken);
-            console.log({
-                prev,
-            });
-            return { ...prev, accesToken: response.data.accesToken } // we return the previous state and we overwrite the accesToken
-        });
-        console.log(response.data.accesToken);
-        return response.data.accesToken;
-    }
-
-    return refresh;
+  return refresh;
 };
 
 export default useRefreshToken;

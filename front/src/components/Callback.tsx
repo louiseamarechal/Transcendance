@@ -26,7 +26,7 @@ export function Callback() {
         );
         if (response) {
           if (response.data) {
-            console.log({ response_data: response.data });
+            // console.log({ response_data: response.data });
             // const access_token = response.data.access_token;
             // const refresh_token = response.data.refresh_token;
             // console.log({ access_token });

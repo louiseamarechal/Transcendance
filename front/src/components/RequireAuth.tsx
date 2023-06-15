@@ -5,7 +5,7 @@ const RequireAuth = () => {
     const { auth }  = useAuth();
     const location = useLocation();
 
-    console.log({requireauth: auth.access_token});
+    // console.log({requireauth: auth.access_token});
 
     return (
         auth.access_token // is the user logged in ?
