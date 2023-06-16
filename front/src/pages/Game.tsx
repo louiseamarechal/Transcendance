@@ -1,10 +1,14 @@
 // import React from 'react'
+import useAxiosPrivate from "../hooks/useAxiosPrivate.ts";
 import NavBar from '../components/NavBar.tsx';
 import '../style/components/net.css'
 import '../style/components/buttons.css'
 import '../style/pages/Game.css'
 
 function Game() {
+
+  const axiosPrivate = useAxiosPrivate();
+
     return (
       <>
         <NavBar />
@@ -25,3 +29,4 @@ function Game() {
   
   export default Game;
   
+
