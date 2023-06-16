@@ -1,20 +1,15 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
-  // const corsOptions: CorsOptions = {
-  //   allowedHeaders: [
-  //     'content-type',
-  //     'Authorization',
-  //     // 'Access-Control-Allow-Origin',
-  //   ],
-  //   origin: ['http://localhost:3000'],
-  // };
-  // app.enableCors(corsOptions);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.useGlobalPipes(new ValidationPipe())
+  app.useStaticAssets(join(__dirname, '..', 'public'), {
+    prefix: '/public/',
+  });
   app.enableCors();
   await app.listen(3000);
 }

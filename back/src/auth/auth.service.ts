@@ -7,13 +7,15 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthDto } from './dto';
 import { Tokens } from './types';
 import * as argon from 'argon2';
 import { Response } from 'express';
 import { createUserDto } from 'src/user/dto';
+import { createWriteStream, fstat } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class AuthService {
@@ -38,15 +40,23 @@ export class AuthService {
       where: {
         login: userDto.login,
       },
-    }); 
+    });
 
     if (!user) {
+      let avatarPath = 'http://localhost:3000/public/default.jpg';
+      this.downloadPhoto(userDto.login, userDto.avatar)
+        .then(() => {
+          avatarPath = `http://localhost:3000/public/${userDto.login}.jpg`;
+        })
+        .catch(() => {
+          console.log(`Unable to download avatar for user ${userDto.login}`);
+        });
       console.log(`Creating user with login: ${userDto.login}`);
       user = await this.prisma.user.create({
         data: {
           login: userDto.login,
           name: userDto.login,
-          avatar: userDto.avatar,
+          avatar: `${avatarPath}`,
         },
       });
     }
@@ -105,21 +115,21 @@ export class AuthService {
         'Content-Type': 'multipart/form-data',
       },
     };
+    console.log('Sending request to 42', { axiosConfig });
+
     const response = await axios(axiosConfig).catch((err) => {
-      // console.log({ err });
-      console.log('error bro')
+      console.log('error in axios');
       throw new UnauthorizedException('Nop! (exchangeCode)');
     });
     if (!response.data) {
+      console.log('Response does not have data');
       throw new UnauthorizedException('Nop! (exchangeCode)');
     } else {
       return response.data?.access_token;
     }
   }
 
-  async getUserInfo(
-    token42: string,
-  ): Promise<createUserDto> {
+  async getUserInfo(token42: string): Promise<createUserDto> {
     const axiosConfig: AxiosRequestConfig = {
       method: 'get',
       url: 'https://api.intra.42.fr/v2/me',
@@ -176,6 +186,30 @@ export class AuthService {
       data: {
         hashedRT: hash,
       },
+    });
+  }
+
+  async downloadPhoto(userLogin: string, url: string) {
+    const writer = createWriteStream(
+      join(__dirname, '..', '..', `public/${userLogin}.jpg`),
+    );
+    console.log(
+      'dl file',
+      join(__dirname, '..', '..', `public/${userLogin}.jpg`),
+    );
+
+    // response variable has to be typed with AxiosResponse<T>
+    const response: AxiosResponse<any> = await this.http.axiosRef({
+      url: url,
+      method: 'GET',
+      responseType: 'stream',
+    });
+
+    response.data.pipe(writer);
+
+    return new Promise((resolve, reject) => {
+      writer.on('finish', resolve);
+      writer.on('error', reject);
     });
   }
 }
