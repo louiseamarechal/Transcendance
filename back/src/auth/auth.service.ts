@@ -41,14 +41,16 @@ export class AuthService {
         login: userDto.login,
       },
     });
-  
+
     if (!user) {
-      let avatarPath = "http://localhost:3000/public/default.jpg";
-      this.downloadPhoto(userDto.login, userDto.avatar).then(() => {
-        avatarPath = `http://localhost:3000/public/${userDto.login}.jpg`;
-      }).catch(() => {
-        console.log(`Unable to download avatar for user ${userDto.login}`);
-      });
+      let avatarPath = 'http://localhost:3000/public/default.jpg';
+      this.downloadPhoto(userDto.login, userDto.avatar)
+        .then(() => {
+          avatarPath = `http://localhost:3000/public/${userDto.login}.jpg`;
+        })
+        .catch(() => {
+          console.log(`Unable to download avatar for user ${userDto.login}`);
+        });
       console.log(`Creating user with login: ${userDto.login}`);
       user = await this.prisma.user.create({
         data: {
@@ -191,7 +193,10 @@ export class AuthService {
     const writer = createWriteStream(
       join(__dirname, '..', '..', `public/${userLogin}.jpg`),
     );
-    console.log('dl file', join(__dirname, '..', '..', `public/${userLogin}.jpg`));
+    console.log(
+      'dl file',
+      join(__dirname, '..', '..', `public/${userLogin}.jpg`),
+    );
 
     // response variable has to be typed with AxiosResponse<T>
     const response: AxiosResponse<any> = await this.http.axiosRef({
