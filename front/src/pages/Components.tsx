@@ -1,5 +1,3 @@
-// import React from 'react'
-import NavBar from '../components/NavBar.tsx';
 import ProgressBar from '../components/ProgressBar.tsx';
 import UserCard from '../components/UserCard.tsx';
 import '../style/components/net.css'
@@ -9,7 +7,7 @@ function Components() {
     return (
         <>
             <div className='h-screen'>
-                <NavBar/>
+                {/* <NavBar/> */}
                 <div className='h-screen flex flex-col justify-center items-center gap-y-2'>
                     <button className='small-button friend-request-button'>Send friend request</button>
                     <button className='small-button game-request-button'>Send game request</button>

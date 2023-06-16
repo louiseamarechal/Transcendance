@@ -1,5 +1,4 @@
 // import React from 'react'
-import NavBar from "../components/NavBar.tsx";
 import useAuth from "../hooks/useAuth.ts";
 // import useRefreshToken from '../hooks/useRefreshToken.ts';
 import useAxiosPrivate from "../hooks/useAxiosPrivate.ts";
@@ -19,7 +18,7 @@ function Game() {
 
   return (
     <>
-      <NavBar />
+      {/* <NavBar /> */}
       <div className="h-screen flex justify-center items-center">
         Game Page in progress
       </div>

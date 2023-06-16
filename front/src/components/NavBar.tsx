@@ -1,5 +1,4 @@
 // import React, { useState } from "react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
@@ -7,11 +6,12 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 
 import '../style/components/navbar.css'
+import useNavbar from "../hooks/useNavbar";
 
 
 const NavBar = () => {
 
-    const [navbarState, setNavbarState] = useState(false); 
+    const { navbarState, setNavbarState } = useNavbar(); 
 
     if (navbarState === true)
         return (
