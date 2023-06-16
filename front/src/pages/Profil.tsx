@@ -1,5 +1,6 @@
 // import React from "react";
 import NavBar from "../components/NavBar.tsx";
+import { ProfilStat } from "../components/ProfilStat.tsx";
 import ProgressBar from "../components/ProgressBar.tsx";
 import UserCard from "../components/UserCard.tsx";
 import "../style/pages/Profil.css";
@@ -14,6 +15,7 @@ function Profil() {
       <div className="profil-container">
         <UserCard />
         <ProgressBar />
+        <ProfilStat />
       </div>
     </>
   );

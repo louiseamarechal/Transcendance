@@ -23,7 +23,7 @@ const UserCard = () => {
         <img className="avatar" alt="avatar" src={user.avatar} />
         <div className="user-short-info">
           <p className="user-name">{user.name}</p>
-          <p className="user-level">{`Level ${user.level}`}</p>
+          <p className="user-level">{`Level ${Math.floor(user.level)}`}</p>
         </div>
       </Link>
     </>
