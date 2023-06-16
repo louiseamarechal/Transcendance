@@ -1,0 +1,10 @@
+.chat-page {
+  display: flex;
+  justify-content: space-between;
+}
+
+#chat-net {
+  height: 100vh;
+  width: 5px;
+  border: 4px dashed var(--faded-black);
+}

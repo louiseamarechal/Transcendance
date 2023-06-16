@@ -11,9 +11,9 @@ function Components() {
             <div className='h-screen'>
                 <NavBar/>
                 <div className='h-screen flex flex-col justify-center items-center gap-y-2'>
-                    <button className='small-button friend-request-button'>Send friend request</button>
-                    <button className='small-button game-request-button'>Send game request</button>
-                    <button className='small-button friend-button'>Friends</button>
+                    <button className='button small-button friend-request-button'>Send friend request</button>
+                    <button className='button small-button game-request-button'>Send game request</button>
+                    <button className='button small-button friend-button'>Friends</button>
                     <button className='play-game-button flex justify-center items-center'>
                         <div className='play-game-triangle'></div>
                     </button>
