@@ -7,7 +7,7 @@ export function Callback() {
   const [searchParams] = useSearchParams();
   const code = searchParams.get("code");
   const navigate = useNavigate();
-  const { auth, setAuth } = useAuth();
+  const { setAuth } = useAuth();
 
   useEffect(() => {
     // let isMounted = true;

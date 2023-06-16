@@ -5,7 +5,6 @@ import useAuth from "./useAuth";
 const useRefreshToken = () => {
   const { auth, setAuth } = useAuth();
 
-  // refresh function gives us a Refresh Token
   const refresh = async () => {
     console.log("Refresh function called !");
     const response = await axios.post("/auth/refresh", {}, {headers: {
@@ -15,7 +14,7 @@ const useRefreshToken = () => {
     setAuth({
       access_token: response.data.access_token,
       refresh_token: response.data.refresh_token,
-    }); // we return the previous state and we overwrite the accesToken
+    }); // we set the new Access and Refresh tokens
     return response.data.access_token;
   };
   console.log({insideRefresh: auth.access_token});

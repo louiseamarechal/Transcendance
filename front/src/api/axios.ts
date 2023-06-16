@@ -12,7 +12,7 @@ export default axios.create({
 // and we'll continue to refresh this token on schedule)
 export const axiosPrivate = axios.create({
   baseURL: BASE_URL,
-  headers: { "Content-Type": "application/json" },
-  withCredentials: true,
+  headers: { "Content-Type": "application/json" },//, "Access-Control-Allow-Origin": "http://localhost:5173" },
+  // withCredentials: true,
 });
 // all this options will be attached to all the private axios instance requests

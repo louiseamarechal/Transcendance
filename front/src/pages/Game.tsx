@@ -2,20 +2,20 @@
 import NavBar from "../components/NavBar.tsx";
 import useAuth from "../hooks/useAuth.ts";
 // import useRefreshToken from '../hooks/useRefreshToken.ts';
-import axios from "../api/axios.ts";
+import useAxiosPrivate from "../hooks/useAxiosPrivate.ts";
+// import useAxiosPrivate from "../hooks/useAxiosPrivate.ts";
 
 function Game() {
   const { auth } = useAuth();
-//   const refresh = useRefreshToken;
+  const axiosPrivate = useAxiosPrivate();
 
   console.log({ auth_refresh_token: auth.refresh_token });
   console.log({ auth_access_token: auth.access_token });
 
-
   const getUser = async () => {
-    const reponse = await axios.get('/user/me');
+    const reponse = await axiosPrivate.get("/user/me");
     console.log(reponse);
-  }
+  };
 
   return (
     <>
