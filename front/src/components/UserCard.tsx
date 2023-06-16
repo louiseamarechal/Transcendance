@@ -1,20 +1,33 @@
 // import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import '../style/components/user-card.css'
+import "../style/components/user-card.css";
+import { useEffect, useState } from "react";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { User } from "../types/User.type";
 
 const UserCard = () => {
-    
-    return (
-        <>
-            <Link to={'/profil'} className="user-card">
-                <img className="avatar" alt="avatar" src="https://avatars.dicebear.com/api/adventurer-neutral/mail%40ashallendesign.co.uk.svg" />
-                <div className="user-short-info">
-                    <p className="user-name">lmarecha</p>
-                    <p className="user-level">User Level</p>
-                </div>
-            </Link>
-        </>
-    )
-}
+  const axiosInstance = useAxiosPrivate();
+  const [user, setUser] = useState<User>({});
+
+  const getMe = async () => {
+    const response = await axiosInstance.get("/user/me");
+    setUser(response.data);
+  };
+
+  useEffect(() => {
+    getMe();
+  }, []);
+  return (
+    <>
+      <Link to={"/profil"} className="user-card">
+        <img className="avatar" alt="avatar" src={user.avatar} />
+        <div className="user-short-info">
+          <p className="user-name">{user.name}</p>
+          <p className="user-level">{`Level ${user.level}`}</p>
+        </div>
+      </Link>
+    </>
+  );
+};
 
 export default UserCard;
