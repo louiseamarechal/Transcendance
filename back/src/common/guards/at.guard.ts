@@ -15,7 +15,7 @@ export class AtGuard extends AuthGuard('jwt') {
       context.getClass()
     ])
 
-    console.log('Coucou cest le garde')
+    console.log('Going through AtGuard')
     if (isPublic) return true
     return super.canActivate(context)
   }

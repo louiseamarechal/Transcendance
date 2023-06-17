@@ -2,7 +2,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "../api/axios";
 import { useEffect } from "react";
 import useAuth from "../hooks/useAuth";
-import { AxiosError } from "axios";
 import { useUser } from "../context/UserProvider";
 import jwtDecode from "jwt-decode";
 
@@ -38,7 +37,7 @@ export function Callback() {
           // console.log({ response_data: response.data });
           // const access_token = response.data.access_token;
           // const refresh_token = response.data.refresh_token;
-          // console.log({ access_token });
+          console.log({access_token: response.data.access_token});
           // console.log({ refresh_token });
           const user: JwtDecoded = jwtDecode(response.data.access_token);
           setName(user.name);
