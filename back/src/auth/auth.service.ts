@@ -16,6 +16,7 @@ import { Response } from 'express';
 import { createUserDto } from 'src/user/dto';
 import { createWriteStream, fstat } from 'fs';
 import { join } from 'path';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -63,7 +64,7 @@ export class AuthService {
     console.log({ user });
 
     // generate and returns jwts
-    const tokens: Tokens = await this.getTokens(user.id);
+    const tokens: Tokens = await this.getTokens(user);
     await this.updateRTHash(user.id, tokens.refresh_token);
     return tokens;
   }
@@ -93,7 +94,7 @@ export class AuthService {
     const rtMatches = await argon.verify(user.hashedRT, rt);
     if (!rtMatches) throw new ForbiddenException('Access Denied');
 
-    const tokens = await this.getTokens(user.id);
+    const tokens = await this.getTokens(user);
     await this.updateRTHash(user.id, tokens.refresh_token);
     return tokens;
   }
@@ -149,11 +150,15 @@ export class AuthService {
     return { login, avatar };
   }
 
-  async getTokens(userId: number): Promise<Tokens> {
+  async getTokens(user: User): Promise<Tokens> {
     const [at, rt] = await Promise.all([
       this.jwt.signAsync(
         {
-          sub: userId,
+          sub: user.id,
+          id: user.id,
+          name: user.name,
+          avatar: user.avatar,
+          level: user.level,
         },
         {
           secret: this.config.get('JWT_ACCESS_SECRET'),
@@ -162,7 +167,7 @@ export class AuthService {
       ),
       this.jwt.signAsync(
         {
-          sub: userId,
+          sub: user.id,
         },
         {
           secret: this.config.get('JWT_REFRESH_SECRET'),

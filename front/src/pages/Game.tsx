@@ -9,8 +9,8 @@ function Game() {
   const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
 
-  console.log({ auth_refresh_token: auth.refresh_token });
-  console.log({ auth_access_token: auth.access_token });
+  // console.log({ auth_refresh_token: auth.refresh_token });
+  // console.log({ auth_access_token: auth.access_token });
 
   const getUser = async () => {
     const reponse = await axiosPrivate.get("/user/me");

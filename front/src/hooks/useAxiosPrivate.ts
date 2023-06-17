@@ -2,8 +2,6 @@ import { axiosPrivate } from "../api/axios";
 import { useEffect } from "react";
 import useRefreshToken from "./useRefreshToken";
 import useAuth from "./useAuth";
-import ResponseErrorIntercept from "../api/axios_interceptors/ResponseInterceptors";
-import RequestIntercept from "../api/axios_interceptors/RequestInterceptor";
 
 // this function is to attach the axios interceptors to the axios instance
 const useAxiosPrivate = () => {

@@ -17,8 +17,8 @@ const useRefreshToken = () => {
     }); // we set the new Access and Refresh tokens
     return response.data.access_token;
   };
-  console.log({insideRefresh: auth.access_token});
-  console.log({insideRefresh: auth.refresh_token});
+  // console.log({insideRefresh: auth.access_token});
+  // console.log({insideRefresh: auth.refresh_token});
 
   return refresh;
 };

@@ -2,12 +2,22 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "../api/axios";
 import { useEffect } from "react";
 import useAuth from "../hooks/useAuth";
+import { AxiosError } from "axios";
+import { useUser } from "../context/UserProvider";
+import jwtDecode from "jwt-decode";
+
+type JwtDecoded = {
+  name: string;
+  avatar: string;
+  level: number;
+};
 
 export function Callback() {
   const [searchParams] = useSearchParams();
   const code = searchParams.get("code");
   const navigate = useNavigate();
   const { setAuth } = useAuth();
+  const { setName, setAvatar, setLevel } = useUser();
 
   useEffect(() => {
     // let isMounted = true;
@@ -24,19 +34,22 @@ export function Callback() {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
           }
         );
-        if (response) {
-          if (response.data) {
-            // console.log({ response_data: response.data });
-            // const access_token = response.data.access_token;
-            // const refresh_token = response.data.refresh_token;
-            // console.log({ access_token });
-            // console.log({ refresh_token });
-            setAuth(response.data);
-          }
+        if (response?.data?.access_token) {
+          // console.log({ response_data: response.data });
+          // const access_token = response.data.access_token;
+          // const refresh_token = response.data.refresh_token;
+          // console.log({ access_token });
+          // console.log({ refresh_token });
+          const user: JwtDecoded = jwtDecode(response.data.access_token);
+          setName(user.name);
+          setAvatar(user.avatar);
+          setLevel(user.level);
+          setAuth(response.data);
         }
         navigate("/game");
-      } catch (err) {
-        console.log(err);
+      } catch (err: any) {
+        console.log(`/auth/login returned ${err.code}`);
+        // console.log(err);
       }
     }
 
