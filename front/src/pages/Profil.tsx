@@ -9,15 +9,15 @@ function Profil() {
   // Profil page will depend on the user id => see later on
 
   return (
-    <>
+    <div className="h-screen">
       <NavBar />
-      {/* <div className='h-screen flex justify-center items-center'>Profil Page in progress</div> */}
-      <div className="profil-container">
+      {/* <div className="profil-container content-center"> */}
+      <div className="h-screen grid grid-cols-1">
         <UserCard />
         <ProgressBar />
         <ProfilStat />
       </div>
-    </>
+    </div>
   );
 }
 

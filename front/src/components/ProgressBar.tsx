@@ -1,25 +1,16 @@
-// import React from "react";
-import { useEffect, useState } from "react";
 import "../style/components/progress-bar.css";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { User } from "../types/User.type";
+import { useUser } from "../context/UserProvider";
+import { CSSProperties } from "react";
 
-function ProgressBar(props: any) {
+type Props = {
+  completed?: string
+}
+
+function ProgressBar(props: Props) {
   const { completed } = props;
+  const { level } = useUser();
 
-  const axiosInstance = useAxiosPrivate();
-  const [user, setUser] = useState<User>({});
-
-  const getMe = async () => {
-    const response = await axiosInstance.get("/user/me");
-    setUser(response.data);
-  };
-
-  useEffect(() => {
-    getMe();
-  }, []);
-
-  const containerStyles = {
+  const containerStyles: CSSProperties = {
     height: 20,
     width: "30%",
     backgroundColor: "",
@@ -27,11 +18,9 @@ function ProgressBar(props: any) {
     borderRadius: 20,
   };
 
-  const fillerStyles = {
+  const fillerStyles: CSSProperties = {
     height: "100%",
-    width: `${
-      completed || Math.round((user.level - Math.floor(user.level)) * 100)
-    }%`,
+    width: `${completed || Math.round((level - Math.floor(level)) * 100)}%`,
     backgroundColor: "var(--blue)",
     borderRadius: "inherit",
     textAlign: "right",
@@ -40,7 +29,7 @@ function ProgressBar(props: any) {
     justifyContent: "right",
   };
 
-  const labelStyles = {
+  const labelStyles: CSSProperties = {
     color: "var(--black)",
     fontFamily: "Montserrat Alternates",
     fontStyle: "normal",
@@ -53,7 +42,7 @@ function ProgressBar(props: any) {
     <div className="progress-bar" style={containerStyles}>
       <div style={fillerStyles}>
         <span style={labelStyles}>{`${
-          completed || Math.round((user.level - Math.floor(user.level)) * 100)
+          completed || Math.round((level - Math.floor(level)) * 100)
         }%`}</span>
       </div>
     </div>

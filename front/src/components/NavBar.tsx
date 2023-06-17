@@ -6,20 +6,13 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import "../style/components/navbar.css";
-import useAuth from "../hooks/useAuth";
-import jwtDecode from "jwt-decode";
-import { User } from "../types/User.type";
 import { useUser } from "../context/UserProvider";
 
 const NavBar = () => {
   const [navbarState, setNavbarState] = useState<boolean>(false);
   const { avatar } = useUser();
 
-  useEffect(() => {
-    console.log(avatar)
-  }, [])
-
-  if (!avatar) {
+  if (!avatar) { // aka no jwt
     return <></>
   }
 
@@ -40,7 +33,7 @@ const NavBar = () => {
             <img
               className="avatar"
               alt="avatar"
-              src={avatar || "https://avatars.dicebear.com/api/adventurer-neutral/mail%40ashallendesign.co.uk.svg"}
+              src={avatar}
             />
           </Link>
           <Link to={"/game"}>Game</Link>
