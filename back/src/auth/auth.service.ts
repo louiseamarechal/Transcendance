@@ -30,11 +30,11 @@ export class AuthService {
   async login(dto: AuthDto): Promise<Tokens> {
     // exchange code
     const token42 = await this.exchangeCode(dto.code);
-    console.log({ token42 });
+    // console.log({ token42 });
 
     // get info from 42 api
     const userDto: createUserDto = await this.getUserInfo(token42);
-    console.log(userDto);
+    // console.log(userDto);
 
     // find or create user
     let user = await this.prisma.user.findUnique({
@@ -61,7 +61,7 @@ export class AuthService {
         },
       });
     }
-    console.log({ user });
+    // console.log({ user });
 
     // generate and returns jwts
     const tokens: Tokens = await this.getTokens(user);
@@ -116,10 +116,10 @@ export class AuthService {
         'Content-Type': 'multipart/form-data',
       },
     };
-    console.log('Sending request to 42', { axiosConfig });
+    // console.log('  Request POST https://api.intra.42.fr/oauth/token');
 
     const response = await axios(axiosConfig).catch((err) => {
-      console.log('error in axios');
+      // console.log('error in axios');
       throw new UnauthorizedException('Nop! (exchangeCode)');
     });
     if (!response.data) {
@@ -139,6 +139,7 @@ export class AuthService {
       },
     };
 
+    // console.log('  Request GET https://api.intra.42.fr/v2/me');
     const response = await axios(axiosConfig).catch((err) => {
       console.log({ err });
       throw new UnauthorizedException('Nop! (getUserLogin)');
