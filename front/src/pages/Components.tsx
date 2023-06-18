@@ -4,6 +4,12 @@ import ProgressBar from '../components/ProgressBar.tsx';
 import UserCard from '../components/UserCard.tsx';
 import '../style/components/net.css'
 
+const user = {
+    name: 'toto',
+    avatar: 'http://localhost:3000/public/default.jpg',
+    level: 99999
+}
+
 function Components() {
 
     return (
@@ -19,11 +25,25 @@ function Components() {
                     </button>
                     <button className='decline-game'>X</button>
                     <ProgressBar completed={"15"}/>
-                    <UserCard/>
+                    <UserCard user={user}/>
+                    <UserCard user={user}/>
+                    <UserCard user={user}/>
+                    <UserCard user={user}/>
+                    <UserCard user={user}/>
+                    <UserCard user={user}/>
+                    <UserCard user={user}/>
+                    <UserCard user={user}/>
+                    <UserCard user={user}/>
+                    <UserCard user={user}/>
+                    <UserCard user={user}/>
+                    <UserCard user={user}/>
+                    <UserCard user={user}/>
+                    <UserCard user={user}/>
+                    <UserCard user={user}/>
                     {/* <button className='fa-solid fa-circle-play fa-xl' style={{color: "var(--black)"}}></button> */}
-                    <div>
+                    {/* <div>
                         <div className="net w-200px"></div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </>

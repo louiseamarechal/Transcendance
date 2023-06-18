@@ -26,14 +26,15 @@ function Profil() {
   }, []);
 
   if (isLoading) {
-    return <div className="h-screen">Loading...</div>
+    return <div className="grid place-items-center h-screen">Loading...</div>
   }
 
   return (
     <div className="h-screen">
       <NavBar />
       {/* <div className="profil-container content-center"> */}
-      <div className="h-screen grid grid-cols-1">
+      <div className="grid grid-cols-1 place-items-center">
+        <div className="m-10"></div>
         <UserCard user={user} />
         <ProgressBar user={user}/>
         <ProfilStat user={user}/>

@@ -1,12 +1,20 @@
+import { useEffect } from "react";
 import { User } from "../types/User.type";
 
 const divStyle = [
-  "w-3/5 mx-auto",
+  "w-3/5",
   "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
-  "border-2 border-red-800",
+  "border border-grey-100",
+  "rounded-[50px]",
+  "shadow-xl"
 ].join(" ");
 
 export const ProfilStat = ({ user }: { user: User }) => {
+
+  useEffect(() => {
+    console.log('ProfileStat loaded', user)
+  }, [])
+  
 
   return (
     <div className={divStyle}>
