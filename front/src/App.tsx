@@ -10,7 +10,7 @@ import Friends from './pages/Friends.tsx'
 import Settings from './pages/Settings.tsx'
 import Profil from './pages/Profil.tsx'
 import Components from './pages/Components.tsx' 
-import Callback from './components/Callback.tsx'
+import Callback from './pages/Callback.tsx'
 import RequireAuth from './components/RequireAuth.tsx'
 
 // CSS

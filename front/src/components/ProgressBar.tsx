@@ -1,14 +1,16 @@
 import "../style/components/progress-bar.css";
 import { useUser } from "../context/UserProvider";
 import { CSSProperties } from "react";
+import { User } from "../types/User.type";
 
 type Props = {
-  completed?: string
-}
+  completed?: string;
+  user?: User;
+};
 
-function ProgressBar(props: Props) {
-  const { completed } = props;
-  const { level } = useUser();
+function ProgressBar({ user }: Props) {
+  // const { completed } = props;
+  // const { level } = useUser();
 
   const containerStyles: CSSProperties = {
     height: 20,
@@ -20,7 +22,9 @@ function ProgressBar(props: Props) {
 
   const fillerStyles: CSSProperties = {
     height: "100%",
-    width: `${completed || Math.round((level - Math.floor(level)) * 100)}%`,
+    width: `${
+      user?.level ? Math.round((user.level - Math.floor(user.level)) * 100) : 0
+    }%`,
     backgroundColor: "var(--blue)",
     borderRadius: "inherit",
     textAlign: "right",
@@ -42,7 +46,9 @@ function ProgressBar(props: Props) {
     <div className="progress-bar" style={containerStyles}>
       <div style={fillerStyles}>
         <span style={labelStyles}>{`${
-          completed || Math.round((level - Math.floor(level)) * 100)
+          user?.level
+            ? Math.round((user.level - Math.floor(user.level)) * 100)
+            : 0
         }%`}</span>
       </div>
     </div>
