@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import "../style/components/user-card.css";
-import { useUser } from "../context/UserProvider";
+// import { useUser } from "../context/UserProvider";
 import { User } from "../types/User.type";
 
 const UserCard = ({user}: {user: User}) => {

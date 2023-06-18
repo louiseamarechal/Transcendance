@@ -1,5 +1,5 @@
 import "../style/components/progress-bar.css";
-import { useUser } from "../context/UserProvider";
+// import { useUser } from "../context/UserProvider";
 import { CSSProperties } from "react";
 import { User } from "../types/User.type";
 

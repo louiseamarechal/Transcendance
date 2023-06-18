@@ -45,7 +45,7 @@ export class AuthService {
 
     if (!user) {
       let avatarPath = 'http://localhost:3000/public/default.jpg';
-      this.downloadPhoto(userDto.login, userDto.avatar)
+      await this.downloadPhoto(userDto.login, userDto.avatar)
         .then(() => {
           avatarPath = `http://localhost:3000/public/${userDto.login}.jpg`;
         })

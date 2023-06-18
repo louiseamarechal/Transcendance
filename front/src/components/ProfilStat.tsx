@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { User } from "../types/User.type";
 
 const divStyle = [
