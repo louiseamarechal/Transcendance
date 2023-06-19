@@ -1,11 +1,11 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
-import axios from "../api/axios";
-import { useEffect } from "react";
-import useAuth from "../hooks/useAuth";
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import axios from '../api/axios';
+import { useEffect } from 'react';
+import useAuth from '../hooks/useAuth';
 
 export function Callback() {
   const [searchParams] = useSearchParams();
-  const code = searchParams.get("code");
+  const code = searchParams.get('code');
   const navigate = useNavigate();
   const { setAuth } = useAuth();
 
@@ -16,13 +16,13 @@ export function Callback() {
     async function getCode() {
       try {
         const response = await axios.post(
-          "/auth/login",
+          '/auth/login',
           {
             code,
           },
           {
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          }
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          },
         );
         if (response) {
           if (response.data) {
@@ -34,7 +34,7 @@ export function Callback() {
             setAuth(response.data);
           }
         }
-        navigate("/game");
+        navigate('/game');
       } catch (err) {
         console.log(err);
       }

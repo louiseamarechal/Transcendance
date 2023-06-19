@@ -1,25 +1,25 @@
 .signin-button button {
-    width: 228px;
-    height: 64px;    
-    border-radius: 50px;
-    border: solid 3px var(--black);
-    
-    /* Text */
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 500;
-    font-size: 22px;
-    line-height: 30px;
-    text-align: center;
-    color: var(--black);
-  }
-  
+  width: 228px;
+  height: 64px;
+  border-radius: 50px;
+  border: solid 3px var(--black);
+
+  /* Text */
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 30px;
+  text-align: center;
+  color: var(--black);
+}
+
 .signin-button button:hover {
-    color: var(--white);
-    background-color: var(--black);
-    transition: all 0.6s ease;
-  }
-  
+  color: var(--white);
+  background-color: var(--black);
+  transition: all 0.6s ease;
+}
+
 .small-button {
   border: 1px solid var(--border);
   width: 120px;
@@ -62,8 +62,8 @@
 }
 
 .play-game-triangle {
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-top: 13px solid transparent;
   border-bottom: 13px solid transparent;
   border-left: 13px solid var(--white);
@@ -83,7 +83,6 @@
   font-family: 'Montserrat Alternates';
 }
 
-
 /* <button className='small-button' style={{backgroundColor:'var(--green)'}}> */
 
 @media (min-width: 100px) and (max-width: 768px) {
@@ -92,7 +91,7 @@
     height: 45px;
     font-size: 15px;
   }
-    
+
   .signin-button {
     row-gap: 15px !important;
   }
