@@ -1,5 +1,5 @@
-@media (min-width: 100px) and (max-width: 768px)  {
-    .progress-bar span {
-        font-size: 8px !important;
-    }
+@media (min-width: 100px) and (max-width: 768px) {
+  .progress-bar span {
+    font-size: 8px !important;
+  }
 }

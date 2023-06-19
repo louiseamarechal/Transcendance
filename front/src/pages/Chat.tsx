@@ -1,14 +1,12 @@
-// import React from 'react'
-import NavBar from '../components/NavBar.tsx';
+import useNavbar from '../hooks/useNavbar.ts';
 
-function Chat() {
-
-    return (
-        <>
-            <NavBar/>
-            <div className='h-screen flex justify-center items-center'>Chat Page in progress</div>
-        </>
-    )
-}
+const Chat = () => {
+  return (
+    <>
+      {/* <NavBar /> */}
+      <div className="h-screen flex justify-center items-center">page()</div>
+    </>
+  );
+};
 
 export default Chat;

@@ -19,7 +19,7 @@ model User {
   name     String  @unique
   hashedRT String?
 
-  level         Int       @default(1)
+  level         Float     @default(1)
   avatar        String?
   s2fa          Status2fa @default(NOTSET)
   statTotalGame Int       @default(0)

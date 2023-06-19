@@ -7,13 +7,16 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthDto } from './dto';
 import { Tokens } from './types';
 import * as argon from 'argon2';
 import { Response } from 'express';
 import { createUserDto } from 'src/user/dto';
+import { createWriteStream, fstat } from 'fs';
+import { join } from 'path';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -27,11 +30,11 @@ export class AuthService {
   async login(dto: AuthDto): Promise<Tokens> {
     // exchange code
     const token42 = await this.exchangeCode(dto.code);
-    console.log({ token42 });
+    // console.log({ token42 });
 
     // get info from 42 api
     const userDto: createUserDto = await this.getUserInfo(token42);
-    console.log(userDto);
+    // console.log(userDto);
 
     // find or create user
     let user = await this.prisma.user.findUnique({
@@ -41,19 +44,27 @@ export class AuthService {
     });
 
     if (!user) {
+      let avatarPath = 'http://localhost:3000/public/default.jpg';
+      await this.downloadPhoto(userDto.login, userDto.avatar)
+        .then(() => {
+          avatarPath = `http://localhost:3000/public/${userDto.login}.jpg`;
+        })
+        .catch(() => {
+          console.log(`Unable to download avatar for user ${userDto.login}`);
+        });
       console.log(`Creating user with login: ${userDto.login}`);
       user = await this.prisma.user.create({
         data: {
           login: userDto.login,
           name: userDto.login,
-          avatar: userDto.avatar,
+          avatar: `${avatarPath}`,
         },
       });
     }
-    console.log({ user });
+    // console.log({ user });
 
     // generate and returns jwts
-    const tokens: Tokens = await this.getTokens(user.id);
+    const tokens: Tokens = await this.getTokens(user);
     await this.updateRTHash(user.id, tokens.refresh_token);
     return tokens;
   }
@@ -83,7 +94,7 @@ export class AuthService {
     const rtMatches = await argon.verify(user.hashedRT, rt);
     if (!rtMatches) throw new ForbiddenException('Access Denied');
 
-    const tokens = await this.getTokens(user.id);
+    const tokens = await this.getTokens(user);
     await this.updateRTHash(user.id, tokens.refresh_token);
     return tokens;
   }
@@ -105,20 +116,21 @@ export class AuthService {
         'Content-Type': 'multipart/form-data',
       },
     };
+    // console.log('  Request POST https://api.intra.42.fr/oauth/token');
+
     const response = await axios(axiosConfig).catch((err) => {
-      console.log({ err });
+      // console.log('error in axios');
       throw new UnauthorizedException('Nop! (exchangeCode)');
     });
     if (!response.data) {
+      console.log('Response does not have data');
       throw new UnauthorizedException('Nop! (exchangeCode)');
     } else {
       return response.data?.access_token;
     }
   }
 
-  async getUserInfo(
-    token42: string,
-  ): Promise<createUserDto> {
+  async getUserInfo(token42: string): Promise<createUserDto> {
     const axiosConfig: AxiosRequestConfig = {
       method: 'get',
       url: 'https://api.intra.42.fr/v2/me',
@@ -127,6 +139,7 @@ export class AuthService {
       },
     };
 
+    // console.log('  Request GET https://api.intra.42.fr/v2/me');
     const response = await axios(axiosConfig).catch((err) => {
       console.log({ err });
       throw new UnauthorizedException('Nop! (getUserLogin)');
@@ -138,11 +151,15 @@ export class AuthService {
     return { login, avatar };
   }
 
-  async getTokens(userId: number): Promise<Tokens> {
+  async getTokens(user: User): Promise<Tokens> {
     const [at, rt] = await Promise.all([
       this.jwt.signAsync(
         {
-          sub: userId,
+          sub: user.id,
+          id: user.id,
+          name: user.name,
+          avatar: user.avatar,
+          level: user.level,
         },
         {
           secret: this.config.get('JWT_ACCESS_SECRET'),
@@ -151,7 +168,7 @@ export class AuthService {
       ),
       this.jwt.signAsync(
         {
-          sub: userId,
+          sub: user.id,
         },
         {
           secret: this.config.get('JWT_REFRESH_SECRET'),
@@ -175,6 +192,30 @@ export class AuthService {
       data: {
         hashedRT: hash,
       },
+    });
+  }
+
+  async downloadPhoto(userLogin: string, url: string) {
+    const writer = createWriteStream(
+      join(__dirname, '..', '..', `public/${userLogin}.jpg`),
+    );
+    console.log(
+      'dl file',
+      join(__dirname, '..', '..', `public/${userLogin}.jpg`),
+    );
+
+    // response variable has to be typed with AxiosResponse<T>
+    const response: AxiosResponse<any> = await this.http.axiosRef({
+      url: url,
+      method: 'GET',
+      responseType: 'stream',
+    });
+
+    response.data.pipe(writer);
+
+    return new Promise((resolve, reject) => {
+      writer.on('finish', resolve);
+      writer.on('error', reject);
     });
   }
 }
