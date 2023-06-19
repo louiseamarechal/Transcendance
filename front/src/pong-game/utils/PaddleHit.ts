@@ -22,7 +22,7 @@ export default function PaddleHit(
     collisionPoint = collisionPoint / (paddleProps.width / 2);
 
     // CALCULATE THE ANGLE OF THE ballObj
-    let angle = (collisionPoint * Math.PI) / 3;
+    const angle = (collisionPoint * Math.PI) / 3;
 
     ballObj.dx = ballObj.speed * Math.sin(angle);
     ballObj.dy = -ballObj.speed * Math.cos(angle);
