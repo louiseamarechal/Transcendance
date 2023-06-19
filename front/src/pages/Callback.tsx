@@ -2,8 +2,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "../api/axios";
 import { useEffect } from "react";
 import useAuth from "../hooks/useAuth";
-import { useUser } from "../context/UserProvider";
 import jwtDecode from "jwt-decode";
+import { useUser } from "../hooks/useUser";
 
 type JwtDecoded = {
   name: string;
@@ -47,7 +47,7 @@ export function Callback() {
         }
         navigate('/game');
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
     }
 

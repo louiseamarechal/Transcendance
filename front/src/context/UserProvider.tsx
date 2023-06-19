@@ -1,6 +1,6 @@
 import { PropsWithChildren, createContext, useContext, useState } from "react";
 
-const UserContext = createContext({
+export const UserContext = createContext({
   name: "",
   setName: (_: string) => {},
   avatar: "",
@@ -32,6 +32,6 @@ export const UserProvider = ({ children }: Props) => {
   );
 };
 
-export const useUser = () => {
-  return useContext(UserContext);
-};
+// export const useUser = () => {
+//   return useContext(UserContext);
+// };

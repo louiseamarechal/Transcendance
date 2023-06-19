@@ -31,7 +31,7 @@ function Profil() {
 
   return (
     <div className="h-screen">
-      <NavBar />
+      {/* <NavBar /> */}
       {/* <div className="profil-container content-center"> */}
       <div className="grid grid-cols-1 place-items-center">
         <div className="m-10"></div>

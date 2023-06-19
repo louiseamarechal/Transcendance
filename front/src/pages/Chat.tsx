@@ -9,8 +9,6 @@ const Chat = () => {
       <div className="h-screen flex justify-center items-center">page()</div>
     </>
   );
-
-  return <div></div>;
 };
 
 export default Chat;
