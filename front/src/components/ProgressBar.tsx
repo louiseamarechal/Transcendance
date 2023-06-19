@@ -1,7 +1,7 @@
-import "../style/components/progress-bar.css";
+import '../style/components/progress-bar.css';
 // import { useUser } from "../context/UserProvider";
-import { CSSProperties } from "react";
-import { User } from "../types/User.type";
+import { CSSProperties } from 'react';
+import { User } from '../types/User.type';
 
 type Props = {
   completed?: string;
@@ -14,31 +14,31 @@ function ProgressBar({ user }: Props) {
 
   const containerStyles: CSSProperties = {
     height: 20,
-    width: "30%",
-    backgroundColor: "",
-    border: "1px solid var(--border)",
+    width: '30%',
+    backgroundColor: '',
+    border: '1px solid var(--border)',
     borderRadius: 20,
   };
 
   const fillerStyles: CSSProperties = {
-    height: "100%",
+    height: '100%',
     width: `${
       user?.level ? Math.round((user.level - Math.floor(user.level)) * 100) : 0
     }%`,
-    backgroundColor: "var(--blue)",
-    borderRadius: "inherit",
-    textAlign: "right",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "right",
+    backgroundColor: 'var(--blue)',
+    borderRadius: 'inherit',
+    textAlign: 'right',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'right',
   };
 
   const labelStyles: CSSProperties = {
-    color: "var(--black)",
-    fontFamily: "Montserrat Alternates",
-    fontStyle: "normal",
+    color: 'var(--black)',
+    fontFamily: 'Montserrat Alternates',
+    fontStyle: 'normal',
     fontWeight: 600,
-    fontSize: "12px",
+    fontSize: '12px',
     //   need to find a way to center this bad boy
   };
 

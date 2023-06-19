@@ -13,7 +13,7 @@ type JwtDecoded = {
 
 export function Callback() {
   const [searchParams] = useSearchParams();
-  const code = searchParams.get("code");
+  const code = searchParams.get('code');
   const navigate = useNavigate();
   const { setAuth } = useAuth();
   const { setName, setAvatar, setLevel } = useUser();
@@ -25,13 +25,13 @@ export function Callback() {
     async function getCode() {
       try {
         const response = await axios.post(
-          "/auth/login",
+          '/auth/login',
           {
             code,
           },
           {
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          }
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          },
         );
         if (response?.data?.access_token) {
           // console.log({ response_data: response.data });
@@ -45,10 +45,9 @@ export function Callback() {
           setLevel(user.level);
           setAuth(response.data);
         }
-        navigate("/game");
-      } catch (err: any) {
-        console.log(`/auth/login returned ${err.code}`);
-        // console.log(err);
+        navigate('/game');
+      } catch (err) {
+        console.log(err);
       }
     }
 

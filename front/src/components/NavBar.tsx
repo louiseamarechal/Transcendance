@@ -1,61 +1,37 @@
 // import React, { useState } from "react";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
-import "../style/components/navbar.css";
-import { useUser } from "../context/UserProvider";
+import '../style/components/navbar.css';
+import useNavbar from '../hooks/useNavbar';
 
 const NavBar = () => {
-  const [navbarState, setNavbarState] = useState<boolean>(false);
-  const { avatar } = useUser();
+  const { navbarState, setNavbarState } = useNavbar();
 
-  if (!avatar) { // aka no jwt
-    return <></>
-  }
+    const [navbarState, setNavbarState] = useState(false); 
 
-  if (navbarState === true)
-    return (
-      <div className="navbar-open">
-        <FontAwesomeIcon
-          icon={faXmark}
-          className="opened-nav-button"
-          style={{ color: "var(--black)" }}
-          onClick={() => {
-            setNavbarState(false);
-          }}
-        />
-        {/* <button className={"opened-nav-button fa-solid fa-xmark"} style={{color:"var(--black)"}} onClick={() => {setNavbarState(false)}}></button> */}
-        <ul className="navbar-links">
-          <Link to={"/profil"}>
-            <img
-              className="avatar"
-              alt="avatar"
-              src={avatar}
-            />
-          </Link>
-          <Link to={"/game"}>Game</Link>
-          <Link to={"/chat"}>Chat</Link>
-          <Link to={"/friends"}>Friends</Link>
-          <Link to={"/settings"}>Settings</Link>
-          <Link to={"/test"}>Test</Link>
-        </ul>
-      </div>
-    );
-  else
-    return (
-      <FontAwesomeIcon
-        icon={faBars}
-        className="navbar-close"
-        style={{ color: "var(--black)" }}
-        onClick={() => {
-          setNavbarState(true);
-        }}
-      />
-      // <button className={"navbar-close fa-solid fa-bars"} style={{color:"var(--black)"}} onClick={() => {setNavbarState(true)}}></button>
-    );
-};
+    if (navbarState === true)
+        return (
+            <div className="navbar-open">
+                <FontAwesomeIcon icon={ faXmark } className="opened-nav-button" style={{color:"var(--black)"}} onClick={() => {setNavbarState(false)}}/>
+                {/* <button className={"opened-nav-button fa-solid fa-xmark"} style={{color:"var(--black)"}} onClick={() => {setNavbarState(false)}}></button> */}
+                <ul className="navbar-links">
+                    <Link to={'/profil'}><img className="avatar" alt="avatar" src="https://avatars.dicebear.com/api/adventurer-neutral/mail%40ashallendesign.co.uk.svg" /></Link>
+                    <Link to={'/game'}>Game</Link>
+                    <Link to={'/chat'}>Chat</Link>
+                    <Link to={'/friends'}>Friends</Link>
+                    <Link to={'/settings'}>Settings</Link>
+                    <Link to={'/test'}>Test</Link>
+                </ul>
+            </div>
+        )
+    else
+        return (
+            <FontAwesomeIcon icon={ faBars } className="navbar-close" style={{color:"var(--black)"}} onClick={() => {setNavbarState(true)}}/>
+            // <button className={"navbar-close fa-solid fa-bars"} style={{color:"var(--black)"}} onClick={() => {setNavbarState(true)}}></button>
+        )
+}
 
 export default NavBar;
