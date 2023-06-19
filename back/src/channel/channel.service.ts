@@ -1,25 +1,99 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
+import { BlockedOnChannels, MembersOnChannels } from '@prisma/client';
 
 @Injectable()
 export class ChannelService {
   constructor(private prisma: PrismaService) {}
 
-  async createChannel(ownerId: number, dto: CreateChannelDto) {
-    const channel = await this.prisma.channel.create({
-      data: {
-        ownerId,
-        ...dto,
+  async createChannel(
+    ownerId: number,
+    { name, avatar, members }: CreateChannelDto,
+  ) {
+    const channels = await this.prisma.membersOnChannels.groupBy({
+      by: ['channelId'],
+      where: {
+        userId: {
+          in: members,
+        },
+      },
+      having: {
+        userId: {
+          _count: {
+            gte: members.length,
+          },
+        },
       },
     });
-    return channel;
+    if (channels.length > 0) {
+      throw new ConflictException('Channel already exists.');
+    } else {
+      const channel = await this.prisma.channel.create({
+        data: {
+          ownerId,
+          name,
+          avatar,
+        },
+      });
+      this.prisma.membersOnChannels.createMany({
+        data: members.map((id: number) => {
+          return { channelId: channel.id, userId: id };
+        }),
+      });
+      return channel;
+    }
   }
 
   getChannels(ownerId: number) {
     return this.prisma.channel.findMany({
       where: {
         ownerId,
+      },
+    });
+  }
+
+  async getUserChannels(userId: number) {
+    const channelIds: number[] = (
+      await this.prisma.membersOnChannels.findMany({
+        where: {
+          userId,
+        },
+        select: {
+          channelId: true,
+        },
+      })
+    ).map((element: MembersOnChannels) => {
+      return element.channelId;
+    });
+    const blockedIds: number[] = (
+      await this.prisma.blockedOnChannels.findMany({
+        where: {
+          userId,
+        },
+        select: {
+          channelId: true,
+        },
+      })
+    ).map((element: BlockedOnChannels) => {
+      return element.channelId;
+    });
+
+    return this.prisma.channel.findMany({
+      where: {
+        id: {
+          in: channelIds,
+          notIn: blockedIds,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+				avatar: true,
       },
     });
   }

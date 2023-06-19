@@ -1,23 +1,27 @@
+import { useChatContext } from '../../hooks/useChatContext';
 import '../../style/components/chat/channel-card.css';
 
 function ChannelCard(
-  id: Number,
+  id: number,
   name: string,
-  avatar: string,
-  showChannel: Number,
-  setShowChannel: (c: Number) => any,
+  // avatar: string,
 ) {
+  const { showChannel, setShowChannel } = useChatContext();
   return (
-    <div
+    <li
       className={'channel-card ' + (showChannel === id) ? 'selected' : ''}
-      id={id.toString()}
-      onClick={setShowChannel(id)}
+      key={id.toString()}
+      onClick={() => {setShowChannel(id)}}
     >
-      <img src={avatar} className="channel-avatar" alt="avatar" />
+      <img
+        src={'http://localhost:3000/public/default.jpg'}
+        className="channel-avatar"
+        alt="avatar"
+      />
       <div className="channel-name">
         <p>{name}</p>
       </div>
-    </div>
+    </li>
   );
 }
 

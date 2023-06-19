@@ -1,12 +1,10 @@
 import ChannelList from './ChannelList';
 import '../../style/components/chat/channel-nav.css';
+import { useChatContext } from '../../hooks/useChatContext';
 
-function ChannelNav(
-  showChannel: number,
-  setShowChannel: (c: number) => any,
-  showCreateChannel: boolean,
-  setShowCreateChannel: (c: boolean) => any,
-) {
+function ChannelNav() {
+  const { showCreateChannel, setShowCreateChannel } = useChatContext();
+
   return (
     <div className="channel-nav">
       <button
@@ -18,7 +16,7 @@ function ChannelNav(
       >
         new group chat
       </button>
-      <ChannelList showChannel={showChannel} setShowChannel={setShowChannel} />
+      <ChannelList />
     </div>
   );
 }

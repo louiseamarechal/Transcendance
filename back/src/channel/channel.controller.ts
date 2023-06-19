@@ -11,15 +11,12 @@ import {
   Post,
 } from '@nestjs/common';
 import { GetUser, GetUserId } from 'src/common/decorators';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { ChannelService } from './channel.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
 
 @Controller('channel')
 export class ChannelController {
-  constructor(
-    private channelService: ChannelService,
-  ) {}
+  constructor(private channelService: ChannelService) {}
 
   @Post()
   createChannel(@GetUserId() userId: number, @Body() dto: CreateChannelDto) {
@@ -37,6 +34,11 @@ export class ChannelController {
     @Param('id', ParseIntPipe) channelId: number,
   ) {
     return this.channelService.getChannelById(userId, channelId);
+  }
+
+  @Get('myChannels')
+  getUserChannels(@GetUserId() userId: number) {
+    return this.channelService.getUserChannels(userId);
   }
 
   @Patch(':id')

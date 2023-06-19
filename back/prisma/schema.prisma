@@ -77,9 +77,10 @@ model Channel {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  owner   User   @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId Int    @map("owner_id")
-  name    String @unique
+  owner   User    @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId Int     @map("owner_id")
+  name    String?
+  avatar  String?
 
   admins  AdminsOnChannels[]
   members MembersOnChannels[]
