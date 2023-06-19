@@ -1,0 +1,12 @@
+.channel-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  font-family: 'Montserrat Alternates';
+}
+
+.selected {
+	background-color: var(--faded-blue);
+}

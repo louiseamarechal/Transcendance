@@ -15,7 +15,7 @@ import RequireAuth from './components/RequireAuth.tsx';
 
 // CSS
 import './style/components/buttons.css';
-import './style/pages/color.css';
+import './style/color.css';
 import './style/pages/App.css';
 import NavBar from './components/NavBar.tsx';
 import useNavbar from './hooks/useNavbar.ts';

@@ -1,7 +1,17 @@
 .channel-list {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	height: 85%;
 	width: 95%;
 	border-radius: 2%;
-	box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+	box-shadow: 0 3px 3px rgba(0,0,0,0.2);
+	/* overflow: auto; */
+}
+
+.scrollable-list {
+	/* border: solid var(--green); */
+	width: 90%;
+	height: 95%;
 	overflow: auto;
 }
