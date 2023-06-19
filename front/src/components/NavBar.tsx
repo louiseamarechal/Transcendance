@@ -13,6 +13,8 @@ const NavBar = () => {
 
     const { navbarState, setNavbarState } = useNavbar(); 
 
+    if (location.pathname === '/')
+        return;
     if (navbarState === true)
         return (
             <div className="navbar-open">

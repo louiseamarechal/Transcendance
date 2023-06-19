@@ -5,6 +5,7 @@ import "../style/pages/WelcomePage.css";
 function WelcomePage() {
   const api_42 =
     "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-afbf3e19b9a03a7b667ba62a6aa61a65ee7142d01a65f7f7ca36e725f5344415&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fcallback&response_type=code";
+
   return (
     <>
       {/* <NavBar /> */}
