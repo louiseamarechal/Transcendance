@@ -7,10 +7,7 @@ const Chat = () => {
     <>
       {/* <NavBar /> */}
       <div
-        className={
-          "h-screen flex justify-center items-center " +
-          (navbarState ? "opened-nav-margin" : "w-full")
-        }
+        className="h-screen flex justify-center items-center"
       >
         page()
       </div>

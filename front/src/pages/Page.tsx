@@ -7,7 +7,7 @@ function Page(props: { node: () => ReactNode }) {
     return (
         <>
             {/* <NavBar/> */}
-            <div className={'h-screen flex justify-center items-center ' + (navbarState ? 'opened-nav-margin' : 'w-full')}></div>
+            <div className='h-screen flex justify-center items-center'></div>
         </>
     );
 }
