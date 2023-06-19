@@ -6,11 +6,16 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 import '../style/components/navbar.css';
 import useNavbar from '../hooks/useNavbar';
+import { useUser } from '../hooks/useUser';
 
 const NavBar = () => {
   const { navbarState, setNavbarState } = useNavbar();
+  const { avatar } = useUser();
 
-  if (location.pathname === '/') return;
+  if (!avatar) {
+    return <></>;
+  }
+
   if (navbarState === true)
     return (
       <div className="navbar-open">
@@ -28,52 +33,14 @@ const NavBar = () => {
             <img
               className="avatar"
               alt="avatar"
-              src="https://avatars.dicebear.com/api/adventurer-neutral/mail%40ashallendesign.co.uk.svg"
-              onClick={() => {
-                setNavbarState(false);
-              }}
+              src={avatar}
             />
           </Link>
-          <Link
-            to={'/game'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Game
-          </Link>
-          <Link
-            to={'/chat'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Chat
-          </Link>
-          <Link
-            to={'/friends'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Friends
-          </Link>
-          <Link
-            to={'/settings'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Settings
-          </Link>
-          <Link
-            to={'/test'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Test
-          </Link>
+          <Link to={'/game'}>Game</Link>
+          <Link to={'/chat'}>Chat</Link>
+          <Link to={'/friends'}>Friends</Link>
+          <Link to={'/settings'}>Settings</Link>
+          <Link to={'/test'}>Test</Link>
         </ul>
       </div>
     );

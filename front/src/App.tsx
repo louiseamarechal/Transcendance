@@ -3,14 +3,14 @@ import { Routes, Route } from 'react-router-dom';
 // import React from 'react'
 
 // TypeScript
-import WelcomePage from './pages/WelcomePage.tsx';
-import Game from './pages/Game.tsx';
-import Chat from './pages/Chat.tsx';
-import Friends from './pages/Friends.tsx';
-import Settings from './pages/Settings.tsx';
-import Profil from './pages/Profil.tsx';
-import Components from './pages/Components.tsx';
-import Callback from './components/Callback.tsx';
+import WelcomePage from './pages/WelcomePage.tsx'
+import Game from './pages/Game.tsx'
+import Chat from './pages/Chat.tsx'
+import Friends from './pages/Friends.tsx'
+import Settings from './pages/Settings.tsx'
+import Profil from './pages/Profil.tsx'
+import Components from './pages/Components.tsx' 
+import Callback from './pages/Callback.tsx'
 import RequireAuth from './components/RequireAuth.tsx';
 
 // CSS
@@ -28,7 +28,7 @@ function App() {
       <NavBar />
       <div
         className={
-          'main-content ' + (navbarState ? 'opened-nav-margin' : 'w-full')
+          'h-screen overflow-auto main-content ' + (navbarState ? 'opened-nav-margin' : 'w-full')
         }
       >
         <Routes>
