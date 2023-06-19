@@ -28,8 +28,6 @@ const PlayGame = () => {
 
       context.clearRect(0, 0, canvas.width, canvas.height);
 
-      PlayerStats(context, player);
-
       BallMovement(context, ballObj);
 
       // if (player.lives === 0) {
