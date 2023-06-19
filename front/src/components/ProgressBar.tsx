@@ -1,10 +1,18 @@
-// import React from "react";
 import '../style/components/progress-bar.css';
+// import { useUser } from "../context/UserProvider";
+import { CSSProperties } from 'react';
+import { User } from '../types/User.type';
 
-function ProgressBar(props: any) {
-  const { completed } = props;
+type Props = {
+  completed?: string;
+  user?: User;
+};
 
-  const containerStyles = {
+function ProgressBar({ user }: Props) {
+  // const { completed } = props;
+  // const { level } = useUser();
+
+  const containerStyles: CSSProperties = {
     height: 20,
     width: '30%',
     backgroundColor: '',
@@ -12,9 +20,11 @@ function ProgressBar(props: any) {
     borderRadius: 20,
   };
 
-  const fillerStyles = {
+  const fillerStyles: CSSProperties = {
     height: '100%',
-    width: `${completed}%`,
+    width: `${
+      user?.level ? Math.round((user.level - Math.floor(user.level)) * 100) : 0
+    }%`,
     backgroundColor: 'var(--blue)',
     borderRadius: 'inherit',
     textAlign: 'right',
@@ -23,7 +33,7 @@ function ProgressBar(props: any) {
     justifyContent: 'right',
   };
 
-  const labelStyles = {
+  const labelStyles: CSSProperties = {
     color: 'var(--black)',
     fontFamily: 'Montserrat Alternates',
     fontStyle: 'normal',
@@ -35,7 +45,11 @@ function ProgressBar(props: any) {
   return (
     <div className="progress-bar" style={containerStyles}>
       <div style={fillerStyles}>
-        <span style={labelStyles}>{`${completed}%`}</span>
+        <span style={labelStyles}>{`${
+          user?.level
+            ? Math.round((user.level - Math.floor(user.level)) * 100)
+            : 0
+        }%`}</span>
       </div>
     </div>
   );
