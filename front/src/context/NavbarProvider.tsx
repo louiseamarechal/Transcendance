@@ -1,6 +1,6 @@
-import { createContext, useState } from "react";
-import React from "react";
-import { NavbarState } from "../types/NavbarState.dto";
+import { createContext, useState } from 'react';
+import React from 'react';
+import { NavbarState } from '../types/NavbarState.dto';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const NavbarContext = createContext<NavbarState>({

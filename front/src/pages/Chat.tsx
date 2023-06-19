@@ -1,4 +1,4 @@
-import useNavbar from "../hooks/useNavbar.ts";
+import useNavbar from '../hooks/useNavbar.ts';
 
 const Chat = () => {
   const { navbarState } = useNavbar();
@@ -6,11 +6,7 @@ const Chat = () => {
   return (
     <>
       {/* <NavBar /> */}
-      <div
-        className="h-screen flex justify-center items-center"
-      >
-        page()
-      </div>
+      <div className="h-screen flex justify-center items-center">page()</div>
     </>
   );
 

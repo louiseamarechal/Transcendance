@@ -1,11 +1,12 @@
 function Friends() {
-
-    return (
-        <>
-            {/* <NavBar/> */}
-            <div className='h-screen flex justify-center items-center'>Friends Page in progress</div>
-        </>
-    )
+  return (
+    <>
+      {/* <NavBar/> */}
+      <div className="h-screen flex justify-center items-center">
+        Friends Page in progress
+      </div>
+    </>
+  );
 }
 
 export default Friends;

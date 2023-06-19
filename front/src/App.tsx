@@ -1,35 +1,34 @@
 // librairies
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from 'react-router-dom';
 // import React from 'react'
 
 // TypeScript
-import WelcomePage from "./pages/WelcomePage.tsx";
-import Game from "./pages/Game.tsx";
-import Chat from "./pages/Chat.tsx";
-import Friends from "./pages/Friends.tsx";
-import Settings from "./pages/Settings.tsx";
-import Profil from "./pages/Profil.tsx";
-import Components from "./pages/Components.tsx";
-import Callback from "./components/Callback.tsx";
-import RequireAuth from "./components/RequireAuth.tsx";
+import WelcomePage from './pages/WelcomePage.tsx';
+import Game from './pages/Game.tsx';
+import Chat from './pages/Chat.tsx';
+import Friends from './pages/Friends.tsx';
+import Settings from './pages/Settings.tsx';
+import Profil from './pages/Profil.tsx';
+import Components from './pages/Components.tsx';
+import Callback from './components/Callback.tsx';
+import RequireAuth from './components/RequireAuth.tsx';
 
 // CSS
-import "./style/components/buttons.css";
-import "./style/pages/color.css";
-import "./style/pages/App.css";
-import NavBar from "./components/NavBar.tsx";
-import useNavbar from "./hooks/useNavbar.ts";
+import './style/components/buttons.css';
+import './style/pages/color.css';
+import './style/pages/App.css';
+import NavBar from './components/NavBar.tsx';
+import useNavbar from './hooks/useNavbar.ts';
 
 function App() {
-
   const { navbarState } = useNavbar();
-  
+
   return (
     <div className="app">
       <NavBar />
       <div
         className={
-          "main-content " + (navbarState ? "opened-nav-margin" : "w-full")
+          'main-content ' + (navbarState ? 'opened-nav-margin' : 'w-full')
         }
       >
         <Routes>

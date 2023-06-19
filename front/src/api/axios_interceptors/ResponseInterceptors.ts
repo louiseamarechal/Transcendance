@@ -1,6 +1,6 @@
 // import { AxiosError } from "axios";
-import useRefreshToken from "../../hooks/useRefreshToken";
-import { axiosPrivate } from "../axios";
+import useRefreshToken from '../../hooks/useRefreshToken';
+import { axiosPrivate } from '../axios';
 
 async function ResponseErrorIntercept(error) {
   const refresh = useRefreshToken();
@@ -11,7 +11,7 @@ async function ResponseErrorIntercept(error) {
   if (error.response.status === 401 && !prevRequest.sent) {
     prevRequest.sent = true; // avoid to get in en endless loop that can happen with 403 so we only want to check it once
     const newAccessToken = await refresh(); // we get the new access token from our refresh function (see useRefreshToken)
-    prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+    prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
     return axiosPrivate(prevRequest);
   }
   return Promise.reject(error);

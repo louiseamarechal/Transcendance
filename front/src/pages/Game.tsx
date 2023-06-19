@@ -1,7 +1,7 @@
 // import React from 'react'
-import useAuth from "../hooks/useAuth.ts";
+import useAuth from '../hooks/useAuth.ts';
 // import useRefreshToken from '../hooks/useRefreshToken.ts';
-import useAxiosPrivate from "../hooks/useAxiosPrivate.ts";
+import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
 // import useAxiosPrivate from "../hooks/useAxiosPrivate.ts";
 
 function Game() {
@@ -12,7 +12,7 @@ function Game() {
   console.log({ auth_access_token: auth.access_token });
 
   const getUser = async () => {
-    const reponse = await axiosPrivate.get("/user/me");
+    const reponse = await axiosPrivate.get('/user/me');
     console.log(reponse);
   };
 
