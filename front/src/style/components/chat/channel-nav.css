@@ -1,7 +1,8 @@
 .channel-nav {
-	width: 25%;
+	margin-left: 2%;
+	width: 23%;
 	height: 100vh;
-	border: solid var(--black);
+	/* border: solid var(--black); */
 	padding-top: 8%;
 	display: flex;
 	flex-direction: column;

@@ -1,5 +1,5 @@
 .chat-container {
-	border: solid var(--black);
-	width: 73%;
-	height: 100vh;
+  border: solid var(--black);
+  width: 73%;
+  height: 100vh;
 }
