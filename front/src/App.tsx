@@ -28,7 +28,7 @@ function App() {
       <NavBar />
       <div
         className={
-          'main-content ' + (navbarState ? 'opened-nav-margin' : 'w-full')
+          'h-screen overflow-auto main-content ' + (navbarState ? 'opened-nav-margin' : 'w-full')
         }
       >
         <Routes>

@@ -1,8 +1,6 @@
 import useNavbar from '../hooks/useNavbar.ts';
 
 const Chat = () => {
-  const { navbarState } = useNavbar();
-
   return (
     <>
       {/* <NavBar /> */}
