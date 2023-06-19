@@ -16,6 +16,7 @@ import { Response } from 'express';
 import { createUserDto } from 'src/user/dto';
 import { createWriteStream, fstat } from 'fs';
 import { join } from 'path';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -29,11 +30,11 @@ export class AuthService {
   async login(dto: AuthDto): Promise<Tokens> {
     // exchange code
     const token42 = await this.exchangeCode(dto.code);
-    console.log({ token42 });
+    // console.log({ token42 });
 
     // get info from 42 api
     const userDto: createUserDto = await this.getUserInfo(token42);
-    console.log(userDto);
+    // console.log(userDto);
 
     // find or create user
     let user = await this.prisma.user.findUnique({
@@ -44,7 +45,7 @@ export class AuthService {
 
     if (!user) {
       let avatarPath = 'http://localhost:3000/public/default.jpg';
-      this.downloadPhoto(userDto.login, userDto.avatar)
+      await this.downloadPhoto(userDto.login, userDto.avatar)
         .then(() => {
           avatarPath = `http://localhost:3000/public/${userDto.login}.jpg`;
         })
@@ -60,10 +61,10 @@ export class AuthService {
         },
       });
     }
-    console.log({ user });
+    // console.log({ user });
 
     // generate and returns jwts
-    const tokens: Tokens = await this.getTokens(user.id);
+    const tokens: Tokens = await this.getTokens(user);
     await this.updateRTHash(user.id, tokens.refresh_token);
     return tokens;
   }
@@ -93,7 +94,7 @@ export class AuthService {
     const rtMatches = await argon.verify(user.hashedRT, rt);
     if (!rtMatches) throw new ForbiddenException('Access Denied');
 
-    const tokens = await this.getTokens(user.id);
+    const tokens = await this.getTokens(user);
     await this.updateRTHash(user.id, tokens.refresh_token);
     return tokens;
   }
@@ -115,10 +116,10 @@ export class AuthService {
         'Content-Type': 'multipart/form-data',
       },
     };
-    console.log('Sending request to 42', { axiosConfig });
+    // console.log('  Request POST https://api.intra.42.fr/oauth/token');
 
     const response = await axios(axiosConfig).catch((err) => {
-      console.log('error in axios');
+      // console.log('error in axios');
       throw new UnauthorizedException('Nop! (exchangeCode)');
     });
     if (!response.data) {
@@ -138,6 +139,7 @@ export class AuthService {
       },
     };
 
+    // console.log('  Request GET https://api.intra.42.fr/v2/me');
     const response = await axios(axiosConfig).catch((err) => {
       console.log({ err });
       throw new UnauthorizedException('Nop! (getUserLogin)');
@@ -149,11 +151,15 @@ export class AuthService {
     return { login, avatar };
   }
 
-  async getTokens(userId: number): Promise<Tokens> {
+  async getTokens(user: User): Promise<Tokens> {
     const [at, rt] = await Promise.all([
       this.jwt.signAsync(
         {
-          sub: userId,
+          sub: user.id,
+          id: user.id,
+          name: user.name,
+          avatar: user.avatar,
+          level: user.level,
         },
         {
           secret: this.config.get('JWT_ACCESS_SECRET'),
@@ -162,7 +168,7 @@ export class AuthService {
       ),
       this.jwt.signAsync(
         {
-          sub: userId,
+          sub: user.id,
         },
         {
           secret: this.config.get('JWT_REFRESH_SECRET'),

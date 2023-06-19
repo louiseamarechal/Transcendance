@@ -7,7 +7,6 @@ import "../style/pages/Chat.css";
 function Chat() {
   return (
     <>
-      <NavBar />
       <div className="h-screen chat-page">
         <ChannelNav />
         <div id="chat-net"></div>
