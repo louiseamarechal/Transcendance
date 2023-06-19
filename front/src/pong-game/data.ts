@@ -16,13 +16,13 @@ export default {
   },
   player: {
     name: "LouiseA",
-    lives: 5,
     score: 0,
     level: 1,
   },
   paddleProps: {
-    height: 20,
-    width: 100,
-    x: 100,
+    height: 150,
+    width: 20,
+    x: 0,
+    y: -100,
   },
 };

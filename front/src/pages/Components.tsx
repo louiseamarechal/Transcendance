@@ -15,7 +15,7 @@ function Components() {
             Send game request
           </button>
           <button className="small-button friend-button">Friends</button>
-          <button className="play-game-button flex justify-center items-center">
+          <button className="play-game-button">
             <div className="play-game-triangle"></div>
           </button>
           <button className="decline-game">X</button>

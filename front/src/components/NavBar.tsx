@@ -1,5 +1,5 @@
 // import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -9,8 +9,10 @@ import useNavbar from '../hooks/useNavbar';
 
 const NavBar = () => {
   const { navbarState, setNavbarState } = useNavbar();
+  const location = useLocation();
+  console.log(location.pathname);
 
-  if (location.pathname === '/') return;
+  if (location.pathname === '/' || location.pathname === '/playgame') { return; }
   if (navbarState === true)
     return (
       <div className="navbar-open">

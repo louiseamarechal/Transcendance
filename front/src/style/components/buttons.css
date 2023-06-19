@@ -54,6 +54,9 @@
 }
 
 .play-game-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 58px;
   height: 47px;
   background: var(--black);

@@ -1,5 +1,6 @@
-import useAuth from '../hooks/useAuth.ts';
-import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
+import { Link } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth.ts';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate.ts';
 
 function Game() {
   const { auth } = useAuth();
@@ -16,7 +17,10 @@ function Game() {
   return (
     <>
       <div className="h-screen flex justify-center items-center">
-        Game Page in progress
+        <p>Game Page in progress</p>
+        <Link to="/playgame" className='play-game-button'>
+            <div className="play-game-triangle"></div>
+        </Link>
       </div>
       <button onClick={() => getUser()}>User</button>
     </>
