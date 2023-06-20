@@ -28,23 +28,20 @@ async function createFriendRequest(
   });
 }
 
-async function createChannel(
-  ownerId: number,
-  members: number[],
-  name: string,
-) {
-	const channel = await prisma.channel.create({
-		data: {
-			ownerId,
-			name,
-		},
-	});
-	await prisma.membersOnChannels.createMany({
-		data: {
-			
-		}
-	})
-	return channel;
+async function createChannel(ownerId: number, members: number[], name: string) {
+  const channel = await prisma.channel.create({
+    data: {
+      ownerId,
+      name,
+    },
+  });
+
+  await prisma.membersOnChannels.createMany({
+    data: members.map((id: number) => {
+      return { channelId: channel.id, userId: id };
+    }),
+  });
+  return channel;
 }
 
 async function main() {
@@ -58,7 +55,11 @@ async function main() {
     marcel.id,
     FRStatus.ACCEPTED,
   );
-  const channel1 = await createChannel();
+  const channel1 = await createChannel(
+    michel.id,
+    [michel.id, claude.id, marcel.id],
+    'les potos',
+  );
 }
 
 main()
