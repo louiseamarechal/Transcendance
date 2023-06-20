@@ -23,9 +23,11 @@ export class ChannelController {
     return this.channelService.createChannel(userId, dto);
   }
 
-  @Get()
-  getChannels(@GetUserId() userId: number) {
-    return this.channelService.getChannels(userId);
+  @Get('my-channels')
+  getUserChannels(
+    @GetUserId() userId: number,
+  ): Promise<{ name: string | null; avatar: string | null; id: number }[]> {
+    return this.channelService.getUserChannels(userId);
   }
 
   @Get(':id')
@@ -36,10 +38,9 @@ export class ChannelController {
     return this.channelService.getChannelById(userId, channelId);
   }
 
-  @Get('my-channels')
-  getUserChannels(@GetUserId() userId: number) {
-    console.log('In my-channels');
-    return this.channelService.getUserChannels(userId);
+  @Get()
+  getChannels(@GetUserId() userId: number) {
+    return this.channelService.getChannels(userId);
   }
 
   @Patch(':id')
