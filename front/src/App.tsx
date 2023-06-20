@@ -37,7 +37,6 @@ function App() {
         <Routes>
           <Route path="/" element={<WelcomePage />} />
           <Route path="/callback" element={<Callback />} />
-          <Route path="/foundgame" element={<FoundGamePage />} />
           {/* PROTECTED ROUTES */}
           <Route element={<RequireAuth />}>
             <Route path="/chat" element={<Chat />} />
@@ -46,6 +45,7 @@ function App() {
             <Route path="/profil" element={<Profil />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/test" element={<Components />} />
+          <Route path="/foundgame" element={<FoundGamePage />} />
           </Route>
         </Routes>
       </div>

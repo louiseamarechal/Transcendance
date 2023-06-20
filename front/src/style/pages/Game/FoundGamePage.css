@@ -6,6 +6,7 @@
 
 .found-game p {
     font-size: 30px;
+    text-align: center;
 }
 
 .game-choice {
@@ -13,4 +14,14 @@
     flex-direction: flex-row;
     gap: 20px;
     padding-top: 20px;
+}
+
+@media (min-width: 100px) and (max-width: 768px) {
+    .found-game p  {
+        font-size: 20px;
+    }
+
+    .found-game h1 {
+        font-size: 60px;
+    }
 }

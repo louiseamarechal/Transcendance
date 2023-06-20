@@ -1,4 +1,5 @@
 // import React from 'react'
+import { Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth.ts';
 // import useRefreshToken from '../hooks/useRefreshToken.ts';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
@@ -23,6 +24,8 @@ function Game() {
         Game Page in progress
       </div>
       <button onClick={() => getUser()}>User</button>
+      <br/>
+      <Link to='/foundgame'>found game</Link>
     </>
   );
 }
