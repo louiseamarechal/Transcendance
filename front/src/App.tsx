@@ -30,6 +30,7 @@ function App() {
           <Route path='/profil' element={<Profil />} />
           <Route path='/settings' element={<Settings />} />
           <Route path='/test' element={<Components />} />
+          <Route path='/foundgame' element={<Components />} />
         </Routes>
       </BrowserRouter>
     </>
