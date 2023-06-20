@@ -10,13 +10,16 @@ const ChannelList = () => {
   const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
+    console.log('Try fetch all channels.');
     axiosPrivate
-      .get('channel/myChannels')
+      .get('channel/my-channels')
       .then((res) => {
+        console.log('Got response from GET channel/my-channels');
+        console.log(res);
         setChannelList(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.response.status + " -> " + err.response.statusText);
       });
   }, []);
 

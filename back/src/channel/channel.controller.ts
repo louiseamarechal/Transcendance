@@ -36,8 +36,9 @@ export class ChannelController {
     return this.channelService.getChannelById(userId, channelId);
   }
 
-  @Get('myChannels')
+  @Get('my-channels')
   getUserChannels(@GetUserId() userId: number) {
+    console.log('In my-channels');
     return this.channelService.getUserChannels(userId);
   }
 
