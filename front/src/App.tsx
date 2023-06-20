@@ -37,7 +37,7 @@ function App() {
         <Routes>
           <Route path="/" element={<WelcomePage />} />
           <Route path="/callback" element={<Callback />} />
-          <Route path="/foudngame" element={<FoundGamePage />} />
+          <Route path="/foundgame" element={<FoundGamePage />} />
           {/* PROTECTED ROUTES */}
           <Route element={<RequireAuth />}>
             <Route path="/chat" element={<Chat />} />

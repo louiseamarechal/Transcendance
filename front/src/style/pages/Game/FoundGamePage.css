@@ -1,0 +1,16 @@
+.found-game h1 {
+    font-size: 80px;
+    font-weight: 600;
+    letter-spacing: 8px;
+}
+
+.found-game p {
+    font-size: 30px;
+}
+
+.game-choice {
+    display: flex;
+    flex-direction: flex-row;
+    gap: 20px;
+    padding-top: 20px;
+}

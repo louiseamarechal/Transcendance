@@ -61,6 +61,14 @@
   border-radius: 17px;
 }
 
+.play-game-button-bg {
+  width: 78px;
+  height: 67px;
+  background: var(--black);
+  border: 6px solid var(--black);
+  border-radius: 17px;
+}
+
 .play-game-triangle {
   width: 0;
   height: 0;
@@ -80,7 +88,19 @@
   font-size: 25px;
   text-align: center;
   font-weight: 700;
-  font-family: 'Montserrat Alternates';
+}
+
+.decline-game-bg {
+  width: 78px;
+  height: 67px;
+  background: var(--black);
+  border: 6px solid var(--black);
+  border-radius: 17px;
+
+  color: var(--white);
+  font-size: 25px;
+  text-align: center;
+  font-weight: 700;
 }
 
 /* <button className='small-button' style={{backgroundColor:'var(--green)'}}> */
