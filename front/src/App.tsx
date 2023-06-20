@@ -13,6 +13,7 @@ import Components from './pages/Components.tsx'
 
 // CSS
 import './style/components/buttons.css'
+import './style/components/avatar.css'
 import './style/pages/color.css'
 import './style/pages/App.css'
 
