@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import '../../style/components/chat/channel-list.css';
+import '../../style/components/buttons.css';
 import ChannelCard from './ChannelCard';
+import { Link } from 'react-router-dom';
 
 const ChannelList = () => {
   const [channelList, setChannelList] = useState<
@@ -10,7 +12,6 @@ const ChannelList = () => {
   const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
-    console.log('Try fetch all channels.');
     axiosPrivate
       .get('channel/my-channels')
       .then((res) => {
@@ -19,7 +20,7 @@ const ChannelList = () => {
         setChannelList(res.data);
       })
       .catch((err) => {
-        console.log(err.response.status + " -> " + err.response.statusText);
+        console.log(err.response.status + ' -> ' + err.response.statusText);
       });
   }, []);
 
@@ -27,11 +28,14 @@ const ChannelList = () => {
     <div className="channel-list">
       <div className="scrollable-list">
         <ul>
+            <li>
+              <Link to={'/friends'}><p className='text-center'>Add friend</p></Link>
+            </li>
           {channelList.map(
-            (elem: { id: number; name: string; avatar: string }) => {
-              return ChannelCard(elem.id, elem.name);
-            },
-          )}
+              (elem: { id: number; name: string; avatar: string }) => {
+                return ChannelCard(elem.id, elem.name);
+              },
+            )}
         </ul>
       </div>
     </div>

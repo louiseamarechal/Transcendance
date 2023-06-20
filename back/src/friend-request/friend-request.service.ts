@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { FriendRequest } from '@prisma/client';
+import { FRStatus, FriendRequest } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFriendRequestDto } from './dto';
 
@@ -17,6 +17,53 @@ export class FriendRequestService {
     return friendRequest;
   }
 
+  async getMyFriends(userId: number) {
+    const acceptedRequests: FriendRequest[] =
+      await this.prisma.friendRequest.findMany({
+        where: {
+          OR: [
+            {
+              fromId: {
+                equals: userId,
+              },
+            },
+            {
+              toId: {
+                equals: userId,
+              },
+            },
+          ],
+          status: {
+            equals: FRStatus.ACCEPTED,
+          },
+        },
+      });
+
+    const friendIds = acceptedRequests.map(
+      ({ fromId, toId }: { fromId: number; toId: number }) => {
+        if (fromId === userId) {
+          return toId;
+        } else {
+          return fromId;
+        }
+      },
+    );
+
+    return this.prisma.user.findMany({
+      where: {
+        id: {
+          in: friendIds,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        level: true,
+        avatar: true,
+      },
+    });
+  }
+
   getFRs(fromId: number) {
     return this.prisma.friendRequest.findMany({
       where: {
@@ -25,111 +72,115 @@ export class FriendRequestService {
     });
   }
 
-	getFRById(fromId: number, friendRequestId: number) {
-		return this.prisma.friendRequest.findMany({
+  getFRById(fromId: number, friendRequestId: number) {
+    return this.prisma.friendRequest.findMany({
       where: {
-				id: friendRequestId,
+        id: friendRequestId,
         fromId,
       },
     });
-	}
+  }
 
-	getFRByToId(fromId: number, toId: number) {
-		return this.prisma.friendRequest.findMany({
+  getFRByToId(fromId: number, toId: number) {
+    return this.prisma.friendRequest.findMany({
       where: {
         fromId,
-				toId,
+        toId,
       },
     });
-	}
+  }
 
-	async editFRById(fromId: number, friendRequestId: number, dto: EditFriendRequestDto) {
-		const friendRequest = await this.prisma.friendRequest.findUnique({
-			where: {
-				id: friendRequestId,
-			},
-		});
+  async editFRById(
+    fromId: number,
+    friendRequestId: number,
+    dto: EditFriendRequestDto,
+  ) {
+    const friendRequest = await this.prisma.friendRequest.findUnique({
+      where: {
+        id: friendRequestId,
+      },
+    });
 
-		// Check ownership
-		if (!friendRequest || friendRequest.fromId != fromId)
-			throw new ForbiddenException('Access to ressource denied');
-		
-			return this.prisma.friendRequest.update({
-				where: {
-					id: friendRequestId,
-				},
-				data: {
-					...dto,
-				},
-			});
-	}
+    // Check ownership
+    if (!friendRequest || friendRequest.fromId != fromId)
+      throw new ForbiddenException('Access to ressource denied');
 
-	async editFRByToId(fromId: number, toId: number, dto: EditFriendRequestDto) {
-		const friendRequest = await this.prisma.friendRequest.findUnique({
-			where: {
-				fromId_toId: {
-					fromId,
-					toId,
-				}
-			},
-		});
+    return this.prisma.friendRequest.update({
+      where: {
+        id: friendRequestId,
+      },
+      data: {
+        ...dto,
+      },
+    });
+  }
 
-		// Check ownership
-		if (!friendRequest)
-			throw new ForbiddenException('Access to ressource denied');
-		
-			return this.prisma.friendRequest.update({
-				where: {
-					fromId_toId: {
-						fromId,
-						toId,
-					},
-				},
-				data: {
-					...dto,
-				},
-			});
-	}
+  async editFRByToId(fromId: number, toId: number, dto: EditFriendRequestDto) {
+    const friendRequest = await this.prisma.friendRequest.findUnique({
+      where: {
+        fromId_toId: {
+          fromId,
+          toId,
+        },
+      },
+    });
 
-	async deleteFRById(fromId: number, friendRequestId: number) {
-		const friendRequest = await this.prisma.friendRequest.findUnique({
-			where: {
-				id: friendRequestId,
-			},
-		});
+    // Check ownership
+    if (!friendRequest)
+      throw new ForbiddenException('Access to ressource denied');
 
-		// Check ownership
-		if (!friendRequest || friendRequest.fromId != fromId)
-			throw new ForbiddenException('Access to ressource denied');
-		
-			this.prisma.friendRequest.delete({
-				where: {
-					id: friendRequestId,
-				},
-			});
-	}
+    return this.prisma.friendRequest.update({
+      where: {
+        fromId_toId: {
+          fromId,
+          toId,
+        },
+      },
+      data: {
+        ...dto,
+      },
+    });
+  }
 
-	async deleteFRByToId(fromId: number, toId: number) {
-		const friendRequest = await this.prisma.friendRequest.findUnique({
-			where: {
-				fromId_toId: {
-					fromId,
-					toId,
-				}
-			},
-		});
+  async deleteFRById(fromId: number, friendRequestId: number) {
+    const friendRequest = await this.prisma.friendRequest.findUnique({
+      where: {
+        id: friendRequestId,
+      },
+    });
 
-		// Check ownership
-		if (!friendRequest)
-			throw new ForbiddenException('Access to ressource denied');
-		
-			this.prisma.friendRequest.delete({
-				where: {
-					fromId_toId: {
-						fromId,
-						toId,
-					},
-				},
-			});
-	}
+    // Check ownership
+    if (!friendRequest || friendRequest.fromId != fromId)
+      throw new ForbiddenException('Access to ressource denied');
+
+    this.prisma.friendRequest.delete({
+      where: {
+        id: friendRequestId,
+      },
+    });
+  }
+
+  async deleteFRByToId(fromId: number, toId: number) {
+    const friendRequest = await this.prisma.friendRequest.findUnique({
+      where: {
+        fromId_toId: {
+          fromId,
+          toId,
+        },
+      },
+    });
+
+    // Check ownership
+    if (!friendRequest)
+      throw new ForbiddenException('Access to ressource denied');
+
+    this.prisma.friendRequest.delete({
+      where: {
+        fromId_toId: {
+          fromId,
+          toId,
+        },
+      },
+    });
+  }
 }

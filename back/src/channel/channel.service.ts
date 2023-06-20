@@ -41,9 +41,12 @@ export class ChannelService {
         },
       });
       this.prisma.membersOnChannels.createMany({
-        data: members.map((id: number) => {
-          return { channelId: channel.id, userId: id };
-        }),
+        data: [
+          { channelId: channel.id, userId: ownerId },
+          ...members.map((id: number) => {
+            return { channelId: channel.id, userId: id };
+          }),
+        ],
       });
       return channel;
     }
@@ -93,7 +96,7 @@ export class ChannelService {
       select: {
         id: true,
         name: true,
-				avatar: true,
+        avatar: true,
       },
     });
   }
