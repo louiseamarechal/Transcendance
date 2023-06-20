@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import '../../style/pages/Game/WaitingForGamePage.css';
 import '../../style/components/spinner.css';
-import { Navigate, redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 const WaitingForGame = () => {
   const [loading, setLoading] = useState(true);
