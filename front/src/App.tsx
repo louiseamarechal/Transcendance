@@ -35,7 +35,6 @@ function App() {
         <Routes>
           <Route path="/" element={<WelcomePage />} />
           <Route path="/callback" element={<Callback />} />
-          <Route path="/wait" element={<WaitingForGame />} />
 
           {/* PROTECTED ROUTES */}
           <Route element={<RequireAuth />}>
@@ -45,6 +44,7 @@ function App() {
             <Route path="/profil" element={<Profil />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/test" element={<Components />} />
+            <Route path="/wait" element={<WaitingForGame />} />
           </Route>
         </Routes>
       </div>

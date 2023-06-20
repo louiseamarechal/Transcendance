@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import '../../style/pages/Game/WaitingForGamePage.css';
+import '../../style/components/spinner.css';
+import { Navigate, redirect } from 'react-router-dom';
 
 const WaitingForGame = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-    }, 20000); // adapt loading time to when we find a player
+    }, 9000); // adapt loading time to when we find a player or not
   }, []);
 
   return (
@@ -16,7 +18,7 @@ const WaitingForGame = () => {
       <h1 className="pong-title">PONG</h1>
       <p>Wait until we find you the perfect match !</p>
       <br />
-      {loading ? <div className="spinner"></div> : <div></div>}
+      {loading ? <div className="spinner"></div> : <Navigate to="/playgame" replace={true} />}
     </div>
   );
 };
