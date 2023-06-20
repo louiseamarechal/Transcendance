@@ -19,6 +19,7 @@ import './style/pages/color.css';
 import './style/pages/App.css';
 import NavBar from './components/NavBar.tsx';
 import useNavbar from './hooks/useNavbar.ts';
+import WaitingForGame from './pages/Game/WaitingForGamePage.tsx';
 
 function App() {
   const { navbarState } = useNavbar();
@@ -34,6 +35,7 @@ function App() {
         <Routes>
           <Route path="/" element={<WelcomePage />} />
           <Route path="/callback" element={<Callback />} />
+          <Route path="/wait" element={<WaitingForGame />} />
 
           {/* PROTECTED ROUTES */}
           <Route element={<RequireAuth />}>
