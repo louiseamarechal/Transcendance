@@ -18,24 +18,19 @@ function Game() {
         <div className="net-container">
           <Link to={'/wait'}>
             <button
-              className="searchgame-button mr-2"
-              style={{ marginRight: '0%' }}
-            >
+              className="searchgame-button mr-2"            >
               Search Game
             </button>
           </Link>
           <div className="net"></div>
           <Link to={'/findfriends'}>
             <button
-              className="searchgame-button m1-2"
-              style={{ marginLeft: '40%' }}
-            >
+              className="searchgame-button m1-2"            >
               Invite Friends
             </button>
           </Link>
         </div>
       </div>
-      {/* </div> */}
     </>
   );
 }
