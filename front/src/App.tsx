@@ -4,20 +4,23 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 
 // TypeScript
 import WelcomePage from './pages/WelcomePage.tsx';
-import Game from './pages/Game/Game.tsx';
+import Game from './pages/game/Game.tsx';
 import Chat from './pages/Chat.tsx';
 import Friends from './pages/Friends.tsx';
 import Settings from './pages/Settings.tsx';
 import Profil from './pages/Profil.tsx';
 import Components from './pages/Components.tsx';
-import Callback from './components/Callback.tsx';
+import Callback from './pages/Callback.tsx';
 import RequireAuth from './components/RequireAuth.tsx';
 import NavBar from './components/NavBar.tsx';
 import useNavbar from './hooks/useNavbar.ts';
-import PlayGame from './pages/Game/PlayGame.tsx';
+import PlayGame from './pages/game/PlayGame.tsx';
+import WaitingForGame from './pages/game/WaitingForGamePage.tsx';
+import FoundGamePage from './pages/game/FoundGamePage.tsx';
 
 // CSS
 import './style/components/buttons.css';
+import './style/components/avatar.css';
 import './style/pages/color.css';
 import './style/pages/App.css';
 
@@ -29,13 +32,13 @@ function App() {
       <NavBar />
       <div
         className={
-          'main-content ' + (navbarState ? 'opened-nav-margin' : 'w-full')
+          'h-screen overflow-auto main-content ' +
+          (navbarState ? 'opened-nav-margin' : 'w-full')
         }
       >
         <Routes>
           <Route path="/" element={<WelcomePage />} />
           <Route path="/callback" element={<Callback />} />
-
           {/* PROTECTED ROUTES */}
           <Route element={<RequireAuth />}>
             <Route path="/chat" element={<Chat />} />
@@ -45,6 +48,8 @@ function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/test" element={<Components />} />
             <Route path="/playgame" element={<PlayGame />} />
+            <Route path="/wait" element={<WaitingForGame />} />
+          <Route path="/foundgame" element={<FoundGamePage />} />
           </Route>
         </Routes>
       </div>
