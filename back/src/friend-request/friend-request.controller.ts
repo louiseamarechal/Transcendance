@@ -13,13 +13,17 @@ import {
 import { FriendRequestService } from './friend-request.service';
 import { GetUserId } from 'src/common/decorators';
 import { CreateFriendRequestDto, EditFriendRequestDto } from './dto';
+import { FRStatus, FriendRequest } from '@prisma/client';
 
 @Controller('friend-request')
 export class FriendRequestController {
   constructor(private friendRequestService: FriendRequestService) {}
 
   @Post()
-  createFR(@GetUserId() userId: number, @Body() dto: CreateFriendRequestDto): Promise<> {
+  createFR(
+    @GetUserId() userId: number,
+    @Body() dto: CreateFriendRequestDto,
+  ): Promise<FriendRequest> {
     return this.friendRequestService.createFR(userId, dto.toId);
   }
 
