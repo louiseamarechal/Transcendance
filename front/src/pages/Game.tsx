@@ -1,12 +1,9 @@
-// import React from 'react'
 import useAxiosPrivate from "../hooks/useAxiosPrivate.ts";
-import NavBar from '../components/NavBar.tsx';
 import '../style/components/net.css'
 import '../style/components/buttons.css'
 import '../style/pages/Game.css'
-import useAuth from '../hooks/useAuth.ts';
-// import useRefreshToken from '../hooks/useRefreshToken.ts';
-// import useAxiosPrivate from "../hooks/useAxiosPrivate.ts";
+import { Link } from 'react-router-dom';
+
 
 function Game() {
 
@@ -24,9 +21,12 @@ function Game() {
           <h1 className="gamepage-title">PONG</h1>
           <div className="net-container">
             <div className="net"></div>
-            {/* <div className="flex justify-center" style={{ marginTop: '15%' }}> */}
+            <Link to={'/wait'} >
             <button className="searchgame-button mr-2"style={{ marginRight: '40%' }}>Search Game</button>
+            </Link>
+            <Link to={'/findfriends'} >
             <button className="searchgame-button m1-2"style={{ marginLeft: '40%' }}>Invite Friends</button>
+            </Link>
           <div className="net w-100px mb-4"></div>
           </div>
         </div>
