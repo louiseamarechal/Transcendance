@@ -20,8 +20,6 @@ import './style/components/buttons.css';
 import './style/components/avatar.css';
 import './style/pages/color.css';
 import './style/pages/App.css';
-import NavBar from './components/NavBar.tsx';
-import useNavbar from './hooks/useNavbar.ts';
 import WaitingForGame from './pages/game/WaitingForGamePage.tsx';
 import FoundGamePage from './pages/game/FoundGamePage.tsx';
 
