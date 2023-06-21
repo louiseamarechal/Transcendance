@@ -52,16 +52,16 @@ const PlayGame = () => {
 
   return (
     <>
-      <div className="players-stats">
-        {players.map((player, index) => (
-          <PlayerStats
-            key={index}
-            playerName={player.name}
-            playerScore={player.score}
-          />
-        ))}
-      </div>
       <div className="play-game-page">
+        <div className="players-stats">
+          {players.map((player, index) => (
+            <PlayerStats
+              key={index}
+              playerName={player.name}
+              playerScore={player.score}
+            />
+          ))}
+        </div>
         <canvas
           id="canvas"
           ref={canvasRef}

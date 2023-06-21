@@ -4,7 +4,6 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: auto;
 }
 
 #canvas {
@@ -36,8 +35,8 @@
 }
 
 .players-stats {
-  margin-left: 10%;
-  height: 700px;
+  /* margin-left: 10%; */
+  height: inherit;
   width: 80%;
 
   display: flex;
