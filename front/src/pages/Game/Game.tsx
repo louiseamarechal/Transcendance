@@ -18,11 +18,10 @@ function Game() {
     <>
       <div className="h-screen flex justify-center items-center">
         <p>Game Page in progress</p>
-        <Link to="/playgame" className='play-game-button'>
-            <div className="play-game-triangle"></div>
-        </Link>
       </div>
-      <button onClick={() => getUser()}>User</button>
+      <Link to="/playgame" className='play-game-button'>
+          <div className="play-game-triangle"></div>
+      </Link>
     </>
   );
 }
