@@ -80,6 +80,7 @@ model Channel {
   owner   User   @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId Int    @map("owner_id")
   name    String @unique
+	avatar  String?
 
   admins  AdminsOnChannels[]
   members MembersOnChannels[]
