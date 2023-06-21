@@ -74,7 +74,11 @@ const PlayGame = () => {
         onMouseMove={(e) =>
           (paddleProps.y = e.clientY - paddleProps.height / 2 - 10)
         } // adding the paddle width / 2 allow us to have the cursor in the middle of the paddle
-        height="700"
+        height={
+          window.innerHeight < 900
+            ? window.innerHeight - 20
+            : window.innerHeight - (window.innerHeight * 20) / 100
+        }
         width={
           window.innerWidth < 900
             ? window.innerWidth - 20
