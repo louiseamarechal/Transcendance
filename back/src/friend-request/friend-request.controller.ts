@@ -19,7 +19,7 @@ export class FriendRequestController {
   constructor(private friendRequestService: FriendRequestService) {}
 
   @Post()
-  createFR(@GetUserId() userId: number, @Body() dto: CreateFriendRequestDto) {
+  createFR(@GetUserId() userId: number, @Body() dto: CreateFriendRequestDto): Promise<> {
     return this.friendRequestService.createFR(userId, dto.toId);
   }
 
