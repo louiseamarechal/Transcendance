@@ -31,6 +31,11 @@ export class FriendRequestController {
     return this.friendRequestService.createFR(userId, toId);
   }
 
+  @Get('my-friends')
+  getMyFriends(@GetUserId() userId: number) {
+    return (this.friendRequestService.getMyFriends(userId))
+  }
+
   @Get()
   getFRs(@GetUserId() userId: number) {
     return this.friendRequestService.getFRs(userId);

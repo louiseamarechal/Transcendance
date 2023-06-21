@@ -13,6 +13,10 @@
     );
 }
 
+.app {
+  font-family: 'Montserrat Alternates';
+}
+
 .opened-nav-margin {
   width: 80%;
   margin-left: 20%;

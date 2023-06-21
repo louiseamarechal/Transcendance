@@ -1,0 +1,29 @@
+.waiting-for-game {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.pong-title {
+    font-size: 80px;
+    font-weight: 600;
+    letter-spacing: 8px;
+}
+
+.waiting-for-game p {
+    text-align: center;
+    font-size: 25px;
+}
+
+@media (min-width: 100px) and (max-width: 768px) {
+    .pong-title {
+        font-size: 60px;
+    }
+
+    .waiting-for-game p {
+        font-size: 20px;
+    }
+}
+

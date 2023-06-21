@@ -1,7 +1,6 @@
 .net {
-  border: 8px dashed var(--faded-black);
-  transform: rotate(90deg);
-  width: 60vh;
-  border-radius: 15px;
-  position: absolute;
+    border: 6px dashed var(--black);
+    transform: rotate(90deg);
+    width: 275px;
+    border-radius: 12px;
 }

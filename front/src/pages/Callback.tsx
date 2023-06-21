@@ -1,9 +1,11 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
-import axios from "../api/axios";
-import { useEffect } from "react";
-import useAuth from "../hooks/useAuth";
-import jwtDecode from "jwt-decode";
-import { useUser } from "../hooks/useUser";
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import axios from '../api/axios';
+import { useEffect, useState } from 'react';
+import useAuth from '../hooks/useAuth';
+import jwtDecode from 'jwt-decode';
+import { useUser } from '../hooks/useUser';
+
+import '../style/components/spinner.css';
 
 type JwtDecoded = {
   name: string;
@@ -17,12 +19,14 @@ export function Callback() {
   const navigate = useNavigate();
   const { setAuth } = useAuth();
   const { setName, setAvatar, setLevel } = useUser();
+  const [ loading, setLoading ] = useState(false);
 
   useEffect(() => {
     // let isMounted = true;
     const controller = new AbortController(); // to cancel our request if the component unMount
 
     async function getCode() {
+      setLoading(true);
       try {
         const response = await axios.post(
           '/auth/login',
@@ -37,7 +41,7 @@ export function Callback() {
           // console.log({ response_data: response.data });
           // const access_token = response.data.access_token;
           // const refresh_token = response.data.refresh_token;
-          console.log({access_token: response.data.access_token});
+          console.log({ access_token: response.data.access_token });
           // console.log({ refresh_token });
           const user: JwtDecoded = jwtDecode(response.data.access_token);
           setName(user.name);
@@ -45,6 +49,7 @@ export function Callback() {
           setLevel(user.level);
           setAuth(response.data);
         }
+        setLoading(false);
         navigate('/game');
       } catch (err) {
         // console.log(err);
@@ -60,8 +65,10 @@ export function Callback() {
   }, []);
 
   return (
-    <div className="h-screen flex items-center justify-center">
-      Coucou c'est le callback
+    <div className="h-screen flex flex-col items-center justify-center">
+      <p className='text-[25px]'>Waiting for connection</p>
+      <br/>
+      {loading ? <div className="spinner"></div> : <div></div>}
     </div>
   );
 }

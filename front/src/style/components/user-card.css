@@ -1,10 +1,10 @@
 .user-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 175px;
-
-  font-family: 'Montserrat Alternates';
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 175px;
+    font-family: 'Montserrat Alternates';
+    flex-direction: column;
 }
 
 .user-name {
@@ -13,7 +13,12 @@
 }
 
 .user-level {
-  font-weight: 400;
-  font-style: italic;
-  font-size: 10px;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 10px;
+}
+
+.avatar{
+    width: 63px;
+height: 59px;
 }
