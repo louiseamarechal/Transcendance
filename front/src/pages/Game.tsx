@@ -6,7 +6,6 @@ import '../style/components/buttons.css'
 import '../style/pages/Game.css'
 import useAuth from '../hooks/useAuth.ts';
 // import useRefreshToken from '../hooks/useRefreshToken.ts';
-import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
 // import useAxiosPrivate from "../hooks/useAxiosPrivate.ts";
 
 function Game() {
@@ -19,8 +18,8 @@ function Game() {
   };  
   return (
       <>
-        <NavBar />
-        <button onClick={() => getUser()}>User</button>
+        {/* <NavBar /> */}
+        {/* <button onClick={() => getUser()}>User</button> */}
         <div className="gamepage-container">
           <h1 className="gamepage-title">PONG</h1>
           <div className="net-container">
