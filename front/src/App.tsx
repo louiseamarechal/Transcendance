@@ -20,6 +20,7 @@ import './style/components/buttons.css';
 import './style/components/avatar.css';
 import './style/pages/color.css';
 import './style/pages/App.css';
+import WaitingForGame from './pages/game/WaitingForGamePage.tsx';
 import FoundGamePage from './pages/game/FoundGamePage.tsx';
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
             <Route path="/profil" element={<Profil />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/test" element={<Components />} />
+            <Route path="/wait" element={<WaitingForGame />} />
           <Route path="/foundgame" element={<FoundGamePage />} />
           </Route>
         </Routes>

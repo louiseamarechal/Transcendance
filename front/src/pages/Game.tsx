@@ -25,6 +25,7 @@ function Game() {
       </div>
       <button onClick={() => getUser()}>User</button>
       <br/>
+      <Link to='/wait'>Waiting Page</Link>
       <Link to='/foundgame'>found game</Link>
     </>
   );
