@@ -7,7 +7,15 @@ import { User } from '@prisma/client';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async getMe(userId: number) {
+  async getMe(userId: number): Promise<{
+    id: number | null;
+    login: string | null;
+    name: string | null;
+    level: number | null;
+    avatar: string | null;
+    statTotalGame: number | null;
+    statTotalWin: number | null;
+  }> {
     const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
@@ -29,13 +37,33 @@ export class UserService {
     return user;
   }
 
-  async editUser(userId: number, dto: EditUserDto): Promise<User> {
+  async editUser(
+    userId: number,
+    dto: EditUserDto,
+  ): Promise<{
+    id: number | null;
+    login: string | null;
+    name: string | null;
+    level: number | null;
+    avatar: string | null;
+    statTotalGame: number | null;
+    statTotalWin: number | null;
+  }> {
     const user = await this.prisma.user.update({
       where: {
         id: userId,
       },
       data: {
         ...dto,
+      },
+      select: {
+        id: true,
+        login: true,
+        name: true,
+        level: true,
+        avatar: true,
+        statTotalGame: true,
+        statTotalWin: true,
       },
     });
     return user;
