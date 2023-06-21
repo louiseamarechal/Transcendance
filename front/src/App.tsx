@@ -20,7 +20,7 @@ import './style/components/buttons.css';
 import './style/components/avatar.css';
 import './style/pages/color.css';
 import './style/pages/App.css';
-import FoundGamePage from './pages/Game/FoundGamePage.tsx';
+import FoundGamePage from './pages/game/FoundGamePage.tsx';
 
 function App() {
   const { navbarState } = useNavbar();
