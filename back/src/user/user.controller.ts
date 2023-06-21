@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Patch } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { GetUser, GetUserId } from 'src/common/decorators';
 import { EditUserDto } from './dto';
@@ -32,7 +39,13 @@ export class UserController {
 
   @Patch('me')
   editUser(@GetUserId() userId: number, @Body() dto: EditUserDto) {
-    console.log('PATCH /user/me called');
+    console.log('PATCH /user/me called', {dto});
     return this.userService.editUser(userId, dto);
+  }
+
+  @Get(':id')
+  getUserById(@Param('id', ParseIntPipe) id: number) {
+    console.log(`GET /user/${id} called`);
+    return this.userService.getUserById(id);
   }
 }

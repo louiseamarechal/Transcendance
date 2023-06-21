@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditUserDto } from './dto';
 import { User } from '@prisma/client';
@@ -24,7 +24,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new Error(`User #${userId} not found`);
+      throw new BadRequestException(`User #${userId} not found`);
     }
     return user;
   }
@@ -56,6 +56,28 @@ export class UserService {
         ...dto,
       },
     });
+    return user;
+  }
+
+  async getUserById(id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        login: true,
+        name: true,
+        level: true,
+        avatar: true,
+        statTotalGame: true,
+        statTotalWin: true,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException(`User #${id} not found`);
+    }
     return user;
   }
 }

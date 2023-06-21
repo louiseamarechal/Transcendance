@@ -1,30 +1,35 @@
 import { PropsWithChildren, createContext, useContext, useState } from "react";
 
 export const UserContext = createContext({
-  name: "",
-  setName: (_: string) => {},
-  avatar: "",
-  setAvatar: (_: string) => {},
-  level: 0,
-  setLevel: (_: number) => {},
+  myId: 0,
+  setMyId: (_: number) => {},
+  myName: "",
+  setMyName: (_: string) => {},
+  myAvatar: "",
+  setMyAvatar: (_: string) => {},
+  myLevel: 0,
+  setMyLevel: (_: number) => {},
 });
 
 type Props = PropsWithChildren<{}>;
 
 export const UserProvider = ({ children }: Props) => {
-  const [name, setName] = useState<string>("");
-  const [avatar, setAvatar] = useState<string>("");
-  const [level, setLevel] = useState<number>(0);
+  const [myId, setMyId] = useState<number>(0);
+  const [myName, setMyName] = useState<string>("");
+  const [myAvatar, setMyAvatar] = useState<string>("");
+  const [myLevel, setMyLevel] = useState<number>(0);
 
   return (
     <UserContext.Provider
       value={{
-        name,
-        setName,
-        avatar,
-        setAvatar,
-        level,
-        setLevel,
+        myId,
+        setMyId,
+        myName,
+        setMyName,
+        myAvatar,
+        setMyAvatar,
+        myLevel,
+        setMyLevel,
       }}
     >
       {children}

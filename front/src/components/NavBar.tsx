@@ -11,11 +11,13 @@ import { useUser } from '../hooks/useUser';
 const NavBar = () => {
   const { navbarState, setNavbarState } = useNavbar();
   const location = useLocation();
-  const { avatar } = useUser();
-  
-  if (location.pathname === '/' || location.pathname === '/playgame') { return; }
+  const { myAvatar } = useUser();
 
-  if (!avatar) {
+  if (location.pathname === '/' || location.pathname === '/playgame') {
+    return <></>;
+  }
+
+  if (!myAvatar) {
     return <></>;
   }
 
@@ -33,18 +35,16 @@ const NavBar = () => {
         {/* <button className={"opened-nav-button fa-solid fa-xmark"} style={{color:"var(--black)"}} onClick={() => {setNavbarState(false)}}></button> */}
         <ul className="navbar-links">
           <Link to={'/profil'}>
-            <img
-              className="avatar"
-              alt="avatar"
-              src={avatar}
-            />
+            <img className="avatar" alt="avatar" src={myAvatar} />
           </Link>
           <Link to={'/game'}>Game</Link>
           <Link to={'/chat'}>Chat</Link>
           <Link to={'/friends'}>Friends</Link>
-          <Link to={'/settings'}>Settings</Link>
           <Link to={'/test'}>Test</Link>
           <Link to={'/FindFriends'}>FindFriends</Link>
+          <Link to={'/profil/1'}>Profile 1</Link>
+          <Link to={'/profil/2'}>Profile 2</Link>
+          <Link to={'/profil/3'}>Profile 3</Link>
         </ul>
       </div>
     );

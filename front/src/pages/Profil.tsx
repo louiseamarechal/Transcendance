@@ -6,12 +6,15 @@ import UserCard from '../components/UserCard.tsx';
 import '../style/pages/Profil.css';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
 import { User } from '../types/User.type.ts';
+import Settings from '../components/Settings.tsx';
 
 function Profil() {
   // Profil page will depend on the user id => see later on
   const axiosInstance = useAxiosPrivate();
   const [user, setUser] = useState<User>({});
   const [isLoading, setLoading] = useState<boolean>(true);
+
+  console.log('Entering Profil component');
 
   useEffect(() => {
     axiosInstance
@@ -33,6 +36,7 @@ function Profil() {
       <UserCard user={user} />
       <ProgressBar user={user} />
       <ProfilStat user={user} />
+      <Settings />
     </div>
   );
 }
