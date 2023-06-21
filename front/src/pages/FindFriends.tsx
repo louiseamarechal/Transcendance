@@ -3,16 +3,15 @@ import { useEffect, useState } from 'react';
 import UserCard from '../components/UserCard.tsx';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
 
-const axiosInstance = useAxiosPrivate();
-
 function FindFriends() {
+  const axiosInstance = useAxiosPrivate();
   const [array, setArray] = useState([]);
 
   useEffect(() => {
     axiosInstance
       .get('users') //a modifier en fonction
       .then((res) => {
-        setArray(res.data)
+        setArray(res.data);
       })
       .catch((e) => console.log(e));
   }, []);

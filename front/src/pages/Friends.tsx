@@ -4,8 +4,6 @@ import UserCard from '../components/UserCard.tsx';
 import { useEffect, useState } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
 
-const axiosInstance = useAxiosPrivate();
-
 // const user = {
 //   name: 'truc',
 //   avatar: 'coucou',
@@ -15,22 +13,22 @@ const axiosInstance = useAxiosPrivate();
 // const array = [user, user, user, user];
 
 function Friends() {
+  const axiosInstance = useAxiosPrivate();
   const [array, setArray] = useState([]);
   // const [user, setUser] = useState<User>({
   //   name: 'toi',
   //   avatar: 'lol',
   //   level: 8
   // });
-  
-    useEffect(() => {
+
+  useEffect(() => {
     axiosInstance
       .get('friend-request/myfriends')
       .then((res) => {
-        setArray(res.data)
+        setArray(res.data);
       })
       .catch((e) => console.log(e));
   }, []);
-
 
   return (
     <>
