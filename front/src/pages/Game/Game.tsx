@@ -1,31 +1,36 @@
+import '../../style/components/net.css';
+import '../../style/components/buttons.css';
+import '../../style/pages/Game.css';
 import { Link } from 'react-router-dom';
-import useAuth from '../../hooks/useAuth.ts';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate.ts';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 function Game() {
-  const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
-
-  // console.log({ auth_refresh_token: auth.refresh_token });
-  // console.log({ auth_access_token: auth.access_token });
 
   const getUser = async () => {
     const reponse = await axiosPrivate.get('/user/me');
     console.log(reponse);
   };
-
   return (
     <>
-      <div className="h-screen flex justify-center items-center">
-        <p>Game Page in progress</p>
+      <div className="gamepage-container">
+        <h1 className="gamepage-title">PONG</h1>
+        <div className="net-container">
+          <Link to={'/wait'}>
+            <button
+              className="searchgame-button mr-2"            >
+              Search Game
+            </button>
+          </Link>
+          <div className="net"></div>
+          <Link to={'/findfriends'}>
+            <button
+              className="searchgame-button m1-2"            >
+              Invite Friends
+            </button>
+          </Link>
+        </div>
       </div>
-      <Link to="/playgame" className='play-game-button'>
-          <div className="play-game-triangle"></div>
-      </Link>
-      <br/>
-      <Link to='/wait'>Waiting Page</Link>
-      <br/>
-      <Link to='/foundgame'>found game</Link>
     </>
   );
 }

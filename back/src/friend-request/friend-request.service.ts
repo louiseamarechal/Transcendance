@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { FriendRequest } from '@prisma/client';
+import { FRStatus, FriendRequest } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFriendRequestDto } from './dto';
 
@@ -16,6 +16,54 @@ export class FriendRequestService {
     });
     return friendRequest;
   }
+
+  async getMyFriends(userId: number) {
+    const acceptedRequests: FriendRequest[] =
+      await this.prisma.friendRequest.findMany({
+        where: {
+          OR: [
+            {
+              fromId: {
+                equals: userId,
+              },
+            },
+            {
+              toId: {
+                equals: userId,
+              },
+            },
+          ],
+          status: {
+            equals: FRStatus.ACCEPTED,
+          },
+        },
+      });
+
+    const friendIds = acceptedRequests.map(
+      ({ fromId, toId }: { fromId: number; toId: number }) => {
+        if (fromId === userId) {
+          return toId;
+        } else {
+          return fromId;
+        }
+      },
+    );
+
+    return this.prisma.user.findMany({
+      where: {
+        id: {
+          in: friendIds,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        level: true,
+        avatar: true,
+      },
+    });
+  }
+
 
   getFRs(fromId: number) {
     return this.prisma.friendRequest.findMany({

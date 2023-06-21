@@ -3,20 +3,21 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 // import React from 'react'
 
 // TypeScript
-import WelcomePage from './pages/WelcomePage.tsx';
-import Game from './pages/game/Game.tsx';
-import Chat from './pages/Chat.tsx';
-import Friends from './pages/Friends.tsx';
-import Settings from './pages/Settings.tsx';
-import Profil from './pages/Profil.tsx';
-import Components from './pages/Components.tsx';
-import Callback from './pages/Callback.tsx';
+import WelcomePage from './pages/WelcomePage.tsx'
+import Game from './pages/Game/Game.tsx'
+import Chat from './pages/Chat.tsx'
+import Friends from './pages/Friends.tsx'
+import Settings from './pages/Settings.tsx'
+import Profil from './pages/Profil.tsx'
+import FindFriends from './pages/Findfriends.tsx'
+import Components from './pages/Components.tsx' 
+import Callback from './pages/Callback.tsx'
 import RequireAuth from './components/RequireAuth.tsx';
 import NavBar from './components/NavBar.tsx';
 import useNavbar from './hooks/useNavbar.ts';
-import PlayGame from './pages/game/PlayGame.tsx';
-import WaitingForGame from './pages/game/WaitingForGamePage.tsx';
-import FoundGamePage from './pages/game/FoundGamePage.tsx';
+import PlayGame from './pages/Game/PlayGame.tsx';
+import WaitingForGame from './pages/Game/WaitingForGamePage.tsx';
+import FoundGamePage from './pages/Game/FoundGamePage.tsx';
 
 // CSS
 import './style/components/buttons.css';
@@ -47,6 +48,7 @@ function App() {
             <Route path="/profil" element={<Profil />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/test" element={<Components />} />
+            <Route path='/findfriends' element={<FindFriends />} />
             <Route path="/playgame" element={<PlayGame />} />
             <Route path="/wait" element={<WaitingForGame />} />
           <Route path="/foundgame" element={<FoundGamePage />} />

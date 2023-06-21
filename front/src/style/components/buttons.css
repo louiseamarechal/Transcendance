@@ -106,6 +106,27 @@
   font-weight: 700;
 }
 
+.searchgame-button:hover {
+  transition: all 0.6s ease;
+  border: solid 3px var(--black);
+}
+
+.searchgame-button{
+  width: 138px;
+    height: 136px;    
+    border-radius: 32px;
+    border: none;
+    
+    /* Text */
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 30px;
+    text-align: center;
+    color: var(--black);
+    padding: 5% 5%;
+}
 /* <button className='small-button' style={{backgroundColor:'var(--green)'}}> */
 
 @media (min-width: 100px) and (max-width: 768px) {
@@ -113,6 +134,7 @@
     width: 150px;
     height: 45px;
     font-size: 15px;
+    padding: 5% 5%;
   }
 
   .signin-button {
