@@ -29,6 +29,24 @@ export class UserService {
     return user;
   }
 
+  async getAll(): Promise<
+    {
+      id: number | null;
+      name: string | null;
+      avatar: string | null;
+      level: number | null;
+    }[]
+  > {
+    return await this.prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
+        level: true,
+      },
+    });
+  }
+
   async editUser(userId: number, dto: EditUserDto): Promise<User> {
     const user = await this.prisma.user.update({
       where: {
