@@ -6,7 +6,7 @@ import { useUser } from '../../hooks/useUser';
 
 const CreateChannelForm = () => {
   const axiosPrivate = useAxiosPrivate();
-  // const { setShowCreateChannel, setShowChannel } = useChatContext();
+  const { setShowCreateChannel, setShowChannel } = useChatContext();
   const [friends, setFriends] = useState<
     { id: number; name: string; level: number; avatar: string }[]
   >([]);
@@ -25,19 +25,22 @@ const CreateChannelForm = () => {
       });
   }, []);
 
-  function createChannel() {
+  async function handleSubmit() {
     if (!channelName) {
       alert('Channel name must be filled.');
     } else {
-			useEffect(() => {
-				axiosPrivate.post('channel', {
-					name: channelName,
-					avatar: 'plop',
-					members: selectedFriends,
-				})
-			})
+      await axiosPrivate.post('channel', {
+          name: channelName,
+          avatar: 'plop',
+          members: selectedFriends,
+        }).catch((err) => {
+					if (err.status === 409) {
+						setShowCreateChannel(false);
+						setShowChannel(err.statusText.channelId);
+					}
+				});
+      }
     }
-  }
 
   return (
     <>
@@ -46,11 +49,11 @@ const CreateChannelForm = () => {
         onChange={(event) => setChannelName(event.target.value)}
       ></input>
       <div className="friends-list"></div>
-      <button className="small-button" onClick={createChannel}>
+      <button type="submit" className="small-button" onSubmit={handleSubmit}>
         create channel
       </button>
     </>
   );
-};
+}
 
 export default CreateChannelForm;

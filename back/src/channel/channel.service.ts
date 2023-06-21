@@ -31,7 +31,7 @@ export class ChannelService {
       },
     });
     if (channels.length > 0) {
-      throw new ConflictException('Channel already exists.');
+      throw new ConflictException({channelId: channels[0]});
     } else {
       const channel = await this.prisma.channel.create({
         data: {
