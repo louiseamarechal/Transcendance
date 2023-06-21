@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
-import { BlockedOnChannels, MembersOnChannels } from '@prisma/client';
+import { BlockedOnChannels, Channel, MembersOnChannels, VisType } from '@prisma/client';
 
 @Injectable()
 export class ChannelService {
@@ -31,7 +31,7 @@ export class ChannelService {
       },
     });
     if (channels.length > 0) {
-      throw new ConflictException({channelId: channels[0]});
+      throw new ConflictException({ channelId: channels[0] });
     } else {
       const channel = await this.prisma.channel.create({
         data: {
@@ -114,7 +114,12 @@ export class ChannelService {
     ownerId: number,
     channelId: number,
     dto: EditChannelDto,
-  ) {
+  ): Promise<{
+    id: number | null;
+    name: string | null;
+    avatar: string | null;
+    visibility: VisType | null;
+  }> {
     const channel = await this.prisma.channel.findUnique({
       where: {
         id: channelId,
