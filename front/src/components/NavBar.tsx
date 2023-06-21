@@ -8,14 +8,16 @@ import '../style/components/navbar.css';
 import useNavbar from '../hooks/useNavbar';
 import { useUser } from '../hooks/useUser';
 
-const NavBar = () => {
+const NavBar = (): JSX.Element | null => {
   const { navbarState, setNavbarState } = useNavbar();
   const location = useLocation();
   const { avatar } = useUser();
-  
-  if (location.pathname === '/' || location.pathname === '/playgame') { return; }
 
-  if (!avatar) {
+  if (
+    location.pathname === '/' ||
+    location.pathname === '/playgame' ||
+    !avatar
+  ) {
     return <></>;
   }
 
@@ -33,11 +35,7 @@ const NavBar = () => {
         {/* <button className={"opened-nav-button fa-solid fa-xmark"} style={{color:"var(--black)"}} onClick={() => {setNavbarState(false)}}></button> */}
         <ul className="navbar-links">
           <Link to={'/profil'}>
-            <img
-              className="avatar"
-              alt="avatar"
-              src={avatar}
-            />
+            <img className="avatar" alt="avatar" src={avatar} />
           </Link>
           <Link to={'/game'}>Game</Link>
           <Link to={'/chat'}>Chat</Link>
