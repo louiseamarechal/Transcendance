@@ -1,9 +1,6 @@
-// import React from 'react'
 import { Link } from 'react-router-dom';
-import useAuth from '../hooks/useAuth.ts';
-// import useRefreshToken from '../hooks/useRefreshToken.ts';
-import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
-// import useAxiosPrivate from "../hooks/useAxiosPrivate.ts";
+import useAuth from '../../hooks/useAuth.ts';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate.ts';
 
 function Game() {
   const { auth } = useAuth();
@@ -19,13 +16,15 @@ function Game() {
 
   return (
     <>
-      {/* <NavBar /> */}
       <div className="h-screen flex justify-center items-center">
-        Game Page in progress
+        <p>Game Page in progress</p>
       </div>
-      <button onClick={() => getUser()}>User</button>
+      <Link to="/playgame" className='play-game-button'>
+          <div className="play-game-triangle"></div>
+      </Link>
       <br/>
       <Link to='/wait'>Waiting Page</Link>
+      <br/>
       <Link to='/foundgame'>found game</Link>
     </>
   );

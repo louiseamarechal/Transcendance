@@ -12,7 +12,7 @@ const Reveal = ({ children, width }) => {
     if (isInView) {
       mainControls.start('visible');
     }
-  }, [isInView]);
+  }, [isInView, mainControls]);
 
   return (
     <div ref={ref} style={{ position: 'relative', width }}>
