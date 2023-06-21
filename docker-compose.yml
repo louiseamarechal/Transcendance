@@ -39,9 +39,4 @@ services:
 
 volumes:
   db-data:
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "/home/antoine/Documents/42/ft_transcendance"
   test-db-data:
