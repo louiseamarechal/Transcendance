@@ -28,7 +28,7 @@ import './style/pages/App.css';
 
 function App() {
   const { navbarState } = useNavbar();
-  
+
   return (
     <div className="app">
       <NavBar />
@@ -49,10 +49,10 @@ function App() {
             <Route path="/profil" element={<Profil />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/test" element={<Components />} />
-            <Route path='/findfriends' element={<FindFriends />} />
+            <Route path="/findfriends" element={<FindFriends />} />
             <Route path="/playgame" element={<PlayGame />} />
             <Route path="/wait" element={<WaitingForGame />} />
-          <Route path="/foundgame" element={<FoundGamePage />} />
+            <Route path="/foundgame" element={<FoundGamePage />} />
           </Route>
         </Routes>
       </div>
