@@ -1,23 +1,22 @@
 .welcome-page h1 {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 60px;
+  line-height: 68px;
+  text-align: center;
+  letter-spacing: 0.11em;
 
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 60px;
-    line-height: 68px;
-    text-align: center;
-    letter-spacing: 0.11em;
-  
-    color: var(--black);
+  color: var(--black);
+}
+
+@media (min-width: 100px) and (max-width: 768px) {
+  .welcome-page {
+    row-gap: 30px !important;
   }
-  
-  @media (min-width: 100px) and (max-width: 768px) {
-    .welcome-page {
-      row-gap: 30px !important;
-    }
-  ]
-    .welcome-page h1 {
-      font-size: 40px;
-      line-height: 40px;
-    }
+
+  .welcome-page h1 {
+    font-size: 40px;
+    line-height: 40px;
   }
+}

@@ -5,17 +5,39 @@ import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-	constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {}
 
-	async editUser(userId: number, dto: EditUserDto): Promise<User> {
-		const user = await this.prisma.user.update({
-			where: {
-				id: userId,
-			},
-			data: {
-				...dto,
-			}
-		});
-		return user
-	}
+  async getMe(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+        login: true,
+        name: true,
+        level: true,
+        avatar: true,
+        statTotalGame: true,
+        statTotalWin: true,
+      },
+    });
+
+    if (!user) {
+      throw new Error(`User #${userId} not found`);
+    }
+    return user;
+  }
+
+  async editUser(userId: number, dto: EditUserDto): Promise<User> {
+    const user = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        ...dto,
+      },
+    });
+    return user;
+  }
 }
