@@ -1,5 +1,5 @@
 // import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -10,7 +10,10 @@ import { useUser } from '../hooks/useUser';
 
 const NavBar = () => {
   const { navbarState, setNavbarState } = useNavbar();
+  const location = useLocation();
   const { avatar } = useUser();
+  
+  if (location.pathname === '/' || location.pathname === '/playgame') { return; }
 
   if (!avatar) {
     return <></>;
@@ -41,6 +44,7 @@ const NavBar = () => {
           <Link to={'/friends'}>Friends</Link>
           <Link to={'/settings'}>Settings</Link>
           <Link to={'/test'}>Test</Link>
+          <Link to={'/FindFriends'}>FindFriends</Link>
         </ul>
       </div>
     );

@@ -1,0 +1,16 @@
+.findfriends-container{
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    height: 100vh;
+    flex-wrap: wrap;
+}
+
+
+.findfriends-container .friend-card {
+    flex-direction : row;
+    flex-basis: 25%;
+    /* height: 0px;  */
+    margin-left: 5%;
+    margin-top: 5%;
+  }

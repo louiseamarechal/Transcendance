@@ -21,6 +21,19 @@ export class UserController {
     return this.userService.getMe(userId);
   }
 
+  @Get('all')
+  getAll(): Promise<
+    {
+      id: number | null;
+      name: string | null;
+      avatar: string | null;
+      level: number | null;
+    }[]
+  > {
+    console.log('GET /user/all called');
+    return this.userService.getAll();
+  }
+
   @Patch('me')
   editUser(@GetUserId() userId: number, @Body() dto: EditUserDto): Promise<{
     id: number | null;
