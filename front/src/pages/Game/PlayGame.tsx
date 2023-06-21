@@ -61,31 +61,34 @@ const PlayGame = () => {
           />
         ))}
       </div>
-    <div className="play-game-page">
-      <div className="background">
-        <div className="game-net"></div>
+      <div className="play-game-page">
+        <canvas
+          id="canvas"
+          ref={canvasRef}
+          onMouseMove={(e) =>
+            (paddleProps.y = e.clientY - paddleProps.height / 2 - 10)
+          } // adding the paddle width / 2 allow us to have the cursor in the middle of the paddle
+          height={
+            window.innerHeight < 900
+              ? window.innerHeight - 20
+              : window.innerHeight - (window.innerHeight * 20) / 100
+          }
+          width={
+            window.innerWidth < 900
+              ? window.innerWidth - 20
+              : window.innerWidth - (window.innerWidth * 20) / 100
+          }
+        />
+        <div className="background">
+          <div
+            className="game-net"
+            style={{ width: window.innerHeight - 60 }}
+          ></div>
+        </div>
+        <div className="background">
+          <h1>PONG</h1>
+        </div>
       </div>
-      <div className="background">
-        <h1>PONG</h1>
-      </div>
-      <canvas
-        id="canvas"
-        ref={canvasRef}
-        onMouseMove={(e) =>
-          (paddleProps.y = e.clientY - paddleProps.height / 2 - 10)
-        } // adding the paddle width / 2 allow us to have the cursor in the middle of the paddle
-        height={
-          window.innerHeight < 900
-            ? window.innerHeight - 20
-            : window.innerHeight - (window.innerHeight * 20) / 100
-        }
-        width={
-          window.innerWidth < 900
-            ? window.innerWidth - 20
-            : window.innerWidth - (window.innerWidth * 20) / 100
-        }
-      />
-    </div>
     </>
     // </>
   );
