@@ -53,7 +53,7 @@ export default function UserProfile() {
 
   return (
     <div className="profil-container">
-      <div className="flex flex-row">
+      <div className="flex flex-row w-[55%] justify-end">
         <div className="profil-card">
           <img className="avatar" alt="avatar" src={user?.avatar} />
           <div className="flex flex-row items-center">
@@ -72,7 +72,7 @@ export default function UserProfile() {
 
 function ActionButtons() {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
       <button className="small-button friend-request-button">Add friend</button>
       <button className='small-button game-request-button'>Send game request</button>
     </div>
