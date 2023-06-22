@@ -70,14 +70,14 @@ export class FriendRequestController {
     return this.friendRequestService.editFRById(userId, id, dto);
   }
 
-  @Patch(':toId')
-  editFRByToId(
-    @GetUserId() userId: number,
-    @Param('toId', ParseIntPipe) toId: number,
-    @Body() dto: EditFriendRequestDto,
-  ) {
-    return this.friendRequestService.editFRByToId(userId, toId, dto);
-  }
+  // @Patch(':toId')
+  // editFRByToId(
+  //   @GetUserId() userId: number,
+  //   @Param('toId', ParseIntPipe) toId: number,
+  //   @Body() dto: EditFriendRequestDto,
+  // ): Promise<FriendRequest> {
+  //   return this.friendRequestService.editFRByToId(userId, toId, dto);
+  // }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')

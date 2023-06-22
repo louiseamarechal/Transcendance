@@ -81,20 +81,28 @@ export class FriendRequestService {
     });
   }
 
-  getFRByToId(fromId: number, toId: number) {
+  getFRByToId(userId1: number, userId2: number) {
     return this.prisma.friendRequest.findMany({
       where: {
-        fromId,
-        toId,
+        OR: [
+          {
+            fromId: userId1,
+            toId: userId2,
+          },
+          {
+            fromId: userId2,
+            toId: userId1,
+          },
+        ],
       },
     });
   }
 
   async editFRById(
-    fromId: number,
+    userId: number,
     friendRequestId: number,
     dto: EditFriendRequestDto,
-  ) {
+  ): Promise<FriendRequest> {
     const friendRequest = await this.prisma.friendRequest.findUnique({
       where: {
         id: friendRequestId,
@@ -102,7 +110,10 @@ export class FriendRequestService {
     });
 
     // Check ownership
-    if (!friendRequest || friendRequest.fromId != fromId)
+    if (
+      !friendRequest ||
+      (friendRequest.fromId != userId && friendRequest.toId !== userId)
+    )
       throw new ForbiddenException('Access to ressource denied');
 
     return this.prisma.friendRequest.update({
@@ -115,32 +126,32 @@ export class FriendRequestService {
     });
   }
 
-  async editFRByToId(fromId: number, toId: number, dto: EditFriendRequestDto) {
-    const friendRequest = await this.prisma.friendRequest.findUnique({
-      where: {
-        fromId_toId: {
-          fromId,
-          toId,
-        },
-      },
-    });
+  // async editFRByToId(fromId: number, toId: number, dto: EditFriendRequestDto) {
+  //   const friendRequest = await this.prisma.friendRequest.findUnique({
+  //     where: {
+  //       fromId_toId: {
+  //         fromId,
+  //         toId,
+  //       },
+  //     },
+  //   });
 
     // Check ownership
-    if (!friendRequest)
-      throw new ForbiddenException('Access to ressource denied');
+  //   if (!friendRequest)
+  //     throw new ForbiddenException('Access to ressource denied');
 
-    return this.prisma.friendRequest.update({
-      where: {
-        fromId_toId: {
-          fromId,
-          toId,
-        },
-      },
-      data: {
-        ...dto,
-      },
-    });
-  }
+  //   return this.prisma.friendRequest.update({
+  //     where: {
+  //       fromId_toId: {
+  //         fromId,
+  //         toId,
+  //       },
+  //     },
+  //     data: {
+  //       ...dto,
+  //     },
+  //   });
+  // }
 
   async deleteFRById(fromId: number, friendRequestId: number) {
     const friendRequest = await this.prisma.friendRequest.findUnique({
