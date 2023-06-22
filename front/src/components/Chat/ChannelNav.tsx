@@ -1,6 +1,6 @@
-import ChannelList from './ChannelList';
-import '../../style/components/chat/channel-nav.css';
 import { useChatContext } from '../../hooks/useChatContext';
+import ChannelList from './ChannelNav/ChannelList';
+import '../../style/components/chat/channel-nav.css';
 
 function ChannelNav() {
   const { showCreateChannel, setShowCreateChannel } = useChatContext();
@@ -11,7 +11,9 @@ function ChannelNav() {
         className="small-button"
         id="create-channel"
         onClick={() => {
-          if (!showCreateChannel) setShowCreateChannel(true);
+          if (!showCreateChannel) {
+            setShowCreateChannel(true);
+          }
         }}
       >
         new group chat

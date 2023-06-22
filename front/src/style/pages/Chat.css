@@ -1,6 +1,7 @@
 .chat-page {
   display: flex;
   justify-content: space-between;
+  min-width: 1000px;
 }
 
 #chat-net {

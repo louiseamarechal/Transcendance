@@ -23,7 +23,7 @@ import FoundGamePage from './pages/game/FoundGamePage.tsx';
 import './style/color.css'
 import './style/components/buttons.css';
 import './style/components/avatar.css';
-import './style/pages/color.css';
+import './style/color.css';
 import './style/pages/App.css';
 
 function App() {

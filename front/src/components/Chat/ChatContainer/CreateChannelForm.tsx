@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useChatContext } from '../../hooks/useChatContext';
-import '../../style/components/chat/chat-container.css';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import '../../../style/components/chat/chat-container/create-channel-form.css';
+import '../../../style/components/buttons.css';
+import { useChatContext } from '../../../hooks/useChatContext';
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
+import FriendsList from './CreateChannelForm/FriendsList';
+import FormHeader from './CreateChannelForm/FormHeader';
 
 const CreateChannelForm = () => {
-  const [avatar, setAvatar] = useState<string>('http://localhost:3000/public/default.jpg');
+  const [avatar, setAvatar] = useState<string>(
+    'http://localhost:3000/public/default.jpg',
+  );
   const axiosPrivate = useAxiosPrivate();
   const { setShowCreateChannel, setShowChannel } = useChatContext();
   const [friends, setFriends] = useState<
@@ -14,6 +19,7 @@ const CreateChannelForm = () => {
   const [channelName, setChannelName] = useState<string>();
 
   useEffect(() => {
+    FormHeader;
     axiosPrivate
       .get('friend-request/my-friends')
       .then((res) => {
@@ -32,7 +38,7 @@ const CreateChannelForm = () => {
       await axiosPrivate
         .post('channel', {
           name: channelName,
-          avatar: 'plop',
+          avatar,
           members: selectedFriends,
         })
         .catch((err) => {
@@ -46,17 +52,16 @@ const CreateChannelForm = () => {
 
   return (
     <div className="channel-form">
-      <div className="form-header">
-        <label>
-          <img src={avatar} />
-          <input type="file" name="avatar" defaultValue={avatar}></input>
-        </label>
-        <input
-          className="channel-name"
-          onChange={(event) => setChannelName(event.target.value)}
-        ></input>
-      </div>
-      <div className="friends-list"></div>
+      <FormHeader
+        avatar={avatar}
+        setAvatar={setAvatar}
+        setChannelName={setChannelName}
+      />
+      <FriendsList
+        friends={friends}
+        selectedFriends={selectedFriends}
+        setSelectedFriends={setSelectedFriends}
+      />
       <button type="submit" className="small-button" onSubmit={handleSubmit}>
         create channel
       </button>

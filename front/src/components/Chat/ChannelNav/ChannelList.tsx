@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import '../../style/components/chat/channel-list.css';
-import '../../style/components/buttons.css';
-import ChannelCard from './ChannelCard';
+import '../../../style/components/chat/channel-nav/channel-list.css'
+import '../../../style/components/buttons.css';
 import { Link } from 'react-router-dom';
+import ChannelCard from './ChannelList/ChannelCard';
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 
 const ChannelList = () => {
   const [channelList, setChannelList] = useState<
@@ -28,14 +28,16 @@ const ChannelList = () => {
     <div className="channel-list">
       <div className="scrollable-list">
         <ul>
-            <li>
-              <Link to={'/friends'}><p className='text-center'>Add friend</p></Link>
-            </li>
+          <li>
+            <Link to={'/friends'}>
+              <p className="text-center">Add friend</p>
+            </Link>
+          </li>
           {channelList.map(
-              (elem: { id: number; name: string; avatar: string }) => {
-                return ChannelCard(elem.id, elem.name);
-              },
-            )}
+            (elem: { id: number; name: string; avatar: string }) => {
+              return ChannelCard(elem.id, elem.name);
+            },
+          )}
         </ul>
       </div>
     </div>

@@ -1,5 +1,5 @@
-import { useChatContext } from '../../hooks/useChatContext';
-import '../../style/components/chat/channel-card.css';
+import { useChatContext } from '../../../../hooks/useChatContext';
+import '../../../../style/components/chat/channel-nav/channel-list/channel-card.css';
 
 function ChannelCard(
   id: number,

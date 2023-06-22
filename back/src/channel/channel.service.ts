@@ -25,7 +25,7 @@ export class ChannelService {
       having: {
         userId: {
           _count: {
-            gte: members.length,
+            equals: members.length,
           },
         },
       },

@@ -4,9 +4,10 @@ import ChatContainer from '../components/Chat/ChatContainer.tsx';
 import '../style/pages/Chat.css';
 
 function Chat() {
+
   return (
     <ChatProvider>
-      <div className="h-screen chat-page">
+      <div className="chat-page">
         <ChannelNav />
         <div id="chat-net"></div>
         <ChatContainer />
