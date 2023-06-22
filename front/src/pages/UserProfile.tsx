@@ -3,7 +3,7 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { useEffect, useState } from 'react';
 import { useUser } from '../hooks/useUser';
 import { User } from '../types/User.type';
-import UserCard from '../components/UserCard';
+// import UserCard from '../components/UserCard';
 import ProgressBar from '../components/ProgressBar';
 import { ProfilStat } from '../components/ProfilStat';
 
@@ -16,6 +16,20 @@ export default function UserProfile() {
   const navigate = useNavigate();
 
   console.log('Entering UserProfile component with id =', id);
+
+  const divStyle = [
+    'w-3/5',
+    'h-3/5',
+    'flex flex-row items-start justify-evenly gap-10 pt-6',
+    'border-t-[1px]',
+    'border-r-[2px]',
+    'border-b-[2px]',
+    'border-l-[1px]',
+    'border-[#0000001C]',
+    'rounded-[50px]',
+    'shadow-lg',
+    'flex-wrap',
+  ].join(' ');
 
   useEffect(() => {
     if (myId.toString() === id) {
@@ -38,21 +52,29 @@ export default function UserProfile() {
   }
 
   return (
-    <div className="grid grid-cols-1 place-items-center pt-[10%]">
-      <UserCard user={user} />
-      <ActionButtons />
+    <div className="profil-container">
+      <div className="flex flex-row">
+        <div className="profil-card">
+          <img className="avatar" alt="avatar" src={user?.avatar} />
+          <div className="flex flex-row items-center">
+            <p className="user-name">{user?.name}</p>
+          </div>
+        </div>
+        <ActionButtons />
+      </div>
       <ProgressBar user={user} />
-      <ProfilStat user={user} />
+      <div className={divStyle}>
+        <ProfilStat user={user} />
+      </div>
     </div>
   );
 }
 
-function ActionButtons () {
+function ActionButtons() {
   return (
-    <div className='fixed right-[10%] top-[10%]'>
-      <button>Add friend do nothing</button>
-      <br />
-      <button>Invite to game do nothing</button>
+    <div className="flex flex-col gap-2">
+      <button className="small-button friend-request-button">Add friend</button>
+      <button className='small-button game-request-button'>Send game request</button>
     </div>
-  )
+  );
 }

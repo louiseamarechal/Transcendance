@@ -10,24 +10,9 @@ export default function Settings({ setReload }: SettingsProps) {
 
   return (
     <div>
-      <br />
-      <br />
-
       <h1>Settings</h1>
-
-      <br />
-      <br />
-
       <Toggle2FA toggled={false} />
-
-      <br />
-      <br />
-
       <ChangeName setReload={setReload} />
-
-      <br />
-      <br />
-
       <ChangeAvatar />
     </div>
   );
@@ -37,7 +22,7 @@ type Toggle2FAProps = {
   toggled: boolean;
 };
 
-function Toggle2FA({ toggled }: Toggle2FAProps) {
+export function Toggle2FA({ toggled }: Toggle2FAProps) {
   const [isToggle, toggle] = useState(toggled);
   const axiosInstance = useAxiosPrivate();
 
@@ -51,27 +36,40 @@ function Toggle2FA({ toggled }: Toggle2FAProps) {
   };
 
   return (
-    <label>
+    <label className='flex flex row items-center justify-center gap-2'>
       <input type="checkbox" defaultChecked={isToggle} onClick={callback} />
-      <strong>2FA</strong>
+      <p>2FA</p>
     </label>
   );
 }
 
 type ChangeNameProps = {
   setReload: Dispatch<React.SetStateAction<number>>;
+  setChangingUsername: Dispatch<React.SetStateAction<boolean>>;
 };
 
-function ChangeName({ setReload }: ChangeNameProps) {
+export function ChangeName({
+  setReload,
+  setChangingUsername,
+}: ChangeNameProps) {
   const [name, setName] = useState<string>('');
   const [error, setError] = useState<string>('');
   const axiosInstance = useAxiosPrivate();
+
+  const formStyle = {
+    borderRadius: '30px',
+    borderBottom: '1px solid rgba(0, 0, 0, 0.19)',
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.13)',
+    background: 'transparent',
+    paddingLeft: '8px',
+  };
 
   const handleSubmit = (event: ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setError('');
 
+    setChangingUsername(false);
     axiosInstance
       .patch('user/me', { name })
       .then(() => {
@@ -89,14 +87,15 @@ function ChangeName({ setReload }: ChangeNameProps) {
   return (
     <form onSubmit={handleSubmit}>
       <label>
-        Change your name:
+        {/* Change your name: */}
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          style={formStyle}
         />
       </label>
-      <input type="submit" value="Apply" />
+      <input type="submit" value="  Apply" />
       {error && <p>{error}</p>}
     </form>
   );
