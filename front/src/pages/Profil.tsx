@@ -13,6 +13,7 @@ function Profil() {
   const axiosInstance = useAxiosPrivate();
   const [user, setUser] = useState<User>({});
   const [isLoading, setLoading] = useState<boolean>(true);
+  const [reload, setReload] = useState<number>(0)
 
   console.log('Entering Profil component');
 
@@ -25,7 +26,7 @@ function Profil() {
       })
       .catch((e) => console.log(e));
     console.log({ user });
-  }, []);
+  }, [reload]);
 
   if (isLoading) {
     return <div className="grid place-items-center h-screen">Loading...</div>;
@@ -36,7 +37,7 @@ function Profil() {
       <UserCard user={user} />
       <ProgressBar user={user} />
       <ProfilStat user={user} />
-      <Settings />
+      <Settings setReload={setReload}/>
     </div>
   );
 }

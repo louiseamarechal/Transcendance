@@ -40,8 +40,19 @@ export default function UserProfile() {
   return (
     <div className="grid grid-cols-1 place-items-center pt-[10%]">
       <UserCard user={user} />
+      <ActionButtons />
       <ProgressBar user={user} />
       <ProfilStat user={user} />
     </div>
   );
+}
+
+function ActionButtons () {
+  return (
+    <div className='fixed right-[10%] top-[10%]'>
+      <button>Add friend do nothing</button>
+      <br />
+      <button>Invite to game do nothing</button>
+    </div>
+  )
 }

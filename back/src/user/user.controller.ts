@@ -1,15 +1,23 @@
 import {
   Body,
   Controller,
+  FileTypeValidator,
   Get,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   ParseIntPipe,
   Patch,
+  Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { GetUser, GetUserId } from 'src/common/decorators';
+import { GetUser, GetUserId, Public } from 'src/common/decorators';
 import { EditUserDto } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 
 @Controller('user')
 export class UserController {
@@ -39,8 +47,26 @@ export class UserController {
 
   @Patch('me')
   editUser(@GetUserId() userId: number, @Body() dto: EditUserDto) {
-    console.log('PATCH /user/me called', {dto});
+    console.log('PATCH /user/me called', { dto });
     return this.userService.editUser(userId, dto);
+  }
+
+  @Post('upload-avatar')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadAvatar(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @GetUser('login') userLogin: string,
+  ) {
+    console.log('POST /user/avatar called', file);
+    return this.userService.uploadAvatar(file, userLogin);
   }
 
   @Get(':id')

@@ -1,7 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotAcceptableException,
+  UnprocessableEntityException,
+  UploadedFile,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditUserDto } from './dto';
 import { User } from '@prisma/client';
+import { createFile } from 'src/common/helpers/storage.helper';
 
 @Injectable()
 export class UserService {
@@ -48,15 +55,22 @@ export class UserService {
   }
 
   async editUser(userId: number, dto: EditUserDto): Promise<User> {
-    const user = await this.prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        ...dto,
-      },
-    });
-    return user;
+    try {
+      const user = await this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          ...dto,
+        },
+      });
+      return user;
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new UnprocessableEntityException('Name already exists');
+      }
+      throw new UnprocessableEntityException('Unknown reason');
+    }
   }
 
   async getUserById(id: number) {
@@ -79,5 +93,10 @@ export class UserService {
       throw new BadRequestException(`User #${id} not found`);
     }
     return user;
+  }
+
+  async uploadAvatar(file: Express.Multer.File, userLogin: string) {
+    console.log({file}, {userLogin})
+    createFile('./public', 'tmp.png', file.buffer)
   }
 }
