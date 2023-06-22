@@ -4,7 +4,7 @@ import '../../style/components/chat/chat-container.css';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 const CreateChannelForm = () => {
-  const defaultAvatar = 'http://localhost:3000/'
+  const [avatar, setAvatar] = useState<string>('http://localhost:3000/public/default.jpg');
   const axiosPrivate = useAxiosPrivate();
   const { setShowCreateChannel, setShowChannel } = useChatContext();
   const [friends, setFriends] = useState<
@@ -48,8 +48,8 @@ const CreateChannelForm = () => {
     <div className="channel-form">
       <div className="form-header">
         <label>
-          <img src="" />
-          <input type="file" name="avatar" defaultValue={defaultAvatar}></input>
+          <img src={avatar} />
+          <input type="file" name="avatar" defaultValue={avatar}></input>
         </label>
         <input
           className="channel-name"
