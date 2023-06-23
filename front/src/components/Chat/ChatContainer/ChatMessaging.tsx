@@ -1,6 +1,6 @@
 import { useChatContext } from '../../../hooks/useChatContext';
 import { useState } from 'react';
-import '../../../../style/components/chat/chat-container/chat-messaging.css';
+import '../../../style/components/chat/chat-container/chat-messaging.css';
 
 type ChannelType = {
   id: number;
@@ -14,7 +14,7 @@ const ChatMessaging = () => {
   return (
     <div className="chat-messaging">
       <ChatHeader />
-      <ChatBody />
+      {/* <ChatBody /> */}
     </div>
   );
 };

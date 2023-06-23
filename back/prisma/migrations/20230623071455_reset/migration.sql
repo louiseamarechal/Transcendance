@@ -1,12 +1,23 @@
+-- CreateEnum
+CREATE TYPE "Status2fa" AS ENUM ('SET', 'NOTSET');
+
+-- CreateEnum
+CREATE TYPE "FRStatus" AS ENUM ('PENDING', 'REFUSED', 'ACCEPTED');
+
+-- CreateEnum
+CREATE TYPE "VisType" AS ENUM ('PUBLIC', 'PRIVATE', 'PROTECTED');
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" SERIAL NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "login" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "level" INTEGER NOT NULL DEFAULT 1,
+    "hashedRT" TEXT,
+    "level" DOUBLE PRECISION NOT NULL DEFAULT 1,
     "avatar" TEXT,
-    "active2fa" BOOLEAN NOT NULL DEFAULT false,
+    "s2fa" "Status2fa" NOT NULL DEFAULT 'NOTSET',
     "statTotalGame" INTEGER NOT NULL DEFAULT 0,
     "statTotalWin" INTEGER NOT NULL DEFAULT 0,
 
@@ -19,7 +30,8 @@ CREATE TABLE "friend_requests" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "from_user_id" INTEGER NOT NULL,
-    "request_pending" BOOLEAN NOT NULL,
+    "to_user_id" INTEGER NOT NULL,
+    "status" "FRStatus" NOT NULL DEFAULT 'PENDING',
 
     CONSTRAINT "friend_requests_pkey" PRIMARY KEY ("id")
 );
@@ -30,9 +42,10 @@ CREATE TABLE "channels" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "owner_id" INTEGER NOT NULL,
-    "password" BOOLEAN NOT NULL,
+    "name" TEXT NOT NULL,
+    "avatar" TEXT,
     "passwordHash" TEXT,
-    "public" BOOLEAN NOT NULL DEFAULT true,
+    "visibility" "VisType" NOT NULL DEFAULT 'PUBLIC',
 
     CONSTRAINT "channels_pkey" PRIMARY KEY ("id")
 );
@@ -81,7 +94,7 @@ CREATE TABLE "games" (
     "payer1_id" INTEGER NOT NULL,
     "player2_id" INTEGER NOT NULL,
     "winner_id" INTEGER NOT NULL,
-    "score" TEXT NOT NULL,
+    "score" TEXT,
 
     CONSTRAINT "games_pkey" PRIMARY KEY ("id")
 );
@@ -93,7 +106,16 @@ CREATE TABLE "_friends" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "users_login_key" ON "users"("login");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "users_name_key" ON "users"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "friend_requests_from_user_id_to_user_id_key" ON "friend_requests"("from_user_id", "to_user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "channels_name_key" ON "channels"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_friends_AB_unique" ON "_friends"("A", "B");
@@ -103,6 +125,9 @@ CREATE INDEX "_friends_B_index" ON "_friends"("B");
 
 -- AddForeignKey
 ALTER TABLE "friend_requests" ADD CONSTRAINT "friend_requests_from_user_id_fkey" FOREIGN KEY ("from_user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "friend_requests" ADD CONSTRAINT "friend_requests_to_user_id_fkey" FOREIGN KEY ("to_user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "channels" ADD CONSTRAINT "channels_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
