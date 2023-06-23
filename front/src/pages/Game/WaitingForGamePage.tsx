@@ -18,7 +18,7 @@ const WaitingForGame = () => {
       <h1 className="pong-title">PONG</h1>
       <p>Wait until we find you the perfect match !</p>
       <br />
-      {loading ? <div className="spinner"></div> : <Navigate to="/playgame" replace={true} />}
+      {loading ? <div className="spinner"></div> : <Navigate to="/game/playgame" replace={true} />}
     </div>
   );
 };
