@@ -13,12 +13,29 @@ const NavBar = () => {
   const location = useLocation();
   const { myAvatar } = useUser();
 
+  const navElems = [
+    {
+      to: '/profil',
+      content: <img className="avatar" alt="avatar" src={myAvatar} />,
+    },
+    { to: '/game', content: 'Game' },
+    { to: '/chat', content: 'Chat' },
+    { to: '/friends', content: 'Friends' },
+    { to: '/test', content: 'Test' },
+    { to: '/FindFriends', content: 'FindFriends' },
+    { to: '/profil/1', content: 'Profil 1' },
+    { to: '/profil/2', content: 'Profil 2' },
+    { to: '/profil/3', content: 'Profil 3' },
+    { to: '/profil/4', content: 'Profil 4' },
+    { to: '/profil/5', content: 'Profil 5' },
+  ];
+
   if (location.pathname === '/' || location.pathname === '/game/playgame') {
     return null;
   }
 
   if (!myAvatar) {
-    return <></>;
+    return null;
   }
 
   if (navbarState === true)
@@ -32,109 +49,14 @@ const NavBar = () => {
             setNavbarState(false);
           }}
         />
-        {/* <button className={"opened-nav-button fa-solid fa-xmark"} style={{color:"var(--black)"}} onClick={() => {setNavbarState(false)}}></button> */}
         <ul className="navbar-links">
-          <Link
-            to={'/profil'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            <img className="avatar" alt="avatar" src={myAvatar} />
-          </Link>
-          <Link
-            to={'/game'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Game
-          </Link>
-          <Link
-            to={'/chat'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Chat
-          </Link>
-          <Link
-            to={'/friends'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Friends
-          </Link>
-          <Link
-            to={'/settings'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Settings
-          </Link>
-          <Link
-            to={'/test'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Test
-          </Link>
-          <Link
-            to={'/FindFriends'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            FindFriends
-          </Link>
-
-          <Link
-            to={'/profil/1'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Profile 1
-          </Link>
-
-          <Link
-            to={'/profil/2'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Profile 2
-          </Link>
-
-          <Link
-            to={'/profil/3'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Profile 3
-          </Link>
-
-          <Link
-            to={'/profil/4'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Profile 4
-          </Link>
-
-          <Link
-            to={'/profil/5'}
-            onClick={() => {
-              setNavbarState(false);
-            }}
-          >
-            Profile 5
-          </Link>
+          {navElems.map((elem) => {
+            return (
+              <Link to={elem.to} onClick={() => setNavbarState(false)}>
+                {elem.content}
+              </Link>
+            );
+          })}
         </ul>
       </div>
     );
@@ -148,7 +70,6 @@ const NavBar = () => {
           setNavbarState(true);
         }}
       />
-      // <button className={"navbar-close fa-solid fa-bars"} style={{color:"var(--black)"}} onClick={() => {setNavbarState(true)}}></button>
     );
 };
 
