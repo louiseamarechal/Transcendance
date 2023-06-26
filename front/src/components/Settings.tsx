@@ -1,5 +1,6 @@
-import { ChangeEvent, Dispatch, useState } from 'react';
+import { ChangeEvent, Dispatch, useRef, useState } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import { useUser } from '../hooks/useUser';
 
 type SettingsProps = {
   setReload: Dispatch<React.SetStateAction<number>>;
@@ -13,7 +14,7 @@ export default function Settings({ setReload }: SettingsProps) {
       <h1>Settings</h1>
       <Toggle2FA toggled={false} />
       <ChangeName setReload={setReload} />
-      <ChangeAvatar />
+      <ChangeAvatar setReload={setReload} />
     </div>
   );
 }
@@ -54,6 +55,7 @@ export function ChangeName({
 }: ChangeNameProps) {
   const [name, setName] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [isValid, setIsValid] = useState<boolean>(false);
   const axiosInstance = useAxiosPrivate();
 
   const formStyle = {
@@ -64,9 +66,17 @@ export function ChangeName({
     paddingLeft: '8px',
   };
 
-  const handleSubmit = (event: ChangeEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = (e: ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
+    if (e.target.value.length < 4) {
+      setIsValid(false)
+    } else {
+      setIsValid(true)
+    }
+  };
+
+  const onClick = () => {
     setError('');
 
     setChangingUsername(false);
@@ -97,22 +107,67 @@ export function ChangeName({
       </label>
       <input type="submit" value="  Apply" />
       {error && <p>{error}</p>}
+      <button disabled={isValid ? false : true} onClick={onClick}>
+        Apply
+      </button>
     </form>
   );
 }
 
-function ChangeAvatar() {
-  const handleSubmit = (event: ChangeEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log('ca fé ri1 lol');
+type ChangeAvatarProps = {
+  setReload: Dispatch<React.SetStateAction<number>>;
+};
+
+function ChangeAvatar({ setReload }: ChangeAvatarProps) {
+  const axiosInstance = useAxiosPrivate();
+  const { setMyAvatar } = useUser();
+  const [file, setFile] = useState<File>();
+
+  console.log('ChangeAvatar Component loaded');
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleUploadClick = () => {
+    if (!file) {
+      console.log('No file');
+      return;
+    }
+
+    console.log('RUnning axios');
+    axiosInstance
+      .post(
+        '/user/upload-avatar',
+        { file },
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+      .then((res) => {
+        console.log('Request resolved', res.data);
+        setMyAvatar(res.data);
+        setFile(undefined);
+        setReload((curr) => {
+          return curr + 1;
+        });
+      })
+      .catch((err) => {
+        console.log('patch user/me with ChangeAvatar failed');
+        console.log(err.response.data.message);
+        setFile(undefined);
+      });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        <input type="file" />
-      </label>
-      <input type="submit" value="Apply" />
-    </form>
+    <div>
+      <input type="file" onChange={handleFileChange} />
+      <div>{file && `${file.name} - ${file.type}`}</div>
+      <button onClick={handleUploadClick}>Upload</button>
+    </div>
   );
 }
