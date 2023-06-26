@@ -51,7 +51,6 @@ function App() {
           </Route>
           <Route path="/chat" Component={Chat} />
           <Route path="/friends" Component={Friends} />
-          <Route path="/game" Component={Game} />
           <Route path="/profil" Component={Profil} />
           <Route path="/profil/:id" Component={UserProfile} />
           <Route path="/test" Component={Components} />

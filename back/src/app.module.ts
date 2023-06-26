@@ -7,9 +7,10 @@ import { AtGuard } from './common/guards';
 import { AppController } from './app.controller';
 import { UserModule } from './user/user.module';
 import { FriendRequestModule } from './friend-request/friend-request.module';
+import { GameModule } from './game/game.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, UserModule, FriendRequestModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, UserModule, FriendRequestModule, GameModule],
   controllers: [AppController],
   providers: [
     {
