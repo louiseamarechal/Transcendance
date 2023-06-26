@@ -1,9 +1,9 @@
 .user-card {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: space-between;
     width: 175px;
-    font-family: 'Montserrat Alternates';
     flex-direction: column;
 }
 

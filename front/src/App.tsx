@@ -1,5 +1,5 @@
 // librairies
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 // import React from 'react'
 
 // TypeScript
@@ -7,7 +7,6 @@ import WelcomePage from './pages/WelcomePage.tsx';
 import Game from './pages/Game/Game.tsx';
 import Chat from './pages/Chat.tsx';
 import Friends from './pages/Friends.tsx';
-import Settings from './pages/Settings.tsx';
 import Profil from './pages/Profil.tsx';
 import FindFriends from './pages/FindFriends.tsx';
 import Components from './pages/Components.tsx';
@@ -18,13 +17,14 @@ import useNavbar from './hooks/useNavbar.ts';
 import PlayGame from './pages/Game/PlayGame.tsx';
 import WaitingForGame from './pages/Game/WaitingForGamePage.tsx';
 import FoundGamePage from './pages/game/FoundGamePage.tsx';
+import GameLobby from './pages/Game/GameLobby.tsx';
 
 // CSS
 import './style/components/buttons.css';
 import './style/components/avatar.css';
 import './style/pages/color.css';
 import './style/pages/App.css';
-import GameLobby from './pages/Game/GameLobby.tsx';
+import UserProfile from './pages/UserProfile.tsx';
 
 function App() {
   const { navbarState } = useNavbar();
@@ -53,7 +53,7 @@ function App() {
           <Route path="/friends" Component={Friends} />
           <Route path="/game" Component={Game} />
           <Route path="/profil" Component={Profil} />
-          <Route path="/settings" Component={Settings} />
+          <Route path="/profil/:id" Component={UserProfile} />
           <Route path="/test" Component={Components} />
           <Route path="/findfriends" Component={FindFriends} />
           </Route>

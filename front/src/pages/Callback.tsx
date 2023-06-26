@@ -8,6 +8,7 @@ import { useUser } from '../hooks/useUser';
 import '../style/components/spinner.css';
 
 type JwtDecoded = {
+  id: number,
   name: string;
   avatar: string;
   level: number;
@@ -18,7 +19,7 @@ export function Callback() {
   const code = searchParams.get('code');
   const navigate = useNavigate();
   const { setAuth } = useAuth();
-  const { setName, setAvatar, setLevel } = useUser();
+  const { setMyId, setMyName, setMyAvatar, setMyLevel } = useUser();
   const [ loading, setLoading ] = useState(false);
 
   useEffect(() => {
@@ -44,9 +45,10 @@ export function Callback() {
           console.log({ access_token: response.data.access_token });
           // console.log({ refresh_token });
           const user: JwtDecoded = jwtDecode(response.data.access_token);
-          setName(user.name);
-          setAvatar(user.avatar);
-          setLevel(user.level);
+          setMyId(user.id)
+          setMyName(user.name);
+          setMyAvatar(user.avatar);
+          setMyLevel(user.level);
           setAuth(response.data);
         }
         setLoading(false);

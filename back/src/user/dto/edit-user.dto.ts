@@ -4,11 +4,11 @@ import { IsEnum, IsOptional, IsPositive, IsString } from 'class-validator';
 export class EditUserDto {
   @IsOptional()
   @IsString()
-  hashedRT: string;
+  hashedRT?: string;
 
   @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 
   @IsOptional()
   @IsPositive()

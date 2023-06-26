@@ -157,6 +157,7 @@ export class AuthService {
         {
           sub: user.id,
           id: user.id,
+          login: user.login,
           name: user.name,
           avatar: user.avatar,
           level: user.level,

@@ -14,7 +14,7 @@ function ProgressBar({ user }: Props) {
 
   const containerStyles: CSSProperties = {
     height: 20,
-    width: '30%',
+    width: '50%',
     backgroundColor: '',
     border: '1px solid var(--border)',
     borderRadius: 20,

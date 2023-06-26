@@ -12,7 +12,6 @@
   font-weight: bold;
   color: var(--black);
   letter-spacing: 0.11em;
-  font-family: 'Inter';
   font-style: normal;
   justify-content: up;
 }
@@ -35,7 +34,6 @@
    */
 /* .game-page h1 {
   
-    font-family: 'Inter';
     font-style: normal;
     font-weight: 600;
     font-size: 60px;

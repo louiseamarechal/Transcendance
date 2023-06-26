@@ -11,13 +11,13 @@ import { useUser } from '../hooks/useUser';
 const NavBar = () => {
   const { navbarState, setNavbarState } = useNavbar();
   const location = useLocation();
-  const { avatar } = useUser();
+  const { myAvatar } = useUser();
 
-  if (location.pathname === '/' || location.pathname === '/playgame') {
-    return;
+  if (location.pathname === '/' || location.pathname === '/game/playgame') {
+    return null;
   }
 
-  if (!avatar) {
+  if (!myAvatar) {
     return <></>;
   }
 
@@ -40,7 +40,7 @@ const NavBar = () => {
               setNavbarState(false);
             }}
           >
-            <img className="avatar" alt="avatar" src={avatar} />
+            <img className="avatar" alt="avatar" src={myAvatar} />
           </Link>
           <Link
             to={'/game'}
@@ -89,6 +89,51 @@ const NavBar = () => {
             }}
           >
             FindFriends
+          </Link>
+
+          <Link
+            to={'/profil/1'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Profile 1
+          </Link>
+
+          <Link
+            to={'/profil/2'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Profile 2
+          </Link>
+
+          <Link
+            to={'/profil/3'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Profile 3
+          </Link>
+
+          <Link
+            to={'/profil/4'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Profile 4
+          </Link>
+
+          <Link
+            to={'/profil/5'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Profile 5
           </Link>
         </ul>
       </div>
