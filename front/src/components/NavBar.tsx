@@ -13,7 +13,7 @@ const NavBar = () => {
   const location = useLocation();
   const { myAvatar } = useUser();
 
-  if (location.pathname === '/' || location.pathname === '/playgame') {
+  if (location.pathname === '/' || location.pathname === '/game/playgame') {
     return <></>;
   }
 
