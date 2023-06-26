@@ -37,7 +37,7 @@ export function Toggle2FA({ toggled }: Toggle2FAProps) {
   };
 
   return (
-    <label className='flex flex row items-center justify-center gap-2'>
+    <label className="flex flex-row items-center justify-center gap-2">
       <input type="checkbox" defaultChecked={isToggle} onClick={callback} />
       <p>2FA</p>
     </label>
@@ -54,8 +54,8 @@ export function ChangeName({
   setChangingUsername,
 }: ChangeNameProps) {
   const [name, setName] = useState<string>('');
-  const [error, setError] = useState<string>('');
-  const [isValid, setIsValid] = useState<boolean>(false);
+  // const [error, setError] = useState<string>('');
+  // const [isValid, setIsValid] = useState<boolean>(false);
   const axiosInstance = useAxiosPrivate();
 
   const formStyle = {
@@ -69,15 +69,7 @@ export function ChangeName({
   const handleSubmit = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (e.target.value.length < 4) {
-      setIsValid(false)
-    } else {
-      setIsValid(true)
-    }
-  };
-
-  const onClick = () => {
-    setError('');
+    // setError('');
 
     setChangingUsername(false);
     axiosInstance
@@ -88,11 +80,13 @@ export function ChangeName({
           return curr + 1;
         });
       })
-      .catch((error) => {
+      .catch(() => {
         console.log('patch user/me with ChangeName failed');
-        setError(error.response.data.message);
+        // setError(error.response.data.message);
       });
   };
+
+  // const onClick = () => {};
 
   return (
     <form onSubmit={handleSubmit}>
@@ -106,10 +100,10 @@ export function ChangeName({
         />
       </label>
       <input type="submit" value="  Apply" />
-      {error && <p>{error}</p>}
-      <button disabled={isValid ? false : true} onClick={onClick}>
+      {/* {error && <p>{error}</p>} */}
+      {/* <button disabled={isValid ? false : true} onClick={onClick}>
         Apply
-      </button>
+      </button> */}
     </form>
   );
 }
