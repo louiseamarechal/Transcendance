@@ -40,7 +40,7 @@ const NavBar = () => {
               setNavbarState(false);
             }}
           >
-            <img className="avatar" alt="avatar" src={avatar} />
+            <img className="avatar" alt="avatar" src={myAvatar} />
           </Link>
           <Link
             to={'/game'}
