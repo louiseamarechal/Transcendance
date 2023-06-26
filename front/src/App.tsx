@@ -25,6 +25,8 @@ import './style/components/avatar.css';
 import './style/pages/color.css';
 import './style/pages/App.css';
 import UserProfile from './pages/UserProfile.tsx';
+import GameLayout from './pages/GameSocket/GameLayout.tsx';
+import GameSocketLobby from './pages/GameSocket/GameSocketLobby.tsx';
 
 function App() {
   const { navbarState } = useNavbar();
@@ -43,18 +45,21 @@ function App() {
           <Route path="/callback" Component={Callback} />
           {/* PROTECTED ROUTES */}
           <Route Component={RequireAuth}>
-          <Route path="/game" Component={Game}>
-            <Route index Component={GameLobby} />
-            <Route path="/game/playgame" Component={PlayGame} />
-            <Route path="/game/foundgame" Component={FoundGamePage} />
-            <Route path="/game/wait" Component={WaitingForGame} />
-          </Route>
-          <Route path="/chat" Component={Chat} />
-          <Route path="/friends" Component={Friends} />
-          <Route path="/profil" Component={Profil} />
-          <Route path="/profil/:id" Component={UserProfile} />
-          <Route path="/test" Component={Components} />
-          <Route path="/findfriends" Component={FindFriends} />
+            <Route path="/game" Component={Game}>
+              <Route index Component={GameLobby} />
+              <Route path="/game/playgame" Component={PlayGame} />
+              <Route path="/game/foundgame" Component={FoundGamePage} />
+              <Route path="/game/wait" Component={WaitingForGame} />
+            </Route>
+            <Route path='/gamesocket' Component={GameLayout}>
+              <Route index Component={GameSocketLobby} />
+            </Route>
+            <Route path="/chat" Component={Chat} />
+            <Route path="/friends" Component={Friends} />
+            <Route path="/profil" Component={Profil} />
+            <Route path="/profil/:id" Component={UserProfile} />
+            <Route path="/test" Component={Components} />
+            <Route path="/findfriends" Component={FindFriends} />
           </Route>
         </Routes>
       </div>

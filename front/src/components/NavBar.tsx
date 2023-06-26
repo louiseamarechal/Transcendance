@@ -19,6 +19,7 @@ const NavBar = () => {
       content: <img className="avatar" alt="avatar" src={myAvatar} />,
     },
     { to: '/game', content: 'Game' },
+    { to: '/gamesocket', content: 'GameSocket' },
     { to: '/chat', content: 'Chat' },
     { to: '/friends', content: 'Friends' },
     { to: '/test', content: 'Test' },

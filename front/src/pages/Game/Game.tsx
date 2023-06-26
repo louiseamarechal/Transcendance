@@ -5,7 +5,6 @@ import { Link, Outlet } from 'react-router-dom';
 import { useEffect } from 'react';
 
 function Game() {
-
   return <Outlet />;
 }
 
