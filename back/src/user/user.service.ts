@@ -29,7 +29,7 @@ export class UserService {
     return user;
   }
 
-  async getAll(): Promise<
+  async getAll(userId: number): Promise<
     {
       id: number | null;
       name: string | null;
@@ -38,6 +38,11 @@ export class UserService {
     }[]
   > {
     return await this.prisma.user.findMany({
+      where: {
+        id: {
+          not: userId,
+        }
+      },
       select: {
         id: true,
         name: true,

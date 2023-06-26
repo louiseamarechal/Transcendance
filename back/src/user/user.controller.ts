@@ -18,7 +18,7 @@ export class UserController {
   }
 
   @Get('all')
-  getAll(): Promise<
+  getAll(@GetUserId() userId: number): Promise<
     {
       id: number | null;
       name: string | null;
@@ -27,7 +27,7 @@ export class UserController {
     }[]
   > {
     console.log('GET /user/all called');
-    return this.userService.getAll();
+    return this.userService.getAll(userId);
   }
 
   @Patch('me')

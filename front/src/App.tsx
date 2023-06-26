@@ -9,7 +9,7 @@ import Chat from './pages/Chat.tsx';
 import Friends from './pages/Friends.tsx';
 import Settings from './pages/Settings.tsx';
 import Profil from './pages/Profil.tsx';
-import FindFriends from './pages/Findfriends.tsx';
+import FindFriends from './pages/FindFriends.tsx';
 import Components from './pages/Components.tsx';
 import Callback from './pages/Callback.tsx';
 import RequireAuth from './components/RequireAuth.tsx';
@@ -17,7 +17,7 @@ import NavBar from './components/NavBar.tsx';
 import useNavbar from './hooks/useNavbar.ts';
 import PlayGame from './pages/Game/PlayGame.tsx';
 import WaitingForGame from './pages/Game/WaitingForGamePage.tsx';
-import FoundGamePage from './pages/Game/FoundGamePage.tsx';
+import FoundGamePage from './pages/game/FoundGamePage.tsx';
 
 // CSS
 import './style/components/buttons.css';
