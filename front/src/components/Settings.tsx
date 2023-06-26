@@ -11,24 +11,9 @@ export default function Settings({ setReload }: SettingsProps) {
 
   return (
     <div>
-      <br />
-      <br />
-
       <h1>Settings</h1>
-
-      <br />
-      <br />
-
       <Toggle2FA toggled={false} />
-
-      <br />
-      <br />
-
       <ChangeName setReload={setReload} />
-
-      <br />
-      <br />
-
       <ChangeAvatar setReload={setReload} />
     </div>
   );
@@ -38,7 +23,7 @@ type Toggle2FAProps = {
   toggled: boolean;
 };
 
-function Toggle2FA({ toggled }: Toggle2FAProps) {
+export function Toggle2FA({ toggled }: Toggle2FAProps) {
   const [isToggle, toggle] = useState(toggled);
   const axiosInstance = useAxiosPrivate();
 
@@ -52,36 +37,41 @@ function Toggle2FA({ toggled }: Toggle2FAProps) {
   };
 
   return (
-    <label>
+    <label className="flex flex-row items-center justify-center gap-2">
       <input type="checkbox" defaultChecked={isToggle} onClick={callback} />
-      <strong>2FA</strong>
+      <p>2FA</p>
     </label>
   );
 }
 
 type ChangeNameProps = {
   setReload: Dispatch<React.SetStateAction<number>>;
+  setChangingUsername: Dispatch<React.SetStateAction<boolean>>;
 };
 
-function ChangeName({ setReload }: ChangeNameProps) {
+export function ChangeName({
+  setReload,
+  setChangingUsername,
+}: ChangeNameProps) {
   const [name, setName] = useState<string>('');
-  const [error, setError] = useState<string>('');
-  const [isValid, setIsValid] = useState<boolean>(false);
+  // const [error, setError] = useState<string>('');
+  // const [isValid, setIsValid] = useState<boolean>(false);
   const axiosInstance = useAxiosPrivate();
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-
-    if (e.target.value.length < 4) {
-      setIsValid(false)
-    } else {
-      setIsValid(true)
-    }
+  const formStyle = {
+    borderRadius: '30px',
+    borderBottom: '1px solid rgba(0, 0, 0, 0.19)',
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.13)',
+    background: 'transparent',
+    paddingLeft: '8px',
   };
 
-  const onClick = () => {
-    setError('');
+  const handleSubmit = (e: ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
+    // setError('');
+
+    setChangingUsername(false);
     axiosInstance
       .patch('user/me', { name })
       .then(() => {
@@ -90,25 +80,31 @@ function ChangeName({ setReload }: ChangeNameProps) {
           return curr + 1;
         });
       })
-      .catch((error) => {
+      .catch(() => {
         console.log('patch user/me with ChangeName failed');
-        setError(error.response.data.message);
+        // setError(error.response.data.message);
       });
   };
 
+  // const onClick = () => {};
+
   return (
-    <div>
-      <input
-        type="text"
-        value={name}
-        onChange={onChange}
-      />
-      {!isValid && <p>More!!!</p>}
-      {error && <p>{error}</p>}
-      <button disabled={isValid ? false : true} onClick={onClick}>
+    <form onSubmit={handleSubmit}>
+      <label>
+        {/* Change your name: */}
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          style={formStyle}
+        />
+      </label>
+      <input type="submit" value="  Apply" />
+      {/* {error && <p>{error}</p>} */}
+      {/* <button disabled={isValid ? false : true} onClick={onClick}>
         Apply
-      </button>
-    </div>
+      </button> */}
+    </form>
   );
 }
 
