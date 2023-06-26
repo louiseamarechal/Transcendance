@@ -17,13 +17,13 @@ import useNavbar from './hooks/useNavbar.ts';
 import PlayGame from './pages/Game/PlayGame.tsx';
 import WaitingForGame from './pages/Game/WaitingForGamePage.tsx';
 import FoundGamePage from './pages/game/FoundGamePage.tsx';
+import GameLobby from './pages/Game/GameLobby.tsx';
 
 // CSS
 import './style/components/buttons.css';
 import './style/components/avatar.css';
 import './style/pages/color.css';
 import './style/pages/App.css';
-import UserProfile from './pages/UserProfile.tsx';
 
 function App() {
   const { navbarState } = useNavbar();
@@ -38,20 +38,22 @@ function App() {
         }
       >
         <Routes>
-          <Route path="/" element={<WelcomePage />} />
-          <Route path="/callback" element={<Callback />} />
+          <Route path="/" Component={WelcomePage} />
+          <Route path="/callback" Component={Callback} />
           {/* PROTECTED ROUTES */}
-          <Route element={<RequireAuth />}>
-            <Route path="/chat" element={<Chat />} />
-            <Route path="/friends" element={<Friends />} />
-            <Route path="/game" element={<Game />} />
-            <Route path="/profil/:id" element={<UserProfile />} />
-            <Route path="/profil" element={<Profil />} />
-            <Route path="/test" element={<Components />} />
-            <Route path="/findfriends" element={<FindFriends />} />
-            <Route path="/playgame" element={<PlayGame />} />
-            <Route path="/wait" element={<WaitingForGame />} />
-            <Route path="/foundgame" element={<FoundGamePage />} />
+          <Route Component={RequireAuth}>
+          <Route path="/game" Component={Game}>
+            <Route index Component={GameLobby} />
+            <Route path="/game/playgame" Component={PlayGame} />
+            <Route path="/game/foundgame" Component={FoundGamePage} />
+            <Route path="/game/wait" Component={WaitingForGame} />
+          </Route>
+          <Route path="/chat" Component={Chat} />
+          <Route path="/friends" Component={Friends} />
+          <Route path="/game" Component={Game} />
+          <Route path="/profil" Component={Profil} />
+          <Route path="/test" Component={Components} />
+          <Route path="/findfriends" Component={FindFriends} />
           </Route>
         </Routes>
       </div>

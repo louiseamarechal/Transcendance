@@ -1,8 +1,8 @@
 # Use postgres/example user/password credentials
-version: '3.1'
+version: "3.1"
+name: "transcendance"
 
 services:
-
   db:
     image: postgres:15-bullseye
     restart: on-failure
@@ -12,7 +12,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
-     - 5434:5432
+      - 5434:5432
 
   test-db:
     image: postgres:15-bullseye
@@ -23,7 +23,7 @@ services:
     volumes:
       - test-db-data:/var/lib/postgresql/data
     ports:
-     - 5435:5432
+      - 5435:5432
 
   back:
     container_name: back

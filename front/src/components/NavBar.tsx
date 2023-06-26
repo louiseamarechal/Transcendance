@@ -13,8 +13,8 @@ const NavBar = () => {
   const location = useLocation();
   const { myAvatar } = useUser();
 
-  if (location.pathname === '/' || location.pathname === '/playgame') {
-    return <></>;
+  if (location.pathname === '/' || location.pathname === '/game/playgame') {
+    return null;
   }
 
   if (!myAvatar) {
@@ -34,17 +34,62 @@ const NavBar = () => {
         />
         {/* <button className={"opened-nav-button fa-solid fa-xmark"} style={{color:"var(--black)"}} onClick={() => {setNavbarState(false)}}></button> */}
         <ul className="navbar-links">
-          <Link to={'/profil'}>
-            <img className="avatar" alt="avatar" src={myAvatar} />
+          <Link
+            to={'/profil'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            <img className="avatar" alt="avatar" src={avatar} />
           </Link>
-          <Link to={'/game'}>Game</Link>
-          <Link to={'/chat'}>Chat</Link>
-          <Link to={'/friends'}>Friends</Link>
-          <Link to={'/test'}>Test</Link>
-          <Link to={'/FindFriends'}>FindFriends</Link>
-          <Link to={'/profil/1'}>Profile 1</Link>
-          <Link to={'/profil/2'}>Profile 2</Link>
-          <Link to={'/profil/3'}>Profile 3</Link>
+          <Link
+            to={'/game'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Game
+          </Link>
+          <Link
+            to={'/chat'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Chat
+          </Link>
+          <Link
+            to={'/friends'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Friends
+          </Link>
+          <Link
+            to={'/settings'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Settings
+          </Link>
+          <Link
+            to={'/test'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Test
+          </Link>
+          <Link
+            to={'/FindFriends'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            FindFriends
+          </Link>
         </ul>
       </div>
     );

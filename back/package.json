@@ -6,12 +6,12 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prisma:dev:deploy": "prisma migrate deploy",
-    "db:dev:rm": "docker compose -f ../docker-compose.yml rm db -s -f -v",
-    "db:dev:up": "docker compose -f ../docker-compose.yml up db -d",
+    "prisma:dev:deploy": "prisma migrate deploy && prisma db seed",
+    "db:dev:rm": "docker compose -f ../docker-compose.yml rm -s -f -v db && docker volume rm -f transcendance_db-data",
+    "db:dev:up": "docker compose -f ../docker-compose.yml up -d db",
     "db:dev:restart": "npm run db:dev:rm && npm run db:dev:up && sleep 1 && npm run prisma:dev:deploy",
     "prisma:test:deploy": "dotenv -e .env.test -- prisma migrate deploy",
-    "db:test:rm": "docker compose -f ../docker-compose.yml rm test-db -s -f -v",
+    "db:test:rm": "docker compose -f ../docker-compose.yml rm test-db -s -f -v && docker volume rm -f transcendance_test-db-data",
     "db:test:up": "docker compose -f ../docker-compose.yml up test-db -d",
     "db:test:restart": "npm run db:test:rm && npm run db:test:up && sleep 4 && npm run prisma:test:deploy",
     "build": "nest build",
@@ -94,5 +94,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
