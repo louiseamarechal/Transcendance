@@ -90,6 +90,51 @@ const NavBar = () => {
           >
             FindFriends
           </Link>
+
+          <Link
+            to={'/profil/1'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Profile 1
+          </Link>
+
+          <Link
+            to={'/profil/2'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Profile 2
+          </Link>
+
+          <Link
+            to={'/profil/3'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Profile 3
+          </Link>
+
+          <Link
+            to={'/profil/4'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Profile 4
+          </Link>
+
+          <Link
+            to={'/profil/5'}
+            onClick={() => {
+              setNavbarState(false);
+            }}
+          >
+            Profile 5
+          </Link>
         </ul>
       </div>
     );
