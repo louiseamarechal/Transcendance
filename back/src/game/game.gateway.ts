@@ -25,7 +25,7 @@ export class GameGateway
 
   @SubscribeMessage('game-input')
   handleMessage(client: any, payload: any): string {
-    console.log('received a game input')
+    console.log('received a game input', {payload})
     return 'Yooooo';
   }
 }
