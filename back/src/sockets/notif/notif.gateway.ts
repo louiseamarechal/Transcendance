@@ -26,3 +26,7 @@ export class NotifGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // listen for game request
   // listen for chat request
 }
+
+
+// https://docs.nestjs.com/websockets/gateways
+// https://socket.io/docs/v4/server-initialization/
