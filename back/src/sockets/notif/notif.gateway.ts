@@ -4,7 +4,9 @@ import {
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
+import { Server } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
@@ -12,6 +14,9 @@ import {
   },
 })
 export class NotifGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  @WebSocketServer()
+  server: Server;
+
   @SubscribeMessage('events')
   handleEvent(@MessageBody() data: string): string {
     return data;
@@ -25,6 +30,11 @@ export class NotifGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // handle disconnect
   handleDisconnect(client: any) {
     console.log(`client with id: ${client.id} has left the connection !`);
+  }
+
+  testNotif() {
+    this.server.emit('notif', '1');
+    // console.log(this.server);
   }
 
   // listen for friends request
