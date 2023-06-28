@@ -25,13 +25,13 @@ import './style/components/buttons.css';
 import './style/components/avatar.css';
 import './style/pages/color.css';
 import './style/pages/App.css';
+import './style/components/notification.css'
 
 function App() {
   const { navbarState } = useNavbar();
 
   return (
     <div className="app">
-      <NavBar />
       {/* <NotifSocket /> */}
       <div
         className={

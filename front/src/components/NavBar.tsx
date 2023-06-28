@@ -3,12 +3,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { useUser } from '../hooks/useUser';
+import useNavbar from '../hooks/useNavbar';
 
 import '../style/components/navbar.css';
-import useNavbar from '../hooks/useNavbar';
-import { useUser } from '../hooks/useUser';
 
-const NavBar = () => {
+type NavbarProps = { Game: number; Chat: number; Friends: number };
+const NavBar = (props: NavbarProps) => {
   const { navbarState, setNavbarState } = useNavbar();
   const location = useLocation();
   const { myAvatar } = useUser();
@@ -18,9 +19,9 @@ const NavBar = () => {
       to: '/profil',
       content: <img className="avatar" alt="avatar" src={myAvatar} />,
     },
-    { to: '/game', content: 'Game' },
-    { to: '/chat', content: 'Chat' },
-    { to: '/friends', content: 'Friends' },
+    // { to: '/game', content: 'Game' },
+    // { to: '/chat', content: 'Chat' },
+    // { to: '/friends', content: 'Friends' },
     { to: '/test', content: 'Test' },
     { to: '/FindFriends', content: 'FindFriends' },
     { to: '/profil/1', content: 'Profil 1' },
@@ -50,11 +51,16 @@ const NavBar = () => {
           }}
         />
         <ul className="navbar-links">
-          {navElems.map((elem) => {
+          {navElems.map((elem, index) => {
             return (
-              <Link to={elem.to} onClick={() => setNavbarState(false)}>
-                {elem.content}
-              </Link>
+              <div className="relative" key={index}>
+                <Link to={'/game'}>Game</Link>
+                <Link to={'/chat'}>Chat</Link>
+                <Link to={'/friends'}>Friends</Link>
+                <Link to={elem.to} onClick={() => setNavbarState(false)}>
+                  {elem.content}
+                </Link>
+              </div>
             );
           })}
         </ul>

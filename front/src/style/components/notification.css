@@ -1,0 +1,23 @@
+.notification {
+  position: absolute;
+  top: -4px;
+  right: -10px;
+  width: 25px;
+  height: 25px;
+  flex-shrink: 0;
+  border-radius: 25px;
+  background: var(--red, #e81313);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.notification-text {
+  color: #fff;
+  text-align: center;
+  font-size: 20px;
+  font-family: Montserrat Alternates;
+  font-weight: 600;
+}
