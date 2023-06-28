@@ -16,15 +16,15 @@ import NavBar from './components/NavBar.tsx';
 import useNavbar from './hooks/useNavbar.ts';
 import PlayGame from './pages/Game/PlayGame.tsx';
 import WaitingForGame from './pages/Game/WaitingForGamePage.tsx';
-import FoundGamePage from './pages/game/FoundGamePage.tsx';
+import FoundGamePage from './pages/Game/FoundGamePage.tsx';
 import GameLobby from './pages/Game/GameLobby.tsx';
+import UserProfile from './pages/UserProfile.tsx';
 
 // CSS
 import './style/components/buttons.css';
 import './style/components/avatar.css';
 import './style/pages/color.css';
 import './style/pages/App.css';
-import UserProfile from './pages/UserProfile.tsx';
 
 function App() {
   const { navbarState } = useNavbar();
@@ -32,6 +32,7 @@ function App() {
   return (
     <div className="app">
       <NavBar />
+      {/* <NotifSocket /> */}
       <div
         className={
           'h-screen overflow-auto main-content ' +
