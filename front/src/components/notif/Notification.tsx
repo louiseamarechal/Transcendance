@@ -1,7 +1,7 @@
-const Notification = () => {
+const Notification = ( ) => {
   return (
     <div className="notification">
-      <div className="notification-text"></div>
+      <div className="notification-text">1</div>
     </div>
   );
 };

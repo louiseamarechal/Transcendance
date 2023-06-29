@@ -5,10 +5,11 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useUser } from '../hooks/useUser';
 import useNavbar from '../hooks/useNavbar';
+import Notification from './notif/Notification';
 
 import '../style/components/navbar.css';
 
-type NavbarProps = { Game: number; Chat: number; Friends: number };
+type NavbarProps = { game: number; chat: number; friends: number };
 const NavBar = (props: NavbarProps) => {
   const { navbarState, setNavbarState } = useNavbar();
   const location = useLocation();
@@ -54,6 +55,7 @@ const NavBar = (props: NavbarProps) => {
           {navElems.map((elem, index) => {
             return (
               <div className="relative" key={index}>
+                <Notification />
                 <Link to={elem.to} onClick={() => setNavbarState(false)}>
                   {elem.content}
                 </Link>
