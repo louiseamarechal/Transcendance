@@ -19,9 +19,9 @@ const NavBar = (props: NavbarProps) => {
       to: '/profil',
       content: <img className="avatar" alt="avatar" src={myAvatar} />,
     },
-    // { to: '/game', content: 'Game' },
-    // { to: '/chat', content: 'Chat' },
-    // { to: '/friends', content: 'Friends' },
+    { to: '/game', content: 'Game' },
+    { to: '/chat', content: 'Chat' },
+    { to: '/friends', content: 'Friends' },
     { to: '/test', content: 'Test' },
     { to: '/FindFriends', content: 'FindFriends' },
     { to: '/profil/1', content: 'Profil 1' },
@@ -54,9 +54,6 @@ const NavBar = (props: NavbarProps) => {
           {navElems.map((elem, index) => {
             return (
               <div className="relative" key={index}>
-                <Link to={'/game'}>Game</Link>
-                <Link to={'/chat'}>Chat</Link>
-                <Link to={'/friends'}>Friends</Link>
                 <Link to={elem.to} onClick={() => setNavbarState(false)}>
                   {elem.content}
                 </Link>
