@@ -55,7 +55,7 @@ const NavBar = (props: NavbarProps) => {
           {navElems.map((elem, index) => {
             return (
               <div className="relative" key={index}>
-                <Notification />
+                {props.friends > 0 ? <Notification /> : ''}
                 <Link to={elem.to} onClick={() => setNavbarState(false)}>
                   {elem.content}
                 </Link>

@@ -6,6 +6,7 @@ import { User } from '../types/User.type';
 // import UserCard from '../components/UserCard';
 import ProgressBar from '../components/ProgressBar';
 import { ProfilStat } from '../components/ProfilStat';
+import { notifSocket } from '../api/socket';
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -51,6 +52,12 @@ export default function UserProfile() {
     return <div className="grid place-items-center h-screen">Loading...</div>;
   }
 
+  function handleFriendR () {
+    if (notifSocket.connected) {
+      notifSocket.emit('incrementFriends');
+    }
+  }
+
   return (
     <div className="profil-container">
       <div className="flex flex-row w-[55%] justify-end">
@@ -73,7 +80,7 @@ export default function UserProfile() {
 function ActionButtons() {
   return (
     <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
-      <button className="small-button friend-request-button">Add friend</button>
+      <button className="small-button friend-request-button" onClick={handleFriendR}>Add friend</button>
       <button className='small-button game-request-button'>Send game request</button>
     </div>
   );

@@ -7,6 +7,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { NotifService } from './socket.service';
 
 @WebSocketGateway({
   cors: {
@@ -16,6 +17,7 @@ import { Server } from 'socket.io';
 export class NotifGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
+  notifService: NotifService;
 
   @SubscribeMessage('events')
   handleEvent(@MessageBody() data: string): string {
@@ -24,24 +26,32 @@ export class NotifGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   // handle connection
   handleConnection(client: any) {
+    this.notifService.setSocket(this.server);
     console.log(`client with id: ${client.id} is connected !`);
   }
 
   // handle disconnect
   handleDisconnect(client: any) {
+    this.notifService.setSocket(null);
     console.log(`client with id: ${client.id} has left the connection !`);
   }
 
-  testNotif() {
-    this.server.emit('notif', '1');
-    // console.log(this.server);
+  @SubscribeMessage('incrementGame')
+  handleIncrementGame(): void {
+    const currentGame = this.notifService.getGame();
+    const updatedGame = currentGame + 1;
+
+    // Mettez à jour la valeur de game dans le notifService
+    this.notifService.setGame(updatedGame);
+
+    // Diffusez la valeur de game mise à jour aux clients connectés
+    this.server.emit('gameUpdated', updatedGame);
   }
 
-  // listen for friends request
-
-  // listen for game request
-
-  // listen for chat request
+  // testNotif() {
+  //   this.server.emit('notif', '1');
+  //   // console.log(this.server);
+  // }
 }
 
 // https://docs.nestjs.com/websockets/gateways
