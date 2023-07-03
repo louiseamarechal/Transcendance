@@ -13,9 +13,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <AuthProvider>
         <NavbarProvider>
           <UserProvider>
-            <Routes>
-              <Route path="/*" element={<App />} />
-            </Routes>
+            <App />
           </UserProvider>
         </NavbarProvider>
       </AuthProvider>

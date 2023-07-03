@@ -1,23 +1,23 @@
 // librairies
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 // import React from 'react'
 
 // TypeScript
-import WelcomePage from './pages/WelcomePage.tsx'
-import Game from './pages/game/Game.tsx'
-import Chat from './pages/Chat.tsx'
-import Friends from './pages/Friends.tsx'
-import Settings from './pages/Settings.tsx'
-import Profil from './pages/Profil.tsx'
-import FindFriends from './pages/FindFriends.tsx'
-import Components from './pages/Components.tsx' 
-import Callback from './pages/Callback.tsx'
+import WelcomePage from './pages/WelcomePage.tsx';
+import Game from './pages/game/Game.tsx';
+import Chat from './pages/Chat.tsx';
+import Friends from './pages/Friends.tsx';
+import Profil from './pages/Profil.tsx';
+import FindFriends from './pages/FindFriends.tsx';
+import Components from './pages/Components.tsx';
+import Callback from './pages/Callback.tsx';
 import RequireAuth from './components/RequireAuth.tsx';
 import NavBar from './components/NavBar.tsx';
 import useNavbar from './hooks/useNavbar.ts';
 import PlayGame from './pages/game/PlayGame.tsx';
 import WaitingForGame from './pages/game/WaitingForGamePage.tsx';
 import FoundGamePage from './pages/game/FoundGamePage.tsx';
+import GameLobby from './pages/game/GameLobby.tsx';
 
 // CSS
 import './style/color.css'
@@ -25,6 +25,7 @@ import './style/components/buttons.css';
 import './style/components/avatar.css';
 import './style/color.css';
 import './style/pages/App.css';
+import UserProfile from './pages/UserProfile.tsx';
 
 function App() {
   const { navbarState } = useNavbar();
@@ -39,20 +40,23 @@ function App() {
         }
       >
         <Routes>
-          <Route path="/" element={<WelcomePage />} />
-          <Route path="/callback" element={<Callback />} />
+          <Route path="/" Component={WelcomePage} />
+          <Route path="/callback" Component={Callback} />
           {/* PROTECTED ROUTES */}
-          <Route element={<RequireAuth />}>
-            <Route path="/chat" element={<Chat />} />
-            <Route path="/friends" element={<Friends />} />
-            <Route path="/game" element={<Game />} />
-            <Route path="/profil" element={<Profil />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/test" element={<Components />} />
-            <Route path="/findfriends" element={<FindFriends />} />
-            <Route path="/playgame" element={<PlayGame />} />
-            <Route path="/wait" element={<WaitingForGame />} />
-            <Route path="/foundgame" element={<FoundGamePage />} />
+          <Route Component={RequireAuth}>
+          <Route path="/game" Component={Game}>
+            <Route index Component={GameLobby} />
+            <Route path="/game/playgame" Component={PlayGame} />
+            <Route path="/game/foundgame" Component={FoundGamePage} />
+            <Route path="/game/wait" Component={WaitingForGame} />
+          </Route>
+          <Route path="/chat" Component={Chat} />
+          <Route path="/friends" Component={Friends} />
+          <Route path="/game" Component={Game} />
+          <Route path="/profil" Component={Profil} />
+          <Route path="/profil/:id" Component={UserProfile} />
+          <Route path="/test" Component={Components} />
+          <Route path="/findfriends" Component={FindFriends} />
           </Route>
         </Routes>
       </div>

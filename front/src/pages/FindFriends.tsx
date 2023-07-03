@@ -9,7 +9,7 @@ function FindFriends() {
 
   useEffect(() => {
     axiosInstance
-      .get('users') //a modifier en fonction
+      .get('user/all') //a modifier en fonction
       .then((res) => {
         setArray(res.data);
       })

@@ -11,14 +11,31 @@ import { useUser } from '../hooks/useUser';
 const NavBar = (): JSX.Element | null => {
   const { navbarState, setNavbarState } = useNavbar();
   const location = useLocation();
-  const { avatar } = useUser();
+  const { myAvatar } = useUser();
 
-  if (
-    location.pathname === '/' ||
-    location.pathname === '/playgame' ||
-    !avatar
-  ) {
-    return <></>;
+  const navElems = [
+    {
+      to: '/profil',
+      content: <img className="avatar" alt="avatar" src={myAvatar} />,
+    },
+    { to: '/game', content: 'Game' },
+    { to: '/chat', content: 'Chat' },
+    { to: '/friends', content: 'Friends' },
+    { to: '/test', content: 'Test' },
+    { to: '/FindFriends', content: 'FindFriends' },
+    { to: '/profil/1', content: 'Profil 1' },
+    { to: '/profil/2', content: 'Profil 2' },
+    { to: '/profil/3', content: 'Profil 3' },
+    { to: '/profil/4', content: 'Profil 4' },
+    { to: '/profil/5', content: 'Profil 5' },
+  ];
+
+  if (location.pathname === '/' || location.pathname === '/game/playgame') {
+    return null;
+  }
+
+  if (!myAvatar) {
+    return null;
   }
 
   if (navbarState === true)
@@ -32,17 +49,14 @@ const NavBar = (): JSX.Element | null => {
             setNavbarState(false);
           }}
         />
-        {/* <button className={"opened-nav-button fa-solid fa-xmark"} style={{color:"var(--black)"}} onClick={() => {setNavbarState(false)}}></button> */}
         <ul className="navbar-links">
-          <Link to={'/profil'}>
-            <img className="avatar" alt="avatar" src={avatar} />
-          </Link>
-          <Link to={'/game'}>Game</Link>
-          <Link to={'/chat'}>Chat</Link>
-          <Link to={'/friends'}>Friends</Link>
-          <Link to={'/settings'}>Settings</Link>
-          <Link to={'/test'}>Test</Link>
-          <Link to={'/FindFriends'}>FindFriends</Link>
+          {navElems.map((elem) => {
+            return (
+              <Link to={elem.to} onClick={() => setNavbarState(false)}>
+                {elem.content}
+              </Link>
+            );
+          })}
         </ul>
       </div>
     );
@@ -56,7 +70,6 @@ const NavBar = (): JSX.Element | null => {
           setNavbarState(true);
         }}
       />
-      // <button className={"navbar-close fa-solid fa-bars"} style={{color:"var(--black)"}} onClick={() => {setNavbarState(true)}}></button>
     );
 };
 

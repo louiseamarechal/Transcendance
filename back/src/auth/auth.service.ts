@@ -157,6 +157,7 @@ export class AuthService {
         {
           sub: user.id,
           id: user.id,
+          login: user.login,
           name: user.name,
           avatar: user.avatar,
           level: user.level,
@@ -199,11 +200,11 @@ export class AuthService {
 		console.log(__dirname);
 		console.log(process.cwd());
     const writer = createWriteStream(
-      join(process.cwd(), `/public/${userLogin}.jpg`),
+      join(process.cwd(), `public/${userLogin}.jpg`),
     );
     console.log(
       'dl file',
-      join(process.cwd(), `/public/${userLogin}.jpg`),
+      join(process.cwd(), `public/${userLogin}.jpg`),
     );
 
     // response variable has to be typed with AxiosResponse<T>
