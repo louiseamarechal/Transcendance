@@ -1,23 +1,30 @@
-import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { FRStatus, FriendRequest } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFriendRequestDto } from './dto';
+import { NotifGateway } from 'src/sockets/notif/notif.gateway';
 
 @Injectable()
 export class FriendRequestService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private notif: NotifGateway) {}
 
   async createFR(fromId: number, toId: number): Promise<FriendRequest> {
-    const friendRequest = await this.prisma.friendRequest.create({
-      data: {
-        fromId,
-        toId,
-      },
-    }).catch((error) => {
-			if (error.code === 'P2002')
-				throw new ConflictException('Friend Request already exists.');
-			throw error;
-		});
+    const friendRequest = await this.prisma.friendRequest
+      .create({
+        data: {
+          fromId,
+          toId,
+        },
+      })
+      .catch((error) => {
+        if (error.code === 'P2002')
+          throw new ConflictException('Friend Request already exists.');
+        throw error;
+      });
     return friendRequest;
   }
 

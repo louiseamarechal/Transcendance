@@ -9,9 +9,10 @@ import { DisplayNotification } from './notif/Notification';
 
 import '../style/components/navbar.css';
 
+type notifSocket = {notifSocket: Socket<DefaultEventsMap, DefaultEventsMap>}
 // type NavbarProps = { game: number; chat: number; friends: number };
-// const NavBar = (props: NavbarProps) => {
-const NavBar = () => {
+const NavBar = (props: notifSocket) => {
+// const NavBar = () => {
   const { navbarState, setNavbarState } = useNavbar();
   const location = useLocation();
   const { myAvatar } = useUser();

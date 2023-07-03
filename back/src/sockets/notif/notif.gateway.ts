@@ -36,6 +36,10 @@ export class NotifGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(`client with id: ${client.id} has left the connection !`);
   }
 
+  handleFriendsRequestNotif() {
+    this.server.emit('friendsNotif');
+  }
+
   // @SubscribeMessage('incrementGame')
   // handleIncrementGame(): void {
   //   const currentGame = this.notifService.getGame();
