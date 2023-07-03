@@ -13,7 +13,7 @@ import {
 import { GetUser, GetUserId } from 'src/common/decorators';
 import { ChannelService } from './channel.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
-import { VisType } from '@prisma/client';
+import { Channel, VisType } from '@prisma/client';
 
 @Controller('channel')
 export class ChannelController {
@@ -35,7 +35,7 @@ export class ChannelController {
   getChannel(
     @GetUserId() userId: number,
     @Param('id', ParseIntPipe) channelId: number,
-  ) {
+  ): Promise<Channel | null> {
     return this.channelService.getChannelById(userId, channelId);
   }
 

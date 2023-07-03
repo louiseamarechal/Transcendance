@@ -110,7 +110,7 @@ export class UserService {
       console.log('Successfully renamed - AKA moved!');
     };
 
-    const oldAvatar = (await this.getMe(userId)).avatar?.replace(
+    const oldAvatar = (await this.getUserById(userId)).avatar?.replace(
       'http://localhost:3000/',
       '',
     );

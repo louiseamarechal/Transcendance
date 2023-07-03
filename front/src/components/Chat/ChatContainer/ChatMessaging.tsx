@@ -1,19 +1,24 @@
 import { useChatContext } from '../../../hooks/useChatContext';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../../../style/components/chat/chat-container/chat-messaging.css';
+import ChatHeader from './ChatMessaging/ChatHeader';
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
+import { Channel } from '../../../types/Channel.type';
 
-type ChannelType = {
-  id: number;
-  name: string;
-  avatar: string;
-};
-
-const ChatMessaging = () => {
+function ChatMessaging() {
+  const axiosInstance = useAxiosPrivate();
   const { showChannel } = useChatContext();
-  const [channel, setChannel] = useState<ChannelType>();
+  const [channel, setChannel] = useState<Channel>();
+
+  useEffect(() => {
+    axiosInstance.get('channel:id=' + showChannel).then((res) => {
+      setChannel(res.data);
+    });
+  }, [showChannel]);
+
   return (
     <div className="chat-messaging">
-      <ChatHeader />
+			{channel ? <ChatHeader channel={channel} /> : <></> }
       {/* <ChatBody /> */}
     </div>
   );

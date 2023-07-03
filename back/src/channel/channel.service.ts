@@ -5,7 +5,12 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
-import { BlockedOnChannels, Channel, MembersOnChannels, VisType } from '@prisma/client';
+import {
+  BlockedOnChannels,
+  Channel,
+  MembersOnChannels,
+  VisType,
+} from '@prisma/client';
 
 @Injectable()
 export class ChannelService {
@@ -101,11 +106,32 @@ export class ChannelService {
     });
   }
 
-  getChannelById(ownerId: number, channelId: number) {
-    return this.prisma.channel.findMany({
+  async getChannelById(
+    userId: number,
+    channelId: number,
+  ): Promise<Channel | null> {
+    const channel = this.prisma.membersOnChannels.findUnique({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId,
+        },
+      },
+    });
+    if (!channel) throw new ForbiddenException('User not a member');
+    const forbidden = this.prisma.blockedOnChannels.findUnique({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId,
+        },
+      },
+    });
+    if (forbidden === null)
+      throw new ForbiddenException('User blocked on channel');
+    return this.prisma.channel.findUnique({
       where: {
         id: channelId,
-        ownerId,
       },
     });
   }
