@@ -6,6 +6,7 @@ import { User } from '../types/User.type';
 // import UserCard from '../components/UserCard';
 import ProgressBar from '../components/ProgressBar';
 import { ProfilStat } from '../components/ProfilStat';
+// import axios from 'axios';
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -50,13 +51,19 @@ export default function UserProfile() {
   if (isLoading) {
     return <div className="grid place-items-center h-screen">Loading...</div>;
   }
-
-  // function handleFriendR () {
-  //   if (notifSocket.connected) {
-  //     notifSocket.emit('incrementFriends');
-  //   }
-  // }
-
+  const handleAddFriend = () => {
+    //rajouter une condition pour dire que si la request a deja ete faite on la refait pas sinon ca saute.
+    // if (user.sentRequests)
+    //pour le moment ca marhc ebien seulement si on fait une seule FR
+    axiosInstance
+      .post(`friend-request/${id}`, {})
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        if (error.response.status !== 409) console.error(error);
+      });
+  };
   return (
     <div className="profil-container">
       <div className="flex flex-row w-[55%] justify-end">
@@ -66,7 +73,8 @@ export default function UserProfile() {
             <p className="user-name">{user?.name}</p>
           </div>
         </div>
-        <ActionButtons />
+        <ActionButtons handleAddFriend={handleAddFriend} />
+        {/* <ActionButtons userId ={myId}/> */}
       </div>
       <ProgressBar user={user} />
       <div className={divStyle}>
@@ -75,12 +83,43 @@ export default function UserProfile() {
     </div>
   );
 }
+// type ActionButtonsProps = {
+//   userId: number;
+// }
+type ActionButtonsProps = {
+  handleAddFriend: Function;
+};
+// function ActionButtons( userId: ActionButtonsProps ) {
+function ActionButtons({ handleAddFriend }: ActionButtonsProps) {
+  // const handleAddFriend = () => {
+  //   // Requête Axios pour ajouter l'ami
+  //   console.log({userId});
+  //   const axiosInstance = useAxiosPrivate();
+  //   axiosInstance
+  //   // axios.post(`/friend-request/${userId}`, {
+  //   .post(`/friend-request/${userId}`, {
 
-function ActionButtons() {
+  //   })
+  //     .then(response => {
+  //       // Traitement de la réponse du serveur
+  //       console.log(response.data);
+  //     })
+  //     .catch(error => {
+  //       // Gestion des erreurs
+  //       console.error(error);
+  //     });
+  // };
   return (
     <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
-      <button className="small-button friend-request-button">Add friend</button>
-      <button className='small-button game-request-button'>Send game request</button>
+      <button
+        className="small-button friend-request-button"
+        onClick={handleAddFriend}
+      >
+        Add friend
+      </button>
+      <button className="small-button game-request-button">
+        Send game request
+      </button>
     </div>
   );
 }
