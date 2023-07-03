@@ -23,7 +23,7 @@ function Friends() {
 
   useEffect(() => {
     axiosInstance
-      .get('friend-request/myfriends')
+      .get('friend-request/my-friends')
       .then((res) => {
         setArray(res.data);
       })

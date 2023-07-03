@@ -19,33 +19,6 @@ function FindFriends() {
   return (
     <>
       <div className="findfriends-container friend-card">
-        {/* <div className="friend-card">
-          <UserCard />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard />{' '} */}
-        {/* </div> */}
         {array.map((elem) => {
           return (
             <div className="friend-card">
