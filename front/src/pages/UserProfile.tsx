@@ -57,11 +57,11 @@ export default function UserProfile() {
     //pour le moment ca marhc ebien seulement si on fait une seule FR
     axiosInstance
       .post(`friend-request/${id}`, {})
-      .then(response => {
-      console.log(response.data);
+      .then((response) => {
+        console.log(response.data);
       })
-      .catch(error => {
-      console.error(error);
+      .catch((error) => {
+        if (error.response.status !== 409) console.error(error);
       });
   };
   return (
@@ -73,7 +73,7 @@ export default function UserProfile() {
             <p className="user-name">{user?.name}</p>
           </div>
         </div>
-        <ActionButtons handleAddFriend = {handleAddFriend}/>
+        <ActionButtons handleAddFriend={handleAddFriend} />
         {/* <ActionButtons userId ={myId}/> */}
       </div>
       <ProgressBar user={user} />
@@ -88,9 +88,9 @@ export default function UserProfile() {
 // }
 type ActionButtonsProps = {
   handleAddFriend: Function;
-}
+};
 // function ActionButtons( userId: ActionButtonsProps ) {
-  function ActionButtons  ({handleAddFriend }: ActionButtonsProps) {
+function ActionButtons({ handleAddFriend }: ActionButtonsProps) {
   // const handleAddFriend = () => {
   //   // Requête Axios pour ajouter l'ami
   //   console.log({userId});
@@ -98,8 +98,7 @@ type ActionButtonsProps = {
   //   axiosInstance
   //   // axios.post(`/friend-request/${userId}`, {
   //   .post(`/friend-request/${userId}`, {
-  
-   
+
   //   })
   //     .then(response => {
   //       // Traitement de la réponse du serveur
@@ -112,8 +111,15 @@ type ActionButtonsProps = {
   // };
   return (
     <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
-      <button className="small-button friend-request-button" onClick={handleAddFriend}>Add friend</button>
-      <button className='small-button game-request-button'>Send game request</button>
+      <button
+        className="small-button friend-request-button"
+        onClick={handleAddFriend}
+      >
+        Add friend
+      </button>
+      <button className="small-button game-request-button">
+        Send game request
+      </button>
     </div>
   );
 }
