@@ -52,11 +52,11 @@ export default function UserProfile() {
     return <div className="grid place-items-center h-screen">Loading...</div>;
   }
 
-  function handleFriendR () {
-    if (notifSocket.connected) {
-      notifSocket.emit('incrementFriends');
-    }
-  }
+  // function handleFriendR () {
+  //   if (notifSocket.connected) {
+  //     notifSocket.emit('incrementFriends');
+  //   }
+  // }
 
   return (
     <div className="profil-container">
@@ -80,7 +80,7 @@ export default function UserProfile() {
 function ActionButtons() {
   return (
     <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
-      <button className="small-button friend-request-button" onClick={handleFriendR}>Add friend</button>
+      <button className="small-button friend-request-button">Add friend</button>
       <button className='small-button game-request-button'>Send game request</button>
     </div>
   );

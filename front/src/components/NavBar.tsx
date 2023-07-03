@@ -9,8 +9,9 @@ import Notification from './notif/Notification';
 
 import '../style/components/navbar.css';
 
-type NavbarProps = { game: number; chat: number; friends: number };
-const NavBar = (props: NavbarProps) => {
+// type NavbarProps = { game: number; chat: number; friends: number };
+// const NavBar = (props: NavbarProps) => {
+const NavBar = () => {
   const { navbarState, setNavbarState } = useNavbar();
   const location = useLocation();
   const { myAvatar } = useUser();
@@ -55,7 +56,7 @@ const NavBar = (props: NavbarProps) => {
           {navElems.map((elem, index) => {
             return (
               <div className="relative" key={index}>
-                {props.friends > 0 ? <Notification /> : ''}
+                <Notification />
                 <Link to={elem.to} onClick={() => setNavbarState(false)}>
                   {elem.content}
                 </Link>

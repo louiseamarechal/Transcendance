@@ -7,7 +7,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
-import { NotifService } from './socket.service';
+// import { NotifService } from './socket.service';
 
 @WebSocketGateway({
   cors: {
@@ -17,7 +17,7 @@ import { NotifService } from './socket.service';
 export class NotifGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
-  notifService: NotifService;
+  // notifService: NotifService;
 
   @SubscribeMessage('events')
   handleEvent(@MessageBody() data: string): string {
@@ -26,27 +26,27 @@ export class NotifGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   // handle connection
   handleConnection(client: any) {
-    this.notifService.setSocket(this.server);
+    // this.notifService.setSocket(this.server);
     console.log(`client with id: ${client.id} is connected !`);
   }
 
   // handle disconnect
   handleDisconnect(client: any) {
-    this.notifService.setSocket(null);
+    // this.notifService.setSocket(null);
     console.log(`client with id: ${client.id} has left the connection !`);
   }
 
-  @SubscribeMessage('incrementGame')
-  handleIncrementGame(): void {
-    const currentGame = this.notifService.getGame();
-    const updatedGame = currentGame + 1;
+  // @SubscribeMessage('incrementGame')
+  // handleIncrementGame(): void {
+  //   const currentGame = this.notifService.getGame();
+  //   const updatedGame = currentGame + 1;
 
-    // Mettez à jour la valeur de game dans le notifService
-    this.notifService.setGame(updatedGame);
+  //   // Mettez à jour la valeur de game dans le notifService
+  //   this.notifService.setGame(updatedGame);
 
-    // Diffusez la valeur de game mise à jour aux clients connectés
-    this.server.emit('gameUpdated', updatedGame);
-  }
+  //   // Diffusez la valeur de game mise à jour aux clients connectés
+  //   this.server.emit('gameUpdated', updatedGame);
+  // }
 
   // testNotif() {
   //   this.server.emit('notif', '1');

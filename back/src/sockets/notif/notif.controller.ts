@@ -10,7 +10,7 @@ export class NotifController {
   // testNotif() {
   //   this.notifGateway.testNotif();
   // }
-  @Patch('incrementGame')
+  // @Patch('incrementGame')
   // friendNotif(i: number) {
   //   this.notifGateway.friendNotif(i);
   // }
