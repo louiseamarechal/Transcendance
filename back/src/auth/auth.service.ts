@@ -196,12 +196,14 @@ export class AuthService {
   }
 
   async downloadPhoto(userLogin: string, url: string) {
+		console.log(__dirname);
+		console.log(process.cwd());
     const writer = createWriteStream(
-      join(__dirname, '..', '..', '..', `public/${userLogin}.jpg`),
+      join(process.cwd(), `/public/${userLogin}.jpg`),
     );
     console.log(
       'dl file',
-      join(__dirname, '..', '..', '..', `public/${userLogin}.jpg`),
+      join(process.cwd(), `/public/${userLogin}.jpg`),
     );
 
     // response variable has to be typed with AxiosResponse<T>
