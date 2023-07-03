@@ -64,7 +64,7 @@ export class FriendRequestService {
     });
   }
 
-  getFRs(fromId: number) {
+  getFRs(fromId: number): Promise<FriendRequest[]> {
     return this.prisma.friendRequest.findMany({
       where: {
         fromId,
@@ -86,6 +86,22 @@ export class FriendRequestService {
       where: {
         fromId,
         toId,
+      },
+    });
+  }
+
+  getReceivedFR(
+    toId: number,
+  ): Promise<{ fromId: number; toId: number; status: FRStatus }[]> {
+    return this.prisma.friendRequest.findMany({
+      where: {
+        toId,
+        status: FRStatus.PENDING,
+      },
+      select: {
+        fromId: true,
+        toId: true,
+        status: true,
       },
     });
   }

@@ -5,7 +5,7 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useUser } from '../hooks/useUser';
 import useNavbar from '../hooks/useNavbar';
-import Notification from './notif/Notification';
+import { DisplayNotification } from './notif/Notification';
 
 import '../style/components/navbar.css';
 
@@ -56,7 +56,11 @@ const NavBar = () => {
           {navElems.map((elem, index) => {
             return (
               <div className="relative" key={index}>
-                <Notification />
+                {typeof(elem.content) === 'string' ? (
+                  <DisplayNotification element={elem.content} />
+                ) : (
+                  ''
+                )}
                 <Link to={elem.to} onClick={() => setNavbarState(false)}>
                   {elem.content}
                 </Link>

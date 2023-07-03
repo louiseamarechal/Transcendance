@@ -6,7 +6,6 @@ import { User } from '../types/User.type';
 // import UserCard from '../components/UserCard';
 import ProgressBar from '../components/ProgressBar';
 import { ProfilStat } from '../components/ProfilStat';
-import { notifSocket } from '../api/socket';
 
 export default function UserProfile() {
   const { id } = useParams();

@@ -33,7 +33,7 @@ export class FriendRequestController {
 
   @Get('my-friends')
   getMyFriends(@GetUserId() userId: number) {
-    return (this.friendRequestService.getMyFriends(userId))
+    return this.friendRequestService.getMyFriends(userId);
   }
 
   @Get()
@@ -47,6 +47,11 @@ export class FriendRequestController {
     @Param('id', ParseIntPipe) id: number,
   ) {
     return this.friendRequestService.getFRById(userId, id);
+  }
+
+  @Get('received')
+  getReceivedFR(@GetUserId() userId: number) {
+    return this.friendRequestService.getReceivedFR(userId);
   }
 
   @Get(':toId')
