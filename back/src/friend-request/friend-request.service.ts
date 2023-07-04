@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
 import { FRStatus, FriendRequest } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFriendRequestDto } from './dto';
@@ -13,7 +13,11 @@ export class FriendRequestService {
         fromId,
         toId,
       },
-    });
+    }).catch((error) => {
+			if (error.code === 'P2002')
+				throw new ConflictException('Friend Request already exists.');
+			throw error;
+		});
     return friendRequest;
   }
 
