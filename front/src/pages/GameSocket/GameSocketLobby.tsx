@@ -9,21 +9,27 @@ export default function GameSocketLobby() {
     // api call to check for a game
     let queue: any[];
     try {
-      const response = await axiosInstance.get('/game/queue')
-      queue = response.data
+      const response = await axiosInstance.get('/game/queue');
+      queue = response.data;
     } catch (err) {
-      console.log('request /game/queue failed', err)
-      return
+      console.log('request /game/queue failed', err);
+      return;
     }
 
     console.log({ queue });
 
     if (queue.length === 0) {
       // if no one is seaching for a game, navigate to the queue page
-      navigate('/gamesocket/queue')
+      try {
+        await axiosInstance.get('/game/join-queue');
+      } catch (err) {
+        console.log('request /game/join-queue failed', err);
+        return;
+      }
+      navigate('/gamesocket/queue');
     } else {
       // if there is someone in the queue, create a game
-      navigate('/gamesocket/game')
+      navigate('/gamesocket/game');
     }
   };
 

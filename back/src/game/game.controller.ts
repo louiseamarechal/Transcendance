@@ -10,4 +10,9 @@ export class GameController {
   getQueue() {
     return this.gameService.getQueue();
   }
+
+  @Get('join-queue')
+  getJoinQueue(@GetUserId() userId: number) {
+    return this.gameService.getJoinQueue(userId);
+  }
 }
