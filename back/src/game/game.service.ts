@@ -13,9 +13,13 @@ export class GameService {
 
   async getJoinQueue(userId: number) {
     await this.prisma.gameQueue.create({
-      data: {
-        playerId: userId,
-      },
+      data: { playerId: userId },
+    });
+  }
+
+  async getLeaveQueue(userId: number) {
+    await this.prisma.gameQueue.deleteMany({
+      where: { playerId: userId },
     });
   }
 }
