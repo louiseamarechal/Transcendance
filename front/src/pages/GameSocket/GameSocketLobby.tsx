@@ -1,48 +1,42 @@
-import { PointerEvent, useRef, useState } from 'react';
-import { gameSocket } from '../../api/socket';
+import { useNavigate } from 'react-router-dom';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 export default function GameSocketLobby() {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  const divRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const axiosInstance = useAxiosPrivate();
 
-  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    // setPos({ x: event.clientX, y: event.clientY });
-    const divMinY = divRef.current!.offsetTop;
-    const divMaxY = divMinY + divRef.current!.offsetHeight;
-
-    const newObj = { x: event.clientX, y: event.clientY};
-
-    if (event.clientY <= divMinY) {
-      newObj.y = 0;
-    } else if (event.clientY >= divMaxY) {
-      newObj.y = 1;
-    } else {
-      newObj.y = (event.clientY - divMinY) / (divMaxY - divMinY)
+  const handleSearchGame = async () => {
+    // api call to check for a game
+    let queue: any[];
+    try {
+      const response = await axiosInstance.get('/game/queue')
+      queue = response.data
+    } catch (err) {
+      console.log('request /game/queue failed', err)
+      return
     }
 
-    setPos(newObj)
+    console.log({ queue });
 
-    console.log(divRef.current?.offsetLeft);
-    gameSocket.emit('game-input', { x: event.clientX, y: event.clientY });
+    if (queue.length === 0) {
+      // if no one is seaching for a game, navigate to the queue page
+      navigate('/gamesocket/queue')
+    } else {
+      // if there is someone in the queue, create a game
+      navigate('/gamesocket/game')
+    }
   };
 
   return (
-    <div
-      className="h-screen grid place-content-center"
-      onPointerMove={handlePointerMove}
-    >
-      <div>
-        Pos X: {pos.x}
-        <br />
-        Pos Y: {pos.y}
+    <div className="gamepage-container">
+      <h1 className="gamepage-title">PONG</h1>
+      <div className="net-container">
+        <button className="searchgame-button mr-2" onClick={handleSearchGame}>
+          Search Game
+        </button>
+        <div className="net"></div>
+        <button className="searchgame-button m1-2">Invite Friends</button>
       </div>
-      <div ref={divRef} className="h-[20em] w-[20em] bg-indigo-300"></div>
     </div>
-
-    // <button
-    //   onClick={() => console.log(gameSocket.emit('game-input', 'Bonsoir'))}
-    // >
-    //   HERRRE
-    // </button>
   );
 }

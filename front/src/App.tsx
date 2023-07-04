@@ -27,6 +27,8 @@ import './style/pages/App.css';
 import UserProfile from './pages/UserProfile.tsx';
 import GameLayout from './pages/GameSocket/GameLayout.tsx';
 import GameSocketLobby from './pages/GameSocket/GameSocketLobby.tsx';
+import GameSocketQueue from './pages/GameSocket/GameSocketQueue.tsx';
+import GameSocketGame from './pages/GameSocket/GameSocketGame.tsx';
 
 function App() {
   const { navbarState } = useNavbar();
@@ -53,6 +55,8 @@ function App() {
             </Route>
             <Route path='/gamesocket' Component={GameLayout}>
               <Route index Component={GameSocketLobby} />
+              <Route path='queue' Component={GameSocketQueue}/>
+              <Route path='game' Component={GameSocketGame}/>
             </Route>
             <Route path="/chat" Component={Chat} />
             <Route path="/friends" Component={Friends} />

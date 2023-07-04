@@ -38,9 +38,10 @@ model User {
 
   sentMessages Message[] @relation("sender")
 
-  initGames    Game[] @relation("player1")
-  invitedGames Game[] @relation("player2")
-  wonGames     Game[] @relation("winner")
+  initGames    Game[]      @relation("player1")
+  invitedGames Game[]      @relation("player2")
+  wonGames     Game[]      @relation("winner")
+  gameQueue    GameQueue[]
 
   @@map("users")
 }
@@ -77,10 +78,10 @@ model Channel {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  owner   User   @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId Int    @map("owner_id")
-  name    String @unique
-	avatar  String?
+  owner   User    @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId Int     @map("owner_id")
+  name    String  @unique
+  avatar  String?
 
   admins  AdminsOnChannels[]
   members MembersOnChannels[]
@@ -150,7 +151,7 @@ model Game {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   player1   User @relation(name: "player1", fields: [player1Id], references: [id], onDelete: Cascade)
-  player1Id Int  @map("payer1_id")
+  player1Id Int  @map("player1_id")
 
   player2   User @relation(name: "player2", fields: [player2Id], references: [id], onDelete: Cascade)
   player2Id Int  @map("player2_id")
@@ -162,3 +163,15 @@ model Game {
 
   @@map("games")
 }
+
+model GameQueue {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("create_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  player   User @relation(fields: [playerId], references: [id])
+  playerId Int  @map("player_id")
+
+  @@map("game_queue")
+}
+

@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -5,27 +6,30 @@ import {
   SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets';
+import { Socket } from 'socket.io';
+import { SocketAuthMiddleware } from 'src/common/middleware/ws.mw';
 
+// @UseGuards(WsJwtGuard)
 @WebSocketGateway({ namespace: 'game' })
 export class GameGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
 {
-
-  afterInit(server: any) {
-    console.log('Websocket on')
+  afterInit(client: Socket) {
+    client.use(SocketAuthMiddleware() as any);
+    console.log('Websocket on');
   }
 
   handleConnection(client: any, ...args: any[]) {
-    console.log('Someone connect')
+    console.log('Someone connect');
   }
 
   handleDisconnect(client: any) {
-    console.log('Someone disconnect')
+    console.log('Someone disconnect');
   }
 
-  @SubscribeMessage('game-input')
+  @SubscribeMessage('input')
   handleMessage(client: any, payload: any): string {
-    console.log('received a game input', {payload})
+    console.log('received a game input', { payload });
     return 'Yooooo';
   }
 }
