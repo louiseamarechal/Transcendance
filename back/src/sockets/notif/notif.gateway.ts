@@ -6,8 +6,9 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
-// import { NotifService } from './socket.service';
+import { Socket, Server } from 'socket.io';
+import { SocketService } from '../socket.service';
+import { NotifService } from './notif.service';
 
 @WebSocketGateway({
   cors: {
@@ -15,9 +16,12 @@ import { Server } from 'socket.io';
   },
 })
 export class NotifGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  constructor(
+    private socketService: SocketService,
+    private notifService: NotifService,
+  ) {}
   @WebSocketServer()
   server: Server;
-  // notifService: NotifService;
 
   @SubscribeMessage('events')
   handleEvent(@MessageBody() data: string): string {
@@ -25,36 +29,32 @@ export class NotifGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   // handle connection
-  handleConnection(client: any) {
-    // this.notifService.setSocket(this.server);
+  handleConnection(client: Socket) {
     console.log(`client with id: ${client.id} is connected !`);
+    this.socketService.handleConnection(client, '');
   }
 
   // handle disconnect
-  handleDisconnect(client: any) {
-    // this.notifService.setSocket(null);
+  handleDisconnect(client: Socket) {
+    // this.notifService.handleDisconnect(client, userLogin, '');
     console.log(`client with id: ${client.id} has left the connection !`);
   }
 
-  handleFriendsRequestNotif() {
-    this.server.emit('friendsNotif');
+  // @SubscribeMessage('friends-notif')
+  handleFriendsNotif(@MessageBody() data: string) {
+    this.notifService.handleFriendsNotif(data, this.server);
   }
-
-  // @SubscribeMessage('incrementGame')
-  // handleIncrementGame(): void {
-  //   const currentGame = this.notifService.getGame();
-  //   const updatedGame = currentGame + 1;
-
-  //   // Mettez à jour la valeur de game dans le notifService
-  //   this.notifService.setGame(updatedGame);
-
-  //   // Diffusez la valeur de game mise à jour aux clients connectés
-  //   this.server.emit('gameUpdated', updatedGame);
+  // @SubscribeMessage('join-room')
+  // handleJoinRoom(
+  //   @ConnectedSocket() client: Socket,
+  //   @MessageBody() data: string,
+  // ): string {
+  //   this.notifService.handleJoinRoom(client, data);
+  //   return data;
   // }
 
-  // testNotif() {
-  //   this.server.emit('notif', '1');
-  //   // console.log(this.server);
+  // handleFriendsRequestNotif() {
+  //   this.server.emit('friendsNotif');
   // }
 }
 

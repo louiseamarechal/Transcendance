@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
@@ -10,8 +11,10 @@ import { NotifGateway } from 'src/sockets/notif/notif.gateway';
 
 @Injectable()
 export class FriendRequestService {
-  constructor(private prisma: PrismaService, private notif: NotifGateway) {}
-
+  constructor(
+    private notifGateway: NotifGateway,
+    private prisma: PrismaService,
+  ) {}
   async createFR(fromId: number, toId: number): Promise<FriendRequest> {
     const friendRequest = await this.prisma.friendRequest
       .create({
@@ -25,6 +28,14 @@ export class FriendRequestService {
           throw new ConflictException('Friend Request already exists.');
         throw error;
       });
+
+    const receiver = await this.prisma.user.findUnique({
+      where: { id: toId },
+    });
+    if (!receiver) {
+      throw new BadRequestException();
+    }
+    this.notifGateway.handleFriendsNotif(receiver.login);
     return friendRequest;
   }
 

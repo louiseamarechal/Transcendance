@@ -1,33 +1,26 @@
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
-import { useEffect } from 'react';
-import { notifSocket } from '../api/socket';
+import { useEffect, useState } from 'react';
 import NavBar from './NavBar';
 import useNavbar from '../hooks/useNavbar';
+import { Socket, io } from 'socket.io-client';
 
 const RequireAuth = () => {
   const { auth } = useAuth();
   const location = useLocation();
   const { navbarState } = useNavbar();
-
-  function receiveNotif() {
-    console.log('someone is reaching out !');
-  }
-
+  const AppURL = 'http://localhost:3000';
+  const [notifSocket, setNotifSocket] = useState<Socket>();
+  
+  // function receiveNotif() {
+  //   console.log('someone is reaching out !');
+  // }
+  
   useEffect(() => {
-    if (auth.access_token) {
-      notifSocket.connect();
-      if (notifSocket.connected) {
-        console.log('Socket connected !');
-      } else {
-        console.log('pas reussi');
-      }
-
-      notifSocket.on('notif', receiveNotif);
-    }
-
+    const newSocket = io(AppURL, { auth: { token: auth.access_token } });
+    setNotifSocket(newSocket);
     return () => {
-      notifSocket.disconnect();
+      newSocket.disconnect();
     };
   }, []);
 

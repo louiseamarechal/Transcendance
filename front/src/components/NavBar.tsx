@@ -6,12 +6,13 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useUser } from '../hooks/useUser';
 import useNavbar from '../hooks/useNavbar';
 import { DisplayNotification } from './notif/Notification';
+import { Socket } from 'socket.io-client';
 
 import '../style/components/navbar.css';
 
-type notifSocket = {notifSocket: Socket<DefaultEventsMap, DefaultEventsMap>}
+type NavbarProps = {notifSocket: Socket | undefined}
 // type NavbarProps = { game: number; chat: number; friends: number };
-const NavBar = (props: notifSocket) => {
+const NavBar = ({notifSocket}: NavbarProps) => {
 // const NavBar = () => {
   const { navbarState, setNavbarState } = useNavbar();
   const location = useLocation();
@@ -32,6 +33,7 @@ const NavBar = (props: notifSocket) => {
     { to: '/profil/3', content: 'Profil 3' },
     { to: '/profil/4', content: 'Profil 4' },
     { to: '/profil/5', content: 'Profil 5' },
+    { to: '/profil/6', content: 'Profil 6' },
   ];
 
   if (location.pathname === '/' || location.pathname === '/game/playgame') {
@@ -58,7 +60,7 @@ const NavBar = (props: notifSocket) => {
             return (
               <div className="relative" key={index}>
                 {typeof(elem.content) === 'string' ? (
-                  <DisplayNotification element={elem.content} />
+                  <DisplayNotification element={elem.content} notifSocket={notifSocket} />
                 ) : (
                   ''
                 )}
