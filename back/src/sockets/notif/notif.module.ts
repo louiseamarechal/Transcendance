@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { NotifGateway } from './notif.gateway';
-// import { NotifController } from './notif.controller';
 import { SocketService } from '../socket.service';
 import { NotifService } from './notif.service';
+import { NotifController } from './notif.controller';
 
 @Module({
   providers: [NotifGateway, SocketService, NotifService],
   exports: [NotifGateway, SocketService, NotifService],
-  // controllers: [NotifController],
+  controllers: [NotifController],
 })
 export class NotifModule {}
