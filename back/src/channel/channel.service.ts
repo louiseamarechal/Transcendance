@@ -16,11 +16,15 @@ import {
 export class ChannelService {
   constructor(private prisma: PrismaService) {}
 
+  /* =============================================================================
+															CRUD FUNCTIONS
+============================================================================= */
+
   async createChannel(
     ownerId: number,
     { name, avatar, members }: CreateChannelDto,
   ) {
-    const channels = await this.prisma.membersOnChannels.groupBy({
+    let channels = await this.prisma.membersOnChannels.groupBy({
       by: ['channelId'],
       where: {
         userId: {
@@ -35,8 +39,19 @@ export class ChannelService {
         },
       },
     });
+    channels = channels.filter((channel) => {
+      return this.prisma.membersOnChannels
+        .findMany({
+          where: {
+            channelId: channel.channelId,
+          },
+        })
+        .then((channelMembers) => {
+          return channelMembers.length === members.length;
+        });
+    });
     if (channels.length > 0) {
-      throw new ConflictException({ channelId: channels[0] });
+      throw new ConflictException({ channelId: channels[0].channelId });
     } else {
       const channel = await this.prisma.channel.create({
         data: {
@@ -45,13 +60,12 @@ export class ChannelService {
           avatar,
         },
       });
-      this.prisma.membersOnChannels.createMany({
-        data: [
-          { channelId: channel.id, userId: ownerId },
-          ...members.map((id: number) => {
-            return { channelId: channel.id, userId: id };
-          }),
-        ],
+      console.log('Created channel.');
+      await this.prisma.membersOnChannels.createMany({
+        data: members.map((id: number) => {
+          console.log(`Creating member ${id} in channel ${channel.id}`);
+          return { channelId: channel.id, userId: id };
+        }),
       });
       return channel;
     }
@@ -61,47 +75,6 @@ export class ChannelService {
     return this.prisma.channel.findMany({
       where: {
         ownerId,
-      },
-    });
-  }
-
-  async getUserChannels(userId: number) {
-    const channelIds: number[] = (
-      await this.prisma.membersOnChannels.findMany({
-        where: {
-          userId,
-        },
-        select: {
-          channelId: true,
-        },
-      })
-    ).map((element: MembersOnChannels) => {
-      return element.channelId;
-    });
-    const blockedIds: number[] = (
-      await this.prisma.blockedOnChannels.findMany({
-        where: {
-          userId,
-        },
-        select: {
-          channelId: true,
-        },
-      })
-    ).map((element: BlockedOnChannels) => {
-      return element.channelId;
-    });
-
-    return this.prisma.channel.findMany({
-      where: {
-        id: {
-          in: channelIds,
-          notIn: blockedIds,
-        },
-      },
-      select: {
-        id: true,
-        name: true,
-        avatar: true,
       },
     });
   }
@@ -180,6 +153,77 @@ export class ChannelService {
       where: {
         id: channelId,
       },
+    });
+  }
+
+  /* =============================================================================
+													HIGH LEVEL FUNCTIONS
+============================================================================= */
+
+  async getUserChannels(userId: number) {
+    const channelIds: number[] = (
+      await this.prisma.membersOnChannels.findMany({
+        where: {
+          userId,
+        },
+        select: {
+          channelId: true,
+        },
+      })
+    ).map((element: MembersOnChannels) => {
+      return element.channelId;
+    });
+    const blockedIds: number[] = (
+      await this.prisma.blockedOnChannels.findMany({
+        where: {
+          userId,
+        },
+        select: {
+          channelId: true,
+        },
+      })
+    ).map((element: BlockedOnChannels) => {
+      return element.channelId;
+    });
+
+    return this.prisma.channel.findMany({
+      where: {
+        id: {
+          in: channelIds,
+          notIn: blockedIds,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
+      },
+    });
+  }
+
+  async getCorrespondent(
+    userId: number,
+    channelId: number,
+  ): Promise<{ name: string; avatar: string | null; id: number } | null> {
+    const membersIds = await this.prisma.membersOnChannels.findMany({
+      where: {
+        channelId,
+      },
+    });
+    if (membersIds.length !== 2) {
+      throw new ConflictException('Channel is not a DM channel');
+    }
+    return this.prisma.user.findUnique({
+      where: {
+        id: membersIds.filter((elem) => {
+          return elem.userId !== userId;
+        })[0].userId,
+      },
+			select: {
+				id: true,
+				name: true,
+				avatar: true,
+			},
     });
   }
 }

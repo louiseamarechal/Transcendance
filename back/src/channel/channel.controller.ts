@@ -13,7 +13,7 @@ import {
 import { GetUser, GetUserId } from 'src/common/decorators';
 import { ChannelService } from './channel.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
-import { Channel, VisType } from '@prisma/client';
+import { Channel, User, VisType } from '@prisma/client';
 
 @Controller('channel')
 export class ChannelController {
@@ -29,6 +29,14 @@ export class ChannelController {
     @GetUserId() userId: number,
   ): Promise<{ name: string | null; avatar: string | null; id: number }[]> {
     return this.channelService.getUserChannels(userId);
+  }
+
+  @Get('correspondent/:id')
+  getCorrespondent(
+    @GetUserId() userId: number,
+    @Param('id', ParseIntPipe) channelId: number,
+  ): Promise<{ name: string; avatar: string | null; id: number } | null> {
+    return this.channelService.getCorrespondent(userId, channelId);
   }
 
   @Get(':id')

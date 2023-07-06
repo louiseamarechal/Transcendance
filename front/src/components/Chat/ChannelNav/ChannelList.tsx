@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
-import '../../../style/components/chat/channel-nav/channel-list.css'
+import '../../../style/components/chat/channel-nav/channel-list.css';
 import '../../../style/components/buttons.css';
 import { Link } from 'react-router-dom';
 import ChannelCard from './ChannelList/ChannelCard';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
+import { Channel } from '../../../types/Channel.type';
 
 const ChannelList = () => {
-  const [channelList, setChannelList] = useState<
-    { id: number; name: string; avatar: string }[]
-  >([]);
+  const [channelList, setChannelList] = useState<Channel[]>([]);
   const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
@@ -34,8 +33,8 @@ const ChannelList = () => {
             </Link>
           </li>
           {channelList.map(
-            (elem: { id: number; name: string; avatar: string }) => {
-              return ChannelCard(elem.id, elem.name);
+            (elem: Channel) => {
+              return ChannelCard(elem.id, elem.name, elem.avatar);
             },
           )}
         </ul>

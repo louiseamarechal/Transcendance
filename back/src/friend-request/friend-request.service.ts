@@ -1,23 +1,35 @@
-import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { FRStatus, FriendRequest } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFriendRequestDto } from './dto';
+import { ChannelService } from 'src/channel/channel.service';
+import { CreateChannelDto } from 'src/channel/dto';
 
 @Injectable()
 export class FriendRequestService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private channelService: ChannelService,
+  ) {}
 
   async createFR(fromId: number, toId: number): Promise<FriendRequest> {
-    const friendRequest = await this.prisma.friendRequest.create({
-      data: {
-        fromId,
-        toId,
-      },
-    }).catch((error) => {
-			if (error.code === 'P2002')
-				throw new ConflictException('Friend Request already exists.');
-			throw error;
-		});
+    const friendRequest = await this.prisma.friendRequest
+      .create({
+        data: {
+          fromId,
+          toId,
+        },
+      })
+      .catch((error) => {
+        if (error.code === 'P2002')
+          throw new ConflictException('Friend Request already exists.');
+        throw error;
+      });
     return friendRequest;
   }
 
@@ -130,6 +142,42 @@ export class FriendRequestService {
     });
   }
 
+  async acceptAll(userId: number) {
+    const requestIds = await this.prisma.friendRequest.findMany({
+      where: {
+        toId: userId,
+        status: FRStatus.PENDING,
+      },
+    });
+    const nUpdated = (
+      await this.prisma.friendRequest.updateMany({
+        where: {
+          id: {
+            in: requestIds.map((elem) => {
+              return elem.id;
+            }),
+          },
+        },
+        data: {
+          status: FRStatus.ACCEPTED,
+        },
+      })
+    ).count;
+    if (nUpdated !== requestIds.length) {
+      throw new InternalServerErrorException('Not all updated');
+    }
+    console.log(`Accepted all ${nUpdated} FRs: ${requestIds}.`);
+    requestIds.forEach((elem) => {
+      const dto: CreateChannelDto = {
+        name: '',
+        avatar: '',
+        members: [elem.fromId, elem.toId],
+      };
+			console.log(dto);
+      this.channelService.createChannel(elem.fromId, dto);
+    });
+  }
+
   // async editFRByToId(fromId: number, toId: number, dto: EditFriendRequestDto) {
   //   const friendRequest = await this.prisma.friendRequest.findUnique({
   //     where: {
@@ -140,7 +188,7 @@ export class FriendRequestService {
   //     },
   //   });
 
-    // Check ownership
+  // Check ownership
   //   if (!friendRequest)
   //     throw new ForbiddenException('Access to ressource denied');
 

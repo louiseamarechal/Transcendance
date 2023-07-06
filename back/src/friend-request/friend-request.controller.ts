@@ -61,6 +61,13 @@ export class FriendRequestController {
     return this.friendRequestService.getFRByToId(userId, toId);
   }
 
+  // TMP
+  @Patch('accept-all')
+  acceptAll(@GetUserId() userId: number) {
+    console.log(`In accept all for ${userId}.`);
+    return this.friendRequestService.acceptAll(userId);
+  }
+
   @Patch(':id')
   editFRById(
     @GetUserId() userId: number,
