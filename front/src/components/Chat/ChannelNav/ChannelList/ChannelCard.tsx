@@ -14,7 +14,7 @@ function ChannelCard(id: number, name: string, avatar: string) {
       channelAvatar = res.data.avatar;
     });
   }, []);
-
+// Not working here !
   return (
     <li
       className={'channel-card ' + (showChannel === id) ? 'selected' : ''}
