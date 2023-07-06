@@ -12,27 +12,32 @@ type ChannelCardProps = {
 function ChannelCard({ id, name, avatar }: ChannelCardProps) {
   const { showChannel, setShowChannel } = useChatContext();
   const axiosPrivate = useAxiosPrivate();
-  let [channelName, channelAvatar] = [name, avatar];
 
   useEffect(() => {
-    axiosPrivate.get('channel/correspondent/' + id).then((res) => {
-      channelName = res.data.name;
-      channelAvatar = res.data.avatar;
-    });
+		if (name === '' && avatar === '') {
+			axiosPrivate.get('channel/correspondent/' + id).then((res) => {
+				name = res.data.name;
+				console.log(`set channelName = ${res.data.name}`)
+				avatar = res.data.avatar;
+				console.log(`set avatar = ${res.data.avatar}`)
+			});
+		}
   }, []);
-  // Not working here !
-  return (
+
+	console.log(`Rendering channel with name: ${name} and avatar: ${avatar}`)
+
+	return (
     <div
       className={'channel-card ' + (showChannel === id) ? 'selected' : ''}
       onClick={() => setShowChannel(id)}
     >
       <img
-        src={avatar === '' ? avatar : channelAvatar}
+        src={avatar}
         className="channel-avatar"
         alt="avatar"
       />
       <div className="channel-name">
-        <p>{name === '' ? name : channelName}</p>
+        <p>{name}</p>
       </div>
     </div>
   );

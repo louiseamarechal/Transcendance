@@ -42,7 +42,6 @@ const ChannelList = () => {
                 />
               </li>
             );
-            // return ChannelCard(elem.id, elem.name, elem.avatar);
           })}
         </ul>
       </div>
