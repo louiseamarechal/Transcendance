@@ -15,7 +15,7 @@ export class GameGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
 {
   afterInit(client: Socket) {
-    client.use(SocketAuthMiddleware() as any);
+    // client.use(SocketAuthMiddleware() as any);
     console.log('Websocket on');
   }
 

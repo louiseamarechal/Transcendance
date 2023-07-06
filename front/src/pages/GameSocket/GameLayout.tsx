@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { io } from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
 import useAuth from '../../hooks/useAuth.ts';
 
-export default function GameLayout() {
+function GameLayout() {
   const { auth } = useAuth();
 
   useEffect(() => {
     console.log('Connect to websocket');
-    const socket = io('http://localhost:3000/game', {
+    const socket: Socket = io('http://localhost:3000/game', {
       auth: { token: auth.access_token },
     });
 
@@ -20,3 +20,5 @@ export default function GameLayout() {
 
   return <Outlet />;
 }
+
+export default GameLayout;
