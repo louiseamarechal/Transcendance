@@ -32,11 +32,18 @@ const ChannelList = () => {
               <p className="text-center">Add friend</p>
             </Link>
           </li>
-          {channelList.map(
-            (elem: Channel) => {
-              return ChannelCard(elem.id, elem.name, elem.avatar);
-            },
-          )}
+          {channelList.map((elem: Channel) => {
+            return (
+              <li key={elem.id}>
+                <ChannelCard
+                  id={elem.id}
+                  name={elem.name}
+                  avatar={elem.avatar}
+                />
+              </li>
+            );
+            // return ChannelCard(elem.id, elem.name, elem.avatar);
+          })}
         </ul>
       </div>
     </div>
