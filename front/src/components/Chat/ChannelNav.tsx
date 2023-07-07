@@ -3,7 +3,8 @@ import ChannelList from './ChannelNav/ChannelList';
 import '../../style/components/chat/channel-nav.css';
 
 function ChannelNav() {
-  const { showCreateChannel, setShowCreateChannel } = useChatContext();
+  const { showCreateChannel, setShowCreateChannel, setShowChannel } =
+    useChatContext();
 
   return (
     <div className="channel-nav">
@@ -13,6 +14,7 @@ function ChannelNav() {
         onClick={() => {
           if (!showCreateChannel) {
             setShowCreateChannel(true);
+            setShowChannel(NaN);
           }
         }}
       >
