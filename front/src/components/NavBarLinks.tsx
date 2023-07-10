@@ -1,9 +1,8 @@
 import { Socket } from 'socket.io-client';
-import { DisplayNotification } from './notif/Notification';
+import { Notification } from './notif/Notification';
 import { useUser } from '../hooks/useUser';
 import { Link } from 'react-router-dom';
 import useNavbar from '../hooks/useNavbar';
-import { useState } from 'react';
 
 type NavBarLinksProps = {
   notifSocket: Socket | undefined;
@@ -24,12 +23,6 @@ type NavBarLinksProps = {
 const NavBarLinks = (props: NavBarLinksProps) => {
   const { myAvatar } = useUser();
   const { setNavbarState } = useNavbar();
-
-  // const [receivedNotif, setReceivedNotif] = useState({
-  //   friends: 0,
-  //   game: 0,
-  //   chat: 0,
-  // });
 
   const navElems = [
     {
@@ -60,7 +53,7 @@ const NavBarLinks = (props: NavBarLinksProps) => {
         return (
           <div className="relative" key={index}>
             {typeof elem.content === 'string' ? (
-              <DisplayNotification
+              <Notification
                 element={elem.content}
                 notifSocket={props.notifSocket}
                 receivedNotif={props.receivedNotif}

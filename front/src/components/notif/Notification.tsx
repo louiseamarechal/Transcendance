@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 
-type DisplayNotificationProps = {
+type NotificationProps = {
   element: string;
   notifSocket: Socket | undefined;
   receivedNotif: {
@@ -18,7 +18,7 @@ type DisplayNotificationProps = {
   >;
 };
 
-export function DisplayNotification(props: DisplayNotificationProps) {
+export function Notification(props: NotificationProps) {
 
   useEffect(() => {
     function onFriendsNotifEvent() {
@@ -27,23 +27,31 @@ export function DisplayNotification(props: DisplayNotificationProps) {
         return { ...previous, friends: previous.friends + 1 };
       });
     }
-    // function onGameNotifEvent() {
-    //   console.log('received FR notif');
-    //   setReceivedNotif((previous) => { return {...previous, game: 1} });
-    // }
-    // function onChatNotifEvent() {
-    //   console.log('received FR notif');
-    //   setReceivedNotif((previous) => { return {...previous, chat: 1} });
-    // }
+    function onGameNotifEvent() {
+      console.log('received Chat notif');
+      props.setReceivedNotif((previous) => { return {...previous, game: 1} });
+    }
+    function onChatNotifEvent() {
+      console.log('received Game notif');
+      props.setReceivedNotif((previous) => { return {...previous, chat: 1} });
+    }
 
     if (props.notifSocket && props.element === 'Friends') {
       props.notifSocket.on('friends-notif', onFriendsNotifEvent);
-      // props.notifSocket.on('game-notif', onGameNotifEvent);
-      // props.notifSocket.on('chat-notif', onChatNotifEvent);
+    }
+    
+    if (props.notifSocket && props.element === 'Game') {
+      props.notifSocket.on('game-notif', onGameNotifEvent);
+    }
+    
+    if (props.notifSocket && props.element === 'Chat') {
+      props.notifSocket.on('chat-notif', onChatNotifEvent);
     }
 
     return () => {
-      props.notifSocket?.off('friends-notif', onFriendsNotifEvent);
+      props.notifSocket?.off('friends-notif', onGameNotifEvent);
+      props.notifSocket?.off('Game', onFriendsNotifEvent);
+      props.notifSocket?.off('Chat', onChatNotifEvent);
     };
   }, []);
 
@@ -51,6 +59,18 @@ export function DisplayNotification(props: DisplayNotificationProps) {
     return (
       <div className="notification">
         <div className="notification-text">{props.receivedNotif.friends}</div>
+      </div>
+    );
+  } else if (props.receivedNotif.game > 0 && props.element === 'Game') {
+    return (
+      <div className="notification">
+        <div className="notification-text">{props.receivedNotif.game}</div>
+      </div>
+    );
+  } else if (props.receivedNotif.chat > 0 && props.element === 'Chat') {
+    return (
+      <div className="notification">
+        <div className="notification-text">{props.receivedNotif.chat}</div>
       </div>
     );
   }
