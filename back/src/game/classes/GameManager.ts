@@ -5,4 +5,11 @@ export class GameManager {
   public server: Server;
 
   private readonly games: Map<string, Game> = new Map<string, Game>()
+
+  /**
+   * createGame
+   */
+  public createGame() {
+    
+  }
 }
