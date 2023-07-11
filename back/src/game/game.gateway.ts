@@ -11,6 +11,7 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { SocketAuthMiddleware } from 'src/common/middleware/ws.mw';
+import { GameManager } from './classes/GameManager';
 // import { ClientEvents } from '../../../shared/client/ClientEvents';
 // import { ClientPayloads } from '../../../shared/client/ClientPayloads';
 
@@ -20,7 +21,9 @@ export class GameGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
 {
   @WebSocketServer()
-  server: Server
+  server: Server;
+
+  constructor(private readonly gameManager: GameManager) {}
 
   afterInit(client: Socket) {
     // client.use(SocketAuthMiddleware() as any);
