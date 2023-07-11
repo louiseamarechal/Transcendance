@@ -16,8 +16,13 @@ export class GameController {
     return this.gameService.getJoinQueue(userId);
   }
 
-  @Get('leave-queue')
-  getLeaveQueue(@GetUserId() userId: number) {
-    return this.gameService.getLeaveQueue(userId)
+  // @Get('leave-queue')
+  // getLeaveQueue(@GetUserId() userId: number) {
+  //   return this.gameService.getLeaveQueue(userId)
+  // }
+
+  @Get('start-game')
+  getStartGame(@GetUserId() userId: number) {
+    return this.gameService.getStartGame(userId);
   }
 }

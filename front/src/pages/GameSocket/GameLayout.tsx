@@ -1,16 +1,20 @@
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Socket, io } from 'socket.io-client';
 import useAuth from '../../hooks/useAuth.ts';
+import { socket } from '../../api/socket.ts';
+import { useUser } from '../../hooks/useUser.ts';
 
 function GameLayout() {
   const { auth } = useAuth();
-
+  const { myId, myName } = useUser();
   useEffect(() => {
     console.log('Connect to websocket');
-    const socket: Socket = io('http://localhost:3000/game', {
-      auth: { token: auth.access_token },
-    });
+
+    socket.auth = {
+      token: auth.access_token,
+      data: { id: myId, name: myName },
+    };
+    socket.connect();
 
     return () => {
       console.log('Disconnect from websocket');

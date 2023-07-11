@@ -29,7 +29,17 @@ export default function GameSocketLobby() {
       navigate('/gamesocket/queue');
     } else {
       // if there is someone in the queue, create a game
-      navigate('/gamesocket/game');
+      try {
+        // send to server we want to join a game
+        const response = await axiosInstance.get('/game/start-game')
+        // receive a game id
+        const gameId = response.data
+        // navigate to the game id
+        navigate(`/gamesocket/${gameId}`);
+      } catch (err) {
+        console.log('request /game/start-game failed', err);
+        return;
+      }
     }
   };
 

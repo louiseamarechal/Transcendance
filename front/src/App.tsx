@@ -56,7 +56,7 @@ function App() {
             <Route path='/gamesocket' Component={GameLayout}>
               <Route index Component={GameSocketLobby} />
               <Route path='queue' Component={GameSocketQueue}/>
-              <Route path='game' Component={GameSocketGame}/>
+              <Route path=':gameId' Component={GameSocketGame}/>
             </Route>
             <Route path="/chat" Component={Chat} />
             <Route path="/friends" Component={Friends} />
