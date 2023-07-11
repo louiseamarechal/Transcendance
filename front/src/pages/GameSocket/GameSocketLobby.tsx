@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { socket } from '../../api/socket';
 
 export default function GameSocketLobby() {
   const navigate = useNavigate();
@@ -53,6 +54,7 @@ export default function GameSocketLobby() {
         <div className="net"></div>
         <button className="searchgame-button m1-2">Invite Friends</button>
       </div>
+      <button onClick={() => {socket.emit('eventname', 'eventdata')}}>Test</button>
     </div>
   );
 }

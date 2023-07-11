@@ -19,6 +19,8 @@ model User {
   name     String  @unique
   hashedRT String?
 
+  online Boolean @default(false)
+
   level         Float     @default(1)
   avatar        String?
   s2fa          Status2fa @default(NOTSET)
@@ -174,4 +176,3 @@ model GameQueue {
 
   @@map("game_queue")
 }
-

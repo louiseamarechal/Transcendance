@@ -30,6 +30,8 @@ export class Game {
   ballVel: [number, number] = [0.1, 0];
 
   constructor(server: Server, visibility?: GameVisibility) {
+    console.log('New instance of Game')
+
     this.server = server;
     if (visibility) {
       this.visibility = visibility;
@@ -45,5 +47,5 @@ export class Game {
     }
   }
 
-  
+
 }

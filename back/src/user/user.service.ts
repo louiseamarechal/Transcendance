@@ -3,20 +3,19 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
-  UnprocessableEntityException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditUserDto } from './dto';
 import { User } from '@prisma/client';
 import { NoParamCallback, rename, rm } from 'fs';
-import { extname } from 'path';
+import { PublicUser } from './types';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async getMe(userId: number) {
-    const user = await this.prisma.user.findUnique({
+    const user: PublicUser | null = await this.prisma.user.findUnique({
       where: {
         id: userId,
       },
@@ -49,7 +48,7 @@ export class UserService {
       where: {
         id: {
           not: userId,
-        }
+        },
       },
       select: {
         id: true,
