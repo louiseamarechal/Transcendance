@@ -26,7 +26,7 @@ export class LoggingInterceptor implements NestInterceptor {
       }),
       tap((data) => {
         console.log(`Interceptor: After... ${Date.now() - now}ms`);
-        console.log({pattern: data.event}, {data: data.data});
+        console.log({pattern: data?.event}, {data: data?.data});
       }),
     );
   }

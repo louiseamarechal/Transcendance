@@ -1,14 +1,16 @@
 import { Server } from 'socket.io';
 import { v4 as uuid } from 'uuid';
+import { Socket } from 'socket.io';
+import { PublicUser } from 'src/user/types';
 
-enum GameStatus {
+export enum GameStatus {
   Waiting,
   Ready,
   Playing,
   Done,
 }
 
-enum GameVisibility {
+export enum GameVisibility {
   Public,
   Private,
 }
@@ -17,8 +19,8 @@ export class Game {
   server: Server;
 
   readonly gameId: string = uuid();
-  player1: any;
-  player2: any;
+  player1: PublicUser;
+  player2: PublicUser;
 
   score: [number, number] = [0, 0];
   status: GameStatus = GameStatus.Waiting;
@@ -30,7 +32,7 @@ export class Game {
   ballVel: [number, number] = [0.1, 0];
 
   constructor(server: Server, visibility?: GameVisibility) {
-    console.log('New instance of Game')
+    console.log('New instance of Game');
 
     this.server = server;
     if (visibility) {
@@ -40,12 +42,10 @@ export class Game {
     setInterval(this.computeNextState.bind(this), 1000);
   }
 
-  computeNextState() {
-    console.log('computeNextState');
+  async computeNextState() {
+    console.log('computeNextState', {player1: this.player1?.name, player2: this.player2?.name});
     if (this.status === GameStatus.Playing) {
       console.log('compute next state of game');
     }
   }
-
-
 }

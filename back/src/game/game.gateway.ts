@@ -24,8 +24,12 @@ import { LoggingInterceptor } from './interceptors/game-ws.interceptor';
 
 // @UseGuards(WsJwtGuard)
 
-@UseInterceptors(LoggingInterceptor)
-@WebSocketGateway()
+// @UseInterceptors(LoggingInterceptor)
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+  },
+})
 export class GameGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
 {
@@ -53,6 +57,7 @@ export class GameGateway
   }
 
   async handleConnection(client: Socket) {
+    console.log('New websocket connection');
     try {
       // check jwt
       const token: AtJwt = await this.jwt.verifyAsync(
@@ -102,5 +107,10 @@ export class GameGateway
       event: 'tata',
       data: 'msg',
     };
+  }
+
+  @SubscribeMessage('client.game.searchgame')
+  handleSearchGame(@ConnectedSocket() client: Socket) {
+    return this.gameManager.searchGame(client);
   }
 }
