@@ -32,9 +32,9 @@ export default function GameSocketLobby() {
       // if there is someone in the queue, create a game
       try {
         // send to server we want to join a game
-        const response = await axiosInstance.get('/game/start-game')
+        const response = await axiosInstance.get('/game/start-game');
         // receive a game id
-        const gameId = response.data
+        const gameId = response.data;
         // navigate to the game id
         navigate(`/gamesocket/${gameId}`);
       } catch (err) {
@@ -46,6 +46,14 @@ export default function GameSocketLobby() {
 
   return (
     <div className="gamepage-container">
+      <button
+        onClick={() => {
+          socket.emit('toto', 'eventdata');
+        }}
+        className="text-9xl text-red-900"
+      >
+        Test
+      </button>
       <h1 className="gamepage-title">PONG</h1>
       <div className="net-container">
         <button className="searchgame-button mr-2" onClick={handleSearchGame}>
@@ -54,7 +62,6 @@ export default function GameSocketLobby() {
         <div className="net"></div>
         <button className="searchgame-button m1-2">Invite Friends</button>
       </div>
-      <button onClick={() => {socket.emit('eventname', 'eventdata')}}>Test</button>
     </div>
   );
 }

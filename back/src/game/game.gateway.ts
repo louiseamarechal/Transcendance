@@ -1,4 +1,4 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import { Logger, UseGuards, UseInterceptors } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -18,10 +18,13 @@ import { UserService } from 'src/user/user.service';
 import { User } from '@prisma/client';
 import { AtJwt } from 'src/auth/types';
 import { PublicUser } from 'src/user/types';
+import { LoggingInterceptor } from './interceptors/game-ws.interceptor';
 // import { ClientEvents } from '../../../shared/client/ClientEvents';
 // import { ClientPayloads } from '../../../shared/client/ClientPayloads';
 
 // @UseGuards(WsJwtGuard)
+
+@UseInterceptors(LoggingInterceptor)
 @WebSocketGateway()
 export class GameGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
@@ -42,12 +45,11 @@ export class GameGateway
     // this is debug, not necessary for production
     server.use((client: Socket, next) => {
       client.use((event, next) => {
-        console.log('\x1b[36m%s\x1b[0m', 'New socket event', event);
+        console.log('\x1b[36m%s\x1b[0m', 'Middleware: New socket event', event);
         next();
       });
       next();
     });
-
   }
 
   async handleConnection(client: Socket) {
@@ -83,6 +85,7 @@ export class GameGateway
   //   return 'Yooooo';
   // }
 
+  // @UseInterceptors(LoggingInterceptor)
   @SubscribeMessage('client.game.input')
   handleInput(
     @ConnectedSocket() client: Socket,
@@ -92,9 +95,12 @@ export class GameGateway
     return 'Yooooo';
   }
 
-  // @SubscribeMessage('toto')
-  // handleToto(client: Socket, payload: any) {
-  //   console.log('yeah')
-  //   return 'yo'
-  // }
+  @SubscribeMessage('toto')
+  handleToto(client: Socket, payload: any) {
+    // return 'yo'
+    return {
+      event: 'tata',
+      data: 'msg',
+    };
+  }
 }
