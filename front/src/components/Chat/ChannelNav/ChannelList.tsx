@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import '../../../style/components/chat/channel-nav/channel-list.css';
 import '../../../style/components/buttons.css';
 import { Link } from 'react-router-dom';
 import ChannelCard from './ChannelList/ChannelCard';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import { Channel } from '../../../types/Channel.type';
+import { useChatContext } from '../../../hooks/useChatContext';
 
 const ChannelList = () => {
-  const [channelList, setChannelList] = useState<Channel[]>([]);
   const axiosPrivate = useAxiosPrivate();
+  const { channelList, setChannelList } = useChatContext();
 
   useEffect(() => {
     axiosPrivate

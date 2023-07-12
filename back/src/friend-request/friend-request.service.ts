@@ -149,33 +149,30 @@ export class FriendRequestService {
         status: FRStatus.PENDING,
       },
     });
-    const nUpdated = (
-      await this.prisma.friendRequest.updateMany({
-        where: {
-          id: {
-            in: requestIds.map((elem) => {
-              return elem.id;
-            }),
-          },
-        },
-        data: {
-          status: FRStatus.ACCEPTED,
-        },
-      })
-    ).count;
-    if (nUpdated !== requestIds.length) {
-      throw new InternalServerErrorException('Not all updated');
-    }
-    console.log(`Accepted all ${nUpdated} FRs: ${requestIds}.`);
-    requestIds.forEach((elem) => {
-      const dto: CreateChannelDto = {
-        name: '',
-        avatar: '',
-        members: [elem.fromId, elem.toId],
-      };
+		console.log(`Found ${requestIds.length} pending requests`);
+		requestIds.forEach((elem) => {
+			this.prisma.friendRequest.update({
+				where: {
+					id: elem.id,
+				},
+				data: {
+					status: FRStatus.ACCEPTED,
+				}
+			}).then((res) => {
+				if (res.status !== FRStatus.ACCEPTED) {
+					throw new InternalServerErrorException("Could not accept FR.");
+				}
+			});
+			console.log(`Updated FR with user: ${elem.fromId}`);
+			const dto: CreateChannelDto = {
+				name: '',
+				avatar: '',
+				members: [elem.fromId, elem.toId],
+			};
 			console.log(dto);
-      this.channelService.createChannel(elem.fromId, dto);
-    });
+			this.channelService.createChannel(elem.fromId, dto);
+		});
+    console.log(`Accepted all FRs: ${requestIds}.`);
   }
 
   // async editFRByToId(fromId: number, toId: number, dto: EditFriendRequestDto) {

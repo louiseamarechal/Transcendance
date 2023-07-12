@@ -20,7 +20,10 @@ export class ChannelController {
   constructor(private channelService: ChannelService) {}
 
   @Post()
-  createChannel(@GetUserId() userId: number, @Body() dto: CreateChannelDto) {
+  createChannel(
+    @GetUserId() userId: number,
+    @Body() dto: CreateChannelDto,
+  ): Promise<{ id: number; name: string; avatar: string | null }> {
     return this.channelService.createChannel(userId, dto);
   }
 

@@ -4,7 +4,6 @@ import ChatContainer from '../components/Chat/ChatContainer.tsx';
 import '../style/pages/Chat.css';
 
 function Chat() {
-
   return (
     <ChatProvider>
       <div className="chat-page">
@@ -14,6 +13,6 @@ function Chat() {
       </div>
     </ChatProvider>
   );
-};
+}
 
 export default Chat;

@@ -23,7 +23,7 @@ export class ChannelService {
   async createChannel(
     ownerId: number,
     { name, avatar, members }: CreateChannelDto,
-  ) {
+  ): Promise<{ id: number; name: string; avatar: string | null }> {
     let channels = await this.prisma.membersOnChannels.groupBy({
       by: ['channelId'],
       where: {
@@ -58,6 +58,11 @@ export class ChannelService {
           ownerId,
           name,
           avatar,
+        },
+        select: {
+          id: true,
+          name: true,
+          avatar: true,
         },
       });
       console.log('Created channel.');
@@ -219,11 +224,11 @@ export class ChannelService {
           return elem.userId !== userId;
         })[0].userId,
       },
-			select: {
-				id: true,
-				name: true,
-				avatar: true,
-			},
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
+      },
     });
   }
 }

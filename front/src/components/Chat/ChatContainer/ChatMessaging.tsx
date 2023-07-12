@@ -11,17 +11,17 @@ function ChatMessaging() {
   const [channel, setChannel] = useState<Channel>();
 
   useEffect(() => {
-    axiosInstance.get('channel:id=' + showChannel).then((res) => {
+    axiosInstance.get('channel:' + showChannel).then((res) => {
       setChannel(res.data);
     });
   }, [showChannel]);
 
   return (
     <div className="chat-messaging">
-			{channel ? <ChatHeader channel={channel} /> : <></> }
+      {channel ? <ChatHeader channel={channel} /> : <></>}
       {/* <ChatBody /> */}
     </div>
   );
-};
+}
 
 export default ChatMessaging;

@@ -5,46 +5,38 @@ import { useChatContext } from '../../../hooks/useChatContext';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import FriendsList from './CreateChannelForm/FriendsList';
 import FormHeader from './CreateChannelForm/FormHeader';
+import { useUser } from '../../../hooks/useUser';
 
 const CreateChannelForm = () => {
   const [avatar, setAvatar] = useState<string>(
     'http://localhost:3000/public/default.jpg',
   );
   const axiosPrivate = useAxiosPrivate();
-  const { setShowCreateChannel, setShowChannel } = useChatContext();
-  const [friends, setFriends] = useState<
-    { id: number; name: string; level: number; avatar: string }[]
-  >([]);
+  const { myId } = useUser();
+  const { channelList, setChannelList, setShowCreateChannel, setShowChannel } =
+    useChatContext();
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]);
   const [channelName, setChannelName] = useState<string>();
-
-  useEffect(() => {
-    FormHeader;
-    axiosPrivate
-      .get('friend-request/my-friends')
-      .then((res) => {
-        console.log(res);
-        setFriends(res.data);
-      })
-      .catch((err) => {
-        console.log(err.response.status + ' -> ' + err.response.statusText);
-      });
-  }, []);
 
   async function handleSubmit() {
     if (!channelName) {
       alert('Channel name must be filled.');
+    } else if (selectedFriends.length < 2) {
+      alert('Group channel should have at least 3 members.');
     } else {
       await axiosPrivate
         .post('channel', {
           name: channelName,
           avatar,
-          members: selectedFriends,
+          members: [...selectedFriends, myId],
+        })
+        .then((res) => {
+          setChannelList([...channelList, res.data]);
         })
         .catch((err) => {
-          if (err.status === 409) {
+          if (err.response.status === 409) {
             setShowCreateChannel(false);
-            setShowChannel(err.statusText.channelId);
+            setShowChannel(err.response.data.channelId);
           }
         });
     }
@@ -58,11 +50,10 @@ const CreateChannelForm = () => {
         setChannelName={setChannelName}
       />
       <FriendsList
-        friends={friends}
         selectedFriends={selectedFriends}
         setSelectedFriends={setSelectedFriends}
       />
-      <button type="submit" className="small-button" onSubmit={handleSubmit}>
+      <button className="small-button" onClick={() => handleSubmit()}>
         create channel
       </button>
     </div>
