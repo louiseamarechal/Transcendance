@@ -7,30 +7,6 @@ export class GameManager {
 
   readonly #games: Map<string, Game> = new Map<string, Game>();
 
-  // public searchGame(client: Socket) {
-  //   const waitingPublicGames = this.getWaitingPublicGames();
-
-  //   if (waitingPublicGames.length === 0) {
-  //     const newGame = new Game(this.server);
-  //     newGame.player1 = client.data.user;
-  //     client.join(newGame.gameId);
-  //     this.addGame(newGame);
-  //     // this.games.set(newGame.gameId, newGame);
-  //     // this.server
-  //     //   .to(newGame.gameId)
-  //     //   .emit('server.game.navigate', { to: `/gamesocket/queue` });
-  //   } else {
-  //     const game = waitingPublicGames[0];
-  //     game.player2 = client.data.user;
-  //     client.join(game.gameId);
-
-  //     this.server
-  //       .to(game.gameId)
-  //       .emit('server.game.navigate', { to: `/gamesocket/${game.gameId}` });
-  //   }
-
-  // }
-
   public joinQueue(client: Socket) {
     console.log('[GameManager] joinQueue');
     const filtGames = this.getGames(GameVisibility.Public, GameStatus.Waiting);
@@ -53,7 +29,7 @@ export class GameManager {
     console.log('[GameManager] joinQueue done');
   }
 
-  public leaveQueue(client: Socket) {
+  public leaveQueue() {
     console.log('[GameManager] leaveQueue');
     const filtGames = this.getGames(GameVisibility.Public, GameStatus.Waiting);
 
@@ -63,71 +39,50 @@ export class GameManager {
     }
   }
 
-  /**
-   * cancelGame
-   */
-  public cancelGame(userId: number) {
-    console.log('In cancelGame');
-    let gameId: string;
-    let game: Game;
-    for ([gameId, game] of this.#games) {
-      if (userId === game.player1.id) {
-        game.stopGameLoop();
-        game.status = GameStatus.Done;
-        this.server
-          .to(gameId)
-          .emit('server.game.navigate', { to: '/gamesocket' });
-      }
+  public handleInput(gameId: string, playerId: number, val: number) {
+    const game = this.#games.get(gameId);
+    if (!game) {
+      return;
     }
+
+    if (game.player1.id === playerId) {
+      game.player1Pos = val
+    } else if (game.player2.id === playerId) {
+      game.player2Pos = val
+    }
+    console.log()
   }
 
+  
   /**
    * PRIVATE METHODS
    **/
 
-  // private getWaitingPublicGames() {
-  //   const waitingPublicGames: Game[] = [];
-
-  //   this.#games.forEach((game: Game) => {
-  //     if (
-  //       game.visibility === GameVisibility.Public &&
-  //       game.status === GameStatus.Waiting
-  //     ) {
-  //       waitingPublicGames.push(game);
-  //     }
-  //   });
-
-  //   return waitingPublicGames;
-  // }
-
   private getGames(
     visibility: GameVisibility | null,
     status: GameStatus | null,
-  ) {
-    const tmpGames: Game[] = [];
-    const returnedGames: Game[] = [];
+  ): Game[] {
+    const allGames: Game[] = Array.from(this.#games.values());
 
+    let tmpGames: Game[];
     if (visibility) {
-      this.#games.forEach((game: Game) => {
-        if (game.visibility === visibility) {
-          tmpGames.push(game);
-        }
-      });
+      tmpGames = allGames.filter((v) => v.visibility === visibility);
     } else {
-      tmpGames.push(...this.#games.values());
+      tmpGames = allGames;
     }
 
+    let resGames: Game[];
     if (status) {
-      tmpGames.forEach((game: Game) => {
-        if (game.status === status) {
-          returnedGames.push(game);
-        }
-      });
+      resGames = tmpGames.filter((v) => v.status === status);
     } else {
-      returnedGames.push(...tmpGames);
+      resGames = tmpGames;
     }
 
-    return returnedGames;
+    return resGames;
+  }
+
+  private getGameById(gameId: string): Game | undefined {
+    return this.#games.get(gameId);
   }
 
   private addGame(game: Game) {
@@ -137,8 +92,8 @@ export class GameManager {
 
   private removeGame(game: Game) {
     console.log(`[GameManager] Remove ${game.gameId}`);
-    game.stopGameLoop();
     this.server.of('/').adapter.rooms.delete(game.gameId);
+    game.stopGameLoop();
     this.#games.delete(game.gameId);
   }
 
@@ -149,13 +104,17 @@ export class GameManager {
     });
 
     this.#games.forEach((game: Game) => {
-      console.log({
-        player1: game.player1?.name,
-        player2: game.player2?.name,
-        status: game.status,
-      });
+      game.debug()
       if (game.status === GameStatus.Done) {
         this.removeGame(game);
+        return;
+      }
+
+      const durationMs = Date.now() - game.createdAt;
+      if (durationMs > 1000 * 60 * 60) {
+        console.log('more than 1h');
+        // delete games existing for more than 1h.
+        // This should be unnecessary of well coded
       }
     });
   }

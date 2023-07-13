@@ -94,10 +94,14 @@ export class GameGateway
   @SubscribeMessage('client.game.input')
   handleInput(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { gameId: string },
-  ): string {
-    console.log('received a game input', { payload });
-    return 'Yooooo';
+    @MessageBody() payload: { gameId: string; val: number },
+  ) {
+    // console.log('received a game input', { payload });
+    this.gameManager.handleInput(
+      payload.gameId,
+      client.data.user.id,
+      payload.val,
+    );
   }
 
   // @SubscribeMessage('toto')
@@ -120,13 +124,7 @@ export class GameGateway
   }
 
   @SubscribeMessage('client.game.leaveQueue')
-  handleLeaveQueue(@ConnectedSocket() client: Socket) {
-    this.gameManager.leaveQueue(client);
-  }
-
-  @SubscribeMessage('client.game.cancelgame')
-  handleCancelGame(@ConnectedSocket() client: Socket) {
-    const userId = client.data.user.id;
-    return this.gameManager.cancelGame(userId);
+  handleLeaveQueue() {
+    this.gameManager.leaveQueue();
   }
 }

@@ -1,6 +1,7 @@
 import { Server } from 'socket.io';
 import { v4 as uuid } from 'uuid';
 import { PublicUser } from 'src/user/types';
+import util from 'util';
 
 export enum GameStatus {
   Waiting = 'Waiting',
@@ -17,6 +18,7 @@ export enum GameVisibility {
 export class Game {
   server: Server;
 
+  readonly createdAt: number = Date.now();
   readonly gameId: string = uuid();
   player1: PublicUser;
   player2: PublicUser;
@@ -33,7 +35,7 @@ export class Game {
   private intervalId: NodeJS.Timer | null = null;
 
   constructor(server: Server, visibility?: GameVisibility) {
-    console.log('New instance of Game');
+    console.log('[Game] New instance');
 
     this.server = server;
     if (visibility) {
@@ -41,20 +43,39 @@ export class Game {
     }
   }
 
+  debug() {
+    console.log({
+      id: this.gameId,
+      info: [
+        this.score,
+        this.status,
+        this.visibility,
+        this.intervalId ? true : false,
+      ],
+      pl: [
+        [this.player1?.name, this.player1Pos],
+        [this.player2?.name, this.player2Pos],
+      ],
+      ball: [this.ballPos, this.ballVel],
+    });
+  }
+
   async computeNextState() {
-    console.log('computeNextState');
+    console.log('[Game] computeNextState');
     if (this.status === GameStatus.Playing) {
       console.log('compute next state of game');
     }
   }
 
   startGameLoop() {
+    console.log('[Game] Start Game Loop');
     if (!this.intervalId) {
       this.intervalId = setInterval(this.computeNextState.bind(this), 1000);
     }
   }
 
   stopGameLoop() {
+    console.log('[Game] Stop Game Loop', this.intervalId);
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
