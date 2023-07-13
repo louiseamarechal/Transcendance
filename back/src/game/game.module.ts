@@ -6,9 +6,11 @@ import { GameManager } from './classes/GameManager';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from 'src/user/user.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     UserModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

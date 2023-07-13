@@ -94,23 +94,39 @@ export class GameGateway
   @SubscribeMessage('client.game.input')
   handleInput(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: any,
+    @MessageBody() payload: { gameId: string },
   ): string {
     console.log('received a game input', { payload });
     return 'Yooooo';
   }
 
-  @SubscribeMessage('toto')
-  handleToto(client: Socket, payload: any) {
-    // return 'yo'
-    return {
-      event: 'tata',
-      data: 'msg',
-    };
+  // @SubscribeMessage('toto')
+  // handleToto(client: Socket, payload: any) {
+  //   // return 'yo'
+  //   return {
+  //     event: 'tata',
+  //     data: 'msg',
+  //   };
+  // }
+
+  // @SubscribeMessage('client.game.searchgame')
+  // handleSearchGame(@ConnectedSocket() client: Socket) {
+  //   return this.gameManager.searchGame(client);
+  // }
+
+  @SubscribeMessage('client.game.joinQueue')
+  handleJoinQueue(@ConnectedSocket() client: Socket) {
+    this.gameManager.joinQueue(client);
   }
 
-  @SubscribeMessage('client.game.searchgame')
-  handleSearchGame(@ConnectedSocket() client: Socket) {
-    return this.gameManager.searchGame(client);
+  @SubscribeMessage('client.game.leaveQueue')
+  handleLeaveQueue(@ConnectedSocket() client: Socket) {
+    this.gameManager.leaveQueue(client);
+  }
+
+  @SubscribeMessage('client.game.cancelgame')
+  handleCancelGame(@ConnectedSocket() client: Socket) {
+    const userId = client.data.user.id;
+    return this.gameManager.cancelGame(userId);
   }
 }

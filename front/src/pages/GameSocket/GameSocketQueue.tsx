@@ -1,19 +1,21 @@
 import { useEffect } from 'react';
 import { socket } from '../../api/socket';
-import { ServerEvents } from '../../../../shared/server/ServerEvents';
+import { useNavigate } from 'react-router-dom';
 
 function GameQueue() {
-  useEffect(() => {
-    function onFoundMatchEvent(value: any) {
-      console.log('Found match', value);
-    }
+  const navigate = useNavigate();
 
-    socket.on(ServerEvents.FoundMatch, onFoundMatchEvent);
+  useEffect(() => {
+    socket.emit('client.game.joinQueue');
 
     return () => {
-      socket.off(ServerEvents.FoundMatch, onFoundMatchEvent);
+      socket.emit('client.game.leaveQueue');
     };
   }, []);
+
+  function handleCancel() {
+    navigate('/gamesocket');
+  }
 
   return (
     <div className="waiting-for-game">
@@ -21,6 +23,8 @@ function GameQueue() {
       <p>Wait until we find you the perfect match !</p>
       <br />
       <div className="spinner"></div>
+      <br />
+      <button onClick={handleCancel}>Cancel</button>
     </div>
   );
 }

@@ -1,18 +1,17 @@
 import { Server } from 'socket.io';
 import { v4 as uuid } from 'uuid';
-import { Socket } from 'socket.io';
 import { PublicUser } from 'src/user/types';
 
 export enum GameStatus {
-  Waiting,
-  Ready,
-  Playing,
-  Done,
+  Waiting = 'Waiting',
+  Ready = 'Ready',
+  Playing = 'Playing',
+  Done = 'Done',
 }
 
 export enum GameVisibility {
-  Public,
-  Private,
+  Public = 'Public',
+  Private = 'Private',
 }
 
 export class Game {
@@ -31,6 +30,8 @@ export class Game {
   ballPos: [number, number] = [0.5, 0.5];
   ballVel: [number, number] = [0.1, 0];
 
+  private intervalId: NodeJS.Timer | null = null;
+
   constructor(server: Server, visibility?: GameVisibility) {
     console.log('New instance of Game');
 
@@ -38,14 +39,25 @@ export class Game {
     if (visibility) {
       this.visibility = visibility;
     }
-
-    setInterval(this.computeNextState.bind(this), 1000);
   }
 
   async computeNextState() {
-    console.log('computeNextState', {player1: this.player1?.name, player2: this.player2?.name});
+    console.log('computeNextState');
     if (this.status === GameStatus.Playing) {
       console.log('compute next state of game');
+    }
+  }
+
+  startGameLoop() {
+    if (!this.intervalId) {
+      this.intervalId = setInterval(this.computeNextState.bind(this), 1000);
+    }
+  }
+
+  stopGameLoop() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
     }
   }
 }

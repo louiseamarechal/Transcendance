@@ -25,15 +25,22 @@ function GameLayout() {
   }, [auth]);
 
   useEffect(() => {
-    const onServerGameNavigate = (value: { id: number }) => {
-      console.log(value);
-      navigate(`/gamesocket/${value.id}`);
-    };
+    // function onServerGameNavigateGame(value: { id: number }) {
+    //   console.log(value);
+    //   navigate(`/gamesocket/${value.id}`);
+    // }
 
-    socket.on('server.game.navigateGame', onServerGameNavigate);
+    function onServerGameNavigate(value: {to: string}) {
+      console.log(`Server asked client to navigate to ${value.to}`)
+      navigate(value.to)
+    }
+
+    // socket.on('server.game.navigateGame', onServerGameNavigateGame);
+    socket.on('server.game.navigate', onServerGameNavigate);
 
     return () => {
-      socket.off('server.game.navigateGame', onServerGameNavigate);
+      // socket.off('server.game.navigateGame', onServerGameNavigateGame);
+      socket.off('server.game.navigate', onServerGameNavigate);
     };
   }, []);
 
