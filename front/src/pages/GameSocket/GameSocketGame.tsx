@@ -26,7 +26,7 @@ export default function GameSocketLobby() {
 
   useEffect(() => {
     function updateOverlay(payload: { type: any; data: any }) {
-      console.log('In updateOverlay')
+      console.log('In updateOverlay', { payload });
       setOverlayType(payload.type);
       setOverlayData(payload.data);
     }

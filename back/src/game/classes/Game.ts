@@ -1,11 +1,11 @@
 import { Server } from 'socket.io';
 import { v4 as uuid } from 'uuid';
 import { PublicUser } from 'src/user/types';
-import util from 'util';
 
 export enum GameStatus {
   Waiting = 'Waiting',
   Ready = 'Ready',
+  Timer = 'Timer',
   Playing = 'Playing',
   Done = 'Done',
 }
@@ -19,6 +19,7 @@ export class Game {
   server: Server;
 
   readonly createdAt: number = Date.now();
+  gameStartedAt: number;
   readonly gameId: string = uuid();
   P1: PublicUser;
   P1Ready: boolean = false;
@@ -64,19 +65,13 @@ export class Game {
 
   async gameLoop() {
     console.log('[Game] gameLoop');
+
     if (this.status === GameStatus.Ready) {
-      console.log('  Compute next ready states');
-
-      // this.P1Ready = !this.P1Ready;
-      // this.P2Ready = !this.P2Ready;
-      this.server.to(this.gameId).emit('server.game.updateOverlay', {
-        type: 'ready',
-        data: { p1ready: this.P1Ready, p2ready: this.P2Ready },
-      });
-    }
-
-    if (this.status === GameStatus.Playing) {
-      console.log('  Compute next positions');
+      this.gameLoopReady();
+    } else if (this.status === GameStatus.Timer) {
+      this.gameLoopTimer();
+    } else if (this.status === GameStatus.Playing) {
+      this.gameLoopPlaying();
     }
   }
 
@@ -93,5 +88,49 @@ export class Game {
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
+  }
+
+  /**
+   * PRIVATE
+   */
+  private gameLoopReady() {
+    console.log('  Ready');
+
+    if (this.P1Ready && this.P2Ready) {
+      this.status = GameStatus.Timer;
+      this.gameStartedAt = Date.now() + 4000;
+      return
+    }
+
+    // this.P1Ready = !this.P1Ready;
+    // this.P2Ready = !this.P2Ready;
+    this.server.to(this.gameId).emit('server.game.updateOverlay', {
+      type: 'ready',
+      data: { p1ready: this.P1Ready, p2ready: this.P2Ready },
+    });
+  }
+
+  private gameLoopTimer() {
+    console.log('  Timer');
+
+    if (Date.now() > this.gameStartedAt) {
+      this.status = GameStatus.Playing;
+      return
+    }
+
+    console.log(Math.floor((this.gameStartedAt - Date.now()) / 1000))
+    this.server.to(this.gameId).emit('server.game.updateOverlay', {
+      type: 'timer',
+      data: { timerval: Math.floor((this.gameStartedAt - Date.now()) / 1000) },
+    });
+  }
+
+  private gameLoopPlaying() {
+    console.log('  Playing');
+
+    this.server.to(this.gameId).emit('server.game.updateOverlay', {
+      type: 'playing',
+      data: {},
+    });
   }
 }

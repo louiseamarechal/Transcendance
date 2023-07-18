@@ -22,7 +22,7 @@ export class GameManager {
       game.status = GameStatus.Ready;
       client.join(game.gameId);
 
-      game.startGameLoop(2000)
+      game.startGameLoop(500)
 
       this.server
         .to(game.gameId)
@@ -91,10 +91,6 @@ export class GameManager {
     }
 
     return resGames;
-  }
-
-  private getGameById(gameId: string): Game | undefined {
-    return this.#games.get(gameId);
   }
 
   private addGame(game: Game) {
