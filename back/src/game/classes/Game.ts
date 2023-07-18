@@ -21,9 +21,9 @@ export class Game {
   readonly createdAt: number = Date.now();
   readonly gameId: string = uuid();
   P1: PublicUser;
-  P1Ready: boolean = false
+  P1Ready: boolean = false;
   P2: PublicUser;
-  P2Ready: boolean = false
+  P2Ready: boolean = false;
 
   score: [number, number] = [0, 0];
   status: GameStatus = GameStatus.Waiting;
@@ -62,17 +62,28 @@ export class Game {
     });
   }
 
-  async computeNextState() {
-    console.log('[Game] computeNextState');
+  async gameLoop() {
+    console.log('[Game] gameLoop');
+    if (this.status === GameStatus.Ready) {
+      console.log('  Compute next ready states');
+
+      // this.P1Ready = !this.P1Ready;
+      // this.P2Ready = !this.P2Ready;
+      this.server.to(this.gameId).emit('server.game.updateOverlay', {
+        type: 'ready',
+        data: { p1ready: this.P1Ready, p2ready: this.P2Ready },
+      });
+    }
+
     if (this.status === GameStatus.Playing) {
-      console.log('compute next state of game');
+      console.log('  Compute next positions');
     }
   }
 
-  startGameLoop() {
+  startGameLoop(delay: number) {
     console.log('[Game] Start Game Loop');
     if (!this.intervalId) {
-      this.intervalId = setInterval(this.computeNextState.bind(this), 1000);
+      this.intervalId = setInterval(this.gameLoop.bind(this), delay);
     }
   }
 

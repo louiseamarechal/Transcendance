@@ -22,6 +22,8 @@ export class GameManager {
       game.status = GameStatus.Ready;
       client.join(game.gameId);
 
+      game.startGameLoop(2000)
+
       this.server
         .to(game.gameId)
         .emit('server.game.navigate', { to: `/gamesocket/${game.gameId}` });
@@ -116,6 +118,22 @@ export class GameManager {
     this.#games.forEach((game: Game) => {
       game.debug();
       if (game.status === GameStatus.Done) {
+        console.log('Remove game. Cause: Game is done');
+        this.removeGame(game);
+        return;
+      }
+
+      if (
+        game.status !== GameStatus.Waiting &&
+        this.server.of('/').adapter.rooms.get(game.gameId)?.size !== 2
+      ) {
+        console.log('Remove game. Cause: Room contains only 1 player');
+        this.removeGame(game);
+        return;
+      }
+
+      if (this.server.of('/').adapter.rooms.has(game.gameId) === false) {
+        console.log('Remove game. Cause: Room destroyed');
         this.removeGame(game);
         return;
       }
