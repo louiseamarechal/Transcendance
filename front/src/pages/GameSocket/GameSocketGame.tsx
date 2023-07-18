@@ -31,12 +31,12 @@ export default function GameSocketLobby() {
 
     function handleUpdatePos(payload: Payload) {
       console.log(payload);
-      setLeftPlayer(payload.player1)
-      setRightPlayer(payload.player2)
-      setLeftPaddle(payload.player1Pos)
-      setRightPaddle(payload.player2Pos)
-      setBall(payload.ballPos)
-      setScore(payload.score)
+      setLeftPlayer(payload.player1);
+      setRightPlayer(payload.player2);
+      setLeftPaddle(payload.player1Pos);
+      setRightPaddle(payload.player2Pos);
+      setBall(payload.ballPos);
+      setScore(payload.score);
     }
 
     socket.on('server.game.updatePos', handleUpdatePos);
@@ -68,21 +68,29 @@ export default function GameSocketLobby() {
     socket.emit(ClientEvents.GameInput, payload);
   };
 
-  
-
   return (
     <div
       className="border-4 border-red-700 h-full flex flex-col justify-center items-center"
       onPointerMove={handlePointerMove}
     >
-      <div className="fixed">
-        Pos X: {pos.x}
-        <br />
-        Pos Y: {pos.y}
-      </div>
-        <button className='text-9xl text-red-900'>Ready</button>
+      {/* <Canvas />
+      <GameInfo /> */}
       <div className="h-4/5 w-4/5 border-4 border-blue-600">
-        {/* <canvas ref={canvasRef} className="h-full w-full" id="canvas" /> */}
+        <canvas ref={canvasRef} className="h-full w-full" id="canvas" />
+      </div>
+
+      <div className="fixed">
+        {/* Pos X: {pos.x}
+        <br />
+        Pos Y: {pos.y} */}
+        <button
+          className="text-9xl text-red-900"
+          onClick={() => {
+            console.log('coucou');
+          }}
+        >
+          Ready
+        </button>
       </div>
     </div>
   );

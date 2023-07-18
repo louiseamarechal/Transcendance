@@ -13,12 +13,12 @@ export class GameManager {
 
     if (filtGames.length === 0) {
       const newGame = new Game(this.server);
-      newGame.player1 = client.data.user;
+      newGame.P1 = client.data.user;
       client.join(newGame.gameId);
       this.addGame(newGame);
     } else {
       const game = filtGames[0];
-      game.player2 = client.data.user;
+      game.P2 = client.data.user;
       game.status = GameStatus.Ready;
       client.join(game.gameId);
 
@@ -26,7 +26,6 @@ export class GameManager {
         .to(game.gameId)
         .emit('server.game.navigate', { to: `/gamesocket/${game.gameId}` });
     }
-    console.log('[GameManager] joinQueue done');
   }
 
   public leaveQueue() {
@@ -45,15 +44,26 @@ export class GameManager {
       return;
     }
 
-    if (game.player1.id === playerId) {
-      game.player1Pos = val
-    } else if (game.player2.id === playerId) {
-      game.player2Pos = val
+    if (game.P1.id === playerId) {
+      game.P1Pos = val;
+    } else if (game.P2.id === playerId) {
+      game.P2Pos = val;
     }
-    console.log()
   }
 
-  
+  public setReady(gameId: string, playerId: number) {
+    const game = this.#games.get(gameId);
+    if (!game) {
+      return;
+    }
+
+    if (game.P1.id === playerId) {
+      game.P1Ready = true;
+    } else if (game.P2.id === playerId) {
+      game.P2Ready = true;
+    }
+  }
+
   /**
    * PRIVATE METHODS
    **/
@@ -104,7 +114,7 @@ export class GameManager {
     });
 
     this.#games.forEach((game: Game) => {
-      game.debug()
+      game.debug();
       if (game.status === GameStatus.Done) {
         this.removeGame(game);
         return;

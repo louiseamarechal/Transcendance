@@ -127,4 +127,12 @@ export class GameGateway
   handleLeaveQueue() {
     this.gameManager.leaveQueue();
   }
+
+  @SubscribeMessage('client.game.setReady')
+  handleSetReady(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { gameId: string },
+  ) {
+    this.gameManager.setReady(payload.gameId, client.data.user.id);
+  }
 }

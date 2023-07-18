@@ -20,15 +20,17 @@ export class Game {
 
   readonly createdAt: number = Date.now();
   readonly gameId: string = uuid();
-  player1: PublicUser;
-  player2: PublicUser;
+  P1: PublicUser;
+  P1Ready: boolean = false
+  P2: PublicUser;
+  P2Ready: boolean = false
 
   score: [number, number] = [0, 0];
   status: GameStatus = GameStatus.Waiting;
   visibility: GameVisibility = GameVisibility.Public;
 
-  player1Pos: number = 0.5;
-  player2Pos: number = 0.5;
+  P1Pos: number = 0.5;
+  P2Pos: number = 0.5;
   ballPos: [number, number] = [0.5, 0.5];
   ballVel: [number, number] = [0.1, 0];
 
@@ -53,8 +55,8 @@ export class Game {
         this.intervalId ? true : false,
       ],
       pl: [
-        [this.player1?.name, this.player1Pos],
-        [this.player2?.name, this.player2Pos],
+        [this.P1?.name, this.P1Ready, this.P1Pos],
+        [this.P2?.name, this.P2Ready, this.P2Pos],
       ],
       ball: [this.ballPos, this.ballVel],
     });
