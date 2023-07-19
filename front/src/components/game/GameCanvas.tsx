@@ -1,7 +1,11 @@
+import { useRef } from "react"
+
 function GameCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
   return (
     <div className="h-[95%] w-[95%]">
-        <canvas className="h-full w-full" id='canvas'></canvas>
+        <canvas ref={canvasRef} className="h-full w-full" id='canvas'></canvas>
     </div>
   )
 }

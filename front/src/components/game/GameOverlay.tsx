@@ -10,13 +10,6 @@ export type OverlayData = {
 type GameOverlayProps = {
   type: string;
   data: OverlayData;
-  //   dataReady?: {
-  //     p1: boolean;
-  //     p2: boolean;
-  //   };
-  //   dataTimer?: any;
-  //   dataScore?: any;
-  //   dataResult?: any;
 };
 
 function GameOverlay({ type, data }: GameOverlayProps) {
@@ -34,12 +27,12 @@ function GameOverlay({ type, data }: GameOverlayProps) {
       <div className="absolute border-4 border-fuchsia-300 w-full h-full flex flex-col justify-center items-center">
         <div className="border-4 border-pink-700 w-full  flex justify-center items-center">
           <div className="border-2 border-black flex-1 flex justify-center items-center">
-            <div className="border border-yellow-700 w-1/2">
+            <div className="border border-yellow-700 w-1/2 text-center">
               {data.p1ready ? 'Ready' : 'Not Ready'}
             </div>
           </div>
           <div className="border-2 border-black flex-1 flex justify-center items-center">
-            <div className="border border-yellow-700 w-1/2">
+            <div className="border border-yellow-700 w-1/2 text-center">
               {data.p2ready ? 'Ready' : 'Not Ready'}
             </div>
           </div>
@@ -62,7 +55,7 @@ function GameOverlay({ type, data }: GameOverlayProps) {
     );
   }
 
-  return <div>{type}</div>;
+  return null;
 }
 
 export default GameOverlay;

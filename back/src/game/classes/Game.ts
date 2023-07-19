@@ -83,7 +83,10 @@ export class Game {
   }
 
   stopGameLoop() {
-    console.log('[Game] Stop Game Loop', this.intervalId);
+    console.log(
+      '[Game] Stop Game Loop',
+      this.intervalId ? 'Clear interval' : null,
+    );
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
@@ -99,7 +102,7 @@ export class Game {
     if (this.P1Ready && this.P2Ready) {
       this.status = GameStatus.Timer;
       this.gameStartedAt = Date.now() + 4000;
-      return
+      return;
     }
 
     // this.P1Ready = !this.P1Ready;
@@ -115,10 +118,10 @@ export class Game {
 
     if (Date.now() > this.gameStartedAt) {
       this.status = GameStatus.Playing;
-      return
+      return;
     }
 
-    console.log(Math.floor((this.gameStartedAt - Date.now()) / 1000))
+    console.log(Math.floor((this.gameStartedAt - Date.now()) / 1000));
     this.server.to(this.gameId).emit('server.game.updateOverlay', {
       type: 'timer',
       data: { timerval: Math.floor((this.gameStartedAt - Date.now()) / 1000) },

@@ -5,6 +5,7 @@ import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
 import { useParams } from 'react-router-dom';
 import GameOverlay, { OverlayData } from '../../components/game/GameOverlay';
 import GameCanvas from '../../components/game/GameCanvas';
+import GameBackground from '../../components/game/GameBackground';
 
 export default function GameSocketLobby() {
   const { gameId } = useParams();
@@ -96,6 +97,7 @@ export default function GameSocketLobby() {
         ref={divRef}
         className="relative h-4/5 w-4/5 border-8 border-blue-600 flex flex-col justify-center items-center"
       >
+        <GameBackground />
         <GameCanvas />
         <GameOverlay type={overlayType} data={overlayData} />
       </div>
