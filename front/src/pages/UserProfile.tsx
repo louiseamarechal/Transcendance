@@ -6,6 +6,7 @@ import { User } from '../types/User.type';
 // import UserCard from '../components/UserCard';
 import ProgressBar from '../components/ProgressBar';
 import { ProfilStat } from '../components/ProfilStat';
+import { FriendRequest } from '../types/FriendRequest.type';
 // import axios from 'axios';
 
 export default function UserProfile() {
@@ -15,6 +16,7 @@ export default function UserProfile() {
   const [isLoading, setLoading] = useState<boolean>(true);
   const { myId } = useUser();
   const navigate = useNavigate();
+  const [FR, setFR] = useState<FriendRequest>({})
 
   console.log('Entering UserProfile component with id =', id);
 
@@ -51,10 +53,16 @@ export default function UserProfile() {
   if (isLoading) {
     return <div className="grid place-items-center h-screen">Loading...</div>;
   }
+
+  // useEffect(() => {
+  //   axiosInstance
+  //   .get(`friend-request/with/${id}`)
+  //   .then ((res) => {
+  //     setFR(res.data);
+  //   })
+  // })
+  
   const handleAddFriend = () => {
-    //rajouter une condition pour dire que si la request a deja ete faite on la refait pas sinon ca saute.
-    // if (user.sentRequests)
-    //pour le moment ca marhc ebien seulement si on fait une seule FR
     axiosInstance
       .post(`friend-request/${id}`, {})
       .then((response) => {
@@ -64,6 +72,13 @@ export default function UserProfile() {
         if (error.response.status !== 409) console.error(error);
       });
   };
+
+  const handleAcceptFriend = () =>
+  {
+    axiosInstance
+      .patch(`friend-request/${id}`, "ACCEPTED") //a voir si ca s'ecrit comme ca. pas sur...
+  }
+
   return (
     <div className="profil-container">
       <div className="flex flex-row w-[55%] justify-end">
@@ -73,7 +88,16 @@ export default function UserProfile() {
             <p className="user-name">{user?.name}</p>
           </div>
         </div>
-        <ActionButtons handleAddFriend={handleAddFriend} />
+        {/* if(FR.fromID === ${myId})
+        {
+          <button className="small-button friend-request-button">
+            Pending request
+          </button>
+        } */}
+        {/* else if (FR.status ==== "PENDING")
+        <AcceptdeclineButtons/> */}
+        {/* <ActionButtons id ={id ?? ''} /> */}
+        <ActionButtons handleAddFriend = {handleAddFriend}/>
         {/* <ActionButtons userId ={myId}/> */}
       </div>
       <ProgressBar user={user} />
@@ -84,29 +108,22 @@ export default function UserProfile() {
   );
 }
 // type ActionButtonsProps = {
-//   userId: number;
-// }
+//   id: string;
+// };
 type ActionButtonsProps = {
   handleAddFriend: Function;
 };
 // function ActionButtons( userId: ActionButtonsProps ) {
-function ActionButtons({ handleAddFriend }: ActionButtonsProps) {
-  // const handleAddFriend = () => {
-  //   // Requête Axios pour ajouter l'ami
-  //   console.log({userId});
+function ActionButtons( {handleAddFriend} : ActionButtonsProps) {
+  // const handleAddFriend = (id : string) => {
   //   const axiosInstance = useAxiosPrivate();
   //   axiosInstance
-  //   // axios.post(`/friend-request/${userId}`, {
-  //   .post(`/friend-request/${userId}`, {
-
-  //   })
-  //     .then(response => {
-  //       // Traitement de la réponse du serveur
+  //     .post(`friend-request/${id}`, {})
+  //     .then((response) => {
   //       console.log(response.data);
   //     })
-  //     .catch(error => {
-  //       // Gestion des erreurs
-  //       console.error(error);
+  //     .catch((error) => {
+  //       if (error.response.status !== 409) console.error(error);
   //     });
   // };
   return (
@@ -123,3 +140,19 @@ function ActionButtons({ handleAddFriend }: ActionButtonsProps) {
     </div>
   );
 }
+
+// function AcceptdeclineButtons() {
+//   return (
+//     <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
+//       <button
+//         className="small-button friend-request-button"
+//         // onClick={handleAddFriend}
+//       >
+//         Add friend
+//       </button>
+//       <button className="small-button game-request-button">
+//         Send game request
+//       </button>
+//     </div>
+//   );
+// }

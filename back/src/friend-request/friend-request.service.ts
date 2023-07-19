@@ -86,13 +86,21 @@ export class FriendRequestService {
     });
 	}
 
-	getFRByToId(fromId: number, toId: number) {
+	getFRByToId(userId1: number, userId2: number) {
 		return this.prisma.friendRequest.findMany({
       where: {
-        fromId,
-				toId,
+		OR: [ 
+			{
+				fromId: userId1,
+				toId: userId2,
+			},
+			{
+				fromId: userId2,
+				toId: userId1,
+			},
+		],
       },
-    });
+   	});
 	}
 
 	async editFRById(fromId: number, friendRequestId: number, dto: EditFriendRequestDto) {

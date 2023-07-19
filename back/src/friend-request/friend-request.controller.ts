@@ -49,7 +49,7 @@ export class FriendRequestController {
     return this.friendRequestService.getFRById(userId, id);
   }
 
-  @Get(':toId')
+  @Get('with/:toId')
   getFRByToId(
     @GetUserId() userId: number,
     @Param('toId', ParseIntPipe) toId: number,
