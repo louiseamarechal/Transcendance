@@ -1,7 +1,7 @@
 export type FriendRequest = 
 {
     id?: number;
-    fromId?: number;
+    fromId?: string;
     toId?: number;
     status?: string;
 }
