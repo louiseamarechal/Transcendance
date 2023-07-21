@@ -155,8 +155,8 @@ model Game {
   player2   User @relation(name: "player2", fields: [player2Id], references: [id], onDelete: Cascade)
   player2Id Int  @map("player2_id")
 
-  winner   User @relation(name: "winner", fields: [winnerId], references: [id], onDelete: Cascade)
-  winnerId Int  @map("winner_id")
+  winner   User? @relation(name: "winner", fields: [winnerId], references: [id], onDelete: Cascade)
+  winnerId Int?  @map("winner_id")
 
   score String?
 
