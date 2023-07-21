@@ -30,7 +30,7 @@ export class NotifGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   // handle connection
   handleConnection(client: Socket) {
-    console.log(`client with id: ${client.id} is connected !`);
+    // console.log(`client with id: ${client.id} is connected !`);
     this.socketService.handleConnection(client, '');
   }
 
@@ -43,6 +43,10 @@ export class NotifGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // @SubscribeMessage('friends-notif')
   handleFriendsNotif(@MessageBody() data: string) {
     this.notifService.handleFriendsNotif(data, this.server);
+  }
+
+  handleGamesNotif(@MessageBody() data: string) {
+    this.notifService.handleGamesNotif(data, this.server);
   }
   // @SubscribeMessage('join-room')
   // handleJoinRoom(

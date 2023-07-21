@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Socket } from 'socket.io-client';
 
 type NotificationProps = {
@@ -19,7 +19,6 @@ type NotificationProps = {
 };
 
 export function Notification(props: NotificationProps) {
-
   useEffect(() => {
     function onFriendsNotifEvent() {
       console.log('received FR notif');
@@ -28,30 +27,32 @@ export function Notification(props: NotificationProps) {
       });
     }
     function onGameNotifEvent() {
-      console.log('received Chat notif');
-      props.setReceivedNotif((previous) => { return {...previous, game: 1} });
-    }
-    function onChatNotifEvent() {
       console.log('received Game notif');
-      props.setReceivedNotif((previous) => { return {...previous, chat: 1} });
+      props.setReceivedNotif((previous) => {
+        return { ...previous, game: previous.game + 1 };
+      });
     }
+    // function onChatNotifEvent() {
+    //   console.log('received Chat notif');
+    //   props.setReceivedNotif((previous) => { return {...previous, chat: 1} });
+    // }
 
     if (props.notifSocket && props.element === 'Friends') {
       props.notifSocket.on('friends-notif', onFriendsNotifEvent);
     }
-    
+
     if (props.notifSocket && props.element === 'Game') {
       props.notifSocket.on('game-notif', onGameNotifEvent);
     }
-    
-    if (props.notifSocket && props.element === 'Chat') {
-      props.notifSocket.on('chat-notif', onChatNotifEvent);
-    }
+
+    // if (props.notifSocket && props.element === 'Chat') {
+    //   props.notifSocket.on('chat-notif', onChatNotifEvent);
+    // }
 
     return () => {
-      props.notifSocket?.off('friends-notif', onGameNotifEvent);
-      props.notifSocket?.off('Game', onFriendsNotifEvent);
-      props.notifSocket?.off('Chat', onChatNotifEvent);
+      props.notifSocket?.off('friends-notif', onFriendsNotifEvent);
+      props.notifSocket?.off('game-notif', onGameNotifEvent);
+      // props.notifSocket?.off('chat-notif', onChatNotifEvent);
     };
   }, []);
 
@@ -62,17 +63,18 @@ export function Notification(props: NotificationProps) {
       </div>
     );
   } else if (props.receivedNotif.game > 0 && props.element === 'Game') {
+    console.log(props.receivedNotif.game);
     return (
       <div className="notification">
         <div className="notification-text">{props.receivedNotif.game}</div>
       </div>
     );
-  } else if (props.receivedNotif.chat > 0 && props.element === 'Chat') {
-    return (
-      <div className="notification">
-        <div className="notification-text">{props.receivedNotif.chat}</div>
-      </div>
-    );
+    // } else if (props.receivedNotif.chat > 0 && props.element === 'Chat') {
+    //   return (
+    //     <div className="notification">
+    //       <div className="notification-text">{props.receivedNotif.chat}</div>
+    //     </div>
+    //   );
   }
   return <></>;
 }

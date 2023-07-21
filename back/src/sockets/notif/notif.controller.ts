@@ -5,8 +5,12 @@ import { NotifService } from './notif.service';
 @Controller('notif')
 export class NotifController {
   constructor(private notifService: NotifService) {}
-  @Get()
-  getNotif(@GetUserId() myId: number) {
-    return this.notifService.getNotif(myId);
+  @Get('friend')
+  getFriendsNotif(@GetUserId() myId: number) {
+    return this.notifService.getFriendsNotif(myId);
+  }
+  @Get('game')
+  getGamesNotif(@GetUserId() myId: number) {
+    return this.notifService.getGamesNotif(myId);
   }
 }

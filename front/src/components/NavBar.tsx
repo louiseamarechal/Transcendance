@@ -24,11 +24,21 @@ const NavBar = ({ notifSocket }: NavbarProps) => {
 
   useEffect(() => {
     axiosInstance
-      .get('/notif')
+      .get('/notif/friend')
       .then((response) => {
         const data = response.data;
         setReceivedNotif((previous) => {
           return { ...previous, friends: data.length };
+        });
+      })
+      .catch((error) => console.log(error));
+
+    axiosInstance
+      .get('/notif/game')
+      .then((response) => {
+        const data = response.data;
+        setReceivedNotif((previous) => {
+          return { ...previous, game: data.length };
         });
       })
       .catch((error) => console.log(error));
