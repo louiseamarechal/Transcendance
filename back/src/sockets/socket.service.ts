@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
 import { verify } from 'jsonwebtoken';
 import { Socket } from 'socket.io';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class SocketService {
