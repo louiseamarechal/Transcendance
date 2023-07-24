@@ -111,6 +111,11 @@ export class ChannelService {
       where: {
         id: channelId,
       },
+			include: {
+				admins: true,
+				members: true,
+				blocked: true,
+			}
     });
   }
 
