@@ -1,0 +1,3 @@
+- checker si et ou on stock le socket id
+- dans le back CreateFR - ajouter le emit toId de la notif
+- dans le front avant la requete axios pour avoir le nombre de sent Requests faire le server.on pour recuperer l'indo de la notif

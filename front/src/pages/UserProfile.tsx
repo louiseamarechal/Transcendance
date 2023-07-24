@@ -64,6 +64,18 @@ export default function UserProfile() {
         if (error.response.status !== 409) console.error(error);
       });
   };
+
+  const handleGameRequest = async () => {
+    await axiosInstance
+      .post(`game/${id}`, {})
+      .then((response) => {
+        console.log({ handleGameRequest: response.data });
+      })
+      .catch((error) => {
+        if (error.response.status !== 409) console.error(error);
+      });
+  };
+
   return (
     <div className="profil-container">
       <div className="flex flex-row w-[55%] justify-end">
@@ -73,7 +85,10 @@ export default function UserProfile() {
             <p className="user-name">{user?.name}</p>
           </div>
         </div>
-        <ActionButtons handleAddFriend={handleAddFriend} />
+        <ActionButtons
+          handleAddFriend={handleAddFriend}
+          handleGameRequest={handleGameRequest}
+        />
         {/* <ActionButtons userId ={myId}/> */}
       </div>
       <ProgressBar user={user} />
@@ -88,9 +103,13 @@ export default function UserProfile() {
 // }
 type ActionButtonsProps = {
   handleAddFriend: Function;
+  handleGameRequest: Function;
 };
 // function ActionButtons( userId: ActionButtonsProps ) {
-function ActionButtons({ handleAddFriend }: ActionButtonsProps) {
+function ActionButtons({
+  handleAddFriend,
+  handleGameRequest,
+}: ActionButtonsProps) {
   // const handleAddFriend = () => {
   //   // Requête Axios pour ajouter l'ami
   //   console.log({userId});
@@ -117,7 +136,10 @@ function ActionButtons({ handleAddFriend }: ActionButtonsProps) {
       >
         Add friend
       </button>
-      <button className="small-button game-request-button">
+      <button
+        className="small-button game-request-button"
+        onClick={handleGameRequest}
+      >
         Send game request
       </button>
     </div>
