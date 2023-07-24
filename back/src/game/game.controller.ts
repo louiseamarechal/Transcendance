@@ -15,7 +15,7 @@ export class GameController {
   }
 
   @Post(':id')
-  createFRById(
+  createGameById(
     @GetUserId() userId: number,
     @Param('id', ParseIntPipe) toId: number,
   ) {
