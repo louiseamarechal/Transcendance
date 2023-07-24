@@ -32,8 +32,8 @@ export class FriendRequestService {
     const receiver = await this.prisma.user.findUnique({
       where: { id: toId },
     });
-    if (!receiver) {
-      throw new BadRequestException();
+    if (receiver === null) {
+      throw new ConflictException();
     }
     this.notifGateway.handleFriendsNotif(receiver.login);
     return friendRequest;

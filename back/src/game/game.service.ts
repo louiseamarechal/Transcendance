@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { Game } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { NotifGateway } from 'src/sockets/notif/notif.gateway';
@@ -16,14 +16,11 @@ export class GameService {
         player2Id: toId,
       },
     });
-    //   .catch((error) => {
-    //     if (error.response.status !== 409) console.error(error);
-    //   });
     const receiver = await this.prisma.user.findUnique({
       where: { id: toId },
     });
-    if (!receiver) {
-      throw new BadRequestException();
+    if (receiver === null) {
+      throw new ConflictException();
     }
     this.notifGateway.handleGamesNotif(receiver.login);
     return gameRequest;
