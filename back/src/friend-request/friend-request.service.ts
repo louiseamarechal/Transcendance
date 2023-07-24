@@ -3,20 +3,22 @@ import {
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
+  BadRequestException,
 } from '@nestjs/common';
 import { FRStatus, FriendRequest } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFriendRequestDto } from './dto';
 import { ChannelService } from 'src/channel/channel.service';
 import { CreateChannelDto } from 'src/channel/dto';
+import { NotifGateway } from 'src/sockets/notif/notif.gateway';
 
 @Injectable()
 export class FriendRequestService {
   constructor(
     private prisma: PrismaService,
     private channelService: ChannelService,
+    private notifGateway: NotifGateway,
   ) {}
-
   async createFR(fromId: number, toId: number): Promise<FriendRequest> {
     const friendRequest = await this.prisma.friendRequest
       .create({
@@ -30,6 +32,14 @@ export class FriendRequestService {
           throw new ConflictException('Friend Request already exists.');
         throw error;
       });
+
+    const receiver = await this.prisma.user.findUnique({
+      where: { id: toId },
+    });
+    if (receiver === null) {
+      throw new ConflictException();
+    }
+    this.notifGateway.handleFriendsNotif(receiver.login);
     return friendRequest;
   }
 
@@ -80,7 +90,7 @@ export class FriendRequestService {
     });
   }
 
-  getFRs(fromId: number) {
+  getFRs(fromId: number): Promise<FriendRequest[]> {
     return this.prisma.friendRequest.findMany({
       where: {
         fromId,
@@ -128,7 +138,7 @@ export class FriendRequestService {
     // Check ownership
     if (
       !friendRequest ||
-      (friendRequest.fromId != userId && friendRequest.toId !== userId)
+      (friendRequest.fromId !== userId && friendRequest.toId !== userId)
     )
       throw new ForbiddenException('Access to ressource denied');
 
@@ -149,29 +159,31 @@ export class FriendRequestService {
         status: FRStatus.PENDING,
       },
     });
-		console.log(`Found ${requestIds.length} pending requests`);
-		requestIds.forEach((elem) => {
-			this.prisma.friendRequest.update({
-				where: {
-					id: elem.id,
-				},
-				data: {
-					status: FRStatus.ACCEPTED,
-				}
-			}).then((res) => {
-				if (res.status !== FRStatus.ACCEPTED) {
-					throw new InternalServerErrorException("Could not accept FR.");
-				}
-			});
-			console.log(`Updated FR with user: ${elem.fromId}`);
-			const dto: CreateChannelDto = {
-				name: '',
-				avatar: '',
-				members: [elem.fromId, elem.toId],
-			};
-			console.log(dto);
-			this.channelService.createChannel(elem.fromId, dto);
-		});
+    console.log(`Found ${requestIds.length} pending requests`);
+    requestIds.forEach((elem) => {
+      this.prisma.friendRequest
+        .update({
+          where: {
+            id: elem.id,
+          },
+          data: {
+            status: FRStatus.ACCEPTED,
+          },
+        })
+        .then((res) => {
+          if (res.status !== FRStatus.ACCEPTED) {
+            throw new InternalServerErrorException('Could not accept FR.');
+          }
+        });
+      console.log(`Updated FR with user: ${elem.fromId}`);
+      const dto: CreateChannelDto = {
+        name: '',
+        avatar: '',
+        members: [elem.fromId, elem.toId],
+      };
+      console.log(dto);
+      this.channelService.createChannel(elem.fromId, dto);
+    });
     console.log(`Accepted all FRs: ${requestIds}.`);
   }
 
@@ -201,6 +213,22 @@ export class FriendRequestService {
   //     },
   //   });
   // }
+
+  getReceivedFR(
+    toId: number,
+  ): Promise<{ fromId: number; toId: number; status: FRStatus }[]> {
+    return this.prisma.friendRequest.findMany({
+      where: {
+        toId,
+        status: FRStatus.PENDING,
+      },
+      select: {
+        fromId: true,
+        toId: true,
+        status: true,
+      },
+    });
+  }
 
   async deleteFRById(fromId: number, friendRequestId: number) {
     const friendRequest = await this.prisma.friendRequest.findUnique({

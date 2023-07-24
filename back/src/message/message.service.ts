@@ -20,6 +20,7 @@ export class MessageService {
     channelId: number;
     body: string;
   }> {
+    // socket
     return this.prisma.message.create({
       data: {
         channelId,
@@ -41,9 +42,7 @@ export class MessageService {
     });
   }
 
-  async getChannelMessages(
-    channelId: number,
-  ): Promise<
+  async getChannelMessages(channelId: number): Promise<
     {
       id: number;
       createdAt: Date;

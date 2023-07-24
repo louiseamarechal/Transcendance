@@ -9,6 +9,8 @@ import { UserModule } from './user/user.module';
 import { FriendRequestModule } from './friend-request/friend-request.module';
 import { ChannelModule } from './channel/channel.module';
 import { MessageModule } from './message/message.module';
+import { NotifModule } from './sockets/notif/notif.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { MessageModule } from './message/message.module';
     FriendRequestModule,
     ChannelModule,
     MessageModule,
+    NotifModule,
+    GameModule,
   ],
   controllers: [AppController],
   providers: [
