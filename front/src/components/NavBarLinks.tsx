@@ -24,6 +24,25 @@ const NavBarLinks = (props: NavBarLinksProps) => {
   const { myAvatar } = useUser();
   const { setNavbarState } = useNavbar();
 
+  function handleClick(
+    link:
+      | string
+      | React.DetailedHTMLProps<
+          React.ImgHTMLAttributes<HTMLImageElement>,
+          HTMLImageElement
+        >,
+  ) {
+    console.log({link});
+    if (link === 'Game') {
+      props.setReceivedNotif({ ...props.receivedNotif, game: 0 });
+    } else if (link === 'Friends') {
+      props.setReceivedNotif({ ...props.receivedNotif, friends: 0 });
+    } else if (link === 'Chat') {
+      props.setReceivedNotif({ ...props.receivedNotif, chat: 0 });
+    }
+    setNavbarState(false);
+  }
+
   const navElems = [
     {
       to: '/profil',
@@ -62,7 +81,7 @@ const NavBarLinks = (props: NavBarLinksProps) => {
             ) : (
               ''
             )}
-            <Link to={elem.to} onClick={() => setNavbarState(false)}>
+            <Link to={elem.to} onClick={() => handleClick(elem.content)}>
               {elem.content}
             </Link>
           </div>
