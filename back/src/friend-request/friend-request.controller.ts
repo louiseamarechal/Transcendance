@@ -83,13 +83,4 @@ export class FriendRequestController {
   ) {
     return this.friendRequestService.deleteFRById(userId, id);
   }
-
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete(':toId')
-  deleteFRByToId(
-    @GetUserId() userId: number,
-    @Param('toId', ParseIntPipe) toId: number,
-  ) {
-    return this.friendRequestService.deleteFRByToId(userId, toId);
-  }
 }

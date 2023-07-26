@@ -3,11 +3,9 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { useEffect, useState } from 'react';
 import { useUser } from '../hooks/useUser';
 import { User } from '../types/User.type';
-// import UserCard from '../components/UserCard';
 import ProgressBar from '../components/ProgressBar';
 import { ProfilStat } from '../components/ProfilStat';
 import { FriendRequest } from '../types/FriendRequest.type';
-// import axios from 'axios';
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -16,7 +14,8 @@ export default function UserProfile() {
   const [isLoading, setLoading] = useState<boolean>(true);
   const { myId } = useUser();
   const navigate = useNavigate();
-  const [FR, setFR] = useState<FriendRequest>({})
+  const [FR, setFR] = useState<FriendRequest>({});
+  const [refresh, setRefresh] = useState(false);
 
   console.log('Entering UserProfile component with id =', id);
 
@@ -49,82 +48,63 @@ export default function UserProfile() {
         navigate('/game');
       });
 
-    // axiosInstance
-    //   .get(`friend-request/with/${id}`)
-    //   .then ((res) => {
-    //     if (res.data[0]) {
-    //       setFR(res.data[0]);
-         
-    //      console.log('data[0].fromId pour voir', res.data[0].fromId)
-    //       console.log('la data from id depuis la boucle if du useffect de setFR =', res.data.fromId)
-    //     }
-    //     else {
-    //       setFR({});
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
-  }, [id]);
+      axiosInstance
+      .get(`friend-request/with/${id}`)
+      .then((res) => {
+        if (res.data[0]) {
+          setFR(res.data[0]);
+          console.log('data[0].fromId pour voir', res.data[0].fromId);
+        } else {
+          setFR({});
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [id, refresh]);
 
-  useEffect(() => {
-  axiosInstance
-  .get(`friend-request/with/${id}`)
-  .then ((res) => {
-    if (res.data[0]) {
-      setFR(res.data[0]);
-     
-     console.log('data[0].fromId pour voir', res.data[0].fromId)
-    }
-    else {
-      setFR({});
-    }
-  })
-  .catch((error) => {
-    console.error(error);
-  });
-}, []);
-  // console.log("la requete axios pour connaitre la FR donne ca : " , res.data)
-  // console.log("la fr from ID est : ",FR.fromId)
   if (isLoading) {
     return <div className="grid place-items-center h-screen">Loading...</div>;
   }
-  
-   
+
   const handleAddFriend = () => {
     axiosInstance
       .post(`friend-request/${id}`, {})
       .then((response) => {
         console.log(response.data);
+        setRefresh(true);
       })
       .catch((error) => {
         if (error.response.status !== 409) console.error(error);
       });
+     
   };
 
-  const handleAcceptFriend = () =>
-  {
+  const handleAcceptFriend = () => {
     axiosInstance
-      .patch(`friend-request/${id}`, {'status' : "ACCEPTED"}) 
+      .patch(`friend-request/${FR.id}`, { status: 'ACCEPTED' })
       .then((response) => {
         console.log(response.data);
+        setRefresh(true);
       })
       .catch((error) => {
-        if (error.response.status !== 409) console.error(error);
+         console.error(error);
       });
-    }
+      
+  };
 
-    const handleDeclineFR= () =>
-  {
+  const handleDeclineFR = () => {
     axiosInstance
-      .patch(`friend-request/${id}`, {'status' : "REFUSED"}) 
+      .patch(`friend-request/${FR.id}`, { status: 'REFUSED' })
       .then((response) => {
         console.log(response.data);
+        setRefresh(true);
       })
       .catch((error) => {
         if (error.response.status !== 409) console.error(error);
       });
-    }
+      
+  };
 
   return (
     <div className="profil-container">
@@ -135,17 +115,14 @@ export default function UserProfile() {
             <p className="user-name">{user?.name}</p>
           </div>
         </div>
-        {/* if(FR.fromID === ${myId})
-        {
-          <button className="small-button friend-request-button">
-            Pending request
-          </button>
-        } */}
-        {/* else if (FR.status ==== "PENDING")
-        <AcceptdeclineButtons/> */}
-        {/* <ActionButtons id ={id ?? ''} /> */}
-        <ActionButtons status = {FR.status ?? ''} myId = {myId} fromId = {FR.fromId ?? ''} handleAddFriend = {handleAddFriend} handleAcceptFriend = {handleAcceptFriend} handleDeclineFR={handleDeclineFR}/>
-        {/* <ActionButtons userId ={myId}/> */}
+        <ActionButtons
+          status={FR.status ?? ''}
+          myId={myId}
+          fromId={FR.fromId ?? ''}
+          handleAddFriend={handleAddFriend}
+          handleAcceptFriend={handleAcceptFriend}
+          handleDeclineFR={handleDeclineFR}
+        />
       </div>
       <ProgressBar user={user} />
       <div className={divStyle}>
@@ -163,62 +140,50 @@ type ActionButtonsProps = {
   myId: number;
   fromId: string;
 };
-// function ActionButtons( userId: ActionButtonsProps ) {
-function ActionButtons( {status, myId, fromId, handleAddFriend, handleAcceptFriend, handleDeclineFR} : ActionButtonsProps) {
-  // const handleAddFriend = (id : string) => {
-  //   const axiosInstance = useAxiosPrivate();
-  //   axiosInstance
-  //     .post(`friend-request/${id}`, {})
-  //     .then((response) => {
-  //       console.log(response.data);
-  //     })
-  //     .catch((error) => {
-  //       if (error.response.status !== 409) console.error(error);
-  //     });
-  // };
-  console.log("mon id est : ", myId, "et mon fromID est", fromId )
+function ActionButtons({
+  status,
+  myId,
+  fromId,
+  handleAddFriend,
+  handleAcceptFriend,
+  handleDeclineFR,
+}: ActionButtonsProps) {
 
-  console.log("mon status est : ", status )
-  if (status === 'ACCEPTED')
-  {
+  if (status === 'ACCEPTED') {
     return (
       <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
-          <button
-        className="small-button friend-request-button"
-      >
-        Is your friend !
-      </button>
+        <button className="small-button friend-request-button"onClick={() => {
+            handleDeclineFR();
+          }}>
+          Remove Friend
+        </button>
         <button className="small-button game-request-button">
           Send game request
         </button>
       </div>
     );
-  }
-  else if (parseInt(fromId) === myId)
-  { 
+  } else if (parseInt(fromId) === myId) {
     return (
-    <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
-      <button
-        className="small-button friend-request-button"
-      >
-        Pending
-      </button>
-    </div>
+      <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
+        <button className="small-button friend-request-button">Pending</button>
+      </div>
     );
-  }
-  else if (fromId !== '' && myId !== parseInt(fromId))
-  {
+  } else if (fromId !== '' && myId !== parseInt(fromId)) {
     return (
       <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
         <button
           className="small-button friend-request-button"
-          onClick={handleAcceptFriend}
+          onClick={() => {
+            handleAcceptFriend();
+          }}
         >
           Accept
         </button>
         <button
           className="small-button friend-request-button"
-          onClick={handleDeclineFR}
+          onClick={() => {
+            handleDeclineFR();
+          }}
         >
           Decline
         </button>
@@ -227,14 +192,14 @@ function ActionButtons( {status, myId, fromId, handleAddFriend, handleAcceptFrie
         </button>
       </div>
     );
-  }
-  else
-  {
+  } else {
     return (
       <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
         <button
           className="small-button friend-request-button"
-          onClick={handleAddFriend}
+          onClick={() => {
+            handleAddFriend();
+          }}
         >
           Add friend
         </button>
@@ -245,19 +210,3 @@ function ActionButtons( {status, myId, fromId, handleAddFriend, handleAcceptFrie
     );
   }
 }
-
-// function AcceptdeclineButtons() {
-//   return (
-//     <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
-//       <button
-//         className="small-button friend-request-button"
-//         // onClick={handleAddFriend}
-//       >
-//         Add friend
-//       </button>
-//       <button className="small-button game-request-button">
-//         Send game request
-//       </button>
-//     </div>
-//   );
-// }
