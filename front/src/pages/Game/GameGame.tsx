@@ -1,24 +1,15 @@
 import { PointerEvent, useEffect, useRef, useState } from 'react';
-import { socket } from '../../api/socket';
+import { gameSocket } from '../../api/socket';
 import { ClientEvents } from '../../../../shared/client/ClientEvents';
 import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
 import { useParams } from 'react-router-dom';
-import GameOverlay, { OverlayData } from '../../components/game/GameOverlay';
+import GameOverlay from '../../components/game/GameOverlay';
 import GameCanvas from '../../components/game/GameCanvas';
 import GameBackground from '../../components/game/GameBackground';
 
 export default function GameLobby() {
   const { gameId } = useParams();
   const [pos, setPos] = useState({ x: 0, y: 0 }); // debug
-
-  // const [leftPlayer, setLeftPlayer] = useState<string>('');
-  // const [rightPlayer, setRightPlayer] = useState<string>('');
-
-  // const [leftPaddle, setLeftPaddle] = useState<number>(0);
-  // const [rightPaddle, setRightPaddle] = useState<number>(0);
-  // const [ball, setBall] = useState<[number, number]>([0, 0]);
-
-  // const [score, setScore] = useState<[number, number]>([0, 0]);
 
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -32,41 +23,14 @@ export default function GameLobby() {
       setOverlayData(payload.data);
     }
 
-    socket.on('server.game.updateOverlay', updateOverlay);
+    gameSocket.on('server.game.updateOverlay', updateOverlay);
 
     return () => {
-      socket.off('server.game.updateOverlay', updateOverlay);
+      gameSocket.off('server.game.updateOverlay', updateOverlay);
     };
   }, []);
 
-  // useEffect(() => {
-  //   type Payload = {
-  //     player1: string;
-  //     player2: string;
-  //     player1Pos: number;
-  //     player2Pos: number;
-  //     ballPos: [number, number];
-  //     score: [number, number];
-  //   };
-
-  //   function handleUpdatePos(payload: Payload) {
-  //     console.log(payload);
-  //     setLeftPlayer(payload.player1);
-  //     setRightPlayer(payload.player2);
-  //     setLeftPaddle(payload.player1Pos);
-  //     setRightPaddle(payload.player2Pos);
-  //     setBall(payload.ballPos);
-  //     setScore(payload.score);
-  //   }
-
-  //   socket.on('server.game.updatePos', handleUpdatePos);
-
-  //   return () => {
-  //     socket.off('server.game.updatePos', handleUpdatePos);
-  //   };
-  // }, []);
-
-  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
+  function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
     const divMinY = divRef.current!.offsetTop;
     const divMaxY = divMinY + divRef.current!.offsetHeight;
 
@@ -85,8 +49,8 @@ export default function GameLobby() {
       gameId: gameId,
       val: input,
     };
-    socket.emit(ClientEvents.GameInput, payload);
-  };
+    gameSocket.emit(ClientEvents.GameInput, payload);
+  }
 
   return (
     <div

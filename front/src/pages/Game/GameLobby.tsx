@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { socket } from '../../api/socket';
+import { gameSocket } from '../../api/socket';
 
 export default function GameLobby() {
   const navigate = useNavigate()
@@ -12,7 +12,7 @@ export default function GameLobby() {
     <div className="gamepage-container">
       <button
         onClick={() => {
-          socket.emit('toto', 'eventdata');
+          gameSocket.emit('toto', 'eventdata');
         }}
         className="text-9xl text-red-900"
       >

@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { socket } from '../../api/socket';
+import { gameSocket } from '../../api/socket';
 
 export type OverlayData = {
   p1ready?: boolean;
@@ -12,14 +12,14 @@ type GameOverlayProps = {
   data: OverlayData;
 };
 
-function GameOverlay({ type, data }: GameOverlayProps) {
+export default function GameOverlay({ type, data }: GameOverlayProps) {
   const { gameId } = useParams();
 
   function handleReadyClick() {
     const payload: any = {
       gameId: gameId,
     };
-    socket.emit('client.game.setReady', payload);
+    gameSocket.emit('client.game.setReady', payload);
   }
 
   if (type === 'ready') {
@@ -27,12 +27,22 @@ function GameOverlay({ type, data }: GameOverlayProps) {
       <div className="absolute border-4 border-fuchsia-300 w-full h-full flex flex-col justify-center items-center">
         <div className="border-4 border-pink-700 w-full  flex justify-center items-center">
           <div className="border-2 border-black flex-1 flex justify-center items-center">
-            <div className={"border border-yellow-700 w-1/2 text-center " + (data.p1ready ? "bg-green-200" : "bg-red-200")}>
+            <div
+              className={
+                'border border-yellow-700 w-1/2 text-center ' +
+                (data.p1ready ? 'bg-green-200' : 'bg-red-200')
+              }
+            >
               {data.p1ready ? 'Ready' : 'Not Ready'}
             </div>
           </div>
           <div className="border-2 border-black flex-1 flex justify-center items-center">
-            <div className={"border border-yellow-700 w-1/2 text-center " + (data.p2ready ? "bg-green-200" : "bg-red-200")}>
+            <div
+              className={
+                'border border-yellow-700 w-1/2 text-center ' +
+                (data.p2ready ? 'bg-green-200' : 'bg-red-200')
+              }
+            >
               {data.p2ready ? 'Ready' : 'Not Ready'}
             </div>
           </div>
@@ -67,5 +77,3 @@ function GameOverlay({ type, data }: GameOverlayProps) {
 
   return null;
 }
-
-export default GameOverlay;

@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
-import { socket } from '../../api/socket';
+import { gameSocket } from '../../api/socket';
 import { useNavigate } from 'react-router-dom';
 
 export default function GameQueue() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    socket.emit('client.game.joinQueue');
+    gameSocket.emit('client.game.joinQueue');
 
     return () => {
-      socket.emit('client.game.leaveQueue');
+      gameSocket.emit('client.game.leaveQueue');
     };
   }, []);
 

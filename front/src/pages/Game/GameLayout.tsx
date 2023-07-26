@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth.ts';
-import { socket } from '../../api/socket.ts';
+import { gameSocket } from '../../api/socket.ts';
 // import { useUser } from '../../hooks/useUser.ts';
 
 export default function GameLayout() {
@@ -11,15 +11,15 @@ export default function GameLayout() {
   useEffect(() => {
     console.log('Connect to websocket');
 
-    socket.auth = {
+    gameSocket.auth = {
       token: auth.access_token,
       // data: { id: myId, name: myName },
     };
-    socket.connect();
+    gameSocket.connect();
 
     return () => {
       console.log('Disconnect from websocket');
-      socket.disconnect();
+      gameSocket.disconnect();
     };
   }, [auth]);
 
@@ -29,12 +29,12 @@ export default function GameLayout() {
       navigate(value.to)
     }
 
-    // socket.on('server.game.navigateGame', onServerGameNavigateGame);
-    socket.on('server.game.navigate', onServerGameNavigate);
+    // gameSocket.on('server.game.navigateGame', onServerGameNavigateGame);
+    gameSocket.on('server.game.navigate', onServerGameNavigate);
 
     return () => {
-      // socket.off('server.game.navigateGame', onServerGameNavigateGame);
-      socket.off('server.game.navigate', onServerGameNavigate);
+      // gameSocket.off('server.game.navigateGame', onServerGameNavigateGame);
+      gameSocket.off('server.game.navigate', onServerGameNavigate);
     };
   }, []);
 
