@@ -28,9 +28,9 @@ function ChannelCard({ id, name, avatar }: ChannelCardProps) {
     <div
       className={'channel-card ' + (showChannel === id ? 'selected' : '')}
       onClick={() => {
-				setShowChannel(id);
-				console.log(`Now showing channel ${id}`);
-			}}
+        setShowChannel(id);
+        console.log(`Now showing channel ${id}`);
+      }}
     >
       <img src={channelAvatar} className="avatar-sm" alt="avatar" />
       <div>

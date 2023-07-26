@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import '../../../style/components/chat/chat-container/create-channel-form.css';
 import '../../../style/components/buttons.css';
 import { useChatContext } from '../../../hooks/useChatContext';
@@ -32,6 +32,7 @@ const CreateChannelForm = () => {
         })
         .then((res) => {
           setChannelList([...channelList, res.data]);
+          setShowChannel(res.data.id);
         })
         .catch((err) => {
           if (err.response.status === 409) {

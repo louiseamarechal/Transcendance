@@ -9,6 +9,7 @@ import {
   BlockedOnChannels,
   Channel,
   MembersOnChannels,
+  User,
   VisType,
 } from '@prisma/client';
 
@@ -87,7 +88,23 @@ export class ChannelService {
   async getChannelById(
     userId: number,
     channelId: number,
-  ): Promise<Channel | null> {
+  ): Promise<{
+    id: number;
+    ownerId: number;
+    name: string;
+    avatar: string | null;
+    passwordHash: string | null;
+    visibility: string;
+    admins: {
+      user: { id: number; name: string; avatar: string | null; level: number };
+    }[];
+    blocked: {
+      user: { id: number; name: string; avatar: string | null; level: number };
+    }[];
+    members: {
+      user: { id: number; name: string; avatar: string | null; level: number };
+    }[];
+  } | null> {
     const channel = this.prisma.membersOnChannels.findUnique({
       where: {
         channelId_userId: {
@@ -111,11 +128,50 @@ export class ChannelService {
       where: {
         id: channelId,
       },
-			include: {
-				admins: true,
-				members: true,
-				blocked: true,
-			}
+      select: {
+        id: true,
+        ownerId: true,
+        name: true,
+        avatar: true,
+        passwordHash: true,
+        visibility: true,
+        admins: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true,
+                level: true,
+              },
+            },
+          },
+        },
+        members: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true,
+                level: true,
+              },
+            },
+          },
+        },
+        blocked: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true,
+                level: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 

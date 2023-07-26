@@ -46,8 +46,24 @@ export class ChannelController {
   getChannel(
     @GetUserId() userId: number,
     @Param('id', ParseIntPipe) channelId: number,
-  ): Promise<Channel | null> {
-    console.log("Called Get channel id: " + channelId);
+  ): Promise<{
+    id: number;
+    ownerId: number;
+    name: string;
+    avatar: string | null;
+    passwordHash: string | null;
+    visibility: string;
+    admins: {
+      user: { id: number; name: string; avatar: string | null; level: number };
+    }[];
+    blocked: {
+      user: { id: number; name: string; avatar: string | null; level: number };
+    }[];
+    members: {
+      user: { id: number; name: string; avatar: string | null; level: number };
+    }[];
+  } | null> {
+    console.log('Called Get channel id: ' + channelId);
     return this.channelService.getChannelById(userId, channelId);
   }
 
