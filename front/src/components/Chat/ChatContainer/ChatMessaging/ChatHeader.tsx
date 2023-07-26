@@ -18,8 +18,6 @@ const ChatHeader = ({
   const [channelName, setChannelName] = useState<string>(channel.name);
   const [channelAvatar, setChannelAvatar] = useState<string>(channel.avatar);
 
-	console.log("rendering chat header: " + channel.name);
-
   useEffect(() => {
     if (channelName === '' && channelAvatar === '') {
       axiosPrivate.get('channel/correspondent/' + channel.id).then((res) => {
@@ -27,7 +25,6 @@ const ChatHeader = ({
         setChannelAvatar(res.data.avatar);
       });
     }
-		console.log("Entered useEffect");
   });
 
   return (

@@ -14,14 +14,9 @@ const ChatMessaging = () => {
   const [showOptions, setShowOptions] = useState<boolean>(false);
 
   useEffect(() => {
-    const getChannelData = async () => {
-      const res: {data: Channel} = await axiosInstance.get('channel/' + showChannel);
-			console.log({res});
+    axiosInstance.get('channel/' + showChannel).then((res) => {
       setChannel(res.data);
-			console.log("set channel data: " + res.data.name);
-    };
-		getChannelData();
-    console.log(`Loading channel ${showChannel} data`);
+    });
   }, [showChannel]);
 
   return (
