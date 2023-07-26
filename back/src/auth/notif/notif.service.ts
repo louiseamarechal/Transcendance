@@ -17,6 +17,10 @@ export class NotifService {
     this.server.to(roomName).emit('game-notif');
   }
 
+  handleChatNotif(roomName: string) {
+    this.server.to(roomName).emit('chat-notif');
+  }
+
   async getFriendsNotif(myId: number) {
     const receivedFRRequests = await this.prisma.friendRequest.findMany({
       where: { toId: myId },

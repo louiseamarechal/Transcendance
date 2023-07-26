@@ -47,7 +47,7 @@ export class ChannelController {
     @GetUserId() userId: number,
     @Param('id', ParseIntPipe) channelId: number,
   ): Promise<Channel | null> {
-    console.log("Called Get channel id: " + channelId);
+    console.log('Called Get channel id: ' + channelId);
     return this.channelService.getChannelById(userId, channelId);
   }
 

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { NotifGateway } from './notif.gateway';
-import { SocketService } from '../socket.service';
+import { SocketService } from '../../sockets/socket.service';
 import { NotifService } from './notif.service';
 import { NotifController } from './notif.controller';
 

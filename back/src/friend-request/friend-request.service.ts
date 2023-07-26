@@ -10,7 +10,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFriendRequestDto } from './dto';
 import { ChannelService } from 'src/channel/channel.service';
 import { CreateChannelDto } from 'src/channel/dto';
-import { NotifGateway } from 'src/auth/notif/notif.gateway';
 import { NotifService } from 'src/auth/notif/notif.service';
 
 @Injectable()

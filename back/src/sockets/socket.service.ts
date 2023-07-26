@@ -24,12 +24,11 @@ export class SocketService {
     return payload;
   }
 
-  handleJoinRoom(client: Socket, name: string) {
-    const userLogin = this.getLoginFromClient(client);
-    const room = userLogin + name;
+  handleJoinRoom(client: Socket, roomName: string) {
+    const room = roomName;
     client.join(room);
-    const rooms = Object.keys(client.rooms);
-    console.log(rooms);
+    // const rooms = Object.keys(client.rooms);
+    // console.log(rooms);
     client.to(room).emit('welcome');
   }
 

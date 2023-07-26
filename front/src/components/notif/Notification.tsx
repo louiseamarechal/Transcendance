@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
-import { Socket } from 'socket.io-client';
+import { notifSocket } from '../../api/socket';
 
 type NotificationProps = {
   element: string;
-  notifSocket: Socket | undefined;
   receivedNotif: {
     friends: number;
     game: number;
@@ -32,27 +31,27 @@ export function Notification(props: NotificationProps) {
         return { ...previous, game: previous.game + 1 };
       });
     }
-    // function onChatNotifEvent() {
-    //   console.log('received Chat notif');
-    //   props.setReceivedNotif((previous) => { return {...previous, chat: 1} });
-    // }
-
-    if (props.notifSocket && props.element === 'Friends') {
-      props.notifSocket.on('friends-notif', onFriendsNotifEvent);
+    function onChatNotifEvent() {
+      console.log('received Chat notif');
+      props.setReceivedNotif((previous) => { return {...previous, chat: 1} });
     }
 
-    if (props.notifSocket && props.element === 'Game') {
-      props.notifSocket.on('game-notif', onGameNotifEvent);
+    if (notifSocket && props.element === 'Friends') {
+      notifSocket.on('friends-notif', onFriendsNotifEvent);
     }
 
-    // if (props.notifSocket && props.element === 'Chat') {
-    //   props.notifSocket.on('chat-notif', onChatNotifEvent);
-    // }
+    if (notifSocket && props.element === 'Game') {
+      notifSocket.on('game-notif', onGameNotifEvent);
+    }
+
+    if (notifSocket && props.element === 'Chat') {
+      notifSocket.on('chat-notif', onChatNotifEvent);
+    }
 
     return () => {
-      props.notifSocket?.off('friends-notif', onFriendsNotifEvent);
-      props.notifSocket?.off('game-notif', onGameNotifEvent);
-      // props.notifSocket?.off('chat-notif', onChatNotifEvent);
+      notifSocket?.off('friends-notif', onFriendsNotifEvent);
+      notifSocket?.off('game-notif', onGameNotifEvent);
+      notifSocket?.off('chat-notif', onChatNotifEvent);
     };
   }, []);
 
@@ -69,12 +68,12 @@ export function Notification(props: NotificationProps) {
         <div className="notification-text">{props.receivedNotif.game}</div>
       </div>
     );
-    // } else if (props.receivedNotif.chat > 0 && props.element === 'Chat') {
-    //   return (
-    //     <div className="notification">
-    //       <div className="notification-text">{props.receivedNotif.chat}</div>
-    //     </div>
-    //   );
+    } else if (props.receivedNotif.chat > 0 && props.element === 'Chat') {
+      return (
+        <div className="notification">
+          <div className="notification-text">{props.receivedNotif.chat}</div>
+        </div>
+      );
   }
   return <></>;
 }

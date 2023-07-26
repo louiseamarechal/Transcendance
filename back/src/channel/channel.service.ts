@@ -11,9 +11,11 @@ import {
   MembersOnChannels,
   VisType,
 } from '@prisma/client';
+import { Socket, Namespace } from 'socket.io';
 
 @Injectable()
 export class ChannelService {
+  server: Namespace;
   constructor(private prisma: PrismaService) {}
 
   /* =============================================================================
@@ -72,6 +74,7 @@ export class ChannelService {
           return { channelId: channel.id, userId: id };
         }),
       });
+
       return channel;
     }
   }
@@ -111,11 +114,11 @@ export class ChannelService {
       where: {
         id: channelId,
       },
-			include: {
-				admins: true,
-				members: true,
-				blocked: true,
-			}
+      include: {
+        admins: true,
+        members: true,
+        blocked: true,
+      },
     });
   }
 
@@ -235,5 +238,24 @@ export class ChannelService {
         avatar: true,
       },
     });
+  }
+
+  /* =============================================================================
+                            SOCKET FUNCTIONS
+  ============================================================================= */
+
+  handleLeaveRoom(client: Socket) {
+    const connectedRooms = this.server.adapter.rooms;
+    console.log(connectedRooms);
+    connectedRooms.forEach((value, key) => {
+      if (client.id === key) {
+        return;
+      }
+      client.leave(key);
+    });
+  }
+
+  handleSendMessage(server: Namespace, channelId: number) {
+    server.to(`channel_${channelId}`).emit('server.channel.messageUpdate');
   }
 }

@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Message, User } from '@prisma/client';
-import { transformDocument } from '@prisma/client/runtime';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 

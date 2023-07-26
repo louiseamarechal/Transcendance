@@ -27,11 +27,6 @@ export class NotifGateway
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('events')
-  handleEvent(@MessageBody() data: string): string {
-    return data;
-  }
-
   afterInit(server: Server) {
     this.notifService.server = server;
   }
@@ -48,10 +43,10 @@ export class NotifGateway
     console.log(`client with id: ${client.id} has left the connection !`);
   }
 
-  // // @SubscribeMessage('friends-notif')
-  // handleFriendsNotif(@MessageBody() data: string) {
-  //   this.notifService.handleFriendsNotif(data, this.server);
-  // }
+  @SubscribeMessage('client.notif.chatNotif')
+  handleFriendsNotif(@MessageBody() roomName: string) {
+    this.notifService.handleChatNotif(roomName);
+  }
 
   // handleGamesNotif(@MessageBody() data: string) {
   //   this.notifService.handleGamesNotif(data, this.server);

@@ -9,10 +9,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { MessageService } from './message.service';
-import { Message, User } from '@prisma/client';
 import { GetUserId } from 'src/common/decorators';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { channel } from 'diagnostics_channel';
 
 @Controller('message')
 export class MessageController {

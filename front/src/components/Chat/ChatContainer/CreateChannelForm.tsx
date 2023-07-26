@@ -6,6 +6,7 @@ import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import FriendsList from './CreateChannelForm/FriendsList';
 import FormHeader from './CreateChannelForm/FormHeader';
 import { useUser } from '../../../hooks/useUser';
+import { channelSocket } from '../../../api/socket';
 
 const CreateChannelForm = () => {
   const [avatar, setAvatar] = useState<string>(
@@ -32,6 +33,7 @@ const CreateChannelForm = () => {
         })
         .then((res) => {
           setChannelList([...channelList, res.data]);
+          // channelSocket.emit('create-channel-room', res.data.id);
         })
         .catch((err) => {
           if (err.response.status === 409) {

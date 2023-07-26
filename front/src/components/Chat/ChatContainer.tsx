@@ -16,6 +16,7 @@ const ChatContainer = () => {
         <ChatMessaging
           showOptions={showOptions}
           setShowOptions={setShowOptions}
+          key={showChannel}
         />
       ) : (
         <div />

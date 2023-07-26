@@ -12,6 +12,7 @@ type JwtDecoded = {
   name: string;
   avatar: string;
   level: number;
+  login: string;
 };
 
 export function Callback() {
@@ -19,7 +20,7 @@ export function Callback() {
   const code = searchParams.get('code');
   const navigate = useNavigate();
   const { setAuth } = useAuth();
-  const { setMyId, setMyName, setMyAvatar, setMyLevel } = useUser();
+  const { setMyId, setMyName, setMyLogin, setMyAvatar, setMyLevel } = useUser();
   const [ loading, setLoading ] = useState(false);
 
   useEffect(() => {
@@ -47,6 +48,7 @@ export function Callback() {
           const user: JwtDecoded = jwtDecode(response.data.access_token);
           setMyId(user.id)
           setMyName(user.name);
+          setMyLogin(user.login);
           setMyAvatar(user.avatar);
           setMyLevel(user.level);
           setAuth(response.data);
