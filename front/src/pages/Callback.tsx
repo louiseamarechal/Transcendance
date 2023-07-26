@@ -52,7 +52,7 @@ export function Callback() {
           setAuth(response.data);
         }
         setLoading(false);
-        navigate('/gamesocket');
+        navigate('/game');
       } catch (err) {
         // console.log(err);
       }

@@ -4,7 +4,6 @@ import { Routes, Route } from 'react-router-dom';
 
 // TypeScript
 import WelcomePage from './pages/WelcomePage.tsx';
-import Game from './pages/Game/Game.tsx';
 import Chat from './pages/Chat.tsx';
 import Friends from './pages/Friends.tsx';
 import Profil from './pages/Profil.tsx';
@@ -14,10 +13,6 @@ import Callback from './pages/Callback.tsx';
 import RequireAuth from './components/RequireAuth.tsx';
 import NavBar from './components/NavBar.tsx';
 import useNavbar from './hooks/useNavbar.ts';
-import PlayGame from './pages/Game/PlayGame.tsx';
-import WaitingForGame from './pages/Game/WaitingForGamePage.tsx';
-import FoundGamePage from './pages/game/FoundGamePage.tsx';
-import GameLobby from './pages/Game/GameLobby.tsx';
 
 // CSS
 import './style/components/buttons.css';
@@ -25,10 +20,14 @@ import './style/components/avatar.css';
 import './style/pages/color.css';
 import './style/pages/App.css';
 import UserProfile from './pages/UserProfile.tsx';
-import GameLayout from './pages/GameSocket/GameLayout.tsx';
-import GameSocketLobby from './pages/GameSocket/GameSocketLobby.tsx';
-import GameSocketQueue from './pages/GameSocket/GameSocketQueue.tsx';
-import GameSocketGame from './pages/GameSocket/GameSocketGame.tsx';
+import GameLayout from './pages/Game/GameLayout.tsx';
+import OldGame from './pages/OldGame/OldGame.tsx';
+import OldWaitingForGame from './pages/OldGame/OldWaitingForGamePage.tsx';
+import OldPlayGame from './pages/OldGame/OldPlayGame.tsx';
+import OldGameLobby from './pages/OldGame/OldGameLobby.tsx';
+import GameLobby from './pages/Game/GameLobby.tsx';
+import GameQueue from './pages/Game/GameQueue.tsx';
+import GameGame from './pages/Game/GameGame.tsx';
 
 function App() {
   const { navbarState } = useNavbar();
@@ -47,16 +46,15 @@ function App() {
           <Route path="/callback" Component={Callback} />
           {/* PROTECTED ROUTES */}
           <Route Component={RequireAuth}>
-            <Route path="/game" Component={Game}>
-              <Route index Component={GameLobby} />
-              <Route path="/game/playgame" Component={PlayGame} />
-              <Route path="/game/foundgame" Component={FoundGamePage} />
-              <Route path="/game/wait" Component={WaitingForGame} />
+            <Route path="/oldgame" Component={OldGame}>
+              <Route index Component={OldGameLobby} />
+              <Route path="/oldgame/oldplaygame" Component={OldPlayGame} />
+              <Route path="/oldgame/oldwait" Component={OldWaitingForGame} />
             </Route>
-            <Route path='/gamesocket' Component={GameLayout}>
-              <Route index Component={GameSocketLobby} />
-              <Route path='queue' Component={GameSocketQueue}/>
-              <Route path=':gameId' Component={GameSocketGame}/>
+            <Route path="/game" Component={GameLayout}>
+              <Route index Component={GameLobby} />
+              <Route path="queue" Component={GameQueue} />
+              <Route path=":gameId" Component={GameGame} />
             </Route>
             <Route path="/chat" Component={Chat} />
             <Route path="/friends" Component={Friends} />

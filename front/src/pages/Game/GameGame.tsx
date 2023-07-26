@@ -7,7 +7,7 @@ import GameOverlay, { OverlayData } from '../../components/game/GameOverlay';
 import GameCanvas from '../../components/game/GameCanvas';
 import GameBackground from '../../components/game/GameBackground';
 
-export default function GameSocketLobby() {
+export default function GameLobby() {
   const { gameId } = useParams();
   const [pos, setPos] = useState({ x: 0, y: 0 }); // debug
 

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { socket } from '../../api/socket';
 import { useNavigate } from 'react-router-dom';
 
-function GameQueue() {
+export default function GameQueue() {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,7 +14,7 @@ function GameQueue() {
   }, []);
 
   function handleCancel() {
-    navigate('/gamesocket');
+    navigate('/game');
   }
 
   return (
@@ -28,5 +28,3 @@ function GameQueue() {
     </div>
   );
 }
-
-export default GameQueue;

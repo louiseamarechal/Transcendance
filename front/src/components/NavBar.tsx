@@ -1,5 +1,5 @@
 // import React, { useState } from "react";
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -10,7 +10,6 @@ import { useUser } from '../hooks/useUser';
 
 const NavBar = () => {
   const { navbarState, setNavbarState } = useNavbar();
-  const location = useLocation();
   const { myAvatar } = useUser();
 
   const navElems = [
@@ -18,8 +17,8 @@ const NavBar = () => {
       to: '/profil',
       content: <img className="avatar" alt="avatar" src={myAvatar} />,
     },
+    { to: '/oldgame', content: 'OldGame' },
     { to: '/game', content: 'Game' },
-    { to: '/gamesocket', content: 'GameSocket' },
     { to: '/chat', content: 'Chat' },
     { to: '/friends', content: 'Friends' },
     { to: '/test', content: 'Test' },
@@ -30,14 +29,6 @@ const NavBar = () => {
     { to: '/profil/4', content: 'Profil 4' },
     { to: '/profil/5', content: 'Profil 5' },
   ];
-
-  if (location.pathname === '/' || location.pathname === '/game/playgame') {
-    return null;
-  }
-
-  if (!myAvatar) {
-    return null;
-  }
 
   if (navbarState === true)
     return (

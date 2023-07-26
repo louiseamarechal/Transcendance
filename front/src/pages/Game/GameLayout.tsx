@@ -4,10 +4,9 @@ import useAuth from '../../hooks/useAuth.ts';
 import { socket } from '../../api/socket.ts';
 // import { useUser } from '../../hooks/useUser.ts';
 
-function GameLayout() {
+export default function GameLayout() {
   const { auth } = useAuth();
   const navigate = useNavigate();
-  // const { myId, myName } = useUser();
 
   useEffect(() => {
     console.log('Connect to websocket');
@@ -25,11 +24,6 @@ function GameLayout() {
   }, [auth]);
 
   useEffect(() => {
-    // function onServerGameNavigateGame(value: { id: number }) {
-    //   console.log(value);
-    //   navigate(`/gamesocket/${value.id}`);
-    // }
-
     function onServerGameNavigate(value: {to: string}) {
       console.log(`Server asked client to navigate to ${value.to}`)
       navigate(value.to)
@@ -46,5 +40,3 @@ function GameLayout() {
 
   return <Outlet />;
 }
-
-export default GameLayout;

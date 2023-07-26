@@ -3,7 +3,7 @@ import { Game, GameStatus, GameVisibility } from './Game';
 import { Cron } from '@nestjs/schedule';
 
 export class GameManager {
-  
+
   public server: Namespace;
   readonly #games: Map<string, Game> = new Map<string, Game>();
 
@@ -26,7 +26,7 @@ export class GameManager {
 
       this.server
         .to(game.gameId)
-        .emit('server.game.navigate', { to: `/gamesocket/${game.gameId}` });
+        .emit('server.game.navigate', { to: `/game/${game.gameId}` });
     }
   }
 
