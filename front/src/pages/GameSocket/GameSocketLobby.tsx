@@ -6,7 +6,6 @@ export default function GameSocketLobby() {
 
   const handleSearchGame = async () => {
     navigate('/gamesocket/queue')
-    // socket.emit('client.game.searchgame');
   };
 
   return (

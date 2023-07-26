@@ -4,25 +4,5 @@ import { GetUserId, Public } from 'src/common/decorators';
 
 @Controller('game')
 export class GameController {
-  constructor(private gameService: GameService) {}
-
-  @Get('queue')
-  getQueue() {
-    return this.gameService.getQueue();
-  }
-
-  @Get('join-queue')
-  getJoinQueue(@GetUserId() userId: number) {
-    return this.gameService.getJoinQueue(userId);
-  }
-
-  // @Get('leave-queue')
-  // getLeaveQueue(@GetUserId() userId: number) {
-  //   return this.gameService.getLeaveQueue(userId)
-  // }
-
-  @Get('start-game')
-  getStartGame(@GetUserId() userId: number) {
-    return this.gameService.getStartGame(userId);
-  }
+  constructor() {}
 }

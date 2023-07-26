@@ -9,7 +9,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket, Server } from 'socket.io';
+import { Socket, Server, Namespace } from 'socket.io';
 import { SocketAuthMiddleware } from 'src/common/middleware/ws.mw';
 import { GameManager } from './classes/GameManager';
 import { JwtService } from '@nestjs/jwt';
@@ -19,6 +19,7 @@ import { User } from '@prisma/client';
 import { AtJwt } from 'src/auth/types';
 import { PublicUser } from 'src/user/types';
 import { LoggingInterceptor } from './interceptors/game-ws.interceptor';
+import { Cron } from '@nestjs/schedule';
 // import { ClientEvents } from '../../../shared/client/ClientEvents';
 // import { ClientPayloads } from '../../../shared/client/ClientPayloads';
 
@@ -26,15 +27,14 @@ import { LoggingInterceptor } from './interceptors/game-ws.interceptor';
 
 // @UseInterceptors(LoggingInterceptor)
 @WebSocketGateway({
-  cors: {
-    origin: '*',
-  },
+  cors: { origin: '*' },
+  namespace: 'game',
 })
 export class GameGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
 {
   @WebSocketServer()
-  server: Server;
+  server: Namespace;
 
   constructor(
     private readonly gameManager: GameManager,
@@ -42,14 +42,17 @@ export class GameGateway
     private readonly userService: UserService,
   ) {}
 
-  afterInit(server: Server) {
+  afterInit(server: Namespace) {
     this.gameManager.server = server;
-    console.log('Websocket on');
 
     // this is debug, not necessary for production
     server.use((client: Socket, next) => {
       client.use((event, next) => {
-        console.log('\x1b[36m%s\x1b[0m', 'Middleware: New socket event', event[0]);
+        console.log(
+          '\x1b[36m%s\x1b[0m',
+          'Middleware: New socket event',
+          event[0],
+        );
         next();
       });
       next();
@@ -81,42 +84,17 @@ export class GameGateway
     client.disconnect();
   }
 
-  // @SubscribeMessage(ClientEvents.GameInput)
-  // handleInput(
-  //   @ConnectedSocket() client: Socket,
-  //   @MessageBody() payload: ClientPayloads[ClientEvents.GameInput],
-  // ): string {
-  //   console.log('received a game input', { payload });
-  //   return 'Yooooo';
-  // }
-
-  // @UseInterceptors(LoggingInterceptor)
   @SubscribeMessage('client.game.input')
   handleInput(
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: { gameId: string; val: number },
   ) {
-    // console.log('received a game input', { payload });
     this.gameManager.handleInput(
       payload.gameId,
       client.data.user.id,
       payload.val,
     );
   }
-
-  // @SubscribeMessage('toto')
-  // handleToto(client: Socket, payload: any) {
-  //   // return 'yo'
-  //   return {
-  //     event: 'tata',
-  //     data: 'msg',
-  //   };
-  // }
-
-  // @SubscribeMessage('client.game.searchgame')
-  // handleSearchGame(@ConnectedSocket() client: Socket) {
-  //   return this.gameManager.searchGame(client);
-  // }
 
   @SubscribeMessage('client.game.joinQueue')
   handleJoinQueue(@ConnectedSocket() client: Socket) {
@@ -134,5 +112,10 @@ export class GameGateway
     @MessageBody() payload: { gameId: string },
   ) {
     this.gameManager.setReady(payload.gameId, client.data.user.id);
+  }
+
+  @Cron('*/5 * * * * *')
+  private debug() {
+    console.log('[Debug GameGateway] ', { rooms: this.server.adapter.rooms });
   }
 }

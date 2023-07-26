@@ -1,4 +1,4 @@
-import { Server } from 'socket.io';
+import { Server, Namespace } from 'socket.io';
 import { v4 as uuid } from 'uuid';
 import { PublicUser } from 'src/user/types';
 
@@ -16,7 +16,7 @@ export enum GameVisibility {
 }
 
 export class Game {
-  server: Server;
+  server: Namespace;
 
   readonly createdAt: number = Date.now();
   gameStartedAt: number;
@@ -37,7 +37,7 @@ export class Game {
 
   private intervalId: NodeJS.Timer | null = null;
 
-  constructor(server: Server, visibility?: GameVisibility) {
+  constructor(server: Namespace, visibility?: GameVisibility) {
     console.log('[Game] New instance');
 
     this.server = server;
@@ -131,9 +131,16 @@ export class Game {
   private gameLoopPlaying() {
     console.log('  Playing');
 
+    const data: any = {
+      score: this.score,
+      P1Pos: this.P1Pos,
+      P2Pos: this.P2Pos,
+      ballPos: this.ballPos,
+    };
+
     this.server.to(this.gameId).emit('server.game.updateOverlay', {
       type: 'playing',
-      data: {},
+      data: data,
     });
   }
 }

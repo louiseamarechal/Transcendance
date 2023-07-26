@@ -1,10 +1,10 @@
-import { Server, Socket } from 'socket.io';
+import { Server, Socket, Namespace } from 'socket.io';
 import { Game, GameStatus, GameVisibility } from './Game';
 import { Cron } from '@nestjs/schedule';
 
 export class GameManager {
-  public server: Server;
-
+  
+  public server: Namespace;
   readonly #games: Map<string, Game> = new Map<string, Game>();
 
   public joinQueue(client: Socket) {
@@ -22,7 +22,7 @@ export class GameManager {
       game.status = GameStatus.Ready;
       client.join(game.gameId);
 
-      game.startGameLoop(500)
+      game.startGameLoop(500);
 
       this.server
         .to(game.gameId)
@@ -100,17 +100,14 @@ export class GameManager {
 
   private removeGame(game: Game) {
     console.log(`[GameManager] Remove ${game.gameId}`);
-    this.server.of('/').adapter.rooms.delete(game.gameId);
+    this.server.adapter.rooms.delete(game.gameId);
     game.stopGameLoop();
     this.#games.delete(game.gameId);
   }
 
   @Cron('*/5 * * * * *')
   private cleaner() {
-    console.log('[GameManager] Cleaner', {
-      rooms: this.server.of('/').adapter.rooms,
-    });
-
+    console.log('[GameManager] Cleaner')
     this.#games.forEach((game: Game) => {
       game.debug();
       if (game.status === GameStatus.Done) {
@@ -118,22 +115,20 @@ export class GameManager {
         this.removeGame(game);
         return;
       }
-
       if (
         game.status !== GameStatus.Waiting &&
-        this.server.of('/').adapter.rooms.get(game.gameId)?.size !== 2
+        this.server.adapter.rooms.get(game.gameId)?.size !== 2
       ) {
         console.log('Remove game. Cause: Room contains only 1 player');
         this.removeGame(game);
         return;
       }
-
-      if (this.server.of('/').adapter.rooms.has(game.gameId) === false) {
+      if (this.server.adapter.rooms.has(game.gameId) === false) {
         console.log('Remove game. Cause: Room destroyed');
         this.removeGame(game);
         return;
       }
-
+      // this.server.of('game').adapter.rooms
       const durationMs = Date.now() - game.createdAt;
       if (durationMs > 1000 * 60 * 60) {
         console.log('more than 1h');
