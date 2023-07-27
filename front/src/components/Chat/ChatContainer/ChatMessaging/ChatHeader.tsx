@@ -25,7 +25,8 @@ const ChatHeader = ({
         setChannelAvatar(res.data.avatar);
       });
     }
-  }, [channel]);
+  });
+
   return (
     <div className="chat-header">
       <img className="avatar-sm" src={channelAvatar} />

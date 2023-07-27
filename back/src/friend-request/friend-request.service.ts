@@ -167,7 +167,8 @@ export class FriendRequestService {
             id: elem.id,
           },
           data: {
-            status: FRStatus.ACCEPTED,
+            status: "ACCEPTED",
+            // status: FRStatus.ACCEPTED,
           },
         })
         .then((res) => {
