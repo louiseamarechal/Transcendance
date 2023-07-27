@@ -12,6 +12,7 @@ import {
   User,
   VisType,
 } from '@prisma/client';
+import { AdminDto } from './dto/admin.dto';
 import { Socket, Namespace } from 'socket.io';
 import { NotifService } from 'src/auth/notif/notif.service';
 
@@ -312,6 +313,33 @@ export class ChannelService {
     });
   }
 
+  async createAdminOnChannel(
+    // userId: number,
+    channelId: number,
+    dto: AdminDto,
+  ): Promise<{channelId: number, userId: number}> {
+    return this.prisma.adminsOnChannels.create({
+      data: {
+        channelId,
+        userId: dto.userId,
+      },
+    });
+  }
+
+  async deleteAdminOnChannel(
+    // userId: number,
+    channelId: number,
+    dto: AdminDto,
+  ): Promise<{channelId: number, userId: number}> {
+    return this.prisma.adminsOnChannels.delete({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId: dto.userId,
+        } 
+      }
+    });
+  }
   /* =============================================================================
                             SOCKET FUNCTIONS
   ============================================================================= */

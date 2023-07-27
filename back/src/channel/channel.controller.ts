@@ -14,6 +14,9 @@ import { GetUser, GetUserId } from 'src/common/decorators';
 import { ChannelService } from './channel.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
 import { Channel, User, VisType } from '@prisma/client';
+import { AdminDto } from './dto/admin.dto';
+import { channel } from 'diagnostics_channel';
+import { getDefaultResultOrder } from 'dns';
 
 @Controller('channel')
 export class ChannelController {
@@ -99,5 +102,23 @@ export class ChannelController {
     @Param('id', ParseIntPipe) channelId: number,
   ) {
     return this.channelService.deleteChannelById(userId, channelId);
+  }
+
+  @Post('admin/:id')
+  addAdminOnChannel(
+    // @GetUserId() userId: number,
+    @Param('id', ParseIntPipe) channelId: number,
+    @Body() dto: AdminDto,
+  ): Promise<{ channelId: number; userId: number }> {
+    return this.channelService.createAdminOnChannel(channelId, dto);
+  }
+
+  @Delete('admin/:id')
+  removeAdminOnChannel(
+    // @GetUserId() userId: number,
+    @Param('id', ParseIntPipe) channelId: number,
+    @Body() dto: AdminDto,
+  ) {
+    this.channelService.deleteAdminOnChannel(channelId, dto);
   }
 }

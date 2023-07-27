@@ -5,11 +5,13 @@ import {
   faSkullCrossbones,
   faThumbsDown,
   faMedal,
+  faHeartCrack,
 } from '@fortawesome/free-solid-svg-icons';
 import '../../../../../style/components/chat/chat-container/chat-messaging/chat-options.css';
 import { User } from '../../../../../types/User.type';
 import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
 import { useUser } from '../../../../../hooks/useUser';
+import { useChatContext } from '../../../../../hooks/useChatContext';
 
 const MembersList = ({
   users,
@@ -21,29 +23,47 @@ const MembersList = ({
   admins: number[];
 }) => {
   const {myId} = useUser();
-  const role: string = determineRole();
+  const {showChannel} = useChatContext();
+  const myRole: number = determineRole(myId);
   const axiosPrivate = useAxiosPrivate();
 
-  function determineRole(): string {
-    if (myId === ownerId) {
-      return "OWNER";
-    } else if (admins.includes(myId)) {
-      return "ADMIN";
+  function determineRole(id: number): number {
+    if (id === ownerId) {
+      return 2 // OWNER
+    } else if (admins.includes(id)) {
+      return 1; // ADMIN
     } else {
-      return "MEMBER";
+      return 0; // MEMBER
     }
   }
 
   function PromoteButton({ user }: { user: User }) {
-    async function promote() {}
-    return (
-      <div className="option-button" onClick={() => promote()}>
-        <FontAwesomeIcon icon={faMedal} style={{ color: 'green' }} />
-      </div>
-    );
+    const userRole: number = determineRole(user.id);
+    async function promote() {
+      await axiosPrivate.post(`admin/${showChannel}`, {userId: user.id});
+    }
+    async function demote() {
+      await axiosPrivate.delete(`admin/${showChannel}`, {userId: user.id})
+    }
+    if (userRole === 0 && userRole < myRole) {
+      return (
+        <div className="option-button" onClick={() => promote()}>
+          <FontAwesomeIcon icon={faMedal} style={{ color: 'green' }} />
+        </div>
+      );
+    } else if (userRole === 1 && myRole === 2) {
+      return (
+        <div className="option-button" onClick={() => demote()}>
+          <FontAwesomeIcon icon={faHeartCrack} style={{ color: 'red' }} />
+        </div>
+      )
+    } else {
+      return (<></>);
+    }
   }
 
   function MuteButton({ user }: { user: User }) {
+    const userRole = determineRole(user.id);
     function mute() {}
     return (
       <div className="option-button" onClick={() => mute()}>
@@ -53,6 +73,7 @@ const MembersList = ({
   }
 
   function KickButton({ user }: { user: User }) {
+    const userRole = determineRole(user.id);
     function kick() {}
     return (
       <div className="option-button" onClick={() => kick()}>
@@ -62,6 +83,7 @@ const MembersList = ({
   }
 
   function BanButton({ user }: { user: User }) {
+    const userRole = determineRole(user.id);
     function ban() {}
     return (
       <div className="option-button" onClick={() => ban()}>
