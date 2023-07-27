@@ -47,23 +47,23 @@ export class ChannelService {
         },
       },
     });
-    let filteredChannels: number[] = [];
-    channels.filter((channel) => {
-      return this.prisma.membersOnChannels
-        .findMany({
-          where: {
-            channelId: channel.channelId,
-          },
-        })
-        .then((channelMembers) => {
-          if (channelMembers.length === members.length)
-            filteredChannels = [...filteredChannels, channel.channelId];
-        });
+    console.log({ channels });
+    const filteredChannels = channels.filter(async (channel) => {
+      const channelMembers = await this.prisma.membersOnChannels.findMany({
+        where: {
+          channelId: channel.channelId,
+        },
+      });
+      if (channelMembers.length === members.length) {
+        return true;
+      } else {
+        return false;
+      }
     });
-    console.log(`found ${filteredChannels.length} with same members.`);
-    console.log({ filteredChannels });
+    // console.log(`found ${filteredChannels.length} with same members.`);
+    // console.log({ filteredChannels });
     if (filteredChannels.length > 0) {
-      throw new ConflictException({ channelId: filteredChannels[0] });
+      throw new ConflictException({ channelId: filteredChannels[0].channelId });
     } else {
       const channel = await this.prisma.channel.create({
         data: {
@@ -317,7 +317,7 @@ export class ChannelService {
     // userId: number,
     channelId: number,
     dto: AdminDto,
-  ): Promise<{channelId: number, userId: number}> {
+  ): Promise<{ channelId: number; userId: number }> {
     return this.prisma.adminsOnChannels.create({
       data: {
         channelId,
@@ -330,14 +330,14 @@ export class ChannelService {
     // userId: number,
     channelId: number,
     dto: AdminDto,
-  ): Promise<{channelId: number, userId: number}> {
+  ): Promise<{ channelId: number; userId: number }> {
     return this.prisma.adminsOnChannels.delete({
       where: {
         channelId_userId: {
           channelId,
           userId: dto.userId,
-        } 
-      }
+        },
+      },
     });
   }
   /* =============================================================================

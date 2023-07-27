@@ -19,22 +19,32 @@ export class FriendRequestService {
     private channelService: ChannelService,
     private notifService: NotifService,
   ) {}
-  async createFR(fromId: number, toId: number): Promise<FriendRequest> {
-    const friendRequest = await this.prisma.friendRequest
-      .create({
-        data: {
-          fromId,
-          toId,
-        },
-      })
-      .catch((error) => {
-        if (error.code === 'P2002')
-          throw new ConflictException('Friend Request already exists.');
-        throw error;
-      });
-
+  async createFR(userId1: number, userId2: number): Promise<FriendRequest> {
+    const FRs = await this.prisma.friendRequest.findMany({
+      where: {
+        OR: [
+          {
+            fromId: userId1,
+            toId: userId2,
+          },
+          {
+            fromId: userId2,
+            toId: userId1,
+          },
+        ],
+      },
+    });
+    if (FRs.length > 0) {
+      throw new ConflictException('Friend Request already exists.');
+    }
+    const friendRequest = await this.prisma.friendRequest.create({
+      data: {
+        fromId: userId1,
+        toId: userId2,
+      },
+    });
     const receiver = await this.prisma.user.findUnique({
-      where: { id: toId },
+      where: { id: userId2 },
     });
     if (receiver === null) {
       throw new ConflictException();
@@ -167,7 +177,7 @@ export class FriendRequestService {
             id: elem.id,
           },
           data: {
-            status: "ACCEPTED",
+            status: 'ACCEPTED',
             // status: FRStatus.ACCEPTED,
           },
         })
@@ -187,33 +197,6 @@ export class FriendRequestService {
     });
     console.log(`Accepted all FRs: ${requestIds}.`);
   }
-
-  // async editFRByToId(fromId: number, toId: number, dto: EditFriendRequestDto) {
-  //   const friendRequest = await this.prisma.friendRequest.findUnique({
-  //     where: {
-  //       fromId_toId: {
-  //         fromId,
-  //         toId,
-  //       },
-  //     },
-  //   });
-
-  // Check ownership
-  //   if (!friendRequest)
-  //     throw new ForbiddenException('Access to ressource denied');
-
-  //   return this.prisma.friendRequest.update({
-  //     where: {
-  //       fromId_toId: {
-  //         fromId,
-  //         toId,
-  //       },
-  //     },
-  //     data: {
-  //       ...dto,
-  //     },
-  //   });
-  // }
 
   getReceivedFR(
     toId: number,

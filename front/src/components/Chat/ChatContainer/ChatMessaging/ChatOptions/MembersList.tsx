@@ -43,7 +43,7 @@ const MembersList = ({
       await axiosPrivate.post(`admin/${showChannel}`, {userId: user.id});
     }
     async function demote() {
-      await axiosPrivate.delete(`admin/${showChannel}`, {userId: user.id})
+      await axiosPrivate.delete(`admin/${showChannel}`, {data: {userId: user.id}})
     }
     if (userRole === 0 && userRole < myRole) {
       return (
