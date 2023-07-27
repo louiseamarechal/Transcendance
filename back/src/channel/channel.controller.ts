@@ -62,6 +62,10 @@ export class ChannelController {
     members: {
       user: { id: number; name: string; avatar: string | null; level: number };
     }[];
+    muted: {
+      mutedUserId: number;
+      mutedByUserId: number;
+    }[];
   } | null> {
     console.log('Called Get channel id: ' + channelId);
     return this.channelService.getChannelById(userId, channelId);

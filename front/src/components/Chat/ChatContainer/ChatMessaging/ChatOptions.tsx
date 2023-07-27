@@ -46,8 +46,13 @@ const ChatOptions = ({ channel }: { channel: Channel }) => {
       </div>
       <div className="options-body">
         {selected === 'members' ? (
-          <MembersList users={channel.members} />
-        ) : (<></>
+          <MembersList
+            users={channel.members}
+            ownerId={channel.ownerId}
+            admins={channel.admins}
+          />
+        ) : (
+          <></>
           // <ChatSecurityOptions />
         )}
       </div>

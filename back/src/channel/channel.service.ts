@@ -104,6 +104,10 @@ export class ChannelService {
     members: {
       user: { id: number; name: string; avatar: string | null; level: number };
     }[];
+    muted: {
+      mutedUserId: number;
+      mutedByUserId: number;
+    }[];
   } | null> {
     const channel = this.prisma.membersOnChannels.findUnique({
       where: {
@@ -169,6 +173,12 @@ export class ChannelService {
                 level: true,
               },
             },
+          },
+        },
+        muted: {
+          select: {
+            mutedUserId: true,
+            mutedByUserId: true,
           },
         },
       },
