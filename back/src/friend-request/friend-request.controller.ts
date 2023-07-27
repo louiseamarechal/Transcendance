@@ -13,13 +13,17 @@ import {
 import { FriendRequestService } from './friend-request.service';
 import { GetUserId } from 'src/common/decorators';
 import { CreateFriendRequestDto, EditFriendRequestDto } from './dto';
+import { FRStatus, FriendRequest } from '@prisma/client';
 
 @Controller('friend-request')
 export class FriendRequestController {
   constructor(private friendRequestService: FriendRequestService) {}
 
   @Post()
-  createFR(@GetUserId() userId: number, @Body() dto: CreateFriendRequestDto) {
+  createFR(
+    @GetUserId() userId: number,
+    @Body() dto: CreateFriendRequestDto,
+  ): Promise<FriendRequest> {
     return this.friendRequestService.createFR(userId, dto.toId);
   }
 
@@ -63,6 +67,13 @@ export class FriendRequestController {
     return this.friendRequestService.getFRByToId(userId, toId);
   }
 
+  // TMP
+  @Patch('accept-all')
+  acceptAll(@GetUserId() userId: number) {
+    console.log(`In accept all for ${userId}.`);
+    return this.friendRequestService.acceptAll(userId);
+  }
+
   @Patch(':id')
   editFRById(
     @GetUserId() userId: number,
@@ -72,14 +83,14 @@ export class FriendRequestController {
     return this.friendRequestService.editFRById(userId, id, dto);
   }
 
-  @Patch(':toId')
-  editFRByToId(
-    @GetUserId() userId: number,
-    @Param('toId', ParseIntPipe) toId: number,
-    @Body() dto: EditFriendRequestDto,
-  ) {
-    return this.friendRequestService.editFRByToId(userId, toId, dto);
-  }
+  // @Patch(':toId')
+  // editFRByToId(
+  //   @GetUserId() userId: number,
+  //   @Param('toId', ParseIntPipe) toId: number,
+  //   @Body() dto: EditFriendRequestDto,
+  // ): Promise<FriendRequest> {
+  //   return this.friendRequestService.editFRByToId(userId, toId, dto);
+  // }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')

@@ -4,15 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import useNavbar from '../hooks/useNavbar';
-import { Socket } from 'socket.io-client';
 import NavBarLinks from './NavBarLinks';
 
 import '../style/components/navbar.css';
 import { useEffect, useState } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
-type NavbarProps = { notifSocket: Socket | undefined };
-const NavBar = ({ notifSocket }: NavbarProps) => {
+const NavBar = () => {
   const { navbarState, setNavbarState } = useNavbar();
   const location = useLocation();
   const axiosInstance = useAxiosPrivate();
@@ -42,6 +40,16 @@ const NavBar = ({ notifSocket }: NavbarProps) => {
         });
       })
       .catch((error) => console.log(error));
+
+    axiosInstance
+      .get('/notif/chat')
+      .then((response) => {
+        const data = response.data;
+        setReceivedNotif((previous) => {
+          return { ...previous, game: data.length };
+        });
+      })
+      .catch((error) => console.log(error));
   }, []);
 
   if (location.pathname === '/' || location.pathname === '/game/playgame') {
@@ -60,7 +68,6 @@ const NavBar = ({ notifSocket }: NavbarProps) => {
           }}
         />
         <NavBarLinks
-          notifSocket={notifSocket}
           receivedNotif={receivedNotif}
           setReceivedNotif={setReceivedNotif}
         />

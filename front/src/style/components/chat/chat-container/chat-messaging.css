@@ -1,0 +1,9 @@
+.chat-messaging {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding-top: 2%;
+	padding-right: 2%;
+	padding-left: 2%;
+	width: 100%;
+}

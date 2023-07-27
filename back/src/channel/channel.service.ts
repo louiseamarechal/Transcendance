@@ -1,16 +1,34 @@
 import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
+import {
+  BlockedOnChannels,
+  Channel,
+  MembersOnChannels,
+  User,
+  VisType,
+} from '@prisma/client';
+import { AdminDto } from './dto/admin.dto';
+import { Socket, Namespace } from 'socket.io';
+import { NotifService } from 'src/auth/notif/notif.service';
 
 @Injectable()
 export class ChannelService {
-  constructor(private prisma: PrismaService) {}
+  server: Namespace;
+  constructor(
+    private prisma: PrismaService,
+    private notifService: NotifService,
+  ) {}
+
+  /* =============================================================================
+															CRUD FUNCTIONS
+============================================================================= */
 
   async createChannel(
     ownerId: number,
     { name, avatar, members }: CreateChannelDto,
   ): Promise<{ id: number; name: string; avatar: string | null }> {
-    let channels = await this.prisma.membersOnChannels.groupBy({
+    const channels = await this.prisma.membersOnChannels.groupBy({
       by: ['channelId'],
       where: {
         userId: {
@@ -25,7 +43,8 @@ export class ChannelService {
         },
       },
     });
-    channels = channels.filter((channel) => {
+    let filteredChannels: number[] = [];
+    channels.filter((channel) => {
       return this.prisma.membersOnChannels
         .findMany({
           where: {
@@ -33,11 +52,14 @@ export class ChannelService {
           },
         })
         .then((channelMembers) => {
-          return channelMembers.length === members.length;
+          if (channelMembers.length === members.length)
+            filteredChannels = [...filteredChannels, channel.channelId];
         });
     });
-    if (channels.length > 0) {
-      throw new ConflictException({ channelId: channels[0].channelId });
+    console.log(`found ${filteredChannels.length} with same members.`);
+    console.log({ filteredChannels });
+    if (filteredChannels.length > 0) {
+      throw new ConflictException({ channelId: filteredChannels[0] });
     } else {
       const channel = await this.prisma.channel.create({
         data: {
@@ -49,7 +71,17 @@ export class ChannelService {
           id: true,
           name: true,
           avatar: true,
+          members: {
+            select: {
+              user: true,
+            },
+          },
         },
+      });
+      channel.members.map((member) => {
+        if (member.user.id !== ownerId) {
+          this.notifService.handleChatNotif(member.user.login);
+        }
       });
       console.log('Created channel.');
       await this.prisma.membersOnChannels.createMany({
@@ -70,11 +102,91 @@ export class ChannelService {
     });
   }
 
-  getChannelById(ownerId: number, channelId: number) {
-    return this.prisma.channel.findMany({
+  async getChannelById(
+    userId: number,
+    channelId: number,
+  ): Promise<{
+    id: number;
+    ownerId: number;
+    name: string;
+    avatar: string | null;
+    passwordHash: string | null;
+    visibility: string;
+    members: {
+      user: {
+        id: number;
+        name: string;
+        avatar: string | null;
+        level: number;
+        login: string;
+      };
+    }[];
+    admins: { userId: number }[];
+    blocked: { userId: number }[];
+    muted: {
+      mutedUserId: number;
+      mutedByUserId: number;
+    }[];
+  } | null> {
+    const channel = this.prisma.membersOnChannels.findUnique({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId,
+        },
+      },
+    });
+    if (!channel) throw new ForbiddenException('User not a member');
+    const forbidden = this.prisma.blockedOnChannels.findUnique({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId,
+        },
+      },
+    });
+    if (forbidden === null)
+      throw new ForbiddenException('User blocked on channel');
+    return this.prisma.channel.findUnique({
       where: {
         id: channelId,
-        ownerId,
+      },
+      select: {
+        id: true,
+        ownerId: true,
+        name: true,
+        avatar: true,
+        passwordHash: true,
+        visibility: true,
+        members: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true,
+                level: true,
+                login: true,
+              },
+            },
+          },
+        },
+        admins: {
+          select: {
+            userId: true,
+          },
+        },
+        blocked: {
+          select: {
+            userId: true,
+          },
+        },
+        muted: {
+          select: {
+            mutedUserId: true,
+            mutedByUserId: true,
+          },
+        },
       },
     });
   }
@@ -83,7 +195,12 @@ export class ChannelService {
     ownerId: number,
     channelId: number,
     dto: EditChannelDto,
-  ) {
+  ): Promise<{
+    id: number | null;
+    name: string | null;
+    avatar: string | null;
+    visibility: VisType | null;
+  }> {
     const channel = await this.prisma.channel.findUnique({
       where: {
         id: channelId,
@@ -119,5 +236,122 @@ export class ChannelService {
         id: channelId,
       },
     });
+  }
+
+  /* =============================================================================
+													HIGH LEVEL FUNCTIONS
+============================================================================= */
+
+  async getUserChannels(userId: number) {
+    const channelIds: number[] = (
+      await this.prisma.membersOnChannels.findMany({
+        where: {
+          userId,
+        },
+        select: {
+          channelId: true,
+        },
+      })
+    ).map((element: MembersOnChannels) => {
+      return element.channelId;
+    });
+    const blockedIds: number[] = (
+      await this.prisma.blockedOnChannels.findMany({
+        where: {
+          userId,
+        },
+        select: {
+          channelId: true,
+        },
+      })
+    ).map((element: BlockedOnChannels) => {
+      return element.channelId;
+    });
+
+    return this.prisma.channel.findMany({
+      where: {
+        id: {
+          in: channelIds,
+          notIn: blockedIds,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
+      },
+    });
+  }
+
+  async getCorrespondent(
+    userId: number,
+    channelId: number,
+  ): Promise<{ name: string; avatar: string | null; id: number } | null> {
+    const membersIds = await this.prisma.membersOnChannels.findMany({
+      where: {
+        channelId,
+      },
+    });
+    if (membersIds.length !== 2) {
+      throw new ConflictException('Channel is not a DM channel');
+    }
+    return this.prisma.user.findUnique({
+      where: {
+        id: membersIds.filter((elem) => {
+          return elem.userId !== userId;
+        })[0].userId,
+      },
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
+      },
+    });
+  }
+
+  async createAdminOnChannel(
+    // userId: number,
+    channelId: number,
+    dto: AdminDto,
+  ): Promise<{channelId: number, userId: number}> {
+    return this.prisma.adminsOnChannels.create({
+      data: {
+        channelId,
+        userId: dto.userId,
+      },
+    });
+  }
+
+  async deleteAdminOnChannel(
+    // userId: number,
+    channelId: number,
+    dto: AdminDto,
+  ): Promise<{channelId: number, userId: number}> {
+    return this.prisma.adminsOnChannels.delete({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId: dto.userId,
+        } 
+      }
+    });
+  }
+  /* =============================================================================
+                            SOCKET FUNCTIONS
+  ============================================================================= */
+
+  handleLeaveRoom(client: Socket) {
+    const connectedRooms = this.server.adapter.rooms;
+    console.log(connectedRooms);
+    connectedRooms.forEach((value, key : string) => {
+      if (client.id === key) {
+        return;
+      }
+      client.leave(key);
+    });
+  }
+
+  handleSendMessage(server: Namespace, channelId: number) {
+    server.to(`channel_${channelId}`).emit('server.channel.messageUpdate');
   }
 }

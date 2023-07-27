@@ -1,0 +1,63 @@
+1/ un client cherche un game
+	=> Si aucune instance de game publique n'est dans un status "waiting for opponent"
+		=> Creation d'une instance de game en status "waiting for opponent" par le game manager
+		=> Le client est mis dans un ecran d'attente
+	=> Sinon
+		=> s'ajoute a l'instance, change l'etat pour "ready", notifie la premier joueur que le match va commencer
+		=> les deux joueurs sont redirigés vers la page du jeu
+		
+
+[GameManager]
+	Attributes:
+		socket
+		Map of [game_id, Games]
+		
+	Methods:		
+		createGame: create an instance of Game. 
+		joinGame
+		updatePlayerInput(gameId, playerId, playerPos): change playerXPos of a specific instance of gmae
+		cleanGames: check every 2 secs if a game is done. if yes, update db and delete game
+		
+
+[Game]
+	Attributes:
+		socket
+	
+		gameId: uuid
+		player1Id
+		player2Id
+		
+		score: (player1, player2)
+		status: (waiting for opponent, ready, playing, done)
+		visibility: (private, public)
+		
+		player1Pos: [0, 1]
+		player2Pos: [0, 1]
+		ballPos: (x:[0, 1], y:[0, 1])
+		ballVel: (x:[-1, 1], y:[-1, 1])
+		
+		
+	Constructor:
+		set interval of compute next
+		
+	Methods:
+		computeNext: if status is playing, compute next positions, send position to client
+		
+		
+[GameGateway]
+	Attributes:
+		prisma
+		gameManager
+	
+	Listener:
+		onGameCreate(visibility):
+			game = gameManager.createGame
+			game.addPlayer
+
+		onGameJoin(gameId):
+		
+		onGameInput(gameId, playerId, playerPos):
+			gameManager.updatePlayerInput(gameId, playerId, playerPos)
+			
+			
+		
