@@ -1,0 +1,22 @@
+.friends-list {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  align-items: center;
+  justify-content: space-around;
+  height: 75%;
+  width: 80%;
+  border-radius: 2%;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+.dual-column {
+	columns: 2;
+}
+
+.scrollable-list {
+  /* border: solid var(--green); */
+  width: 90%;
+  height: 85%;
+  overflow: auto;
+}

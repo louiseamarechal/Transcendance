@@ -7,6 +7,9 @@ import { AtGuard } from './common/guards';
 import { AppController } from './app.controller';
 import { UserModule } from './user/user.module';
 import { FriendRequestModule } from './friend-request/friend-request.module';
+import { ChannelModule } from './channel/channel.module';
+import { MessageModule } from './message/message.module';
+import { NotifModule } from './auth/notif/notif.module';
 import { GameModule } from './game/game.module';
 
 @Module({
@@ -16,6 +19,9 @@ import { GameModule } from './game/game.module';
     AuthModule,
     UserModule,
     FriendRequestModule,
+    ChannelModule,
+    MessageModule,
+    NotifModule,
     GameModule,
   ],
   controllers: [AppController],

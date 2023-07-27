@@ -40,10 +40,11 @@ model User {
 
   sentMessages Message[] @relation("sender")
 
-  initGames    Game[]      @relation("player1")
-  invitedGames Game[]      @relation("player2")
-  wonGames     Game[]      @relation("winner")
-  gameQueue    GameQueue[]
+  initGames         Game[]                 @relation("player1")
+  invitedGames      Game[]                 @relation("player2")
+  wonGames          Game[]                 @relation("winner")
+  mutedOnChannel    MutedByUserOnChannel[] @relation("mutedUser")
+  hasMutedOnChannel MutedByUserOnChannel[] @relation("mutedByUser")
 
   @@map("users")
 }
@@ -82,16 +83,16 @@ model Channel {
 
   owner   User    @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId Int     @map("owner_id")
-  name    String  @unique
+  name    String
   avatar  String?
 
   admins  AdminsOnChannels[]
   members MembersOnChannels[]
   blocked BlockedOnChannels[]
+  muted   MutedByUserOnChannel[] @relation("mutedOnChannel")
 
   messages Message[] @relation("channel")
 
-  password     Boolean @default(false)
   passwordHash String?
   visibility   VisType @default(PUBLIC)
 
@@ -104,7 +105,7 @@ enum VisType {
   PROTECTED
 }
 
-model AdminsOnChannels {
+model MembersOnChannels {
   channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId Int
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -113,7 +114,7 @@ model AdminsOnChannels {
   @@id([channelId, userId])
 }
 
-model MembersOnChannels {
+model AdminsOnChannels {
   channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId Int
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -129,6 +130,20 @@ model BlockedOnChannels {
   userId    Int
 
   @@id([channelId, userId])
+}
+
+model MutedByUserOnChannel {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  channel   Channel @relation(name: "mutedOnChannel", fields: [channelId], references: [id])
+  channelId Int     @map("channel_id")
+
+  mutedUser     User @relation(name: "mutedUser", fields: [mutedUserId], references: [id])
+  mutedUserId   Int  @map("muted_user_id")
+  mutedByUser   User @relation(name: "mutedByUser", fields: [mutedByUserId], references: [id])
+  mutedByUserId Int  @map("muted_by_user_id")
 }
 
 model Message {
@@ -158,21 +173,10 @@ model Game {
   player2   User @relation(name: "player2", fields: [player2Id], references: [id], onDelete: Cascade)
   player2Id Int  @map("player2_id")
 
-  winner   User @relation(name: "winner", fields: [winnerId], references: [id], onDelete: Cascade)
-  winnerId Int  @map("winner_id")
+  winner   User? @relation(name: "winner", fields: [winnerId], references: [id], onDelete: Cascade)
+  winnerId Int?  @map("winner_id")
 
   score String?
 
   @@map("games")
-}
-
-model GameQueue {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("create_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  player   User @relation(fields: [playerId], references: [id])
-  playerId Int  @map("player_id")
-
-  @@map("game_queue")
 }

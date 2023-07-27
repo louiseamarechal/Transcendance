@@ -15,11 +15,12 @@ import NavBar from './components/NavBar.tsx';
 import useNavbar from './hooks/useNavbar.ts';
 
 // CSS
+import './style/color.css'
 import './style/components/buttons.css';
 import './style/components/avatar.css';
-import './style/pages/color.css';
+import './style/color.css';
 import './style/pages/App.css';
-import UserProfile from './pages/UserProfile.tsx';
+import './style/components/notification.css';
 import GameLayout from './pages/Game/GameLayout.tsx';
 import OldGame from './pages/OldGame/OldGame.tsx';
 import OldWaitingForGame from './pages/OldGame/OldWaitingForGamePage.tsx';
@@ -30,7 +31,6 @@ import GameQueue from './pages/Game/GameQueue.tsx';
 import GameGame from './pages/Game/GameGame.tsx';
 
 function App() {
-  const { navbarState } = useNavbar();
 
   return (
     <div className="app">

@@ -1,18 +1,62 @@
 // import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import useNavbar from '../hooks/useNavbar';
+import NavBarLinks from './NavBarLinks';
 
 import '../style/components/navbar.css';
-import useNavbar from '../hooks/useNavbar';
-import { useUser } from '../hooks/useUser';
+import { useEffect, useState } from 'react';
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
 const NavBar = () => {
   const { navbarState, setNavbarState } = useNavbar();
-  const { myAvatar } = useUser();
+  const location = useLocation();
+  const axiosInstance = useAxiosPrivate();
+  const [receivedNotif, setReceivedNotif] = useState({
+    friends: 0,
+    game: 0,
+    chat: 0,
+  });
 
-  const navElems = [
+  useEffect(() => {
+    axiosInstance
+      .get('/notif/friend')
+      .then((response) => {
+        const data = response.data;
+        setReceivedNotif((previous) => {
+          return { ...previous, friends: data.length };
+        });
+      })
+      .catch((error) => console.log(error));
+
+    axiosInstance
+      .get('/notif/game')
+      .then((response) => {
+        const data = response.data;
+        setReceivedNotif((previous) => {
+          return { ...previous, game: data.length };
+        });
+      })
+      .catch((error) => console.log(error));
+
+      axiosInstance
+      .get('/notif/chat')
+      .then((response) => {
+        const data = response.data;
+        setReceivedNotif((previous) => {
+          return { ...previous, game: data.length };
+        });
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  if (location.pathname === '/' || location.pathname === '/game/playgame') {
+    return null;
+  }
+  
+      const navElems = [
     {
       to: '/profil',
       content: <img className="avatar" alt="avatar" src={myAvatar} />,
@@ -41,15 +85,10 @@ const NavBar = () => {
             setNavbarState(false);
           }}
         />
-        <ul className="navbar-links">
-          {navElems.map((elem) => {
-            return (
-              <Link to={elem.to} onClick={() => setNavbarState(false)}>
-                {elem.content}
-              </Link>
-            );
-          })}
-        </ul>
+        <NavBarLinks
+          receivedNotif={receivedNotif}
+          setReceivedNotif={setReceivedNotif}
+        />
       </div>
     );
   else

@@ -7,10 +7,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from 'src/user/user.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { NotifModule } from 'src/auth/notif/notif.module';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { NotifGateway } from 'src/auth/notif/notif.gateway';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
+    NotifModule,
     UserModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -20,7 +24,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       inject: [ConfigService],
     }),
   ],
-  providers: [GameGateway, GameService, GameManager],
+  providers: [GameGateway, GameService, GameManager, PrismaService, NotifGateway],
   controllers: [GameController],
 })
 export class GameModule {}

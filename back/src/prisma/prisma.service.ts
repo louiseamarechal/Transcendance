@@ -17,22 +17,22 @@ export class PrismaService
     });
   }
 
-	async onModuleInit() {
-		await this.$connect();
-	}
+  async onModuleInit() {
+    await this.$connect();
+  }
 
-	async onModuleDestroy() {
-		await this.$disconnect();
-	}
+  async onModuleDestroy() {
+    await this.$disconnect();
+  }
 
-	cleanDb() {
-		if (process.env.NODE_ENV === 'production') return;
-		return this.$transaction([
-			this.game.deleteMany(),
-			this.message.deleteMany(),
-			this.channel.deleteMany(),
-			this.friendRequest.deleteMany(),
-			this.user.deleteMany(),
-		])
-	}
+  cleanDb() {
+    if (process.env.NODE_ENV === 'production') return;
+    return this.$transaction([
+      this.game.deleteMany(),
+      this.message.deleteMany(),
+      this.channel.deleteMany(),
+      this.friendRequest.deleteMany(),
+      this.user.deleteMany(),
+    ]);
+  }
 }

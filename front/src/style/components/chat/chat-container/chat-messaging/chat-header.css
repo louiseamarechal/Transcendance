@@ -1,0 +1,20 @@
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 2%;
+  height: max(5%, 50px);
+  gap: 10px;
+  width: 100%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.19);
+  box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.33);
+  border-radius: 50vh;
+}
+
+.options-menu {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	width: 5%;
+	height: 100%
+}

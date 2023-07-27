@@ -1,10 +1,5 @@
 .navbar-open {
   z-index: 1;
-  /* display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; */
-  /* background: linear-gradient(249.66deg, #F5F5F5 29.05%, rgba(245, 245, 245, 0) 67.24%), linear-gradient(335.12deg, #B8E4E8 25.81%, #ADD7B6 43.04%, #ECDB9A 70.21%, #EFBD99 84.79%); */
   background-color: rgba(255, 255, 255, 0.24);
   box-shadow: 0px 2px 4px rgba(255, 255, 255, 0.46);
   min-height: 100vh;
@@ -20,7 +15,6 @@
   align-items: center;
   /* justify-content: space-evenly; */
 
-  /* margin-left: 15%; */
   font-style: normal;
   font-weight: 600;
   font-size: 30px;
