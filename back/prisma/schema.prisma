@@ -103,7 +103,7 @@ enum VisType {
   PROTECTED
 }
 
-model AdminsOnChannels {
+model MembersOnChannels {
   channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId Int
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -112,7 +112,7 @@ model AdminsOnChannels {
   @@id([channelId, userId])
 }
 
-model MembersOnChannels {
+model AdminsOnChannels {
   channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId Int
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)

@@ -12,6 +12,7 @@ import {
   User,
   VisType,
 } from '@prisma/client';
+import { AdminDto } from './dto/admin.dto';
 
 @Injectable()
 export class ChannelService {
@@ -104,8 +105,8 @@ export class ChannelService {
         login: string;
       };
     }[];
-    admins: {userId: number}[];
-    blocked: {userId: number}[];
+    admins: { userId: number }[];
+    blocked: { userId: number }[];
     muted: {
       mutedUserId: number;
       mutedByUserId: number;
@@ -289,6 +290,34 @@ export class ChannelService {
         name: true,
         avatar: true,
       },
+    });
+  }
+
+  async createAdminOnChannel(
+    // userId: number,
+    channelId: number,
+    dto: AdminDto,
+  ): Promise<{channelId: number, userId: number}> {
+    return this.prisma.adminsOnChannels.create({
+      data: {
+        channelId,
+        userId: dto.userId,
+      },
+    });
+  }
+
+  async deleteAdminOnChannel(
+    // userId: number,
+    channelId: number,
+    dto: AdminDto,
+  ): Promise<{channelId: number, userId: number}> {
+    return this.prisma.adminsOnChannels.delete({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId: dto.userId,
+        } 
+      }
     });
   }
 }
