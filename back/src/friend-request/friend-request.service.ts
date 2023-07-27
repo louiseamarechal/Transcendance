@@ -8,15 +8,17 @@ import {
 import { FRStatus, FriendRequest } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFriendRequestDto } from './dto';
-import { ChannelService } from 'src/channel/channel.service';
 import { CreateChannelDto } from 'src/channel/dto';
+import { ChannelService } from 'src/channel/channel.service';
 import { NotifService } from 'src/auth/notif/notif.service';
+import { NotifGateway } from 'src/auth/notif/notif.gateway';
 
 @Injectable()
 export class FriendRequestService {
   constructor(
     private prisma: PrismaService,
     private channelService: ChannelService,
+    private notifGateway: NotifGateway,
     private notifService: NotifService,
   ) {}
   async createFR(userId1: number, userId2: number): Promise<FriendRequest> {
@@ -134,33 +136,6 @@ export class FriendRequestService {
     });
   }
 
-  async editFRById(
-    userId: number,
-    friendRequestId: number,
-    dto: EditFriendRequestDto,
-  ): Promise<FriendRequest> {
-    const friendRequest = await this.prisma.friendRequest.findUnique({
-      where: {
-        id: friendRequestId,
-      },
-    });
-
-    // Check ownership
-    if (
-      !friendRequest ||
-      (friendRequest.fromId !== userId && friendRequest.toId !== userId)
-    )
-      throw new ForbiddenException('Access to ressource denied');
-
-    return this.prisma.friendRequest.update({
-      where: {
-        id: friendRequestId,
-      },
-      data: {
-        ...dto,
-      },
-    });
-  }
 
   async acceptAll(userId: number) {
     const requestIds = await this.prisma.friendRequest.findMany({
@@ -213,8 +188,11 @@ export class FriendRequestService {
       },
     });
   }
-
-  async deleteFRById(fromId: number, friendRequestId: number) {
+  async editFRById(
+    userId: number,
+    friendRequestId: number,
+    dto: EditFriendRequestDto,
+  ) {
     const friendRequest = await this.prisma.friendRequest.findUnique({
       where: {
         id: friendRequestId,
@@ -222,17 +200,32 @@ export class FriendRequestService {
     });
 
     // Check ownership
-    if (!friendRequest || friendRequest.fromId != fromId)
+    if (
+      !friendRequest ||
+      (friendRequest.fromId !== userId && friendRequest.toId !== userId)
+    )
       throw new ForbiddenException('Access to ressource denied');
+    // if (dto.status === 'ACCEPTED' && friendRequest !== null) {
+    //   const dto: CreateChannelDto = {
+    //     name: '',
+    //     avatar: '',
+    //     members: [userId, friendRequest.toId],
+    //   };
+    //   console.log(dto);
+    //   this.channelService.createChannel(userId, dto);
+    // }
 
-    this.prisma.friendRequest.delete({
+    return this.prisma.friendRequest.update({
       where: {
         id: friendRequestId,
+      },
+      data: {
+        ...dto,
       },
     });
   }
 
-  async deleteFRByToId(fromId: number, toId: number) {
+  async editFRByToId(fromId: number, toId: number, dto: EditFriendRequestDto) {
     const friendRequest = await this.prisma.friendRequest.findUnique({
       where: {
         fromId_toId: {
@@ -246,13 +239,35 @@ export class FriendRequestService {
     if (!friendRequest)
       throw new ForbiddenException('Access to ressource denied');
 
-    this.prisma.friendRequest.delete({
+    return this.prisma.friendRequest.update({
       where: {
         fromId_toId: {
           fromId,
           toId,
         },
       },
+      data: {
+        ...dto,
+      },
     });
+  }
+
+  async deleteFRById(userId: number, friendRequestId: number) {
+    const friendRequest = await this.prisma.friendRequest.findUnique({
+      where: {
+        id: friendRequestId,
+      },
+    });
+
+    // Check ownership
+    if (!friendRequest || (friendRequest.fromId !== userId && friendRequest.toId !== userId))
+      throw new ForbiddenException('Access to ressource denied');
+
+    const deletedUser = await this.prisma.friendRequest.delete({
+      where: {
+        id: friendRequestId,
+      },
+    });
+    console.log(`delete user: ${deletedUser.id} : ${deletedUser.fromId} -> ${deletedUser.toId}`);
   }
 }

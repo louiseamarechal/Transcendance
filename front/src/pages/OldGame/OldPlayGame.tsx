@@ -9,8 +9,8 @@ import PlayerStats from '../../pong-game/PlayerStats';
 // import ResetPlayerData from '../../pong-game/utils/ResetPlayerData';
 import '../../style/pages/Game/PlayGamePage.css';
 
-const PlayGame = () => {
-  const canvasRef = useRef<HTMLCanvasElement>();
+const OldPlayGame = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const { ballObj, paddleProps, player } = data;
 
   const players = [
@@ -94,4 +94,4 @@ const PlayGame = () => {
   );
 };
 
-export default PlayGame;
+export default OldPlayGame;

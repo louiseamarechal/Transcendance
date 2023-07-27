@@ -1,20 +1,31 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import { gameSocket } from '../../api/socket';
 
-const GameLobby = () => {
+export default function GameLobby() {
+  const navigate = useNavigate()
+
+  const handleSearchGame = async () => {
+    navigate('/game/queue')
+  };
+
   return (
     <div className="gamepage-container">
+      <button
+        onClick={() => {
+          gameSocket.emit('toto', 'eventdata');
+        }}
+        className="text-9xl text-red-900"
+      >
+        Test
+      </button>
       <h1 className="gamepage-title">PONG</h1>
       <div className="net-container">
-        <Link to={'/game/wait'}>
-          <button className="searchgame-button mr-2">Search Game</button>
-        </Link>
+        <button className="searchgame-button mr-2" onClick={handleSearchGame}>
+          Search Game
+        </button>
         <div className="net"></div>
-        <Link to={'/findfriends'}>
-          <button className="searchgame-button m1-2">Invite Friends</button>
-        </Link>
+        <button className="searchgame-button m1-2">Invite Friends</button>
       </div>
     </div>
   );
-};
-
-export default GameLobby;
+}

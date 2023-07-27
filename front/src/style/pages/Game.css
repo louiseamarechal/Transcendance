@@ -13,7 +13,7 @@
   color: var(--black);
   letter-spacing: 0.11em;
   font-style: normal;
-  justify-content: up;
+  /* justify-content: up; */
 }
 
 .net-container {

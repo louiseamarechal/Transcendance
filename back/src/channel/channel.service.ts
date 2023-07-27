@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
 import {
@@ -347,7 +343,7 @@ export class ChannelService {
   handleLeaveRoom(client: Socket) {
     const connectedRooms = this.server.adapter.rooms;
     console.log(connectedRooms);
-    connectedRooms.forEach((value, key) => {
+    connectedRooms.forEach((value, key : string) => {
       if (client.id === key) {
         return;
       }
