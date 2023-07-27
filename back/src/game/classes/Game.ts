@@ -132,9 +132,9 @@ export class Game {
     console.log('  Playing');
 
     const overlayData: any = {
-      p1name: 'toto',
-      p2name: 'tata',
-      score: [1, 2],
+      p1name: this.P1.name,
+      p2name: this.P2.name,
+      score: this.score,
     };
 
     this.server.to(this.gameId).emit('server.game.updateOverlay', {
