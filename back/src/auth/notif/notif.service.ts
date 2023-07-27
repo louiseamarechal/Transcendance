@@ -4,16 +4,20 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class NotifService {
+  server: Server;
   constructor(private prisma: PrismaService) {}
 
-  handleFriendsNotif(roomName: string, server: Server) {
-    console.log('sending Friend Request on room', roomName);
-    server.to(roomName).emit('friends-notif');
+  handleFriendsNotif(roomName: string) {
+    this.server.to(roomName).emit('server.notif.friends');
   }
 
-  handleGamesNotif(roomName: string, server: Server) {
-    console.log('sending Game Request on room', roomName);
-    server.to(roomName).emit('game-notif');
+  handleGamesNotif(roomName: string) {
+    this.server.to(roomName).emit('server.notif.game');
+  }
+
+  handleChatNotif(roomName: string) {
+    console.log(`accessing handleChatNotif(${roomName})`);
+    this.server.to(roomName).emit('server.notif.chat');
   }
 
   async getFriendsNotif(myId: number) {

@@ -5,6 +5,7 @@ import ChatHeader from './ChatMessaging/ChatHeader';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import { Channel } from '../../../types/Channel.type';
 import ChatBody from './ChatMessaging/ChatBody';
+import { channelSocket } from '../../../api/socket';
 import ChatOptions from './ChatMessaging/ChatOptions';
 
 const ChatMessaging = () => {
@@ -16,7 +17,12 @@ const ChatMessaging = () => {
   useEffect(() => {
     axiosInstance.get('channel/' + showChannel).then((res) => {
       setChannel(res.data);
+      channelSocket.emit('client.channel.createRoom', res.data.id);
     });
+
+    return(() => {
+      channelSocket.emit('client.channel.leaveRoom');
+    })
   }, [showChannel]);
 
   return (

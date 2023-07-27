@@ -6,13 +6,15 @@ import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import FriendsList from './CreateChannelForm/FriendsList';
 import FormHeader from './CreateChannelForm/FormHeader';
 import { useUser } from '../../../hooks/useUser';
+import { notifSocket } from '../../../api/socket';
+import { User } from '../../../types/User.type';
 
 const CreateChannelForm = () => {
   const [avatar, setAvatar] = useState<string>(
     'http://localhost:3000/public/default.jpg',
   );
   const axiosPrivate = useAxiosPrivate();
-  const { myId } = useUser();
+  const { myId, myLogin } = useUser();
   const { channelList, setChannelList, setShowCreateChannel, setShowChannel } =
     useChatContext();
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]);
@@ -32,6 +34,10 @@ const CreateChannelForm = () => {
         })
         .then((res) => {
           setChannelList([...channelList, res.data]);
+          res.data.members.map((member: {user: User}) => {
+            if (member.user.login !== myLogin)
+            notifSocket.emit('client.notif.chatNotif', member.user.login);
+          })
           setShowChannel(res.data.id);
         })
         .catch((err) => {

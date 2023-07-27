@@ -1,12 +1,12 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { Game } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { NotifGateway } from 'src/sockets/notif/notif.gateway';
+import { NotifService } from 'src/auth/notif/notif.service';
 
 @Injectable()
 export class GameService {
   constructor(
-    private notifGateway: NotifGateway,
+    private notifService: NotifService,
     private prisma: PrismaService,
   ) {}
   async createGame(fromId: number, toId: number): Promise<Game> {
@@ -22,7 +22,7 @@ export class GameService {
     if (receiver === null) {
       throw new ConflictException();
     }
-    this.notifGateway.handleGamesNotif(receiver.login);
+    this.notifService.handleGamesNotif(receiver.login);
     return gameRequest;
   }
 }

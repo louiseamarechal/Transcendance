@@ -10,14 +10,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFriendRequestDto } from './dto';
 import { ChannelService } from 'src/channel/channel.service';
 import { CreateChannelDto } from 'src/channel/dto';
-import { NotifGateway } from 'src/sockets/notif/notif.gateway';
+import { NotifService } from 'src/auth/notif/notif.service';
 
 @Injectable()
 export class FriendRequestService {
   constructor(
     private prisma: PrismaService,
     private channelService: ChannelService,
-    private notifGateway: NotifGateway,
+    private notifService: NotifService,
   ) {}
   async createFR(fromId: number, toId: number): Promise<FriendRequest> {
     const friendRequest = await this.prisma.friendRequest
@@ -39,7 +39,7 @@ export class FriendRequestService {
     if (receiver === null) {
       throw new ConflictException();
     }
-    this.notifGateway.handleFriendsNotif(receiver.login);
+    this.notifService.handleFriendsNotif(receiver.login);
     return friendRequest;
   }
 

@@ -1,11 +1,9 @@
-import { Socket } from 'socket.io-client';
 import { Notification } from './notif/Notification';
 import { useUser } from '../hooks/useUser';
 import { Link } from 'react-router-dom';
 import useNavbar from '../hooks/useNavbar';
 
 type NavBarLinksProps = {
-  notifSocket: Socket | undefined;
   receivedNotif: {
     friends: number;
     game: number;
@@ -23,6 +21,24 @@ type NavBarLinksProps = {
 const NavBarLinks = (props: NavBarLinksProps) => {
   const { myAvatar } = useUser();
   const { setNavbarState } = useNavbar();
+
+  function handleClick(
+    link:
+      | string
+      | React.DetailedHTMLProps<
+          React.ImgHTMLAttributes<HTMLImageElement>,
+          HTMLImageElement
+        >,
+  ) {
+    if (link === 'Game') {
+      props.setReceivedNotif({ ...props.receivedNotif, game: 0 });
+    } else if (link === 'Friends') {
+      props.setReceivedNotif({ ...props.receivedNotif, friends: 0 });
+    } else if (link === 'Chat') {
+      props.setReceivedNotif({ ...props.receivedNotif, chat: 0 });
+    }
+    setNavbarState(false);
+  }
 
   const navElems = [
     {
@@ -55,14 +71,13 @@ const NavBarLinks = (props: NavBarLinksProps) => {
             {typeof elem.content === 'string' ? (
               <Notification
                 element={elem.content}
-                notifSocket={props.notifSocket}
                 receivedNotif={props.receivedNotif}
                 setReceivedNotif={props.setReceivedNotif}
               />
             ) : (
               ''
             )}
-            <Link to={elem.to} onClick={() => setNavbarState(false)}>
+            <Link to={elem.to} onClick={() => handleClick(elem.content)}>
               {elem.content}
             </Link>
           </div>
