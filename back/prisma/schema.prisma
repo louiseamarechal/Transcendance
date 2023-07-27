@@ -38,9 +38,11 @@ model User {
 
   sentMessages Message[] @relation("sender")
 
-  initGames    Game[] @relation("player1")
-  invitedGames Game[] @relation("player2")
-  wonGames     Game[] @relation("winner")
+  initGames         Game[]                 @relation("player1")
+  invitedGames      Game[]                 @relation("player2")
+  wonGames          Game[]                 @relation("winner")
+  mutedOnChannel    MutedByUserOnChannel[] @relation("mutedUser")
+  hasMutedOnChannel MutedByUserOnChannel[] @relation("mutedByUser")
 
   @@map("users")
 }
@@ -77,18 +79,18 @@ model Channel {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  owner   User   @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId Int    @map("owner_id")
-  name    String @unique
-	avatar  String?
+  owner   User    @relation(name: "channelOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId Int     @map("owner_id")
+  name    String
+  avatar  String?
 
   admins  AdminsOnChannels[]
   members MembersOnChannels[]
   blocked BlockedOnChannels[]
+  muted   MutedByUserOnChannel[] @relation("mutedOnChannel")
 
   messages Message[] @relation("channel")
 
-  password     Boolean @default(false)
   passwordHash String?
   visibility   VisType @default(PUBLIC)
 
@@ -126,6 +128,20 @@ model BlockedOnChannels {
   userId    Int
 
   @@id([channelId, userId])
+}
+
+model MutedByUserOnChannel {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  channel   Channel @relation(name: "mutedOnChannel", fields: [channelId], references: [id])
+  channelId Int     @map("channel_id")
+
+  mutedUser     User @relation(name: "mutedUser", fields: [mutedUserId], references: [id])
+  mutedUserId   Int  @map("muted_user_id")
+  mutedByUser   User @relation(name: "mutedByUser", fields: [mutedByUserId], references: [id])
+  mutedByUserId Int  @map("muted_by_user_id")
 }
 
 model Message {

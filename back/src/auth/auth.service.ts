@@ -197,6 +197,8 @@ export class AuthService {
   }
 
   async downloadPhoto(userLogin: string, url: string) {
+		console.log(__dirname);
+		console.log(process.cwd());
     const writer = createWriteStream(
       join(process.cwd(), `public/${userLogin}.jpg`),
     );

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { NotifGateway } from 'src/sockets/notif/notif.gateway';
+import { NotifGateway } from 'src/auth/notif/notif.gateway';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { NotifModule } from 'src/sockets/notif/notif.module';
+import { NotifModule } from 'src/auth/notif/notif.module';
 import { GameService } from './game.service';
 import { GameController } from './game.controller';
 

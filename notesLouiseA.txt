@@ -1,3 +1,4 @@
-- checker si et ou on stock le socket id
-- dans le back CreateFR - ajouter le emit toId de la notif
-- dans le front avant la requete axios pour avoir le nombre de sent Requests faire le server.on pour recuperer l'indo de la notif
+- remove Game and FR notif in front when we remove the notification (when we click on the NavBar Page Link)
+- faire en sorte de refresh a chaque fois qu'on click sur un NavLink
+- still receiving 2 notif when sending a message
+- need to receive notif when we create a channel group (or maybe we don't care)

@@ -15,7 +15,15 @@ import { extname } from 'path';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async getMe(userId: number) {
+  async getUserById(userId: number): Promise<{
+    id: number | null;
+    login: string | null;
+    name: string | null;
+    level: number | null;
+    avatar: string | null;
+    statTotalGame: number | null;
+    statTotalWin: number | null;
+  }> {
     const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
@@ -49,7 +57,7 @@ export class UserService {
       where: {
         id: {
           not: userId,
-        }
+        },
       },
       select: {
         id: true,
@@ -60,44 +68,33 @@ export class UserService {
     });
   }
 
-  async editUser(userId: number, dto: EditUserDto): Promise<User> {
-    try {
-      const user = await this.prisma.user.update({
+  async editUser(
+    userId: number,
+    dto: EditUserDto,
+  ): Promise<{
+    id: number | null;
+    login: string | null;
+    name: string | null;
+    level: number | null;
+    avatar: string | null;
+    statTotalGame: number | null;
+    statTotalWin: number | null;
+  }> {
+    const user = await this.prisma.user
+      .update({
         where: {
           id: userId,
         },
         data: {
           ...dto,
         },
+      })
+      .catch((error) => {
+        if (error.code === 'P2002') {
+          throw new ConflictException('Name already exists');
+        }
+        throw error;
       });
-      return user;
-    } catch (error) {
-      if (error.code === 'P2002') {
-        throw new ConflictException('Name already exists');
-      }
-      throw new ConflictException('Unknown reason');
-    }
-  }
-
-  async getUserById(id: number) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id: id,
-      },
-      select: {
-        id: true,
-        login: true,
-        name: true,
-        level: true,
-        avatar: true,
-        statTotalGame: true,
-        statTotalWin: true,
-      },
-    });
-
-    if (!user) {
-      throw new BadRequestException(`User #${id} not found`);
-    }
     return user;
   }
 
@@ -113,7 +110,7 @@ export class UserService {
       console.log('Successfully renamed - AKA moved!');
     };
 
-    const oldAvatar = (await this.getMe(userId)).avatar?.replace(
+    const oldAvatar = (await this.getUserById(userId)).avatar?.replace(
       'http://localhost:3000/',
       '',
     );

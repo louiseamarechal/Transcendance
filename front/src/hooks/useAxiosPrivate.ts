@@ -27,7 +27,6 @@ const useAxiosPrivate = () => {
       async (error) => {
         // otherwise we have an async error handler if for exemple our acces has expired (if it has a short life span)
         const prevRequest = error?.config; // we're getting the prev request
-        console.log(error.config);
         // we check the error response status (we expect it to be a 403 if our failure is du to an expired access_token)
         // we also check a custom property on the request that we'll set call sent (if sent does'nt exist or is not true)
         if (error?.response?.status === 401 && !prevRequest?.sent) {

@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 
 // TypeScript
 import WelcomePage from './pages/WelcomePage.tsx';
-import Game from './pages/Game/Game.tsx';
+import Game from './pages/game/Game.tsx';
 import Chat from './pages/Chat.tsx';
 import Friends from './pages/Friends.tsx';
 import Profil from './pages/Profil.tsx';
@@ -12,16 +12,17 @@ import FindFriends from './pages/FindFriends.tsx';
 import Components from './pages/Components.tsx';
 import Callback from './pages/Callback.tsx';
 import RequireAuth from './components/RequireAuth.tsx';
-import PlayGame from './pages/Game/PlayGame.tsx';
-import WaitingForGame from './pages/Game/WaitingForGamePage.tsx';
-import FoundGamePage from './pages/Game/FoundGamePage.tsx';
-import GameLobby from './pages/Game/GameLobby.tsx';
+import PlayGame from './pages/game/PlayGame.tsx';
+import WaitingForGame from './pages/game/WaitingForGamePage.tsx';
+import FoundGamePage from './pages/game/FoundGamePage.tsx';
+import GameLobby from './pages/game/GameLobby.tsx';
 import UserProfile from './pages/UserProfile.tsx';
 
 // CSS
+import './style/color.css'
 import './style/components/buttons.css';
 import './style/components/avatar.css';
-import './style/pages/color.css';
+import './style/color.css';
 import './style/pages/App.css';
 import './style/components/notification.css';
 

@@ -1,11 +1,9 @@
-import { Socket } from 'socket.io-client';
 import { Notification } from './notif/Notification';
 import { useUser } from '../hooks/useUser';
 import { Link } from 'react-router-dom';
 import useNavbar from '../hooks/useNavbar';
 
 type NavBarLinksProps = {
-  notifSocket: Socket | undefined;
   receivedNotif: {
     friends: number;
     game: number;
@@ -32,7 +30,6 @@ const NavBarLinks = (props: NavBarLinksProps) => {
           HTMLImageElement
         >,
   ) {
-    console.log({link});
     if (link === 'Game') {
       props.setReceivedNotif({ ...props.receivedNotif, game: 0 });
     } else if (link === 'Friends') {
@@ -74,7 +71,6 @@ const NavBarLinks = (props: NavBarLinksProps) => {
             {typeof elem.content === 'string' ? (
               <Notification
                 element={elem.content}
-                notifSocket={props.notifSocket}
                 receivedNotif={props.receivedNotif}
                 setReceivedNotif={props.setReceivedNotif}
               />
