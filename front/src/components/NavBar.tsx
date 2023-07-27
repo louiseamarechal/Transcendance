@@ -41,7 +41,7 @@ const NavBar = () => {
       })
       .catch((error) => console.log(error));
 
-      axiosInstance
+    axiosInstance
       .get('/notif/chat')
       .then((response) => {
         const data = response.data;
@@ -55,24 +55,6 @@ const NavBar = () => {
   if (location.pathname === '/' || location.pathname === '/game/playgame') {
     return null;
   }
-  
-      const navElems = [
-    {
-      to: '/profil',
-      content: <img className="avatar" alt="avatar" src={myAvatar} />,
-    },
-    { to: '/oldgame', content: 'OldGame' },
-    { to: '/game', content: 'Game' },
-    { to: '/chat', content: 'Chat' },
-    { to: '/friends', content: 'Friends' },
-    { to: '/test', content: 'Test' },
-    { to: '/FindFriends', content: 'FindFriends' },
-    { to: '/profil/1', content: 'Profil 1' },
-    { to: '/profil/2', content: 'Profil 2' },
-    { to: '/profil/3', content: 'Profil 3' },
-    { to: '/profil/4', content: 'Profil 4' },
-    { to: '/profil/5', content: 'Profil 5' },
-  ];
 
   if (navbarState === true)
     return (

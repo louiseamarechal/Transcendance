@@ -46,6 +46,7 @@ const NavBarLinks = (props: NavBarLinksProps) => {
       content: <img className="avatar" alt="avatar" src={myAvatar} />,
     },
     { to: '/game', content: 'Game' },
+    { to: '/oldgame', content: 'OldGame' },
     { to: '/chat', content: 'Chat' },
     { to: '/friends', content: 'Friends' },
     { to: '/test', content: 'Test' },

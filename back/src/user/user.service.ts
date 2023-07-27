@@ -14,15 +14,7 @@ import { PublicUser } from './types';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async getUserById(userId: number): Promise<{
-    id: number | null;
-    login: string | null;
-    name: string | null;
-    level: number | null;
-    avatar: string | null;
-    statTotalGame: number | null;
-    statTotalWin: number | null;
-  }> {
+  async getUserById(userId: number): Promise<PublicUser> {
     const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
@@ -56,7 +48,6 @@ export class UserService {
       where: {
         id: {
           not: userId,
-        },
         },
       },
       select: {

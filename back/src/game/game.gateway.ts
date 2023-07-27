@@ -68,7 +68,7 @@ export class GameGateway
       ); // throw if invalid, expired or missing
       // console.log(token);
       // if good, link socket to user, set user state online
-      const user: PublicUser = await this.userService.getMe(token.id);
+      const user: PublicUser = await this.userService.getUserById(token.id);
       client.data.user = user;
       // update to online ??
     } catch (error) {
