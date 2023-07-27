@@ -188,10 +188,11 @@ export class FriendRequestService {
     if (!friendRequest || (friendRequest.fromId !== userId && friendRequest.toId !== userId))
       throw new ForbiddenException('Access to ressource denied');
 
-    this.prisma.friendRequest.delete({
+    const deletedUser = await this.prisma.friendRequest.delete({
       where: {
         id: friendRequestId,
       },
     });
+    console.log(`delete user: ${deletedUser.id} : ${deletedUser.fromId} -> ${deletedUser.toId}`);
   }
 }

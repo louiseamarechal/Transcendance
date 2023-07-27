@@ -48,7 +48,7 @@ export default function UserProfile() {
         navigate('/game');
       });
 
-      axiosInstance
+    axiosInstance
       .get(`friend-request/with/${id}`)
       .then((res) => {
         if (res.data[0]) {
@@ -72,12 +72,12 @@ export default function UserProfile() {
       .post(`friend-request/${id}`, {})
       .then((response) => {
         console.log(response.data);
-        setRefresh(true);
+        if (refresh === false) setRefresh(true);
+        else setRefresh(false);
       })
       .catch((error) => {
-        if (error.response.status !== 409) console.error(error);
+        console.error(error);
       });
-     
   };
 
   const handleAcceptFriend = () => {
@@ -85,27 +85,20 @@ export default function UserProfile() {
       .patch(`friend-request/${FR.id}`, { status: 'ACCEPTED' })
       .then((response) => {
         console.log(response.data);
-        setRefresh(true);
+        if (refresh === false) setRefresh(true);
+        else setRefresh(false);
       })
       .catch((error) => {
-         console.error(error);
+        console.error(error);
       });
-      
   };
 
-  const handleDeclineFR = () => {
-    axiosInstance
-      .patch(`friend-request/${FR.id}`, { status: 'REFUSED' })
-      .then((response) => {
-        console.log(response.data);
-        setRefresh(true);
-      })
-      .catch((error) => {
-        if (error.response.status !== 409) console.error(error);
-      });
-      
+  const handleRemoveFR = () => {
+    axiosInstance.delete(`friend-request/${FR.id}`).then(() => {
+      if (refresh === false) setRefresh(true);
+      else setRefresh(false);
+    });
   };
-
   return (
     <div className="profil-container">
       <div className="flex flex-row w-[55%] justify-end">
@@ -121,7 +114,7 @@ export default function UserProfile() {
           fromId={FR.fromId ?? ''}
           handleAddFriend={handleAddFriend}
           handleAcceptFriend={handleAcceptFriend}
-          handleDeclineFR={handleDeclineFR}
+          handleRemoveFR={handleRemoveFR}
         />
       </div>
       <ProgressBar user={user} />
@@ -136,7 +129,7 @@ type ActionButtonsProps = {
   status: string;
   handleAddFriend: Function;
   handleAcceptFriend: Function;
-  handleDeclineFR: Function;
+  handleRemoveFR: Function;
   myId: number;
   fromId: string;
 };
@@ -146,15 +139,17 @@ function ActionButtons({
   fromId,
   handleAddFriend,
   handleAcceptFriend,
-  handleDeclineFR,
+  handleRemoveFR,
 }: ActionButtonsProps) {
-
   if (status === 'ACCEPTED') {
     return (
       <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
-        <button className="small-button friend-request-button"onClick={() => {
-            handleDeclineFR();
-          }}>
+        <button
+          className="small-button friend-request-button"
+          onClick={() => {
+            handleRemoveFR();
+          }}
+        >
           Remove Friend
         </button>
         <button className="small-button game-request-button">
@@ -162,7 +157,7 @@ function ActionButtons({
         </button>
       </div>
     );
-  } else if (parseInt(fromId) === myId) {
+  } else if (parseInt(fromId) === myId && status !== 'REFUSED') {
     return (
       <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
         <button className="small-button friend-request-button">Pending</button>
@@ -182,7 +177,7 @@ function ActionButtons({
         <button
           className="small-button friend-request-button"
           onClick={() => {
-            handleDeclineFR();
+            handleRemoveFR();
           }}
         >
           Decline

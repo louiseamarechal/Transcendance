@@ -33,7 +33,7 @@ export class FriendRequestController {
 
   @Get('my-friends')
   getMyFriends(@GetUserId() userId: number) {
-    return (this.friendRequestService.getMyFriends(userId))
+    return this.friendRequestService.getMyFriends(userId);
   }
 
   @Get()
