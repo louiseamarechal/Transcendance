@@ -99,6 +99,18 @@ export default function UserProfile() {
       else setRefresh(false);
     });
   };
+
+  // const handleGameRequest = async () => {
+  //   await axiosInstance
+  //     .post(`game/${id}`, {})
+  //     .then((response) => {
+  //       console.log({ handleGameRequest: response.data });
+  //     })
+  //     .catch((error) => {
+  //       if (error.response.status !== 409) console.error(error);
+  //     });
+  // };
+
   return (
     <div className="profil-container">
       <div className="flex flex-row w-[55%] justify-end">

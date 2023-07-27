@@ -12,37 +12,28 @@ import FindFriends from './pages/FindFriends.tsx';
 import Components from './pages/Components.tsx';
 import Callback from './pages/Callback.tsx';
 import RequireAuth from './components/RequireAuth.tsx';
-import NavBar from './components/NavBar.tsx';
-import useNavbar from './hooks/useNavbar.ts';
 import PlayGame from './pages/Game/PlayGame.tsx';
 import WaitingForGame from './pages/Game/WaitingForGamePage.tsx';
-import FoundGamePage from './pages/game/FoundGamePage.tsx';
+import FoundGamePage from './pages/Game/FoundGamePage.tsx';
 import GameLobby from './pages/Game/GameLobby.tsx';
+import UserProfile from './pages/UserProfile.tsx';
 
 // CSS
 import './style/components/buttons.css';
 import './style/components/avatar.css';
 import './style/pages/color.css';
 import './style/pages/App.css';
-import UserProfile from './pages/UserProfile.tsx';
+import './style/components/notification.css';
 
 function App() {
-  const { navbarState } = useNavbar();
 
   return (
     <div className="app">
-      <NavBar />
-      <div
-        className={
-          'h-screen overflow-auto main-content ' +
-          (navbarState ? 'opened-nav-margin' : 'w-full')
-        }
-      >
-        <Routes>
-          <Route path="/" Component={WelcomePage} />
-          <Route path="/callback" Component={Callback} />
-          {/* PROTECTED ROUTES */}
-          <Route Component={RequireAuth}>
+      <Routes>
+        <Route path="/" Component={WelcomePage} />
+        <Route path="/callback" Component={Callback} />
+        {/* PROTECTED ROUTES */}
+        <Route Component={RequireAuth}>
           <Route path="/game" Component={Game}>
             <Route index Component={GameLobby} />
             <Route path="/game/playgame" Component={PlayGame} />
@@ -56,9 +47,8 @@ function App() {
           <Route path="/profil/:id" Component={UserProfile} />
           <Route path="/test" Component={Components} />
           <Route path="/findfriends" Component={FindFriends} />
-          </Route>
-        </Routes>
-      </div>
+        </Route>
+      </Routes>
     </div>
   );
 }

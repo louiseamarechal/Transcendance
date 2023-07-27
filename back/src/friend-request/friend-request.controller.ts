@@ -49,6 +49,12 @@ export class FriendRequestController {
     return this.friendRequestService.getFRById(userId, id);
   }
 
+ 
+  @Get('received')
+  getReceivedFR(@GetUserId() userId: number) {
+    return this.friendRequestService.getReceivedFR(userId);
+  }
+
   @Get('with/:toId')
   getFRByToId(
     @GetUserId() userId: number,

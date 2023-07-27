@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
@@ -8,14 +9,15 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFriendRequestDto } from './dto';
 import { CreateChannelDto } from 'src/channel/dto';
 import { ChannelService } from 'src/channel/channel.service';
+import { NotifGateway } from 'src/sockets/notif/notif.gateway';
 
 @Injectable()
 export class FriendRequestService {
   constructor(
     private prisma: PrismaService,
     private channelService: ChannelService,
+    private notifGateway: NotifGateway,
   ) {}
-
   async createFR(fromId: number, toId: number): Promise<FriendRequest> {
     const friendRequest = await this.prisma.friendRequest
       .create({
@@ -29,6 +31,14 @@ export class FriendRequestService {
           throw new ConflictException('Friend Request already exists.');
         throw error;
       });
+
+    const receiver = await this.prisma.user.findUnique({
+      where: { id: toId },
+    });
+    if (receiver === null) {
+      throw new ConflictException();
+    }
+    this.notifGateway.handleFriendsNotif(receiver.login);
     return friendRequest;
   }
 
@@ -79,7 +89,7 @@ export class FriendRequestService {
     });
   }
 
-  getFRs(fromId: number) {
+  getFRs(fromId: number): Promise<FriendRequest[]> {
     return this.prisma.friendRequest.findMany({
       where: {
         fromId,
@@ -112,7 +122,22 @@ export class FriendRequestService {
       },
     });
   }
-
+  
+  getReceivedFR(
+    toId: number,
+  ): Promise<{ fromId: number; toId: number; status: FRStatus }[]> {
+    return this.prisma.friendRequest.findMany({
+      where: {
+        toId,
+        status: FRStatus.PENDING,
+      },
+      select: {
+        fromId: true,
+        toId: true,
+        status: true,
+      },
+    });
+  }
   async editFRById(
     userId: number,
     friendRequestId: number,

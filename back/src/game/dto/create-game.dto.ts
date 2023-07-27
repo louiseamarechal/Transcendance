@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
 
-export class CreateFriendRequestDto {
+export class CreateGameDto {
   @IsNumber()
   @IsNotEmpty()
   toId: number;

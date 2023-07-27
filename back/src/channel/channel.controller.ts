@@ -17,9 +17,7 @@ import { CreateChannelDto, EditChannelDto } from './dto';
 
 @Controller('channel')
 export class ChannelController {
-  constructor(
-    private channelService: ChannelService,
-  ) {}
+  constructor(private channelService: ChannelService) {}
 
   @Post()
   createChannel(@GetUserId() userId: number, @Body() dto: CreateChannelDto) {
