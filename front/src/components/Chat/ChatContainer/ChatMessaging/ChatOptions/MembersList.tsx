@@ -9,6 +9,7 @@ import {
 import '../../../../../style/components/chat/chat-container/chat-messaging/chat-options.css';
 import { User } from '../../../../../types/User.type';
 import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
+import { useUser } from '../../../../../hooks/useUser';
 
 const MembersList = ({
   users,
@@ -17,10 +18,21 @@ const MembersList = ({
 }: {
   users: { user: User }[];
   ownerId: number;
-  admins: { user: User }[];
+  admins: number[];
 }) => {
-  // const role: string = ;
+  const {myId} = useUser();
+  const role: string = determineRole();
   const axiosPrivate = useAxiosPrivate();
+
+  function determineRole(): string {
+    if (myId === ownerId) {
+      return "OWNER";
+    } else if (admins.includes(myId)) {
+      return "ADMIN";
+    } else {
+      return "MEMBER";
+    }
+  }
 
   function PromoteButton({ user }: { user: User }) {
     async function promote() {}
@@ -31,7 +43,7 @@ const MembersList = ({
     );
   }
 
-  function MuteButton(user: User) {
+  function MuteButton({ user }: { user: User }) {
     function mute() {}
     return (
       <div className="option-button" onClick={() => mute()}>
@@ -40,7 +52,7 @@ const MembersList = ({
     );
   }
 
-  function KickButton(user: User) {
+  function KickButton({ user }: { user: User }) {
     function kick() {}
     return (
       <div className="option-button" onClick={() => kick()}>
@@ -49,7 +61,7 @@ const MembersList = ({
     );
   }
 
-  function BanButton(user: User) {
+  function BanButton({ user }: { user: User }) {
     function ban() {}
     return (
       <div className="option-button" onClick={() => ban()}>
@@ -67,10 +79,10 @@ const MembersList = ({
             <div className="card">
               <UserCard user={member.user} />
               <div className="action-buttons">
-                <PromoteButton user={member} />
-                <MuteButton user={member} />
-                <KickButton user={member} />
-                <BanButton user={member} />
+                <PromoteButton user={member.user} />
+                <MuteButton user={member.user} />
+                <KickButton user={member.user} />
+                <BanButton user={member.user} />
               </div>
               <div />
             </div>

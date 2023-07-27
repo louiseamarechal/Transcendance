@@ -6,8 +6,9 @@ export type Channel = {
   avatar: string;
   visibility: string;
   ownerId: number;
-  admins: {user: User}[];
   members: {user: User}[];
-  banned: {user: User}[];
+  admins: {userId: number}[];
+  banned: {userId: number}[];
+  muted: {mutedUserId: number, mutedByUserId: number}[];
   passwordHash?: string;
 };

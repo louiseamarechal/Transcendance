@@ -95,15 +95,17 @@ export class ChannelService {
     avatar: string | null;
     passwordHash: string | null;
     visibility: string;
-    admins: {
-      user: { id: number; name: string; avatar: string | null; level: number };
-    }[];
-    blocked: {
-      user: { id: number; name: string; avatar: string | null; level: number };
-    }[];
     members: {
-      user: { id: number; name: string; avatar: string | null; level: number };
+      user: {
+        id: number;
+        name: string;
+        avatar: string | null;
+        level: number;
+        login: string;
+      };
     }[];
+    admins: {userId: number}[];
+    blocked: {userId: number}[];
     muted: {
       mutedUserId: number;
       mutedByUserId: number;
@@ -139,18 +141,6 @@ export class ChannelService {
         avatar: true,
         passwordHash: true,
         visibility: true,
-        admins: {
-          select: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                avatar: true,
-                level: true,
-              },
-            },
-          },
-        },
         members: {
           select: {
             user: {
@@ -159,20 +149,19 @@ export class ChannelService {
                 name: true,
                 avatar: true,
                 level: true,
+                login: true,
               },
             },
           },
         },
+        admins: {
+          select: {
+            userId: true,
+          },
+        },
         blocked: {
           select: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                avatar: true,
-                level: true,
-              },
-            },
+            userId: true,
           },
         },
         muted: {

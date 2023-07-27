@@ -53,15 +53,17 @@ export class ChannelController {
     avatar: string | null;
     passwordHash: string | null;
     visibility: string;
-    admins: {
-      user: { id: number; name: string; avatar: string | null; level: number };
-    }[];
-    blocked: {
-      user: { id: number; name: string; avatar: string | null; level: number };
-    }[];
     members: {
-      user: { id: number; name: string; avatar: string | null; level: number };
+      user: {
+        id: number;
+        name: string;
+        avatar: string | null;
+        level: number;
+        login: string;
+      };
     }[];
+    admins: {userId: number}[];
+    blocked: {userId: number}[];
     muted: {
       mutedUserId: number;
       mutedByUserId: number;
