@@ -53,12 +53,13 @@ export class FriendRequestController {
     return this.friendRequestService.getFRById(userId, id);
   }
 
+ 
   @Get('received')
   getReceivedFR(@GetUserId() userId: number) {
     return this.friendRequestService.getReceivedFR(userId);
   }
 
-  @Get(':toId')
+  @Get('with/:toId')
   getFRByToId(
     @GetUserId() userId: number,
     @Param('toId', ParseIntPipe) toId: number,
@@ -98,14 +99,5 @@ export class FriendRequestController {
     @Param('id', ParseIntPipe) id: number,
   ) {
     return this.friendRequestService.deleteFRById(userId, id);
-  }
-
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete(':toId')
-  deleteFRByToId(
-    @GetUserId() userId: number,
-    @Param('toId', ParseIntPipe) toId: number,
-  ) {
-    return this.friendRequestService.deleteFRByToId(userId, toId);
   }
 }
