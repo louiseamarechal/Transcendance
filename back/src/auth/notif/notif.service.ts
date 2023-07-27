@@ -9,16 +9,17 @@ export class NotifService {
 
   handleFriendsNotif(roomName: string) {
     console.log('sending Friend Request on room', roomName);
-    this.server.to(roomName).emit('friends-notif');
+    this.server.to(roomName).emit('server.notif.friends');
   }
 
   handleGamesNotif(roomName: string) {
     console.log('sending Game Request on room', roomName);
-    this.server.to(roomName).emit('game-notif');
+    this.server.to(roomName).emit('server.notif.game');
   }
 
   handleChatNotif(roomName: string) {
-    this.server.to(roomName).emit('chat-notif');
+    console.log({ roomName });
+    this.server.to(roomName).emit('server.notif.chat');
   }
 
   async getFriendsNotif(myId: number) {

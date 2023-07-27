@@ -11,7 +11,7 @@ import { channelSocket, notifSocket } from '../../../../api/socket';
 
 const ChatBody = ({ channel }: { channel: Channel }) => {
   const axiosInstance = useAxiosPrivate();
-  const { myId, myLogin } = useUser();
+  const { myId } = useUser();
   const [currentMessage, setCurrentMessage] = useState('');
   const [messageList, setMessageList] = useState<Message[]>([]);
   const [reloadMessage, setReloadMessage] = useState(true);
@@ -31,8 +31,8 @@ const ChatBody = ({ channel }: { channel: Channel }) => {
           setCurrentMessage('');
         });
       channelSocket.emit('client.channel.sendMessage', channel.id);
-      notifSocket.emit('client.notif.chatNotif', myLogin);
-      // Send socket message.
+      // notifSocket.emit('client.notif.chatNotif', channel.members);
+      // attendre que Antoine fasse les loggin du channel.members
     }
   };
 

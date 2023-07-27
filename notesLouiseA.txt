@@ -1,2 +1,2 @@
 - remove Game and FR notif in front when we remove the notification (when we click on the NavBar Page Link)
-- handle disconnection
+- ChatBody.tsx => adapter notifSocket.emit pour envoyer la liste des channel members login

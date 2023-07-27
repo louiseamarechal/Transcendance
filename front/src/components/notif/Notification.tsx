@@ -37,21 +37,21 @@ export function Notification(props: NotificationProps) {
     }
 
     if (notifSocket && props.element === 'Friends') {
-      notifSocket.on('friends-notif', onFriendsNotifEvent);
+      notifSocket.on('server.notif.friends', onFriendsNotifEvent);
     }
 
     if (notifSocket && props.element === 'Game') {
-      notifSocket.on('game-notif', onGameNotifEvent);
+      notifSocket.on('server.notif.game', onGameNotifEvent);
     }
 
     if (notifSocket && props.element === 'Chat') {
-      notifSocket.on('chat-notif', onChatNotifEvent);
+      notifSocket.on('server.notif.chat', onChatNotifEvent);
     }
 
     return () => {
-      notifSocket?.off('friends-notif', onFriendsNotifEvent);
-      notifSocket?.off('game-notif', onGameNotifEvent);
-      notifSocket?.off('chat-notif', onChatNotifEvent);
+      notifSocket?.off('server.notif.friends', onFriendsNotifEvent);
+      notifSocket?.off('server.notif.game', onGameNotifEvent);
+      notifSocket?.off('server.notif.chat', onChatNotifEvent);
     };
   }, []);
 
