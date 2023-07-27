@@ -2,9 +2,12 @@ import { useParams } from 'react-router-dom';
 import { gameSocket } from '../../api/socket';
 
 export type OverlayData = {
+  p1name?: string,
+  p2name?: string,
   p1ready?: boolean;
   p2ready?: boolean;
   timerval?: number;
+  score?: [number, number]
 };
 
 type GameOverlayProps = {
@@ -65,11 +68,16 @@ export default function GameOverlay({ type, data }: GameOverlayProps) {
     );
   }
 
-  if (type === 'playing') {
+  if (type === 'playing' && data.p1name && data.p2name && data.score) {
     return (
       <div className="absolute border-4 border-pink-700 w-full h-full flex justify-center items-start">
         <div className="text-7xl border-2 border-black flex-1 flex justify-center">
-          Coucou | Coucou
+          <div className='border-2 border-green-500 flex-5 text-center'>{`${data.p1name}`}</div>
+          <div className='border-2 border-green-500 flex-1 text-end'>{`${data.score[0]}`}</div>
+          <div className='border-2 border-green-500 flex-1 text-start'>{`${data.score[1]}`}</div>
+          <div className='border-2 border-green-500 flex-5 text-center'>{`${data.p2name}`}</div>
+          {/* {`${data.p1name} ${data.score[0]}`} | {`${data.p2name} ${data.score[1]}`} */}
+
         </div>
       </div>
     );

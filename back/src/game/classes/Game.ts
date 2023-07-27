@@ -131,16 +131,15 @@ export class Game {
   private gameLoopPlaying() {
     console.log('  Playing');
 
-    const data: any = {
-      score: this.score,
-      P1Pos: this.P1Pos,
-      P2Pos: this.P2Pos,
-      ballPos: this.ballPos,
+    const overlayData: any = {
+      p1name: 'toto',
+      p2name: 'tata',
+      score: [1, 2],
     };
 
     this.server.to(this.gameId).emit('server.game.updateOverlay', {
       type: 'playing',
-      data: data,
+      data: overlayData,
     });
   }
 }

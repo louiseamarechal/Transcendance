@@ -3,7 +3,7 @@ import { gameSocket } from '../../api/socket';
 import { ClientEvents } from '../../../../shared/client/ClientEvents';
 import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
 import { useParams } from 'react-router-dom';
-import GameOverlay from '../../components/game/GameOverlay';
+import GameOverlay, { OverlayData } from '../../components/game/GameOverlay';
 import GameCanvas from '../../components/game/GameCanvas';
 import GameBackground from '../../components/game/GameBackground';
 
