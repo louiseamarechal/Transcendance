@@ -1,25 +1,29 @@
-import { ExecutionContext, Injectable } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-import { AuthGuard } from "@nestjs/passport";
-import { Observable } from "rxjs";
+import { ExecutionContext, Injectable, Logger } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class AtGuard extends AuthGuard('jwt') {
   constructor(private reflector: Reflector) {
-    super()
+    super();
   }
 
-  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
     const isPublic = this.reflector.getAllAndOverride('isPublic', [
       context.getHandler(),
-      context.getClass()
-    ])
+      context.getClass(),
+    ]);
 
-    // console.log('\nGoing through AtGuard')
+    const url = context.switchToHttp().getRequest().originalUrl;
+    const method = context.switchToHttp().getRequest().method;
+    Logger.debug(`${method} ${url} ${isPublic ? '(public)' : '(private)'}`);
+
     if (isPublic) {
-      // console.log('Skipping AtGuard')
-      return true
+      return true;
     }
-    return super.canActivate(context)
+    return super.canActivate(context);
   }
 }

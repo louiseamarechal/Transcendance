@@ -19,6 +19,8 @@ model User {
   name     String  @unique
   hashedRT String?
 
+  online Boolean @default(false)
+
   level         Float     @default(1)
   avatar        String?
   s2fa          Status2fa @default(NOTSET)
@@ -166,7 +168,7 @@ model Game {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   player1   User @relation(name: "player1", fields: [player1Id], references: [id], onDelete: Cascade)
-  player1Id Int  @map("payer1_id")
+  player1Id Int  @map("player1_id")
 
   player2   User @relation(name: "player2", fields: [player2Id], references: [id], onDelete: Cascade)
   player2Id Int  @map("player2_id")

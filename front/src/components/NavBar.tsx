@@ -41,7 +41,7 @@ const NavBar = () => {
       })
       .catch((error) => console.log(error));
 
-      axiosInstance
+    axiosInstance
       .get('/notif/chat')
       .then((response) => {
         const data = response.data;
