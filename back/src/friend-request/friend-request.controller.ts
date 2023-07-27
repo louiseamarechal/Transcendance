@@ -67,13 +67,6 @@ export class FriendRequestController {
     return this.friendRequestService.getFRByToId(userId, toId);
   }
 
-  // TMP
-  @Patch('accept-all')
-  acceptAll(@GetUserId() userId: number) {
-    console.log(`In accept all for ${userId}.`);
-    return this.friendRequestService.acceptAll(userId);
-  }
-
   @Patch(':id')
   editFRById(
     @GetUserId() userId: number,
@@ -82,15 +75,6 @@ export class FriendRequestController {
   ) {
     return this.friendRequestService.editFRById(userId, id, dto);
   }
-
-  // @Patch(':toId')
-  // editFRByToId(
-  //   @GetUserId() userId: number,
-  //   @Param('toId', ParseIntPipe) toId: number,
-  //   @Body() dto: EditFriendRequestDto,
-  // ): Promise<FriendRequest> {
-  //   return this.friendRequestService.editFRByToId(userId, toId, dto);
-  // }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')

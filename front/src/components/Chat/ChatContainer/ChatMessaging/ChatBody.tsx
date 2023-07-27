@@ -103,7 +103,7 @@ const ChatBody = ({ channel }: { channel: Channel }) => {
           onChange={(event) => {
             setCurrentMessage(event.target.value);
           }}
-          onKeyPress={(event) => {
+          onKeyUp={(event) => {
             event.key === 'Enter' && sendMessage();
           }}
         />

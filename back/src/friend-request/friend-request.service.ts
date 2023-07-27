@@ -136,43 +136,6 @@ export class FriendRequestService {
     });
   }
 
-
-  async acceptAll(userId: number) {
-    const requestIds = await this.prisma.friendRequest.findMany({
-      where: {
-        toId: userId,
-        status: FRStatus.PENDING,
-      },
-    });
-    console.log(`Found ${requestIds.length} pending requests`);
-    requestIds.forEach((elem) => {
-      this.prisma.friendRequest
-        .update({
-          where: {
-            id: elem.id,
-          },
-          data: {
-            status: 'ACCEPTED',
-            // status: FRStatus.ACCEPTED,
-          },
-        })
-        .then((res) => {
-          if (res.status !== FRStatus.ACCEPTED) {
-            throw new InternalServerErrorException('Could not accept FR.');
-          }
-        });
-      console.log(`Updated FR with user: ${elem.fromId}`);
-      const dto: CreateChannelDto = {
-        name: '',
-        avatar: '',
-        members: [elem.fromId, elem.toId],
-      };
-      console.log(dto);
-      this.channelService.createChannel(elem.fromId, dto);
-    });
-    console.log(`Accepted all FRs: ${requestIds}.`);
-  }
-
   getReceivedFR(
     toId: number,
   ): Promise<{ fromId: number; toId: number; status: FRStatus }[]> {
@@ -188,6 +151,7 @@ export class FriendRequestService {
       },
     });
   }
+
   async editFRById(
     userId: number,
     friendRequestId: number,
@@ -203,19 +167,10 @@ export class FriendRequestService {
     if (
       !friendRequest ||
       (friendRequest.fromId !== userId && friendRequest.toId !== userId)
-    )
+    ) {
       throw new ForbiddenException('Access to ressource denied');
-    // if (dto.status === 'ACCEPTED' && friendRequest !== null) {
-    //   const dto: CreateChannelDto = {
-    //     name: '',
-    //     avatar: '',
-    //     members: [userId, friendRequest.toId],
-    //   };
-    //   console.log(dto);
-    //   this.channelService.createChannel(userId, dto);
-    // }
-
-    return this.prisma.friendRequest.update({
+    }
+    const updatedRequest = await this.prisma.friendRequest.update({
       where: {
         id: friendRequestId,
       },
@@ -223,6 +178,14 @@ export class FriendRequestService {
         ...dto,
       },
     });
+    if (updatedRequest.status === FRStatus.ACCEPTED) {
+      const dto: CreateChannelDto = {
+        name: '',
+        avatar: '',
+        members: [updatedRequest.fromId, updatedRequest.toId],
+      };
+      this.channelService.createChannel(userId, dto);
+    }
   }
 
   async editFRByToId(fromId: number, toId: number, dto: EditFriendRequestDto) {
@@ -260,7 +223,10 @@ export class FriendRequestService {
     });
 
     // Check ownership
-    if (!friendRequest || (friendRequest.fromId !== userId && friendRequest.toId !== userId))
+    if (
+      !friendRequest ||
+      (friendRequest.fromId !== userId && friendRequest.toId !== userId)
+    )
       throw new ForbiddenException('Access to ressource denied');
 
     const deletedUser = await this.prisma.friendRequest.delete({
@@ -268,6 +234,8 @@ export class FriendRequestService {
         id: friendRequestId,
       },
     });
-    console.log(`delete user: ${deletedUser.id} : ${deletedUser.fromId} -> ${deletedUser.toId}`);
+    console.log(
+      `delete user: ${deletedUser.id} : ${deletedUser.fromId} -> ${deletedUser.toId}`,
+    );
   }
 }

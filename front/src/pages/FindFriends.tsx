@@ -7,10 +7,6 @@ function FindFriends() {
   const axiosInstance = useAxiosPrivate();
   const [array, setArray] = useState([]);
 
-  const acceptAllFriends = () => {
-    axiosInstance.patch('friend-request/accept-all');
-  };
-
   useEffect(() => {
     axiosInstance
       .get('user/all') //a modifier en fonction
@@ -22,7 +18,6 @@ function FindFriends() {
 
   return (
     <>
-      <button onClick={acceptAllFriends}>Accept friends</button>
       <div className="findfriends-container friend-card">
         {array.map((elem) => {
           return (

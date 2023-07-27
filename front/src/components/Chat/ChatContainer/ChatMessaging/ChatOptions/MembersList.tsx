@@ -20,17 +20,22 @@ const MembersList = ({
 }: {
   users: { user: User }[];
   ownerId: number;
-  admins: number[];
+  admins: { userId: number }[];
 }) => {
-  const {myId} = useUser();
-  const {showChannel} = useChatContext();
+  const { myId } = useUser();
+  const { showChannel } = useChatContext();
   const myRole: number = determineRole(myId);
+  console.log(`My role: ${myRole}`);
   const axiosPrivate = useAxiosPrivate();
 
   function determineRole(id: number): number {
     if (id === ownerId) {
-      return 2 // OWNER
-    } else if (admins.includes(id)) {
+      return 2; // OWNER
+    } else if (
+      admins.filter((adminUser) => {
+        return adminUser.userId === id;
+      }).length > 1
+    ) {
       return 1; // ADMIN
     } else {
       return 0; // MEMBER
@@ -40,10 +45,12 @@ const MembersList = ({
   function PromoteButton({ user }: { user: User }) {
     const userRole: number = determineRole(user.id);
     async function promote() {
-      await axiosPrivate.post(`admin/${showChannel}`, {userId: user.id});
+      await axiosPrivate.post(`admin/${showChannel}`, { userId: user.id });
     }
     async function demote() {
-      await axiosPrivate.delete(`admin/${showChannel}`, {data: {userId: user.id}})
+      await axiosPrivate.delete(`admin/${showChannel}`, {
+        data: { userId: user.id },
+      });
     }
     if (userRole === 0 && userRole < myRole) {
       return (
@@ -56,9 +63,9 @@ const MembersList = ({
         <div className="option-button" onClick={() => demote()}>
           <FontAwesomeIcon icon={faHeartCrack} style={{ color: 'red' }} />
         </div>
-      )
+      );
     } else {
-      return (<></>);
+      return <></>;
     }
   }
 
