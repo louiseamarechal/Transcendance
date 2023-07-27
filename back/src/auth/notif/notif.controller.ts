@@ -13,8 +13,8 @@ export class NotifController {
   getGamesNotif(@GetUserId() myId: number) {
     return this.notifService.getGamesNotif(myId);
   }
-  @Get('chat')
-  getChatNotif(@GetUserId() myId: number, channelId: number) {
-    return this.notifService.getChatNotif(myId, channelId);
-  }
+  // @Get('chat')
+  // getChatNotif(@GetUserId() myId: number, channelId: number) {
+  //   return this.notifService.getChatNotif(myId, channelId);
+  // }
 }

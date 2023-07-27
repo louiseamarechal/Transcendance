@@ -8,17 +8,15 @@ export class NotifService {
   constructor(private prisma: PrismaService) {}
 
   handleFriendsNotif(roomName: string) {
-    console.log('sending Friend Request on room', roomName);
     this.server.to(roomName).emit('server.notif.friends');
   }
 
   handleGamesNotif(roomName: string) {
-    console.log('sending Game Request on room', roomName);
     this.server.to(roomName).emit('server.notif.game');
   }
 
   handleChatNotif(roomName: string) {
-    console.log({ roomName });
+    console.log(`accessing handleChatNotif(${roomName})`);
     this.server.to(roomName).emit('server.notif.chat');
   }
 

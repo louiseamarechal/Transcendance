@@ -44,7 +44,8 @@ export class NotifGateway
   }
 
   @SubscribeMessage('client.notif.chatNotif')
-  handleFriendsNotif(@MessageBody() roomName: string) {
+  handleChatNotif(@MessageBody() roomName: string) {
+    console.log(`receiving chat notif on socket for ${roomName}`);
     this.notifService.handleChatNotif(roomName);
   }
 

@@ -30,7 +30,6 @@ const NavBarLinks = (props: NavBarLinksProps) => {
           HTMLImageElement
         >,
   ) {
-    console.log({link});
     if (link === 'Game') {
       props.setReceivedNotif({ ...props.receivedNotif, game: 0 });
     } else if (link === 'Friends') {

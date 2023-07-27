@@ -13,11 +13,15 @@ import {
   VisType,
 } from '@prisma/client';
 import { Socket, Namespace } from 'socket.io';
+import { NotifService } from 'src/auth/notif/notif.service';
 
 @Injectable()
 export class ChannelService {
   server: Namespace;
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notifService: NotifService,
+  ) {}
 
   /* =============================================================================
 															CRUD FUNCTIONS
@@ -27,7 +31,7 @@ export class ChannelService {
     ownerId: number,
     { name, avatar, members }: CreateChannelDto,
   ): Promise<{ id: number; name: string; avatar: string | null }> {
-    let channels = await this.prisma.membersOnChannels.groupBy({
+    const channels = await this.prisma.membersOnChannels.groupBy({
       by: ['channelId'],
       where: {
         userId: {
@@ -42,7 +46,8 @@ export class ChannelService {
         },
       },
     });
-    channels = channels.filter((channel) => {
+    let filteredChannels: number[] = [];
+    channels.filter((channel) => {
       return this.prisma.membersOnChannels
         .findMany({
           where: {
@@ -50,11 +55,14 @@ export class ChannelService {
           },
         })
         .then((channelMembers) => {
-          return channelMembers.length === members.length;
+          if (channelMembers.length === members.length)
+            filteredChannels = [...filteredChannels, channel.channelId];
         });
     });
-    if (channels.length > 0) {
-      throw new ConflictException({ channelId: channels[0].channelId });
+    console.log(`found ${filteredChannels.length} with same members.`);
+    console.log({ filteredChannels });
+    if (filteredChannels.length > 0) {
+      throw new ConflictException({ channelId: filteredChannels[0] });
     } else {
       const channel = await this.prisma.channel.create({
         data: {
@@ -66,7 +74,17 @@ export class ChannelService {
           id: true,
           name: true,
           avatar: true,
+          members: {
+            select: {
+              user: true,
+            },
+          },
         },
+      });
+      channel.members.map((member) => {
+        if (member.user.id !== ownerId) {
+          this.notifService.handleChatNotif(member.user.login);
+        }
       });
       console.log('Created channel.');
       await this.prisma.membersOnChannels.createMany({
@@ -75,7 +93,6 @@ export class ChannelService {
           return { channelId: channel.id, userId: id };
         }),
       });
-
       return channel;
     }
   }
@@ -107,8 +124,8 @@ export class ChannelService {
         login: string;
       };
     }[];
-    admins: {userId: number}[];
-    blocked: {userId: number}[];
+    admins: { userId: number }[];
+    blocked: { userId: number }[];
     muted: {
       mutedUserId: number;
       mutedByUserId: number;

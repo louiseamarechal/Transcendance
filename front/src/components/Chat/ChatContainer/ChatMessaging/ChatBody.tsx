@@ -11,7 +11,7 @@ import { channelSocket, notifSocket } from '../../../../api/socket';
 
 const ChatBody = ({ channel }: { channel: Channel }) => {
   const axiosInstance = useAxiosPrivate();
-  const { myId } = useUser();
+  const { myId, myLogin } = useUser();
   const [currentMessage, setCurrentMessage] = useState('');
   const [messageList, setMessageList] = useState<Message[]>([]);
   const [reloadMessage, setReloadMessage] = useState(true);
@@ -30,9 +30,15 @@ const ChatBody = ({ channel }: { channel: Channel }) => {
           console.log(`type of message.createAt: ${typeof message.createdAt}`);
           setCurrentMessage('');
         });
+
       channelSocket.emit('client.channel.sendMessage', channel.id);
-      // notifSocket.emit('client.notif.chatNotif', channel.members);
-      // attendre que Antoine fasse les loggin du channel.members
+      channel.members.map((member) => {
+        if (member.user.login !== myLogin) {
+          console.log(`sending chat notif on socket for ${member.user.login}`)
+          notifSocket.emit('client.notif.chatNotif', member.user.login);
+        }
+      });
+      console.log({ channelMembers: channel.members });
     }
   };
 

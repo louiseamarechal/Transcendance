@@ -33,7 +33,9 @@ export function Notification(props: NotificationProps) {
     }
     function onChatNotifEvent() {
       console.log('received Chat notif');
-      props.setReceivedNotif((previous) => { return {...previous, chat: 1} });
+      props.setReceivedNotif((previous) => {
+        return { ...previous, chat: previous.chat + 1 };
+      });
     }
 
     if (notifSocket && props.element === 'Friends') {
@@ -68,12 +70,12 @@ export function Notification(props: NotificationProps) {
         <div className="notification-text">{props.receivedNotif.game}</div>
       </div>
     );
-    } else if (props.receivedNotif.chat > 0 && props.element === 'Chat') {
-      return (
-        <div className="notification">
-          <div className="notification-text">{props.receivedNotif.chat}</div>
-        </div>
-      );
+  } else if (props.receivedNotif.chat > 0 && props.element === 'Chat') {
+    return (
+      <div className="notification">
+        <div className="notification-text">{props.receivedNotif.chat}</div>
+      </div>
+    );
   }
   return <></>;
 }
