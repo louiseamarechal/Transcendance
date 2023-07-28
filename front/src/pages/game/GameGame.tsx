@@ -3,7 +3,9 @@ import { gameSocket } from '../../api/socket';
 import { ClientEvents } from '../../../../shared/client/ClientEvents';
 import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
 import { useParams } from 'react-router-dom';
-import GameOverlay, { OverlayData } from '../../components/game/GameOverlay/GameOverlay';
+import GameOverlay, {
+  OverlayData,
+} from '../../components/game/GameOverlay/GameOverlay';
 import GameCanvas from '../../components/game/GameCanvas';
 import GameBackground from '../../components/game/GameBackground';
 
@@ -23,10 +25,16 @@ export default function GameLobby() {
       setOverlayData(payload.data);
     }
 
+    function gameData(payload: { data: any }) {
+      console.log('In gameData', { payload });
+    }
+
     gameSocket.on('server.game.updateOverlay', updateOverlay);
+    gameSocket.on('server.game.gameData', gameData);
 
     return () => {
       gameSocket.off('server.game.updateOverlay', updateOverlay);
+      gameSocket.off('server.game.gameData', gameData);
     };
   }, []);
 

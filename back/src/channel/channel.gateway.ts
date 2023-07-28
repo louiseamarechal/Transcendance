@@ -48,15 +48,15 @@ export class ChannelGateway
     try {
       const token: AtJwt = await this.socketService.verifyToken(client);
       await this.socketService.attachUserDataToClient(client, token);
-      console.log(`${client.data.user.name} arrived channel gateway`);
+      console.log(`[ChannelGateway] ${client.data.user.name} arrived`);
     } catch (error) {
-      console.log('handleConnection threw:', error.message);
+      console.log('[ChannelGateway] handleConnection threw:', error.message);
       client.disconnect();
     }
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`${client.data.user.name} left channel gateway`);
+    console.log(`[ChannelGateway] ${client.data.user.name} left`);
     client.disconnect();
   }
 

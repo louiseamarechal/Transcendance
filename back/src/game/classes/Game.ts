@@ -31,7 +31,11 @@ export class Game {
   visibility: GameVisibility = GameVisibility.Public;
 
   P1Pos: number = 0.5;
+  P1PaddleSize = 0.1;
+
   P2Pos: number = 0.5;
+  P2PaddleSize = 0.1;
+
   ballPos: [number, number] = [0.5, 0.5];
   ballVel: [number, number] = [0.1, 0];
 
@@ -56,8 +60,8 @@ export class Game {
         this.intervalId ? true : false,
       ],
       pl: [
-        [this.P1?.name, this.P1Ready, this.P1Pos],
-        [this.P2?.name, this.P2Ready, this.P2Pos],
+        [this.P1?.name, this.P1Ready, this.P1Pos, this.P1PaddleSize],
+        [this.P2?.name, this.P2Ready, this.P2Pos, this.P2PaddleSize],
       ],
       ball: [this.ballPos, this.ballVel],
     });
@@ -136,10 +140,26 @@ export class Game {
       p2name: this.P2.name,
       score: this.score,
     };
-
     this.server.to(this.gameId).emit('server.game.updateOverlay', {
       type: 'playing',
       data: overlayData,
+    });
+
+    const gameData: any = {
+      PaddleP1: {
+        pos: this.P1Pos,
+        size: this.P1PaddleSize,
+      },
+      PaddleP2: {
+        pos: this.P2Pos,
+        size: this.P2PaddleSize,
+      },
+      Ball: {
+        pos: this.ballPos,
+      },
+    };
+    this.server.to(this.gameId).emit('server.game.gameData', {
+      data: gameData,
     });
   }
 }
