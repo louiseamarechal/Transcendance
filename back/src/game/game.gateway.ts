@@ -35,7 +35,6 @@ export class GameGateway
   constructor(
     private readonly gameManager: GameManager,
     private socketService: SocketService,
-    private readonly userService: UserService,
   ) {}
 
   afterInit(server: Namespace) {
@@ -60,6 +59,7 @@ export class GameGateway
     try {
       const token: AtJwt = await this.socketService.verifyToken(client);
       await this.socketService.attachUserDataToClient(client, token);
+      console.log(`${client.data.user.name} arrived game gateway`);
     } catch (error) {
       console.log('handleConnection threw:', error.message);
       client.disconnect();
@@ -67,8 +67,7 @@ export class GameGateway
   }
 
   handleDisconnect(client: Socket) {
-    const user: PublicUser = client.data.user;
-    console.log(`${user?.name} left (id #${user?.id})`);
+    console.log(`${client.data.user.name} left channel gateway`);
     client.disconnect();
   }
 

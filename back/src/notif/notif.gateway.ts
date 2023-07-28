@@ -38,6 +38,7 @@ export class NotifGateway
     try {
       const token: AtJwt = await this.socketService.verifyToken(client);
       await this.socketService.attachUserDataToClient(client, token);
+      console.log(`${client.data.user.name} arrived notif gateway`);
       const room: string = client.data.user.login;
       client.join(room);
       if (client.rooms.has(room)) {
@@ -47,15 +48,16 @@ export class NotifGateway
           console.log(key);
         });
       }
-    } catch {
+    } catch (error) {
+      console.log('handleConnection threw:', error.message);
       client.disconnect();
     }
   }
 
   // handle disconnect
   handleDisconnect(client: Socket) {
-    // this.notifService.handleDisconnect(client, userLogin, '');
-    console.log(`client with id: ${client.id} has left the connection !`);
+    console.log(`${client.data.user.name} left notif gateway`);
+    client.disconnect();
   }
 
   @SubscribeMessage('client.notif.chatNotif')
