@@ -15,6 +15,7 @@ import { UserService } from 'src/user/user.service';
 import { AtJwt } from 'src/auth/types';
 import { PublicUser } from 'src/user/types';
 import { Cron } from '@nestjs/schedule';
+import { SocketService } from 'src/sockets/socket.service';
 // import { ClientEvents } from '../../../shared/client/ClientEvents';
 // import { ClientPayloads } from '../../../shared/client/ClientPayloads';
 
@@ -33,7 +34,7 @@ export class GameGateway
 
   constructor(
     private readonly gameManager: GameManager,
-    private readonly jwt: JwtService,
+    private socketService: SocketService,
     private readonly userService: UserService,
   ) {}
 
@@ -57,19 +58,11 @@ export class GameGateway
   async handleConnection(client: Socket) {
     console.log('New websocket connection');
     try {
-      // check jwt
-      const token: AtJwt = await this.jwt.verifyAsync(
-        client.handshake.auth.token,
-      ); // throw if invalid, expired or missing
-      // console.log(token);
-      // if good, link socket to user, set user state online
-      const user: PublicUser = await this.userService.getUserById(token.id);
-      client.data.user = user;
-      // update to online ??
+      const token: AtJwt = await this.socketService.verifyToken(client);
+      await this.socketService.attachUserDataToClient(client, token);
     } catch (error) {
       console.log('handleConnection threw:', error.message);
       client.disconnect();
-      // disconnect
     }
   }
 
