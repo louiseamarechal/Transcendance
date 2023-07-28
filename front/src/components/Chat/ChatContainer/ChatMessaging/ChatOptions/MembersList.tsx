@@ -24,7 +24,7 @@ const MembersList = ({
   ownerId: number;
   admins: { userId: number }[];
 }) => {
-  const { showChannel } = useChatContext();
+  const { showChannel, setShowChannel } = useChatContext();
   const { myId } = useUser();
   const myRole: number = determineRole(myId);
   const axiosPrivate = useAxiosPrivate();
@@ -134,7 +134,10 @@ const MembersList = ({
 
   function KickButton({ user }: { user: User }) {
     const userRole = determineRole(user.id);
-    function kick() {}
+    function kick() {
+      axiosPrivate.delete(`channel/member/${showChannel}/${user.id}`);
+      setShowChannel(showChannel);
+    }
     return (
       <div className="option-button" onClick={() => kick()}>
         <FontAwesomeIcon icon={faThumbsDown} style={{ color: 'black' }} />

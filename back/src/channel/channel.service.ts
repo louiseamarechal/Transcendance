@@ -7,10 +7,15 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
-import { BlockedOnChannels, MembersOnChannels, VisType } from '@prisma/client';
+import {
+  BlockedOnChannels,
+  MembersOnChannels,
+  User,
+  VisType,
+} from '@prisma/client';
 import { Socket, Namespace } from 'socket.io';
 import { NotifService } from 'src/auth/notif/notif.service';
-import { MutedOnChannel } from './types';
+import { MembersOnChannel, MutedOnChannel } from './types';
 
 @Injectable()
 export class ChannelService {
@@ -403,6 +408,62 @@ export class ChannelService {
           throw new HttpException('Does not exist', HttpStatus.NO_CONTENT);
         throw error;
       });
+  }
+
+  async createMemberOnChannel(
+    userId: number,
+    channelId: number,
+    newId: number,
+  ): Promise<MembersOnChannel | undefined> {
+    const ownerId: number | undefined = await this.prisma.channel
+      .findUnique({ where: { id: channelId } })
+      .then((res): number | undefined => res?.ownerId);
+    const admin = await this.prisma.adminsOnChannels.findUnique({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId,
+        },
+      },
+    });
+    if (admin === null && ownerId !== userId) {
+      throw new ForbiddenException('User not a member');
+    }
+    return this.prisma.membersOnChannels.create({
+      data: {
+        channelId,
+        userId: newId,
+      },
+    });
+  }
+
+  async removeMemberOnChannel(
+    userId: number,
+    channelId: number,
+    bannedId: number,
+  ): Promise<MembersOnChannel | undefined> {
+    const ownerId: number | undefined = await this.prisma.channel
+      .findUnique({ where: { id: channelId } })
+      .then((res): number | undefined => res?.ownerId);
+    const admin = await this.prisma.adminsOnChannels.findUnique({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId,
+        },
+      },
+    });
+    if (admin === null && ownerId !== userId) {
+      throw new ForbiddenException('User not a member');
+    }
+    return this.prisma.membersOnChannels.delete({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId: bannedId,
+        },
+      },
+    });
   }
 
   /* =============================================================================
