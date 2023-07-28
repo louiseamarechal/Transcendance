@@ -107,7 +107,7 @@ export class GameManager {
 
   @Cron('*/5 * * * * *')
   private cleaner() {
-    console.log('[GameManager] Cleaner')
+    // console.log('[GameManager] Cleaner')
     this.#games.forEach((game: Game) => {
       game.debug();
       if (game.status === GameStatus.Done) {

@@ -15,9 +15,10 @@ const RequireAuth = () => {
     notifSocket.auth = {
       token: auth.access_token,
     }
-
+    console.log('Connect notifSocket')
     notifSocket.connect()
     return () => {
+      console.log('Disconnect notifSocket')
       notifSocket.disconnect();
     };
   }, [auth]);

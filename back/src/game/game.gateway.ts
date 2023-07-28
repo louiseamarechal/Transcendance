@@ -62,15 +62,9 @@ export class GameGateway
   async handleConnection(client: Socket) {
     console.log('New websocket connection');
     try {
-      // check jwt
-      const token: AtJwt = await this.jwt.verifyAsync(
-        client.handshake.auth.token,
-      ); // throw if invalid, expired or missing
-      // console.log(token);
-      // if good, link socket to user, set user state online
+      const token: AtJwt = this.jwt.verify(client.handshake.auth.token); // throw if invalid, expired or missing
       const user: PublicUser = await this.userService.getUserById(token.id);
       client.data.user = user;
-      // update to online ??
     } catch (error) {
       console.log('handleConnection threw:', error.message);
       client.disconnect();
@@ -114,8 +108,8 @@ export class GameGateway
     this.gameManager.setReady(payload.gameId, client.data.user.id);
   }
 
-  @Cron('*/5 * * * * *')
-  private debug() {
-    console.log('[Debug GameGateway] ', { rooms: this.server.adapter.rooms });
-  }
+  // @Cron('*/5 * * * * *')
+  // private debug() {
+  //   console.log('[Debug GameGateway] ', { rooms: this.server.adapter.rooms });
+  // }
 }

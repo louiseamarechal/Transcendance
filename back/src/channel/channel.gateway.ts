@@ -66,8 +66,8 @@ export class ChannelGateway implements OnGatewayInit {
     this.channelService.handleSendMessage(this.server, channelId);
   }
 
-  @Cron('*/5 * * * * *')
-  private debug() {
-    console.log('[Debug ChannelGateway]', { rooms: this.server.adapter.rooms });
-  }
+  // @Cron('*/5 * * * * *')
+  // private debug() {
+  //   console.log('[Debug ChannelGateway]', { rooms: this.server.adapter.rooms });
+  // }
 }
