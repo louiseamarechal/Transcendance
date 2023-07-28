@@ -347,7 +347,7 @@ export class ChannelService {
       });
   }
 
-  createMutedOnChannel(
+  async createMutedOnChannel(
     channelId: number,
     mutedByUserId: number,
     mutedUserId: number,

@@ -4,9 +4,10 @@ import { ChannelService } from './channel.service';
 import { ChannelGateway } from './channel.gateway';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NotifModule } from 'src/notif/notif.module';
+import { SocketModule } from 'src/sockets/socket.module';
 
 @Module({
-  imports: [ScheduleModule.forRoot(), NotifModule],
+  imports: [ScheduleModule.forRoot(), NotifModule, SocketModule],
   controllers: [ChannelController],
   providers: [ChannelService, ChannelGateway],
 })

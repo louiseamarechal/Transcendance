@@ -1,4 +1,4 @@
-import { Server, Socket, Namespace } from 'socket.io';
+import { Socket, Namespace } from 'socket.io';
 import { Game, GameStatus, GameVisibility } from './Game';
 import { Cron } from '@nestjs/schedule';
 

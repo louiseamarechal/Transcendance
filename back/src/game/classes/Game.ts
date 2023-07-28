@@ -1,4 +1,4 @@
-import { Server, Namespace } from 'socket.io';
+import { Namespace } from 'socket.io';
 import { v4 as uuid } from 'uuid';
 import { PublicUser } from 'src/user/types';
 

@@ -1,6 +1,8 @@
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
   OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
@@ -9,7 +11,8 @@ import {
 import { Socket, Namespace } from 'socket.io';
 import { Cron } from '@nestjs/schedule';
 import { ChannelService } from './channel.service';
-// import { Cron } from '@nestjs/schedule';
+import { AtJwt } from 'src/auth/types';
+import { SocketService } from 'src/sockets/socket.service';
 
 @WebSocketGateway({
   cors: {
@@ -17,9 +20,12 @@ import { ChannelService } from './channel.service';
   },
   namespace: 'channel',
 })
-export class ChannelGateway implements OnGatewayInit {
+export class ChannelGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   constructor(
-    private channelService: ChannelService, // private channelService: ChannelService,
+    private channelService: ChannelService,
+    private socketService: SocketService,
   ) {}
 
   afterInit(server: Namespace) {
@@ -36,6 +42,22 @@ export class ChannelGateway implements OnGatewayInit {
       });
       next();
     });
+  }
+
+  async handleConnection(client: Socket) {
+    try {
+      const token: AtJwt = await this.socketService.verifyToken(client);
+      await this.socketService.attachUserDataToClient(client, token);
+      console.log(`${client.data.user.name} arrived channel gateway`);
+    } catch (error) {
+      console.log('handleConnection threw:', error.message);
+      client.disconnect();
+    }
+  }
+
+  handleDisconnect(client: Socket) {
+    console.log(`${client.data.user.name} left channel gateway`);
+    client.disconnect();
   }
 
   @WebSocketServer()

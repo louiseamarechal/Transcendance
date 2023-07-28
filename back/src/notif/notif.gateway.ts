@@ -7,10 +7,11 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket, Server, Namespace } from 'socket.io';
+import { Socket, Namespace } from 'socket.io';
 import { NotifService } from './notif.service';
 import { SocketService } from 'src/sockets/socket.service';
 import { AtJwt } from 'src/auth/types';
+import { Cron } from '@nestjs/schedule';
 
 @WebSocketGateway({
   cors: {
@@ -28,8 +29,7 @@ export class NotifGateway
   @WebSocketServer()
   server: Namespace;
 
-  afterInit(server: Server) {
-    console.log('notifGateway running')
+  afterInit(server: Namespace) {
     this.notifService.server = server;
 
     // this is debug, not necessary for production
@@ -51,6 +51,7 @@ export class NotifGateway
     try {
       const token: AtJwt = await this.socketService.verifyToken(client);
       await this.socketService.attachUserDataToClient(client, token);
+      console.log(`${client.data.user.name} arrived notif gateway`);
       const room: string = client.data.user.login;
       client.join(room);
       if (client.rooms.has(room)) {
@@ -60,15 +61,16 @@ export class NotifGateway
           console.log(key);
         });
       }
-    } catch {
+    } catch (error) {
+      console.log('handleConnection threw:', error.message);
       client.disconnect();
     }
   }
 
   // handle disconnect
   handleDisconnect(client: Socket) {
-    // this.notifService.handleDisconnect(client, userLogin, '');
-    console.log(`client with id: ${client.id} has left the connection (notif) !`);
+    console.log(`${client.data.user.name} left notif gateway`);
+    client.disconnect();
   }
 
   @SubscribeMessage('client.notif.chatNotif')
@@ -95,7 +97,7 @@ export class NotifGateway
 
   // @Cron('*/5 * * * * *')
   // private debug() {
-  //   console.log('[Debug NotifGateway]', { rooms: this.server.adapter.rooms });
+  //   console.log('[Debug NotifGateway] ', { rooms: this.server.adapter.rooms });
   // }
 }
 

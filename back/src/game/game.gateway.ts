@@ -1,4 +1,3 @@
-import { Logger, UseGuards, UseInterceptors } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -9,17 +8,11 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket, Server, Namespace } from 'socket.io';
-import { SocketAuthMiddleware } from 'src/common/middleware/ws.mw';
+import { Socket, Namespace } from 'socket.io';
 import { GameManager } from './classes/GameManager';
-import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { UserService } from 'src/user/user.service';
-import { User } from '@prisma/client';
 import { AtJwt } from 'src/auth/types';
-import { PublicUser } from 'src/user/types';
-import { LoggingInterceptor } from './interceptors/game-ws.interceptor';
 import { Cron } from '@nestjs/schedule';
+import { SocketService } from 'src/sockets/socket.service';
 // import { ClientEvents } from '../../../shared/client/ClientEvents';
 // import { ClientPayloads } from '../../../shared/client/ClientPayloads';
 
@@ -38,8 +31,7 @@ export class GameGateway
 
   constructor(
     private readonly gameManager: GameManager,
-    private readonly jwt: JwtService,
-    private readonly userService: UserService,
+    private socketService: SocketService,
   ) {}
 
   afterInit(server: Namespace) {
@@ -62,19 +54,17 @@ export class GameGateway
   async handleConnection(client: Socket) {
     console.log('New websocket connection');
     try {
-      const token: AtJwt = this.jwt.verify(client.handshake.auth.token); // throw if invalid, expired or missing
-      const user: PublicUser = await this.userService.getUserById(token.id);
-      client.data.user = user;
+      const token: AtJwt = await this.socketService.verifyToken(client);
+      await this.socketService.attachUserDataToClient(client, token);
+      console.log(`${client.data.user.name} arrived game gateway`);
     } catch (error) {
       console.log('handleConnection threw:', error.message);
       client.disconnect();
-      // disconnect
     }
   }
 
   handleDisconnect(client: Socket) {
-    const user: PublicUser = client.data.user;
-    console.log(`${user?.name} left (id #${user?.id})`);
+    console.log(`${client.data.user.name} left channel gateway`);
     client.disconnect();
   }
 
