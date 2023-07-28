@@ -10,7 +10,7 @@ type ChannelCardProps = {
 };
 
 function ChannelCard({ id, name, avatar }: ChannelCardProps) {
-  const { showChannel, setShowChannel } = useChatContext();
+  const { showChannel, setShowChannel, setShowCreateChannel } = useChatContext();
   const axiosPrivate = useAxiosPrivate();
   const [channelName, setChannelName] = useState<string>(name);
   const [channelAvatar, setChannelAvatar] = useState<string>(avatar);
@@ -28,6 +28,7 @@ function ChannelCard({ id, name, avatar }: ChannelCardProps) {
     <div
       className={'channel-card ' + (showChannel === id ? 'selected' : '')}
       onClick={() => {
+				setShowCreateChannel(false);
         setShowChannel(id);
         console.log(`Now showing channel ${id}`);
       }}

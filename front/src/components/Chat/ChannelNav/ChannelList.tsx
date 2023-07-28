@@ -29,7 +29,7 @@ const ChannelList = () => {
       <div className="scrollable-list">
         <ul>
           <li>
-            <Link to={'/friends'}>
+            <Link to={'/FindFriends'}>
               <p className="text-center">Add friend</p>
             </Link>
           </li>

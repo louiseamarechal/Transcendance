@@ -133,10 +133,6 @@ model BlockedOnChannels {
 }
 
 model MutedByUserOnChannel {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
   channel   Channel @relation(name: "mutedOnChannel", fields: [channelId], references: [id])
   channelId Int     @map("channel_id")
 
@@ -144,6 +140,8 @@ model MutedByUserOnChannel {
   mutedUserId   Int  @map("muted_user_id")
   mutedByUser   User @relation(name: "mutedByUser", fields: [mutedByUserId], references: [id])
   mutedByUserId Int  @map("muted_by_user_id")
+
+	@@id([channelId, mutedUserId, mutedByUserId])
 }
 
 model Message {

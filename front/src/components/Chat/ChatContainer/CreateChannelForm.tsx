@@ -34,10 +34,11 @@ const CreateChannelForm = () => {
         })
         .then((res) => {
           setChannelList([...channelList, res.data]);
-          res.data.members.map((member: {user: User}) => {
+          res.data.members.map((member: { user: User }) => {
             if (member.user.login !== myLogin)
-            notifSocket.emit('client.notif.chatNotif', member.user.login);
-          })
+              notifSocket.emit('client.notif.chatNotif', member.user.login);
+          });
+          setShowCreateChannel(false);
           setShowChannel(res.data.id);
         })
         .catch((err) => {
@@ -60,7 +61,13 @@ const CreateChannelForm = () => {
         selectedFriends={selectedFriends}
         setSelectedFriends={setSelectedFriends}
       />
-      <button className="small-button" onClick={() => handleSubmit()}>
+      <button
+        className="small-button"
+        onClick={() => handleSubmit()}
+        // onKeyUp={(event) => {
+        //   event.key === 'Enter' && handleSubmit();
+        // }}
+      >
         create channel
       </button>
     </div>

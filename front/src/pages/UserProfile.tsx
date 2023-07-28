@@ -1,4 +1,4 @@
-import { Navigate, redirect, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { useEffect, useState } from 'react';
 import { useUser } from '../hooks/useUser';
@@ -10,7 +10,7 @@ import { FriendRequest } from '../types/FriendRequest.type';
 export default function UserProfile() {
   const { id } = useParams();
   const axiosInstance = useAxiosPrivate();
-  const [user, setUser] = useState<User>({});
+  const [user, setUser] = useState<User>({id: NaN});
   const [isLoading, setLoading] = useState<boolean>(true);
   const { myId } = useUser();
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ export default function UserProfile() {
         setUser(res.data);
         setLoading(false);
       })
-      .catch((e) => {
+      .catch((_) => {
         navigate('/game');
       });
 
