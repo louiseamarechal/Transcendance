@@ -6,12 +6,14 @@ import {
   faThumbsDown,
   faMedal,
   faHeartCrack,
+  faVolumeHigh,
 } from '@fortawesome/free-solid-svg-icons';
 import '../../../../../style/components/chat/chat-container/chat-messaging/chat-options.css';
 import { User } from '../../../../../types/User.type';
 import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
 import { useUser } from '../../../../../hooks/useUser';
 import { useChatContext } from '../../../../../hooks/useChatContext';
+import { useEffect, useState } from 'react';
 
 const MembersList = ({
   users,
@@ -22,20 +24,21 @@ const MembersList = ({
   ownerId: number;
   admins: { userId: number }[];
 }) => {
-  const { myId } = useUser();
   const { showChannel } = useChatContext();
+  const { myId } = useUser();
   const myRole: number = determineRole(myId);
-  console.log(`My role: ${myRole}`);
   const axiosPrivate = useAxiosPrivate();
+  const [_, setRefresh] = useState<boolean>(false);
 
   function determineRole(id: number): number {
+    const adminIds: number[] = admins.map(
+      (adminUser: { userId: number }): number => {
+        return adminUser.userId;
+      },
+    );
     if (id === ownerId) {
       return 2; // OWNER
-    } else if (
-      admins.filter((adminUser) => {
-        return adminUser.userId === id;
-      }).length > 1
-    ) {
+    } else if (adminIds.includes(id)) {
       return 1; // ADMIN
     } else {
       return 0; // MEMBER
@@ -43,14 +46,20 @@ const MembersList = ({
   }
 
   function PromoteButton({ user }: { user: User }) {
-    const userRole: number = determineRole(user.id);
+    let userRole: number = determineRole(user.id);
     async function promote() {
-      await axiosPrivate.post(`admin/${showChannel}`, { userId: user.id });
+      await axiosPrivate.post(`channel/admin/${showChannel}`, {
+        userId: user.id,
+      });
+      userRole += 1;
+      setRefresh(true);
     }
     async function demote() {
-      await axiosPrivate.delete(`admin/${showChannel}`, {
+      await axiosPrivate.delete(`channel/admin/${showChannel}`, {
         data: { userId: user.id },
       });
+      userRole -= 1;
+      setRefresh(true);
     }
     if (userRole === 0 && userRole < myRole) {
       return (
@@ -70,13 +79,57 @@ const MembersList = ({
   }
 
   function MuteButton({ user }: { user: User }) {
-    const userRole = determineRole(user.id);
-    function mute() {}
-    return (
-      <div className="option-button" onClick={() => mute()}>
-        <FontAwesomeIcon icon={faVolumeXmark} style={{ color: 'grey' }} />
-      </div>
-    );
+    const [muted, setMuted] = useState<boolean>(false);
+    useEffect(() => {
+      axiosPrivate
+        .get(`channel/muted/${showChannel}/${user.id}`)
+        .then((res) => {
+          console.log({ res });
+          if (res.data !== '') {
+            setMuted(true);
+          }
+        });
+    });
+    console.log(`muted: ${muted}`);
+    async function mute() {
+      console.log(`I ${myId}, want to mute ${user.id}`);
+      await axiosPrivate
+			.post(`channel/muted/${showChannel}`, { mutedId: user.id })
+			.then(() => {
+				setMuted(true);
+			})
+			.catch((e) => {
+				if (e.response.status !== 409) {
+					throw e;
+				}
+			});
+    }
+    async function unmute() {
+			console.log(`I ${myId}, want to unmute ${user.id}`);
+      await axiosPrivate
+        .delete(`channel/muted/${showChannel}/${user.id}`)
+        .then(() => {
+          setMuted(false);
+        })
+        .catch((e) => {
+          if (e.response.status !== 409) {
+            throw e;
+          }
+        });
+    }
+    if (muted) {
+      return (
+        <div className="option-button" onClick={() => unmute()}>
+          <FontAwesomeIcon icon={faVolumeXmark} style={{ color: 'grey' }} />
+        </div>
+      );
+    } else {
+      return (
+        <div className="option-button" onClick={() => mute()}>
+          <FontAwesomeIcon icon={faVolumeHigh} style={{ color: 'grey' }} />
+        </div>
+      );
+    }
   }
 
   function KickButton({ user }: { user: User }) {
@@ -102,7 +155,6 @@ const MembersList = ({
   return (
     <ul>
       {users.map((member) => {
-        console.log({ member });
         return (
           <li key={member.user.id}>
             <div className="card">

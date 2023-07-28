@@ -10,13 +10,11 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { GetUser, GetUserId } from 'src/common/decorators';
+import { GetUserId } from 'src/common/decorators';
 import { ChannelService } from './channel.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
-import { Channel, User, VisType } from '@prisma/client';
-import { AdminDto } from './dto/admin.dto';
-import { channel } from 'diagnostics_channel';
-import { getDefaultResultOrder } from 'dns';
+import { VisType } from '@prisma/client';
+import { MutedOnChannel } from './types';
 
 @Controller('channel')
 export class ChannelController {
@@ -106,19 +104,49 @@ export class ChannelController {
 
   @Post('admin/:id')
   addAdminOnChannel(
-    // @GetUserId() userId: number,
     @Param('id', ParseIntPipe) channelId: number,
-    @Body() dto: AdminDto,
+    @Body() dto: { userId: number },
   ): Promise<{ channelId: number; userId: number }> {
-    return this.channelService.createAdminOnChannel(channelId, dto);
+    return this.channelService.createAdminOnChannel(channelId, dto.userId);
   }
 
   @Delete('admin/:id')
   removeAdminOnChannel(
-    // @GetUserId() userId: number,
     @Param('id', ParseIntPipe) channelId: number,
-    @Body() dto: AdminDto,
+    @Body() dto: { userId: number },
   ) {
-    this.channelService.deleteAdminOnChannel(channelId, dto);
+    this.channelService.deleteAdminOnChannel(channelId, dto.userId);
+  }
+
+  @Post('muted/:channelId/')
+  addMutedOnChannel(
+    @GetUserId() userId: number,
+    @Param('channelId', ParseIntPipe) channelId: number,
+    @Body() dto: { mutedId: number },
+  ): Promise<MutedOnChannel> {
+    return this.channelService.createMutedOnChannel(
+      channelId,
+      userId,
+      dto.mutedId,
+    );
+  }
+
+  @Get('muted/:channelId/:mutedId')
+  getMutedOnChannel(
+    @GetUserId() userId: number,
+    @Param('channelId', ParseIntPipe) channelId: number,
+    @Param('mutedId', ParseIntPipe) mutedId: number,
+  ): Promise<MutedOnChannel | null> {
+    return this.channelService.getMutedOnChannel(channelId, userId, mutedId);
+  }
+
+  @Delete('muted/:channelId/:mutedId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  editMutedOnChannel(
+    @GetUserId() userId: number,
+    @Param('channelId', ParseIntPipe) channelId: number,
+    @Param('mutedId', ParseIntPipe) mutedId: number,
+  ) {
+    return this.channelService.deleteMutedOnChannel(channelId, userId, mutedId);
   }
 }

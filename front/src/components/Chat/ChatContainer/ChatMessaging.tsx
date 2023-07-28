@@ -39,9 +39,9 @@ const ChatMessaging = () => {
       )}
       {channel ? (
         showOptions ? (
-          <ChatOptions key={channel.id} channel={channel} />
+          <ChatOptions channel={channel} />
         ) : (
-          <ChatBody key={channel.id} channel={channel} />
+          <ChatBody channel={channel} />
         )
       ) : (
         <></>

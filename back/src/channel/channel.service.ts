@@ -1,16 +1,16 @@
-import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
-import {
-  BlockedOnChannels,
-  Channel,
-  MembersOnChannels,
-  User,
-  VisType,
-} from '@prisma/client';
-import { AdminDto } from './dto/admin.dto';
+import { BlockedOnChannels, MembersOnChannels, VisType } from '@prisma/client';
 import { Socket, Namespace } from 'socket.io';
 import { NotifService } from 'src/auth/notif/notif.service';
+import { MutedOnChannel } from './types';
 
 @Injectable()
 export class ChannelService {
@@ -310,32 +310,101 @@ export class ChannelService {
   }
 
   async createAdminOnChannel(
-    // userId: number,
     channelId: number,
-    dto: AdminDto,
+    userId: number,
   ): Promise<{ channelId: number; userId: number }> {
-    return this.prisma.adminsOnChannels.create({
-      data: {
-        channelId,
-        userId: dto.userId,
-      },
-    });
+    return this.prisma.adminsOnChannels
+      .create({
+        data: {
+          channelId,
+          userId,
+        },
+      })
+      .catch((error) => {
+        if (error.code === 'P2002')
+          throw new ConflictException('Already exists');
+        throw error;
+      });
   }
 
   async deleteAdminOnChannel(
-    // userId: number,
     channelId: number,
-    dto: AdminDto,
+    userId: number,
   ): Promise<{ channelId: number; userId: number }> {
-    return this.prisma.adminsOnChannels.delete({
-      where: {
-        channelId_userId: {
+    return this.prisma.adminsOnChannels
+      .delete({
+        where: {
+          channelId_userId: {
+            channelId,
+            userId,
+          },
+        },
+      })
+      .catch((error) => {
+        if (error.code === 'P2002')
+          throw new ConflictException('Does not exist');
+        throw error;
+      });
+  }
+
+  createMutedOnChannel(
+    channelId: number,
+    mutedByUserId: number,
+    mutedUserId: number,
+  ): Promise<MutedOnChannel> {
+    return this.prisma.mutedByUserOnChannel
+      .create({
+        data: {
           channelId,
-          userId: dto.userId,
+          mutedUserId,
+          mutedByUserId,
+        },
+      })
+      .catch((error) => {
+        if (error.code === 'P2002')
+          throw new ConflictException('Already exists');
+        throw error;
+      });
+  }
+
+  getMutedOnChannel(
+    channelId: number,
+    mutedByUserId: number,
+    mutedUserId: number,
+  ): Promise<MutedOnChannel | null> {
+    return this.prisma.mutedByUserOnChannel.findUnique({
+      where: {
+        channelId_mutedUserId_mutedByUserId: {
+          channelId,
+          mutedUserId,
+          mutedByUserId,
         },
       },
     });
   }
+
+  deleteMutedOnChannel(
+    channelId: number,
+    mutedByUserId: number,
+    mutedUserId: number,
+  ) {
+    this.prisma.mutedByUserOnChannel
+      .delete({
+        where: {
+          channelId_mutedUserId_mutedByUserId: {
+            channelId,
+            mutedUserId,
+            mutedByUserId,
+          },
+        },
+      })
+      .catch((error) => {
+        if (error.code === 'P2002')
+          throw new HttpException('Does not exist', HttpStatus.NO_CONTENT);
+        throw error;
+      });
+  }
+
   /* =============================================================================
                             SOCKET FUNCTIONS
   ============================================================================= */
@@ -343,7 +412,7 @@ export class ChannelService {
   handleLeaveRoom(client: Socket) {
     const connectedRooms = this.server.adapter.rooms;
     console.log(connectedRooms);
-    connectedRooms.forEach((value, key : string) => {
+    connectedRooms.forEach((value, key: string) => {
       if (client.id === key) {
         return;
       }
