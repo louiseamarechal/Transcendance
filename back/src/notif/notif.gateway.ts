@@ -30,6 +30,7 @@ export class NotifGateway
   server: Namespace;
 
   afterInit(server: Namespace) {
+    console.log('NotifGateway on')
     this.notifService.server = server;
   }
 
@@ -38,25 +39,25 @@ export class NotifGateway
     try {
       const token: AtJwt = await this.socketService.verifyToken(client);
       await this.socketService.attachUserDataToClient(client, token);
-      console.log(`${client.data.user.name} arrived notif gateway`);
+      console.log(`[NotifGateway] ${client.data.user.name} arrived`);
       const room: string = client.data.user.login;
       client.join(room);
-      if (client.rooms.has(room)) {
-        console.log('Success, you just joined the room !', room);
-        console.log(client.rooms.size);
-        client.rooms.forEach((key) => {
-          console.log(key);
-        });
-      }
+      // if (client.rooms.has(room)) {
+      //   console.log('Success, you just joined the room !', room);
+      //   console.log(client.rooms.size);
+      //   client.rooms.forEach((key) => {
+      //     console.log(key);
+      //   });
+      // }
     } catch (error) {
-      console.log('handleConnection threw:', error.message);
+      console.log('[NotifGateway] handleConnection threw:', error.message);
       client.disconnect();
     }
   }
 
   // handle disconnect
   handleDisconnect(client: Socket) {
-    console.log(`${client.data.user.name} left notif gateway`);
+    console.log(`[NotifGateway] ${client.data?.user?.name} left`);
     client.disconnect();
   }
 
