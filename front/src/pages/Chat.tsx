@@ -10,16 +10,13 @@ function Chat() {
   const { auth } = useAuth();
 
   useEffect(() => {
-    channelSocket.auth = {
-      token: auth.access_token,
-    }
-
-    channelSocket.connect()
+    channelSocket.auth = { token: auth.access_token };
+    channelSocket.connect();
     return () => {
       channelSocket.disconnect();
     };
   }, [auth]);
-  
+
   return (
     <ChatProvider>
       <div className="chat-page">
