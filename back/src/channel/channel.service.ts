@@ -9,8 +9,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
 import { BlockedOnChannels, MembersOnChannels, VisType } from '@prisma/client';
 import { Socket, Namespace } from 'socket.io';
-import { NotifService } from 'src/auth/notif/notif.service';
 import { MutedOnChannel } from './types';
+import { NotifService } from 'src/notif/notif.service';
 
 @Injectable()
 export class ChannelService {
@@ -408,6 +408,14 @@ export class ChannelService {
   /* =============================================================================
                             SOCKET FUNCTIONS
   ============================================================================= */
+
+  handleJoinRoom(client: Socket, roomName: string) {
+    const room = roomName;
+    client.join(room);
+    // const rooms = Object.keys(client.rooms);
+    // console.log(rooms);
+    client.to(room).emit('welcome');
+  }
 
   handleLeaveRoom(client: Socket) {
     const connectedRooms = this.server.adapter.rooms;

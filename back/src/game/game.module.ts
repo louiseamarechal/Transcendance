@@ -7,14 +7,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from 'src/user/user.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { NotifModule } from 'src/auth/notif/notif.module';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { NotifGateway } from 'src/auth/notif/notif.gateway';
-import { PrismaModule } from 'src/prisma/prisma.module';
+import { NotifModule } from 'src/notif/notif.module';
 
 @Module({
   imports: [
-    PrismaModule,
     ScheduleModule.forRoot(),
     NotifModule,
     UserModule,
@@ -26,7 +23,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
       inject: [ConfigService],
     }),
   ],
-  providers: [GameGateway, GameService, GameManager],
+  providers: [GameGateway, GameService, GameManager, PrismaService],
   controllers: [GameController],
 })
 export class GameModule {}
