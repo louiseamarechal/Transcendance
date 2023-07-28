@@ -7,9 +7,11 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket, Server } from 'socket.io';
-import { SocketService } from '../../sockets/socket.service';
+import { Socket, Namespace } from 'socket.io';
 import { NotifService } from './notif.service';
+import { SocketService } from 'src/sockets/socket.service';
+import { AtJwt } from 'src/auth/types';
+import { Cron } from '@nestjs/schedule';
 
 @WebSocketGateway({
   cors: {
@@ -25,22 +27,38 @@ export class NotifGateway
     private notifService: NotifService,
   ) {}
   @WebSocketServer()
-  server: Server;
+  server: Namespace;
 
-  afterInit(server: Server) {
+  afterInit(server: Namespace) {
+    console.log('NotifGateway on')
     this.notifService.server = server;
   }
 
   // handle connection
-  handleConnection(client: Socket) {
-    // console.log(`client with id: ${client.id} is connected !`);
-    this.socketService.handleConnection(client, '');
+  async handleConnection(client: Socket) {
+    try {
+      const token: AtJwt = await this.socketService.verifyToken(client);
+      await this.socketService.attachUserDataToClient(client, token);
+      console.log(`[NotifGateway] ${client.data.user.name} arrived`);
+      const room: string = client.data.user.login;
+      client.join(room);
+      // if (client.rooms.has(room)) {
+      //   console.log('Success, you just joined the room !', room);
+      //   console.log(client.rooms.size);
+      //   client.rooms.forEach((key) => {
+      //     console.log(key);
+      //   });
+      // }
+    } catch (error) {
+      console.log('[NotifGateway] handleConnection threw:', error.message);
+      client.disconnect();
+    }
   }
 
   // handle disconnect
   handleDisconnect(client: Socket) {
-    // this.notifService.handleDisconnect(client, userLogin, '');
-    console.log(`client with id: ${client.id} has left the connection !`);
+    console.log(`[NotifGateway] ${client.data?.user?.name} left`);
+    client.disconnect();
   }
 
   @SubscribeMessage('client.notif.chatNotif')
@@ -63,6 +81,11 @@ export class NotifGateway
 
   // handleFriendsRequestNotif() {
   //   this.server.emit('friendsNotif');
+  // }
+
+  // @Cron('*/5 * * * * *')
+  // private debug() {
+  //   console.log('[Debug NotifGateway] ', { rooms: this.server.adapter.rooms });
   // }
 }
 

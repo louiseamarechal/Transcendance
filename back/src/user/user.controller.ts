@@ -1,11 +1,8 @@
 import {
   Body,
   Controller,
-  FileTypeValidator,
   Get,
-  MaxFileSizeValidator,
   Param,
-  ParseFilePipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -13,27 +10,18 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { GetUser, GetUserId, Public } from 'src/common/decorators';
+import { GetUser, GetUserId } from 'src/common/decorators';
 import { EditUserDto } from './dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 import { multerOptions } from 'src/config/multer.config';
+import { PublicUser } from './types';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Get('me')
-  getMe(@GetUser('sub') userId: number): Promise<{
-    id: number | null;
-    login: string | null;
-    name: string | null;
-    level: number | null;
-    avatar: string | null;
-    statTotalGame: number | null;
-    statTotalWin: number | null;
-  }> {
+  getMe(@GetUser('sub') userId: number): Promise<PublicUser> {
     console.log('GET /user/me called');
     return this.userService.getUserById(userId);
   }

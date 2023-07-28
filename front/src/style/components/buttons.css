@@ -129,7 +129,7 @@
     width: 150px;
     height: 45px;
     font-size: 15px;
-    padding: 5% 5%;
+    /* padding: 5% 5%; */
   }
 
   .signin-button {

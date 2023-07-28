@@ -1,4 +1,4 @@
-import { Controller, Get, Patch } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { GetUserId } from 'src/common/decorators';
 import { NotifService } from './notif.service';
 

@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import {
   ForbiddenException,
-  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -12,9 +11,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthDto } from './dto';
 import { Tokens } from './types';
 import * as argon from 'argon2';
-import { Response } from 'express';
 import { createUserDto } from 'src/user/dto';
-import { createWriteStream, fstat } from 'fs';
+import { createWriteStream } from 'fs';
 import { join } from 'path';
 import { Status2fa, User } from '@prisma/client';
 import { MailService } from 'src/mail/mail.service';

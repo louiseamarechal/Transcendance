@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Server } from 'socket.io';
+import { Namespace } from 'socket.io';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class NotifService {
-  server: Server;
+  server: Namespace;
   constructor(private prisma: PrismaService) {}
 
   handleFriendsNotif(roomName: string) {
@@ -24,8 +24,8 @@ export class NotifService {
     const receivedFRRequests = await this.prisma.friendRequest.findMany({
       where: { toId: myId },
     });
-    console.log({ receivedFRRequests });
-    console.log({ myId });
+    // console.log({ receivedFRRequests });
+    // console.log({ myId });
     return receivedFRRequests;
   }
 
@@ -33,8 +33,8 @@ export class NotifService {
     const receivedGameRequests = await this.prisma.game.findMany({
       where: { player2Id: myId },
     });
-    console.log({ receivedGameRequests });
-    console.log({ myId });
+    // console.log({ receivedGameRequests });
+    // console.log({ myId });
     return receivedGameRequests;
   }
 }

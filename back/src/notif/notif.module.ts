@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { NotifGateway } from './notif.gateway';
-import { SocketService } from '../../sockets/socket.service';
 import { NotifService } from './notif.service';
 import { NotifController } from './notif.controller';
+import { SocketModule } from 'src/sockets/socket.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  providers: [NotifGateway, SocketService, NotifService],
-  exports: [NotifGateway, SocketService, NotifService],
+  imports: [SocketModule, ScheduleModule.forRoot()],
+  providers: [NotifGateway, NotifService],
+  exports: [NotifService],
   controllers: [NotifController],
 })
 export class NotifModule {}

@@ -1,16 +1,18 @@
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
   OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { SocketService } from 'src/sockets/socket.service';
 import { Socket, Namespace } from 'socket.io';
 import { Cron } from '@nestjs/schedule';
 import { ChannelService } from './channel.service';
-// import { Cron } from '@nestjs/schedule';
+import { AtJwt } from 'src/auth/types';
+import { SocketService } from 'src/sockets/socket.service';
 
 @WebSocketGateway({
   cors: {
@@ -18,13 +20,17 @@ import { ChannelService } from './channel.service';
   },
   namespace: 'channel',
 })
-export class ChannelGateway implements OnGatewayInit {
+export class ChannelGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   constructor(
-    private socketService: SocketService, // private channelService: ChannelService,
-    private channelService: ChannelService, // private channelService: ChannelService,
+    private channelService: ChannelService,
+    private socketService: SocketService,
   ) {}
 
   afterInit(server: Namespace) {
+    console.log('ChannelGateway on')
+
     this.channelService.server = server;
     // this is debug, not necessary for production
     server.use((client: Socket, next) => {
@@ -40,6 +46,22 @@ export class ChannelGateway implements OnGatewayInit {
     });
   }
 
+  async handleConnection(client: Socket) {
+    try {
+      const token: AtJwt = await this.socketService.verifyToken(client);
+      await this.socketService.attachUserDataToClient(client, token);
+      console.log(`[ChannelGateway] ${client.data.user.name} arrived`);
+    } catch (error) {
+      console.log('[ChannelGateway] handleConnection threw:', error.message);
+      client.disconnect();
+    }
+  }
+
+  handleDisconnect(client: Socket) {
+    console.log(`[ChannelGateway] ${client.data?.user?.name} left`);
+    client.disconnect();
+  }
+
   @WebSocketServer()
   server: Namespace;
 
@@ -53,7 +75,7 @@ export class ChannelGateway implements OnGatewayInit {
     @ConnectedSocket() client: Socket,
     @MessageBody() channelId: number,
   ) {
-    this.socketService.handleJoinRoom(client, `channel_${channelId}`);
+    this.channelService.handleJoinRoom(client, `channel_${channelId}`);
   }
 
   @SubscribeMessage('client.channel.leaveRoom')
@@ -66,8 +88,8 @@ export class ChannelGateway implements OnGatewayInit {
     this.channelService.handleSendMessage(this.server, channelId);
   }
 
-  @Cron('*/5 * * * * *')
-  private debug() {
-    console.log('[Debug ChannelGateway]', { rooms: this.server.adapter.rooms });
-  }
+  // @Cron('*/5 * * * * *')
+  // private debug() {
+  //   console.log('[Debug ChannelGateway]', { rooms: this.server.adapter.rooms });
+  // }
 }

@@ -8,7 +8,7 @@
 }
 
 .gamepage-title {
-  font-size: 46px;
+  font-size: 70px;
   font-weight: bold;
   color: var(--black);
   letter-spacing: 0.11em;
@@ -17,11 +17,12 @@
 }
 
 .net-container {
+  height: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   /* width: 40%; */
-  padding-top: 10%;
+  /* padding-top: 10%; */
 }
 
 
