@@ -9,7 +9,6 @@ import {
 import { Socket, Namespace } from 'socket.io';
 import { Cron } from '@nestjs/schedule';
 import { ChannelService } from './channel.service';
-// import { Cron } from '@nestjs/schedule';
 
 @WebSocketGateway({
   cors: {
@@ -18,9 +17,7 @@ import { ChannelService } from './channel.service';
   namespace: 'channel',
 })
 export class ChannelGateway implements OnGatewayInit {
-  constructor(
-    private channelService: ChannelService, // private channelService: ChannelService,
-  ) {}
+  constructor(private channelService: ChannelService) {}
 
   afterInit(server: Namespace) {
     this.channelService.server = server;
@@ -64,8 +61,8 @@ export class ChannelGateway implements OnGatewayInit {
     this.channelService.handleSendMessage(this.server, channelId);
   }
 
-  @Cron('*/5 * * * * *')
-  private debug() {
-    console.log('[Debug ChannelGateway]', { rooms: this.server.adapter.rooms });
-  }
+  // @Cron('*/5 * * * * *')
+  // private debug() {
+  //   console.log('[Debug ChannelGateway]', { rooms: this.server.adapter.rooms });
+  // }
 }

@@ -9,9 +9,11 @@ import { UserModule } from 'src/user/user.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { NotifModule } from 'src/notif/notif.module';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
   imports: [
+    PrismaModule,
     ScheduleModule.forRoot(),
     NotifModule,
     UserModule,
@@ -23,7 +25,7 @@ import { NotifModule } from 'src/notif/notif.module';
       inject: [ConfigService],
     }),
   ],
-  providers: [GameGateway, GameService, GameManager, PrismaService],
+  providers: [GameGateway, GameService, GameManager],
   controllers: [GameController],
 })
 export class GameModule {}

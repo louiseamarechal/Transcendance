@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditUserDto } from './dto';
-import { User } from '@prisma/client';
 import { NoParamCallback, rename, rm } from 'fs';
 import { PublicUser } from './types';
 
@@ -59,18 +58,7 @@ export class UserService {
     });
   }
 
-  async editUser(
-    userId: number,
-    dto: EditUserDto,
-  ): Promise<{
-    id: number | null;
-    login: string | null;
-    name: string | null;
-    level: number | null;
-    avatar: string | null;
-    statTotalGame: number | null;
-    statTotalWin: number | null;
-  }> {
+  async editUser(userId: number, dto: EditUserDto): Promise<PublicUser> {
     const user = await this.prisma.user
       .update({
         where: {

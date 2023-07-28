@@ -13,7 +13,7 @@ import {
 import { FriendRequestService } from './friend-request.service';
 import { GetUserId } from 'src/common/decorators';
 import { CreateFriendRequestDto, EditFriendRequestDto } from './dto';
-import { FRStatus, FriendRequest } from '@prisma/client';
+import { FriendRequest } from '@prisma/client';
 
 @Controller('friend-request')
 export class FriendRequestController {

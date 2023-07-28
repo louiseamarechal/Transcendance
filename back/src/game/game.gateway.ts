@@ -1,4 +1,3 @@
-import { Logger, UseGuards, UseInterceptors } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -9,16 +8,12 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket, Server, Namespace } from 'socket.io';
-import { SocketAuthMiddleware } from 'src/common/middleware/ws.mw';
+import { Socket, Namespace } from 'socket.io';
 import { GameManager } from './classes/GameManager';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
-import { User } from '@prisma/client';
 import { AtJwt } from 'src/auth/types';
 import { PublicUser } from 'src/user/types';
-import { LoggingInterceptor } from './interceptors/game-ws.interceptor';
 import { Cron } from '@nestjs/schedule';
 // import { ClientEvents } from '../../../shared/client/ClientEvents';
 // import { ClientPayloads } from '../../../shared/client/ClientPayloads';
@@ -114,8 +109,8 @@ export class GameGateway
     this.gameManager.setReady(payload.gameId, client.data.user.id);
   }
 
-  @Cron('*/5 * * * * *')
-  private debug() {
-    console.log('[Debug GameGateway] ', { rooms: this.server.adapter.rooms });
-  }
+  // @Cron('*/5 * * * * *')
+  // private debug() {
+  //   console.log('[Debug GameGateway] ', { rooms: this.server.adapter.rooms });
+  // }
 }

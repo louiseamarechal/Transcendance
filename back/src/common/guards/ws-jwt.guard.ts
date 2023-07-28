@@ -2,7 +2,6 @@ import { CanActivate, ExecutionContext, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { WsException } from '@nestjs/websockets';
 import { verify } from 'jsonwebtoken';
-import { type } from 'os';
 import { Observable } from 'rxjs';
 import { Socket } from 'socket.io';
 

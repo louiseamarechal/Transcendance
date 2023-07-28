@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import {
   ForbiddenException,
-  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -12,9 +11,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthDto } from './dto';
 import { Tokens } from './types';
 import * as argon from 'argon2';
-import { Response } from 'express';
 import { createUserDto } from 'src/user/dto';
-import { createWriteStream, fstat } from 'fs';
+import { createWriteStream } from 'fs';
 import { join } from 'path';
 import { User } from '@prisma/client';
 
@@ -197,15 +195,12 @@ export class AuthService {
   }
 
   async downloadPhoto(userLogin: string, url: string) {
-		console.log(__dirname);
-		console.log(process.cwd());
+    console.log(__dirname);
+    console.log(process.cwd());
     const writer = createWriteStream(
       join(process.cwd(), `public/${userLogin}.jpg`),
     );
-    console.log(
-      'dl file',
-      join(process.cwd(), `public/${userLogin}.jpg`),
-    );
+    console.log('dl file', join(process.cwd(), `public/${userLogin}.jpg`));
 
     // response variable has to be typed with AxiosResponse<T>
     const response: AxiosResponse<any> = await this.http.axiosRef({

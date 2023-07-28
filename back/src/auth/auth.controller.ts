@@ -4,8 +4,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Req,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { GetUser, GetUserId, Public } from 'src/common/decorators';
