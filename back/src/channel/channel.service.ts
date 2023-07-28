@@ -1,16 +1,16 @@
-import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
-import {
-  BlockedOnChannels,
-  Channel,
-  MembersOnChannels,
-  User,
-  VisType,
-} from '@prisma/client';
-import { AdminDto } from './dto/admin.dto';
+import { BlockedOnChannels, MembersOnChannels, VisType } from '@prisma/client';
 import { Socket, Namespace } from 'socket.io';
 import { NotifService } from 'src/auth/notif/notif.service';
+import { MutedOnChannel } from './types';
 
 @Injectable()
 export class ChannelService {
@@ -43,23 +43,23 @@ export class ChannelService {
         },
       },
     });
-    let filteredChannels: number[] = [];
-    channels.filter((channel) => {
-      return this.prisma.membersOnChannels
-        .findMany({
-          where: {
-            channelId: channel.channelId,
-          },
-        })
-        .then((channelMembers) => {
-          if (channelMembers.length === members.length)
-            filteredChannels = [...filteredChannels, channel.channelId];
-        });
+    console.log({ channels });
+    const filteredChannels = channels.filter(async (channel) => {
+      const channelMembers = await this.prisma.membersOnChannels.findMany({
+        where: {
+          channelId: channel.channelId,
+        },
+      });
+      if (channelMembers.length === members.length) {
+        return true;
+      } else {
+        return false;
+      }
     });
-    console.log(`found ${filteredChannels.length} with same members.`);
-    console.log({ filteredChannels });
+    // console.log(`found ${filteredChannels.length} with same members.`);
+    // console.log({ filteredChannels });
     if (filteredChannels.length > 0) {
-      throw new ConflictException({ channelId: filteredChannels[0] });
+      throw new ConflictException({ channelId: filteredChannels[0].channelId });
     } else {
       const channel = await this.prisma.channel.create({
         data: {
@@ -310,32 +310,101 @@ export class ChannelService {
   }
 
   async createAdminOnChannel(
-    // userId: number,
     channelId: number,
-    dto: AdminDto,
-  ): Promise<{channelId: number, userId: number}> {
-    return this.prisma.adminsOnChannels.create({
-      data: {
-        channelId,
-        userId: dto.userId,
+    userId: number,
+  ): Promise<{ channelId: number; userId: number }> {
+    return this.prisma.adminsOnChannels
+      .create({
+        data: {
+          channelId,
+          userId,
+        },
+      })
+      .catch((error) => {
+        if (error.code === 'P2002')
+          throw new ConflictException('Already exists');
+        throw error;
+      });
+  }
+
+  async deleteAdminOnChannel(
+    channelId: number,
+    userId: number,
+  ): Promise<{ channelId: number; userId: number }> {
+    return this.prisma.adminsOnChannels
+      .delete({
+        where: {
+          channelId_userId: {
+            channelId,
+            userId,
+          },
+        },
+      })
+      .catch((error) => {
+        if (error.code === 'P2002')
+          throw new ConflictException('Does not exist');
+        throw error;
+      });
+  }
+
+  createMutedOnChannel(
+    channelId: number,
+    mutedByUserId: number,
+    mutedUserId: number,
+  ): Promise<MutedOnChannel> {
+    return this.prisma.mutedByUserOnChannel
+      .create({
+        data: {
+          channelId,
+          mutedUserId,
+          mutedByUserId,
+        },
+      })
+      .catch((error) => {
+        if (error.code === 'P2002')
+          throw new ConflictException('Already exists');
+        throw error;
+      });
+  }
+
+  getMutedOnChannel(
+    channelId: number,
+    mutedByUserId: number,
+    mutedUserId: number,
+  ): Promise<MutedOnChannel | null> {
+    return this.prisma.mutedByUserOnChannel.findUnique({
+      where: {
+        channelId_mutedUserId_mutedByUserId: {
+          channelId,
+          mutedUserId,
+          mutedByUserId,
+        },
       },
     });
   }
 
-  async deleteAdminOnChannel(
-    // userId: number,
+  deleteMutedOnChannel(
     channelId: number,
-    dto: AdminDto,
-  ): Promise<{channelId: number, userId: number}> {
-    return this.prisma.adminsOnChannels.delete({
-      where: {
-        channelId_userId: {
-          channelId,
-          userId: dto.userId,
-        } 
-      }
-    });
+    mutedByUserId: number,
+    mutedUserId: number,
+  ) {
+    this.prisma.mutedByUserOnChannel
+      .delete({
+        where: {
+          channelId_mutedUserId_mutedByUserId: {
+            channelId,
+            mutedUserId,
+            mutedByUserId,
+          },
+        },
+      })
+      .catch((error) => {
+        if (error.code === 'P2002')
+          throw new HttpException('Does not exist', HttpStatus.NO_CONTENT);
+        throw error;
+      });
   }
+
   /* =============================================================================
                             SOCKET FUNCTIONS
   ============================================================================= */
@@ -343,7 +412,7 @@ export class ChannelService {
   handleLeaveRoom(client: Socket) {
     const connectedRooms = this.server.adapter.rooms;
     console.log(connectedRooms);
-    connectedRooms.forEach((value, key : string) => {
+    connectedRooms.forEach((value, key: string) => {
       if (client.id === key) {
         return;
       }

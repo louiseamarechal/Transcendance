@@ -20,15 +20,16 @@ const ChatMessaging = () => {
       channelSocket.emit('client.channel.createRoom', res.data.id);
     });
 
-    return(() => {
+    return () => {
       channelSocket.emit('client.channel.leaveRoom');
-    })
+    };
   }, [showChannel]);
 
   return (
     <div className="chat-messaging">
       {channel ? (
         <ChatHeader
+          key={channel.id}
           channel={channel}
           showOptions={showOptions}
           setShowOptions={setShowOptions}
