@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Server } from 'socket.io';
+import { Namespace } from 'socket.io';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class NotifService {
-  server: Server;
+  server: Namespace;
   constructor(private prisma: PrismaService) {}
 
   handleFriendsNotif(roomName: string) {
