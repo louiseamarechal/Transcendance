@@ -7,7 +7,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket, Server } from 'socket.io';
+import { Socket, Server, Namespace } from 'socket.io';
 import { NotifService } from './notif.service';
 import { SocketService } from 'src/sockets/socket.service';
 import { AtJwt } from 'src/auth/types';
