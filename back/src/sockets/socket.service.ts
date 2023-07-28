@@ -1,48 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { WsException } from '@nestjs/websockets';
-import { verify } from 'jsonwebtoken';
+import { JwtService } from '@nestjs/jwt';
 import { Socket } from 'socket.io';
+import { AtJwt } from 'src/auth/types';
+import { PublicUser } from 'src/user/types';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class SocketService {
-  getLoginFromClient(client: Socket) {
-    console.log({ clientHandshake: client.handshake.auth });
-    // console.log({ client: client });
+  constructor(private jwtService: JwtService, private userService: UserService) {};
 
-    const { token } = client.handshake.auth;
-    if (!token) {
-      throw new WsException('No authorization');
-    }
-
-    const secret: string = process.env.JWT_ACCESS_SECRET
-      ? process.env.JWT_ACCESS_SECRET
-      : '';
-    const payload = verify(token, secret);
-    if (typeof payload === 'object') {
-      return payload.login;
-    }
-    return payload;
+  async verifyToken(client: Socket): Promise<AtJwt> {
+    return this.jwtService.verify(client.handshake.auth.token);
   }
 
-  handleJoinRoom(client: Socket, roomName: string) {
-    const room = roomName;
-    client.join(room);
-    // const rooms = Object.keys(client.rooms);
-    // console.log(rooms);
-    client.to(room).emit('welcome');
-  }
-
-  handleConnection(client: Socket, extension: string) {
-    console.log(`client with id ${client.id} is now connected`);
-    const room = this.getLoginFromClient(client) + extension;
-    client.join(room);
-    // const rooms = Object.keys(client.rooms);
-    if (client.rooms.has(room)) {
-      console.log('Success, you just joined the room !', room);
-      console.log(client.rooms.size);
-      client.rooms.forEach((key) => {
-        console.log(key);
-      });
-    }
+  async attachUserDataToClient(client: Socket, token: AtJwt) {
+      const user: PublicUser = await this.userService.getUserById(token.id);
+      client.data.user = user;
   }
 }

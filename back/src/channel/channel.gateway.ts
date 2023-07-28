@@ -6,7 +6,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { SocketService } from 'src/sockets/socket.service';
 import { Socket, Namespace } from 'socket.io';
 import { Cron } from '@nestjs/schedule';
 import { ChannelService } from './channel.service';
@@ -20,7 +19,6 @@ import { ChannelService } from './channel.service';
 })
 export class ChannelGateway implements OnGatewayInit {
   constructor(
-    private socketService: SocketService, // private channelService: ChannelService,
     private channelService: ChannelService, // private channelService: ChannelService,
   ) {}
 
@@ -53,7 +51,7 @@ export class ChannelGateway implements OnGatewayInit {
     @ConnectedSocket() client: Socket,
     @MessageBody() channelId: number,
   ) {
-    this.socketService.handleJoinRoom(client, `channel_${channelId}`);
+    this.channelService.handleJoinRoom(client, `channel_${channelId}`);
   }
 
   @SubscribeMessage('client.channel.leaveRoom')
