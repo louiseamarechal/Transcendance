@@ -10,15 +10,13 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFriendRequestDto } from './dto';
 import { CreateChannelDto } from 'src/channel/dto';
 import { ChannelService } from 'src/channel/channel.service';
-import { NotifService } from 'src/auth/notif/notif.service';
-import { NotifGateway } from 'src/auth/notif/notif.gateway';
+import { NotifService } from 'src/notif/notif.service';
 
 @Injectable()
 export class FriendRequestService {
   constructor(
     private prisma: PrismaService,
     private channelService: ChannelService,
-    private notifGateway: NotifGateway,
     private notifService: NotifService,
   ) {}
   async createFR(userId1: number, userId2: number): Promise<FriendRequest> {

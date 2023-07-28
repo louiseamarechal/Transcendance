@@ -8,8 +8,9 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
-import { SocketService } from '../../sockets/socket.service';
 import { NotifService } from './notif.service';
+import { SocketService } from 'src/sockets/socket.service';
+import { AtJwt } from 'src/auth/types';
 
 @WebSocketGateway({
   cors: {
@@ -32,9 +33,22 @@ export class NotifGateway
   }
 
   // handle connection
-  handleConnection(client: Socket) {
-    // console.log(`client with id: ${client.id} is connected !`);
-    this.socketService.handleConnection(client, '');
+  async handleConnection(client: Socket) {
+    try {
+      const token: AtJwt = await this.socketService.verifyToken(client);
+      await this.socketService.attachUserDataToClient(client, token);
+      const room: string = client.data.user.login;
+      client.join(room);
+      if (client.rooms.has(room)) {
+        console.log('Success, you just joined the room !', room);
+        console.log(client.rooms.size);
+        client.rooms.forEach((key) => {
+          console.log(key);
+        });
+      }
+    } catch {
+      client.disconnect();
+    }
   }
 
   // handle disconnect

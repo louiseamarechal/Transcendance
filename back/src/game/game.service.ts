@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { Game } from '@prisma/client';
+import { NotifService } from 'src/notif/notif.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { NotifService } from 'src/auth/notif/notif.service';
 
 @Injectable()
 export class GameService {
