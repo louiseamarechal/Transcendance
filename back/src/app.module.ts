@@ -11,6 +11,7 @@ import { ChannelModule } from './channel/channel.module';
 import { MessageModule } from './message/message.module';
 import { NotifModule } from './auth/notif/notif.module';
 import { GameModule } from './game/game.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { GameModule } from './game/game.module';
     MessageModule,
     NotifModule,
     GameModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [

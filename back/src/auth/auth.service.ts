@@ -16,7 +16,8 @@ import { Response } from 'express';
 import { createUserDto } from 'src/user/dto';
 import { createWriteStream, fstat } from 'fs';
 import { join } from 'path';
-import { User } from '@prisma/client';
+import { Status2fa, User } from '@prisma/client';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +26,7 @@ export class AuthService {
     private config: ConfigService,
     private http: HttpService,
     private jwt: JwtService,
+    private mail: MailService,
   ) {}
 
   async login(dto: AuthDto): Promise<Tokens> {
@@ -33,7 +35,13 @@ export class AuthService {
     // console.log({ token42 });
 
     // get info from 42 api
-    const userDto: createUserDto = await this.getUserInfo(token42);
+    const {
+      login,
+      avatar,
+      email,
+    }: { login: string; avatar: string; email: string } =
+      await this.getUserInfo(token42);
+    const userDto: createUserDto = { login, avatar };
     // console.log(userDto);
 
     // find or create user
@@ -62,6 +70,16 @@ export class AuthService {
       });
     }
     // console.log({ user });
+
+    if (user.s2fa === Status2fa.SET) {
+      const sixDigitCode = generateSixDigitCode();
+      this.mail.sendEmail(
+        email,
+        'transcendance 2FA',
+        `Please enter this code : ${sixDigitCode}`,
+      );
+    }
+    //ici appeler le truc pour faire le mail et generer le code checker avec un if, status @FA et on appelle la fonciton qui fait tout
 
     // generate and returns jwts
     const tokens: Tokens = await this.getTokens(user);
@@ -130,7 +148,9 @@ export class AuthService {
     }
   }
 
-  async getUserInfo(token42: string): Promise<createUserDto> {
+  async getUserInfo(
+    token42: string,
+  ): Promise<{ login: string; avatar: string; email: string }> {
     const axiosConfig: AxiosRequestConfig = {
       method: 'get',
       url: 'https://api.intra.42.fr/v2/me',
@@ -145,10 +165,11 @@ export class AuthService {
       throw new UnauthorizedException('Nop! (getUserLogin)');
     });
 
-    // console.log({ response })
+    console.log({ response });
     const login = response.data?.login;
     const avatar = response.data?.image?.link;
-    return { login, avatar };
+    const email: string = response.data.email;
+    return { login, avatar, email };
   }
 
   async getTokens(user: User): Promise<Tokens> {
@@ -197,15 +218,12 @@ export class AuthService {
   }
 
   async downloadPhoto(userLogin: string, url: string) {
-		console.log(__dirname);
-		console.log(process.cwd());
+    console.log(__dirname);
+    console.log(process.cwd());
     const writer = createWriteStream(
       join(process.cwd(), `public/${userLogin}.jpg`),
     );
-    console.log(
-      'dl file',
-      join(process.cwd(), `public/${userLogin}.jpg`),
-    );
+    console.log('dl file', join(process.cwd(), `public/${userLogin}.jpg`));
 
     // response variable has to be typed with AxiosResponse<T>
     const response: AxiosResponse<any> = await this.http.axiosRef({
@@ -221,4 +239,10 @@ export class AuthService {
       writer.on('error', reject);
     });
   }
+}
+
+function generateSixDigitCode() {
+  const min = 100000;
+  const max = 999999;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
