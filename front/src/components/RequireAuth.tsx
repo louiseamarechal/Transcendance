@@ -10,13 +10,11 @@ const RequireAuth = () => {
   const { auth } = useAuth();
   const location = useLocation();
   const { navbarState } = useNavbar();
-  
+
   useEffect(() => {
-    notifSocket.auth = {
-      token: auth.access_token,
-    }
+    notifSocket.auth = { token: auth.access_token };
     console.log('Connect notifSocket')
-    notifSocket.connect()
+    notifSocket.connect();
     return () => {
       console.log('Disconnect notifSocket')
       notifSocket.disconnect();

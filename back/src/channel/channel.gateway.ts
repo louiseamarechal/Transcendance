@@ -29,6 +29,8 @@ export class ChannelGateway
   ) {}
 
   afterInit(server: Namespace) {
+    console.log('ChannelGateway on')
+
     this.channelService.server = server;
     // this is debug, not necessary for production
     server.use((client: Socket, next) => {
@@ -56,7 +58,7 @@ export class ChannelGateway
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`[ChannelGateway] ${client.data.user.name} left`);
+    console.log(`[ChannelGateway] ${client.data?.user?.name} left`);
     client.disconnect();
   }
 

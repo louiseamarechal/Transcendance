@@ -52,7 +52,6 @@ export class GameGateway
   }
 
   async handleConnection(client: Socket) {
-    console.log('New websocket connection');
     try {
       const token: AtJwt = await this.socketService.verifyToken(client);
       await this.socketService.attachUserDataToClient(client, token);
@@ -64,7 +63,7 @@ export class GameGateway
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`[GameGateway] ${client.data.user.name} left`);
+    console.log(`[GameGateway] ${client.data?.user?.name} left`);
     client.disconnect();
   }
 

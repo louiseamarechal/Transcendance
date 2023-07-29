@@ -30,6 +30,7 @@ export class NotifGateway
   server: Namespace;
 
   afterInit(server: Namespace) {
+    console.log('NotifGateway on')
     this.notifService.server = server;
 
     // this is debug, not necessary for production
@@ -69,7 +70,7 @@ export class NotifGateway
 
   // handle disconnect
   handleDisconnect(client: Socket) {
-    console.log(`[NotifGateway] ${client.data.user.name} left`);
+    console.log(`[NotifGateway] ${client.data?.user?.name} left`);
     client.disconnect();
   }
 
