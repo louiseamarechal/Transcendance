@@ -10,11 +10,11 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { GetUserId } from 'src/common/decorators';
+import { GetUser, GetUserId } from 'src/common/decorators';
 import { ChannelService } from './channel.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
 import { VisType } from '@prisma/client';
-import { MutedOnChannel } from './types';
+import { MembersOnChannel, MutedOnChannel } from './types';
 
 @Controller('channel')
 export class ChannelController {
@@ -102,6 +102,10 @@ export class ChannelController {
     return this.channelService.deleteChannelById(userId, channelId);
   }
 
+/*==============================================================================
+                            Admin on Channels
+==============================================================================*/
+
   @Post('admin/:id')
   addAdminOnChannel(
     @Param('id', ParseIntPipe) channelId: number,
@@ -117,6 +121,10 @@ export class ChannelController {
   ) {
     this.channelService.deleteAdminOnChannel(channelId, dto.userId);
   }
+
+/*==============================================================================
+                            Muted On Channel
+==============================================================================*/
 
   @Post('muted/:channelId/')
   addMutedOnChannel(
@@ -142,11 +150,37 @@ export class ChannelController {
 
   @Delete('muted/:channelId/:mutedId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  editMutedOnChannel(
+  removeMutedOnChannel(
     @GetUserId() userId: number,
     @Param('channelId', ParseIntPipe) channelId: number,
     @Param('mutedId', ParseIntPipe) mutedId: number,
   ) {
     return this.channelService.deleteMutedOnChannel(channelId, userId, mutedId);
+  }
+
+/*------------------------------------------------------------------------------
+                            Members on channels
+------------------------------------------------------------------------------*/
+
+  @Post('member/:channelId/:userId')
+  addMemberOnChannel(
+    @GetUserId() userId: number,
+    @Param('channelId', ParseIntPipe) channelId: number,
+    @Param('userId', ParseIntPipe) newId: number,
+  ): Promise<MembersOnChannel | undefined> {
+    return this.channelService.createMemberOnChannel(userId, channelId, newId);
+  }
+
+  @Delete('member/:channelId/:userId')
+  removeMemberOnChannel(
+    @GetUserId() userId: number,
+    @Param('channelId', ParseIntPipe) channelId: number,
+    @Param('userId', ParseIntPipe) bannedId: number,
+  ): Promise<MembersOnChannel | undefined> {
+    return this.channelService.removeMemberOnChannel(
+      userId,
+      channelId,
+      bannedId,
+    );
   }
 }
