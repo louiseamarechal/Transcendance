@@ -29,7 +29,7 @@ const ChatMessaging = () => {
     <div className="chat-messaging">
       {channel ? (
         <ChatHeader
-          key={channel.id}
+          key={`header-chat-${channel.id}`}
           channel={channel}
           showOptions={showOptions}
           setShowOptions={setShowOptions}
@@ -39,9 +39,13 @@ const ChatMessaging = () => {
       )}
       {channel ? (
         showOptions ? (
-          <ChatOptions channel={channel} />
+          <ChatOptions
+            key={`chat-options-${channel.id}`}
+            channel={channel}
+            setChannel={setChannel}
+          />
         ) : (
-          <ChatBody channel={channel} />
+          <ChatBody key={`chat-body-${channel.id}`} channel={channel} />
         )
       ) : (
         <></>

@@ -7,28 +7,31 @@ import {
   faMedal,
   faHeartCrack,
   faVolumeHigh,
+  faPlusCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import '../../../../../style/components/chat/chat-container/chat-messaging/chat-options.css';
 import { User } from '../../../../../types/User.type';
 import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
 import { useUser } from '../../../../../hooks/useUser';
-import { useChatContext } from '../../../../../hooks/useChatContext';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Channel } from '../../../../../types/Channel.type';
 
 const MembersList = ({
   users,
   ownerId,
   admins,
+  channel,
+  setChannel,
 }: {
   users: { user: User }[];
   ownerId: number;
   admins: { userId: number }[];
+  channel: Channel;
+  setChannel: Dispatch<SetStateAction<Channel | undefined>>;
 }) => {
-  const { showChannel, setShowChannel } = useChatContext();
   const { myId } = useUser();
   const myRole: number = determineRole(myId);
   const axiosPrivate = useAxiosPrivate();
-  const [_, setRefresh] = useState<boolean>(false);
 
   function determineRole(id: number): number {
     const adminIds: number[] = admins.map(
@@ -46,20 +49,35 @@ const MembersList = ({
   }
 
   function PromoteButton({ user }: { user: User }) {
-    let userRole: number = determineRole(user.id);
+    const [userRole, setUserRole] = useState<number>(determineRole(user.id));
     async function promote() {
-      await axiosPrivate.post(`channel/admin/${showChannel}`, {
+      await axiosPrivate.post(`channel/admin/${channel.id}`, {
         userId: user.id,
       });
-      userRole += 1;
-      setRefresh(true);
+      const updatedAdmins: { userId: number }[] = [
+        ...channel.admins,
+        { userId: user.id },
+      ];
+      const updatedChannel: Channel = { ...channel, admins: updatedAdmins };
+      setChannel(updatedChannel);
+      setUserRole(userRole + 1);
     }
     async function demote() {
-      await axiosPrivate.delete(`channel/admin/${showChannel}`, {
+      await axiosPrivate.delete(`channel/admin/${channel.id}`, {
         data: { userId: user.id },
       });
-      userRole -= 1;
-      setRefresh(true);
+      const updatedAdmins: { userId: number }[] = channel.admins.filter(
+        (adminUser: { userId: number }) => {
+          if (adminUser.userId === user.id) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+      );
+      const updatedChannel: Channel = { ...channel, admins: updatedAdmins };
+      setChannel(updatedChannel);
+      setUserRole(userRole - 1);
     }
     if (userRole === 0 && userRole < myRole) {
       return (
@@ -81,33 +99,31 @@ const MembersList = ({
   function MuteButton({ user }: { user: User }) {
     const [muted, setMuted] = useState<boolean>(false);
     useEffect(() => {
-      axiosPrivate
-        .get(`channel/muted/${showChannel}/${user.id}`)
-        .then((res) => {
-          console.log({ res });
-          if (res.data !== '') {
-            setMuted(true);
-          }
-        });
+      axiosPrivate.get(`channel/muted/${channel.id}/${user.id}`).then((res) => {
+        console.log({ res });
+        if (res.data !== '') {
+          setMuted(true);
+        }
+      });
     });
     console.log(`muted: ${muted}`);
     async function mute() {
       console.log(`I ${myId}, want to mute ${user.id}`);
       await axiosPrivate
-			.post(`channel/muted/${showChannel}`, { mutedId: user.id })
-			.then(() => {
-				setMuted(true);
-			})
-			.catch((e) => {
-				if (e.response.status !== 409) {
-					throw e;
-				}
-			});
+        .post(`channel/muted/${channel.id}`, { mutedId: user.id })
+        .then(() => {
+          setMuted(true);
+        })
+        .catch((e) => {
+          if (e.response.status !== 409) {
+            throw e;
+          }
+        });
     }
     async function unmute() {
-			console.log(`I ${myId}, want to unmute ${user.id}`);
+      console.log(`I ${myId}, want to unmute ${user.id}`);
       await axiosPrivate
-        .delete(`channel/muted/${showChannel}/${user.id}`)
+        .delete(`channel/muted/${channel.id}/${user.id}`)
         .then(() => {
           setMuted(false);
         })
@@ -134,15 +150,31 @@ const MembersList = ({
 
   function KickButton({ user }: { user: User }) {
     const userRole = determineRole(user.id);
-    function kick() {
-      axiosPrivate.delete(`channel/member/${showChannel}/${user.id}`);
-      setShowChannel(showChannel);
+    async function kick() {
+      const memberOnChannel: { userId: number; channelId: number } =
+        await axiosPrivate.delete(`channel/member/${channel.id}/${user.id}`);
+      const updatedMembers: { user: User }[] = channel.members.filter(
+        (memberUser: { user: User }) => {
+          if (memberUser.user.id === memberOnChannel.userId) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+      );
+      const updatedChannel: Channel = { ...channel, members: updatedMembers };
+      console.log({ updatedChannel });
+      setChannel(updatedChannel);
     }
-    return (
-      <div className="option-button" onClick={() => kick()}>
-        <FontAwesomeIcon icon={faThumbsDown} style={{ color: 'black' }} />
-      </div>
-    );
+    if (userRole < myRole) {
+      return (
+        <div className="option-button" onClick={() => kick()}>
+          <FontAwesomeIcon icon={faThumbsDown} style={{ color: 'black' }} />
+        </div>
+      );
+    } else {
+      return <></>;
+    }
   }
 
   function BanButton({ user }: { user: User }) {
@@ -161,7 +193,7 @@ const MembersList = ({
         return (
           <li key={member.user.id}>
             <div className="card">
-              <UserCard user={member.user} />
+              <UserCard key={`option-member-${member.user.id}`} user={member.user} />
               <div className="action-buttons">
                 <PromoteButton user={member.user} />
                 <MuteButton user={member.user} />
@@ -173,6 +205,11 @@ const MembersList = ({
           </li>
         );
       })}
+      <li>
+        <div className="add-member">
+          <FontAwesomeIcon icon={faPlusCircle} style={{ color: 'black' }} />
+        </div>
+      </li>
     </ul>
   );
 };
