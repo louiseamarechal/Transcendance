@@ -13,16 +13,16 @@ export class GameManager {
 
     if (filtGames.length === 0) {
       const newGame = new Game(this.server);
-      newGame.P1 = client.data.user;
+      newGame.p1.user = client.data.user;
       client.join(newGame.gameId);
       this.addGame(newGame);
     } else {
       const game = filtGames[0];
-      game.P2 = client.data.user;
+      game.p2.user = client.data.user;
       game.status = GameStatus.Ready;
       client.join(game.gameId);
 
-      game.startGameLoop(500);
+      game.startGameLoop(20);
 
       this.server
         .to(game.gameId)
@@ -46,10 +46,10 @@ export class GameManager {
       return;
     }
 
-    if (game.P1.id === playerId) {
-      game.P1Pos = val;
-    } else if (game.P2.id === playerId) {
-      game.P2Pos = val;
+    if (game.p1.user.id === playerId) {
+      game.p1.paddlePos = val;
+    } else if (game.p2.user.id === playerId) {
+      game.p2.paddlePos = val;
     }
   }
 
@@ -59,10 +59,10 @@ export class GameManager {
       return;
     }
 
-    if (game.P1.id === playerId) {
-      game.P1Ready = true;
-    } else if (game.P2.id === playerId) {
-      game.P2Ready = true;
+    if (game.p1.user.id === playerId) {
+      game.p1.ready = true;
+    } else if (game.p2.user.id === playerId) {
+      game.p2.ready = true;
     }
   }
 

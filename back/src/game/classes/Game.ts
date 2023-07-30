@@ -1,6 +1,8 @@
 import { Namespace } from 'socket.io';
 import { v4 as uuid } from 'uuid';
 import { PublicUser } from 'src/user/types';
+import Player from './Player';
+import Ball from './Ball';
 
 export enum GameStatus {
   Waiting = 'Waiting',
@@ -18,31 +20,25 @@ export enum GameVisibility {
 export class Game {
   server: Namespace;
 
+  readonly gameId: string = uuid();
   readonly createdAt: number = Date.now();
   gameStartedAt: number;
-  readonly gameId: string = uuid();
-  P1: PublicUser;
-  P1Ready: boolean = false;
-  P2: PublicUser;
-  P2Ready: boolean = false;
+  #intervalId: NodeJS.Timer | null = null;
 
+  p1: Player;
+  p2: Player;
+  ball: Ball;
   score: [number, number] = [0, 0];
+
   status: GameStatus = GameStatus.Waiting;
   visibility: GameVisibility = GameVisibility.Public;
 
-  P1Pos: number = 0.5;
-  P1PaddleSize = 0.1;
-
-  P2Pos: number = 0.5;
-  P2PaddleSize = 0.1;
-
-  ballPos: [number, number] = [0.5, 0.5];
-  ballVel: [number, number] = [0.1, 0];
-
-  private intervalId: NodeJS.Timer | null = null;
-
   constructor(server: Namespace, visibility?: GameVisibility) {
     console.log('[Game] New instance');
+
+    this.p1 = new Player();
+    this.p2 = new Player();
+    this.ball = new Ball();
 
     this.server = server;
     if (visibility) {
@@ -57,13 +53,11 @@ export class Game {
         this.score,
         this.status,
         this.visibility,
-        this.intervalId ? true : false,
+        this.#intervalId ? true : false,
       ],
-      pl: [
-        [this.P1?.name, this.P1Ready, this.P1Pos, this.P1PaddleSize],
-        [this.P2?.name, this.P2Ready, this.P2Pos, this.P2PaddleSize],
-      ],
-      ball: [this.ballPos, this.ballVel],
+      p1: this.p1,
+      p2: this.p2,
+      ball: this.ball,
     });
   }
 
@@ -81,19 +75,19 @@ export class Game {
 
   startGameLoop(delay: number) {
     console.log('[Game] Start Game Loop');
-    if (!this.intervalId) {
-      this.intervalId = setInterval(this.gameLoop.bind(this), delay);
+    if (!this.#intervalId) {
+      this.#intervalId = setInterval(this.gameLoop.bind(this), delay);
     }
   }
 
   stopGameLoop() {
     console.log(
       '[Game] Stop Game Loop',
-      this.intervalId ? 'Clear interval' : null,
+      this.#intervalId ? 'Clear interval' : null,
     );
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
+    if (this.#intervalId) {
+      clearInterval(this.#intervalId);
+      this.#intervalId = null;
     }
   }
 
@@ -103,17 +97,15 @@ export class Game {
   private gameLoopReady() {
     console.log('  Ready');
 
-    if (this.P1Ready && this.P2Ready) {
+    if (this.p1.ready && this.p2.ready) {
       this.status = GameStatus.Timer;
       this.gameStartedAt = Date.now() + 4000;
       return;
     }
 
-    // this.P1Ready = !this.P1Ready;
-    // this.P2Ready = !this.P2Ready;
     this.server.to(this.gameId).emit('server.game.updateOverlay', {
       type: 'ready',
-      data: { p1ready: this.P1Ready, p2ready: this.P2Ready },
+      data: { p1ready: this.p1.ready, p2ready: this.p2.ready },
     });
   }
 
@@ -135,9 +127,15 @@ export class Game {
   private gameLoopPlaying() {
     console.log('  Playing');
 
+    this.ball.pos[0] = this.ball.pos[0] + this.ball.velocity[0];
+
+    if (this.ball.pos[0] > 1 || this.ball.pos[0] < 0) {
+      this.ball.velocity[0] = this.ball.velocity[0] * -1;
+    }
+
     const overlayData: any = {
-      p1name: this.P1.name,
-      p2name: this.P2.name,
+      p1name: this.p1.user?.name,
+      p2name: this.p2.user?.name,
       score: this.score,
     };
     this.server.to(this.gameId).emit('server.game.updateOverlay', {
@@ -146,17 +144,9 @@ export class Game {
     });
 
     const gameData: any = {
-      PaddleP1: {
-        pos: this.P1Pos,
-        size: this.P1PaddleSize,
-      },
-      PaddleP2: {
-        pos: this.P2Pos,
-        size: this.P2PaddleSize,
-      },
-      Ball: {
-        pos: this.ballPos,
-      },
+      p1: this.p1,
+      p2: this.p2,
+      ball: this.ball,
     };
     this.server.to(this.gameId).emit('server.game.gameData', {
       data: gameData,

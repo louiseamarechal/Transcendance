@@ -11,15 +11,15 @@ import GameBackground from '../../components/game/GameBackground';
 
 export default function GameLobby() {
   const { gameId } = useParams();
-  const [pos, setPos] = useState({ x: 0, y: 0 }); // debug
 
   const divRef = useRef<HTMLDivElement>(null);
 
   const [overlayType, setOverlayType] = useState<string>('ready');
   const [overlayData, setOverlayData] = useState<OverlayData>({});
+  const [gameData, setGameData] = useState<any>({});
 
   useEffect(() => {
-    function updateOverlay(payload: { type: any; data: any }) {
+    function updateOverlay(payload: { type: any; data: OverlayData }) {
       console.log('In updateOverlay', { payload });
       setOverlayType(payload.type);
       setOverlayData(payload.data);
@@ -27,6 +27,7 @@ export default function GameLobby() {
 
     function gameData(payload: { data: any }) {
       console.log('In gameData', { payload });
+      setGameData(payload.data);
     }
 
     gameSocket.on('server.game.updateOverlay', updateOverlay);
@@ -51,8 +52,6 @@ export default function GameLobby() {
       input = (event.clientY - divMinY) / (divMaxY - divMinY);
     }
 
-    setPos({ ...pos, y: input }); // debug
-
     const payload: ClientPayloads[ClientEvents.GameInput] = {
       gameId: gameId,
       val: input,
@@ -70,7 +69,7 @@ export default function GameLobby() {
         className="relative h-4/5 w-4/5 border-8 border-blue-600 flex flex-col justify-center items-center"
       >
         <GameBackground />
-        <GameCanvas />
+        <GameCanvas data={gameData}/>
         <GameOverlay type={overlayType} data={overlayData} />
       </div>
     </div>

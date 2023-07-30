@@ -1,45 +1,39 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
+import { Layer, Stage } from 'react-konva';
+import GamePaddle from './GamePaddle';
+import GameBall from './GameBall';
 
 type GameCanvasProps = any;
 
-function GameCanvas(props: GameCanvasProps) {
+export default function GameCanvas({ data }: GameCanvasProps) {
   const parentRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvas = canvasRef.current;
-  const context = canvas?.getContext('2d');
 
-  useEffect(() => {
-    if (context && canvas) {
-      const widht = canvas.width;
-      const height = canvas.height;
+  const width = parentRef.current?.clientWidth;
+  const height = parentRef.current?.clientHeight;
 
-      context.clearRect(0, 0, widht, height)
-      // context.fillStyle = '#000000';
-      // context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+  // Left Paddle
+  const lx = 0;
+  const ly = height && data.p1 ? data.p1.paddlePos * height : 0;
+  const lsize = height && data.p1 ? data.p1.paddleSize * height : 0;
 
-      // context.fillStyle = '#000000';
-      // context.beginPath();
-      // context.arc(0, 0, 5, 0, 2 * Math.PI);
-      // context.fill();
+  // Right Paddle
+  const rx = width ? width - 10 : 100;
+  const ry = height && data.p2 ? data.p2.paddlePos * height : 0;
+  const rsize = height && data.p2 ? data.p2.paddleSize * height : 0;
 
-      context.beginPath();
-      context.roundRect(10, height / 4, widht / 100, height / 10, [50]);
-      context.fillStyle = '#000000';
-      context.lineWidth = 1;
-      context.fill();
-    }
-  }, [props]);
+  // Ball
+  const bx = width && data.ball ? data.ball.pos[0] * width : 0;
+  const by = height && data.ball ? data.ball.pos[1] * height : 0;
 
   return (
     <div ref={parentRef} className="h-[95%] w-[95%]">
-      <canvas
-        ref={canvasRef}
-        width={parentRef.current?.clientWidth}
-        height={parentRef.current?.clientHeight}
-        id="canvas"
-      ></canvas>
+      <Stage width={width} height={height}>
+        <Layer>
+          <GamePaddle x={lx} y={ly} size={lsize} paddleWidth={10} />
+          <GamePaddle x={rx} y={ry} size={rsize} paddleWidth={10} />
+          <GameBall x={bx} y={by} radius={10} />
+        </Layer>
+      </Stage>
     </div>
   );
 }
-
-export default GameCanvas;
