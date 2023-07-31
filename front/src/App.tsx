@@ -31,6 +31,7 @@ import GameQueue from './pages/game/GameQueue.tsx';
 import GameGame from './pages/game/GameGame.tsx';
 
 import UserProfile from './pages/UserProfile.tsx';
+import TwoFApage from './pages/2FApage.tsx';
 
 function App() {
   return (
@@ -56,6 +57,7 @@ function App() {
           <Route path="/profil/:id" Component={UserProfile} />
           <Route path="/test" Component={Components} />
           <Route path="/findfriends" Component={FindFriends} />
+          <Route path="/2FApage" Component={TwoFApage} />
         </Route>
       </Routes>
     </div>

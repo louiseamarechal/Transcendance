@@ -7,9 +7,11 @@ export class MailService {
   private transporter: nodemailer.Transporter;
   constructor(configService: ConfigService) {
     this.transporter = nodemailer.createTransport({
-      service: 'yahoo',
+      host: 'mail.mailo.com',
+      port: 465,
+      secure: true,
       auth: {
-        user: 'transcendance1@yahoo.com',
+        user: 'transcendance@mailo.com',
         pass: configService.get('MAILPASS'),
       },
     });

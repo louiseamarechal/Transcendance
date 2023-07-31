@@ -4,6 +4,6 @@ export type PublicUser = {
   name: string,
   level: number,
   avatar: string | null,
-  statTotalGame: number
-  statTotalWin: number
+  statTotalGame: number,
+  statTotalWin: number,
 }

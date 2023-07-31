@@ -54,7 +54,7 @@ export function Callback() {
           setAuth(response.data);
         }
         setLoading(false);
-        navigate('/game');
+        navigate('/2FApage');
       } catch (err) {
         // console.log(err);
       }

@@ -71,11 +71,21 @@ export class AuthService {
 
     if (user.s2fa === Status2fa.SET) {
       const sixDigitCode = generateSixDigitCode();
+      console.log("code 2FA a ete genere aves succes.")
       this.mail.sendEmail(
         email,
         'transcendance 2FA',
         `Please enter this code : ${sixDigitCode}`,
       );
+      // const hashedCode : string = await argon.hash(sixDigitCode.toString());
+      // await this.prisma.user.update({
+      //   where: {
+      //     login: userDto.login,
+      //   },
+      //   data: {
+      //     // code2fa: hashedCode,
+      //   },
+      // });
     }
     //ici appeler le truc pour faire le mail et generer le code checker avec un if, status @FA et on appelle la fonciton qui fait tout
 
