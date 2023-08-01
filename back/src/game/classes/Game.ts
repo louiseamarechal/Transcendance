@@ -1,8 +1,8 @@
 import { Namespace } from 'socket.io';
 import { v4 as uuid } from 'uuid';
-import { PublicUser } from 'src/user/types';
 import Player from './Player';
 import Ball from './Ball';
+import { Vec2D } from '../types';
 
 export enum GameStatus {
   Waiting = 'Waiting',
@@ -62,7 +62,7 @@ export class Game {
   }
 
   async gameLoop() {
-    console.log('[Game] gameLoop');
+    // console.log('[Game] gameLoop');
 
     if (this.status === GameStatus.Ready) {
       this.gameLoopReady();
@@ -81,10 +81,7 @@ export class Game {
   }
 
   stopGameLoop() {
-    console.log(
-      '[Game] Stop Game Loop',
-      this.#intervalId ? 'Clear interval' : null,
-    );
+    console.log('[Game] Stop Game Loop');
     if (this.#intervalId) {
       clearInterval(this.#intervalId);
       this.#intervalId = null;
@@ -95,7 +92,7 @@ export class Game {
    * PRIVATE
    */
   private gameLoopReady() {
-    console.log('  Ready');
+    // console.log('  Ready');
 
     if (this.p1.ready && this.p2.ready) {
       this.status = GameStatus.Timer;
@@ -110,14 +107,13 @@ export class Game {
   }
 
   private gameLoopTimer() {
-    console.log('  Timer');
+    // console.log('  Timer');
 
     if (Date.now() > this.gameStartedAt) {
       this.status = GameStatus.Playing;
       return;
     }
 
-    console.log(Math.floor((this.gameStartedAt - Date.now()) / 1000));
     this.server.to(this.gameId).emit('server.game.updateOverlay', {
       type: 'timer',
       data: { timerval: Math.floor((this.gameStartedAt - Date.now()) / 1000) },
@@ -125,13 +121,9 @@ export class Game {
   }
 
   private gameLoopPlaying() {
-    console.log('  Playing');
+    // console.log('  Playing');
 
-    this.ball.pos[0] = this.ball.pos[0] + this.ball.velocity[0];
-
-    if (this.ball.pos[0] > 1 || this.ball.pos[0] < 0) {
-      this.ball.velocity[0] = this.ball.velocity[0] * -1;
-    }
+    this.computeNextState();
 
     const overlayData: any = {
       p1name: this.p1.user?.name,
@@ -152,4 +144,46 @@ export class Game {
       data: gameData,
     });
   }
+
+  private computeNextState() {
+    const prevBallPos: Vec2D = { ...this.ball.pos };
+    const newBallPos: Vec2D = {
+      x: this.ball.pos.x + this.ball.velocity.x,
+      y: this.ball.pos.y + this.ball.velocity.y,
+    };
+
+    if (this.isOut(newBallPos) === false) {
+      this.ball.pos = newBallPos;
+      return;
+    }
+
+    if (this.isOutHorizontally(newBallPos)) {
+      this.ball.velocity.x *= -1;
+    }
+  }
+
+  /**
+   * ComputeNextState Helpers
+   */
+  private isOut(pos: Vec2D) {
+    if (pos.x > 0 && pos.x < 1 && pos.y > 0 && pos.y < 1) {
+      return false;
+    }
+    return true;
+  }
+
+  private isOutHorizontally(pos: Vec2D) {
+    if (pos.x < 0 || pos.x > 1) {
+      return true;
+    }
+    return false;
+  }
+
+  private isPaddleIntersectingBall(
+    paddlePos: number,
+    paddleSize: number,
+    pos: Vec2D,
+  ) {}
+
+  private rotateVec2D(vec: Vec2D, angle: number) {}
 }

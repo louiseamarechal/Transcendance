@@ -40,8 +40,12 @@ export default function GameLobby() {
   }, []);
 
   function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
-    const divMinY = divRef.current!.offsetTop;
-    const divMaxY = divMinY + divRef.current!.offsetHeight;
+    const divElem = divRef.current;
+
+    if (!gameId || !divElem) return;
+
+    const divMinY = divElem.offsetTop;
+    const divMaxY = divMinY + divElem.offsetHeight;
 
     let input;
     if (event.clientY <= divMinY) {
@@ -69,7 +73,7 @@ export default function GameLobby() {
         className="relative h-4/5 w-4/5 border-8 border-blue-600 flex flex-col justify-center items-center"
       >
         <GameBackground />
-        <GameCanvas data={gameData}/>
+        <GameCanvas data={gameData} />
         <GameOverlay type={overlayType} data={overlayData} />
       </div>
     </div>

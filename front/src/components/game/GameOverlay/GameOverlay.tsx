@@ -1,18 +1,13 @@
-import GameOverlayPlaying from "./GameOverlayPlaying";
-import GameOverlayReady from "./GameOverlayReady";
-import GameOverlayTimer from "./GameOverlayTimer";
-
-export type OverlayData = {
-  p1name?: string;
-  p2name?: string;
-  p1ready?: boolean;
-  p2ready?: boolean;
-  timerval?: number;
-  score?: [number, number];
-};
+import GameOverlayPlaying from './GameOverlayPlaying';
+import GameOverlayReady from './GameOverlayReady';
+import GameOverlayTimer from './GameOverlayTimer';
+import {
+  OverlayType,
+  OverlayData,
+} from '../../../../../shared/server/ServerPayloads';
 
 type GameOverlayProps = {
-  type: string;
+  type: OverlayType;
   data: OverlayData;
 };
 

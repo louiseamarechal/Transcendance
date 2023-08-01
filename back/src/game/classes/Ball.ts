@@ -1,5 +1,7 @@
+import { Vec2D } from '../types';
+
 export default class Ball {
-  pos: [number, number] = [0.5, 0.5]
-  velocity: [number, number] = [0.02, 0]
-  radius: 0.05
+  pos: Vec2D = { x: 0.5, y: 0.5 };
+  velocity: Vec2D = { x: 0.02, y: 0 };
+  radius: number = 0.05;
 }

@@ -13,8 +13,9 @@ import { GameManager } from './classes/GameManager';
 import { AtJwt } from 'src/auth/types';
 import { Cron } from '@nestjs/schedule';
 import { SocketService } from 'src/sockets/socket.service';
-// import { ClientEvents } from '../../../shared/client/ClientEvents';
-// import { ClientPayloads } from '../../../shared/client/ClientPayloads';
+import { ClientEvents } from '../../../shared/client/ClientEvents';
+import { ClientPayloads } from '../../../shared/client/ClientPayloads';
+import { Logger } from '@nestjs/common';
 
 // @UseGuards(WsJwtGuard)
 
@@ -40,11 +41,7 @@ export class GameGateway
     // this is debug, not necessary for production
     server.use((client: Socket, next) => {
       client.use((event, next) => {
-        console.log(
-          '\x1b[36m%s\x1b[0m',
-          'Middleware: New socket event',
-          event[0],
-        );
+        Logger.warn(`New Game Event ${event[0]}`);
         next();
       });
       next();
@@ -67,34 +64,35 @@ export class GameGateway
     client.disconnect();
   }
 
-  @SubscribeMessage('client.game.input')
+  @SubscribeMessage(ClientEvents.GameInput)
   handleInput(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { gameId: string; val: number },
+    @MessageBody() payload: ClientPayloads[ClientEvents.GameInput],
   ) {
     this.gameManager.handleInput(
-      payload.gameId,
       client.data.user.id,
+      // ...payload,
+      payload.gameId,
       payload.val,
     );
   }
 
-  @SubscribeMessage('client.game.joinQueue')
+  @SubscribeMessage(ClientEvents.GameJoinQueue)
   handleJoinQueue(@ConnectedSocket() client: Socket) {
     this.gameManager.joinQueue(client);
   }
 
-  @SubscribeMessage('client.game.leaveQueue')
+  @SubscribeMessage(ClientEvents.GameLeaveQueue)
   handleLeaveQueue() {
     this.gameManager.leaveQueue();
   }
 
-  @SubscribeMessage('client.game.setReady')
+  @SubscribeMessage(ClientEvents.GameSetReady)
   handleSetReady(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { gameId: string },
+    @MessageBody() payload: ClientPayloads[ClientEvents.GameSetReady],
   ) {
-    this.gameManager.setReady(payload.gameId, client.data.user.id);
+    this.gameManager.setReady(client.data.user.id, payload.gameId);
   }
 
   // @Cron('*/5 * * * * *')
