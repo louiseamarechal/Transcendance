@@ -150,19 +150,22 @@ const MembersList = ({
 
   function KickButton({ user }: { user: User }) {
     const userRole = determineRole(user.id);
+    const [memberList, setMemberList] = useState<{ user: User }[]>(
+      channel.members,
+    );
     async function kick() {
-      const memberOnChannel: { userId: number; channelId: number } =
+      const DeletedMemberOnChannel: { userId: number; channelId: number } =
         await axiosPrivate.delete(`channel/member/${channel.id}/${user.id}`);
-      const updatedMembers: { user: User }[] = channel.members.filter(
-        (memberUser: { user: User }) => {
-          if (memberUser.user.id === memberOnChannel.userId) {
+      setMemberList(
+        memberList.filter((memberUser: { user: User }) => {
+          if (memberUser.user.id === DeletedMemberOnChannel.userId) {
             return false;
           } else {
             return true;
           }
-        },
+        }),
       );
-      const updatedChannel: Channel = { ...channel, members: updatedMembers };
+      const updatedChannel: Channel = { ...channel, members: memberList };
       console.log({ updatedChannel });
       setChannel(updatedChannel);
     }
@@ -177,14 +180,51 @@ const MembersList = ({
     }
   }
 
-  function BanButton({ user }: { user: User }) {
+  function BlockButton({ user }: { user: User }) {
     const userRole = determineRole(user.id);
-    function ban() {}
-    return (
-      <div className="option-button" onClick={() => ban()}>
-        <FontAwesomeIcon icon={faSkullCrossbones} style={{ color: 'red' }} />
-      </div>
+    const [memberList, setMemberList] = useState<{ user: User }[]>(
+      channel.members,
     );
+    async function block() {
+      const DeletedMemberOnChannel: { userId: number; channelId: number } = (
+        await axiosPrivate.delete(`channel/member/${channel.id}/${user.id}`)
+      ).data;
+      const blockedUser = (
+        await axiosPrivate.post(
+          `channel/blocked/${channel.id}/${DeletedMemberOnChannel.userId}`,
+        )
+      ).data;
+      if (blockedUser) {
+        setMemberList([
+          ...memberList.filter((memberUser: { user: User }) => {
+            if (memberUser.user.id === DeletedMemberOnChannel.userId) {
+              return false;
+            } else {
+              return true;
+            }
+          }),
+        ]);
+        const updatedChannel: Channel = {
+          ...channel,
+          members: memberList,
+          blocked: [
+            ...channel.blocked,
+            { userId: DeletedMemberOnChannel.userId },
+          ],
+        };
+        console.log({ updatedChannel });
+        setChannel(updatedChannel);
+      }
+    }
+    if (userRole < myRole) {
+      return (
+        <div className="option-button" onClick={() => block()}>
+          <FontAwesomeIcon icon={faSkullCrossbones} style={{ color: 'red' }} />
+        </div>
+      );
+    } else {
+      return <></>;
+    }
   }
 
   return (
@@ -193,13 +233,20 @@ const MembersList = ({
         return (
           <li key={member.user.id}>
             <div className="card">
-              <UserCard key={`option-member-${member.user.id}`} user={member.user} />
-              <div className="action-buttons">
-                <PromoteButton user={member.user} />
-                <MuteButton user={member.user} />
-                <KickButton user={member.user} />
-                <BanButton user={member.user} />
-              </div>
+              <UserCard
+                key={`option-member-${member.user.id}`}
+                user={member.user}
+              />
+              {member.user.id === myId ? (
+                <div></div>
+              ) : (
+                <div className="action-buttons">
+                  <PromoteButton user={member.user} />
+                  <MuteButton user={member.user} />
+                  <KickButton user={member.user} />
+                  <BlockButton user={member.user} />
+                </div>
+              )}
               <div />
             </div>
           </li>
@@ -207,7 +254,11 @@ const MembersList = ({
       })}
       <li>
         <div className="add-member">
-          <FontAwesomeIcon icon={faPlusCircle} style={{ color: 'black' }} />
+          <FontAwesomeIcon
+            className="fa-3x"
+            icon={faPlusCircle}
+            style={{ color: 'black' }}
+          />
         </div>
       </li>
     </ul>

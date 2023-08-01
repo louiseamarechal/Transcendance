@@ -16,6 +16,7 @@ import {
 import { Socket, Namespace } from 'socket.io';
 import { MembersOnChannel, MutedOnChannel } from './types';
 import { NotifService } from 'src/notif/notif.service';
+import { channel } from 'diagnostics_channel';
 
 @Injectable()
 export class ChannelService {
@@ -440,7 +441,38 @@ export class ChannelService {
   async removeMemberOnChannel(
     userId: number,
     channelId: number,
-    bannedId: number,
+    removeId: number,
+  ): Promise<MembersOnChannel | undefined> {
+    console.log(`In removeMemberOnChannel ${removeId} in ${channelId}`);
+    const ownerId: number | undefined = await this.prisma.channel
+      .findUnique({ where: { id: channelId } })
+      .then((res): number | undefined => res?.ownerId);
+    const admin = await this.prisma.adminsOnChannels.findUnique({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId,
+        },
+      },
+    });
+    if (admin === null && ownerId !== userId) {
+      throw new ForbiddenException('User not a member');
+    }
+    console.log(`Remove member ${removeId} on channel ${channelId}`);
+    return this.prisma.membersOnChannels.delete({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId: removeId,
+        },
+      },
+    });
+  }
+
+  async createBlockedOnChannel(
+    userId: number,
+    channelId: number,
+    blockedId: number,
   ): Promise<MembersOnChannel | undefined> {
     const ownerId: number | undefined = await this.prisma.channel
       .findUnique({ where: { id: channelId } })
@@ -456,12 +488,11 @@ export class ChannelService {
     if (admin === null && ownerId !== userId) {
       throw new ForbiddenException('User not a member');
     }
-    return this.prisma.membersOnChannels.delete({
-      where: {
-        channelId_userId: {
-          channelId,
-          userId: bannedId,
-        },
+    console.log(`Add banned member: ${blockedId}`);
+    return this.prisma.blockedOnChannels.create({
+      data: {
+        channelId,
+        userId: blockedId,
       },
     });
   }

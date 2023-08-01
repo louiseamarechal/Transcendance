@@ -15,6 +15,7 @@ import { ChannelService } from './channel.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
 import { VisType } from '@prisma/client';
 import { MembersOnChannel, MutedOnChannel } from './types';
+import { channel } from 'diagnostics_channel';
 
 @Controller('channel')
 export class ChannelController {
@@ -102,7 +103,7 @@ export class ChannelController {
     return this.channelService.deleteChannelById(userId, channelId);
   }
 
-/*==============================================================================
+  /*==============================================================================
                             Admin on Channels
 ==============================================================================*/
 
@@ -122,7 +123,7 @@ export class ChannelController {
     this.channelService.deleteAdminOnChannel(channelId, dto.userId);
   }
 
-/*==============================================================================
+  /*==============================================================================
                             Muted On Channel
 ==============================================================================*/
 
@@ -158,7 +159,7 @@ export class ChannelController {
     return this.channelService.deleteMutedOnChannel(channelId, userId, mutedId);
   }
 
-/*------------------------------------------------------------------------------
+  /*------------------------------------------------------------------------------
                             Members on channels
 ------------------------------------------------------------------------------*/
 
@@ -175,12 +176,30 @@ export class ChannelController {
   removeMemberOnChannel(
     @GetUserId() userId: number,
     @Param('channelId', ParseIntPipe) channelId: number,
-    @Param('userId', ParseIntPipe) bannedId: number,
+    @Param('userId', ParseIntPipe) removeId: number,
   ): Promise<MembersOnChannel | undefined> {
+    console.log(`Called remove member ${removeId} on channel ${channelId}`);
     return this.channelService.removeMemberOnChannel(
       userId,
       channelId,
-      bannedId,
+      removeId,
+    );
+  }
+
+  /*------------------------------------------------------------------------------
+                            Blocked on channels
+------------------------------------------------------------------------------*/
+
+  @Post('blocked/:channelId/:blockedId')
+  addBlockedOnChannel(
+    @GetUserId() userId: number,
+    @Param('channelId', ParseIntPipe) channelId: number,
+    @Param('blockedId', ParseIntPipe) blockedId: number,
+  ) {
+    return this.channelService.createBlockedOnChannel(
+      userId,
+      channelId,
+      blockedId,
     );
   }
 }
