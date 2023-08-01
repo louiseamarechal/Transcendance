@@ -25,9 +25,12 @@ export class AuthService {
     private jwt: JwtService,
   ) {}
 
-  async login(dto: AuthDto): Promise<Tokens> {
+  async login(dto: AuthDto, origin: string): Promise<Tokens> {
     // exchange code
-    const token42 = await this.exchangeCode(dto.code);
+    if (!origin) {
+      throw new UnauthorizedException('wrong origin - check login service');
+    }
+    const token42 = await this.exchangeCode(dto.code, origin);
     // console.log({ token42 });
 
     // get info from 42 api
@@ -42,10 +45,10 @@ export class AuthService {
     });
 
     if (!user) {
-      let avatarPath = 'http://localhost:3000/public/default.jpg';
+      let avatarPath = `${BASE_URL}/public/default.jpg`;
       await this.downloadPhoto(userDto.login, userDto.avatar)
         .then(() => {
-          avatarPath = `http://localhost:3000/public/${userDto.login}.jpg`;
+          avatarPath = `${BASE_URL}/public/${userDto.login}.jpg`;
         })
         .catch(() => {
           console.log(`Unable to download avatar for user ${userDto.login}`);
@@ -99,7 +102,7 @@ export class AuthService {
 
   // HELPER FUNCTIONS
 
-  async exchangeCode(code: string): Promise<string> {
+  async exchangeCode(code: string, origin: string): Promise<string> {
     const axiosConfig: AxiosRequestConfig = {
       method: 'post',
       url: 'https://api.intra.42.fr/oauth/token',
@@ -108,7 +111,7 @@ export class AuthService {
         client_id: this.config.get('CLIENT_ID'),
         client_secret: this.config.get('CLIENT_SECRET'),
         code: code,
-        redirect_uri: this.config.get('REDIRECT_URI'),
+        redirect_uri: origin + '/callback',
       },
       headers: {
         'Content-Type': 'multipart/form-data',

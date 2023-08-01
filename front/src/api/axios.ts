@@ -1,9 +1,11 @@
 import axios from 'axios';
-const BASE_URL = 'http://localhost:3000';
+import BACK_URL from './backUrl';
 
 export default axios.create({
-  baseURL: BASE_URL,
+  baseURL: BACK_URL,
 });
+
+console.log(BACK_URL);
 
 // we want two of those because we're going to attach intereceptos to axios Private that will attach
 // the JWT Token for us and retry when we get a failure on the ifrst time
@@ -11,7 +13,7 @@ export default axios.create({
 //token (this happens in the background, user won't see what's ahppening but it will keep everything secure
 // and we'll continue to refresh this token on schedule)
 export const axiosPrivate = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BACK_URL,
   headers: { 'Content-Type': 'application/json' }, //, "Access-Control-Allow-Origin": "http://localhost:5173" },
   // withCredentials: true,
 });

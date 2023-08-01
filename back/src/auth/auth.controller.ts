@@ -1,5 +1,6 @@
 import {
   Body,
+  Headers,
   Controller,
   HttpCode,
   HttpStatus,
@@ -18,9 +19,13 @@ export class AuthController {
 
   @Public()
   @Post('login')
-  async login(@Body() dto: AuthDto): Promise<Tokens> {
+  async login(
+    @Body() dto: AuthDto,
+    @Headers('origin') origin: string,
+  ): Promise<Tokens> {
     console.log('POST /auth/login called');
-    return await this.authService.login(dto);
+    console.log(origin);
+    return await this.authService.login(dto, origin);
   }
 
   @Post('logout')
