@@ -71,21 +71,22 @@ export class AuthService {
 
     if (user.s2fa === Status2fa.SET) {
       const sixDigitCode = generateSixDigitCode();
-      console.log("code 2FA a ete genere aves succes.")
-      this.mail.sendEmail(
+      console.log('code 2FA a ete genere aves succes.');
+
+      const hashedCode: string = await argon.hash(sixDigitCode.toString());
+      await this.prisma.user.update({
+        where: {
+          login: userDto.login,
+        },
+        data: {
+          code2FA: hashedCode,
+        },
+      });
+      await this.mail.sendEmail(
         email,
         'transcendance 2FA',
         `Please enter this code : ${sixDigitCode}`,
       );
-      // const hashedCode : string = await argon.hash(sixDigitCode.toString());
-      // await this.prisma.user.update({
-      //   where: {
-      //     login: userDto.login,
-      //   },
-      //   data: {
-      //     // code2fa: hashedCode,
-      //   },
-      // });
     }
     //ici appeler le truc pour faire le mail et generer le code checker avec un if, status @FA et on appelle la fonciton qui fait tout
 
@@ -93,6 +94,25 @@ export class AuthService {
     const tokens: Tokens = await this.getTokens(user);
     await this.updateRTHash(user.id, tokens.refresh_token);
     return tokens;
+  }
+
+  async checkcode(userId: number, code: string) {
+    const hashedCode: string = await argon.hash(code.toString());
+    const object = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { code2FA: true },
+    });
+    const goodcode = '';
+    if (object !== null) {
+      const goodcode = object.code2FA;
+    }
+    try {
+      const isMatch = await argon.verify(goodcode, code);
+      return isMatch;
+    } catch (error) {
+      console.error('Erreur lors de la vérification du mot de passe:', error);
+      throw new ForbiddenException('Access Denied');
+    }
   }
 
   async logout(userId: number) {
