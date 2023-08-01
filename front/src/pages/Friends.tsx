@@ -3,23 +3,12 @@ import UserCard from '../components/UserCard.tsx';
 // import { User } from '../types/User.type.ts';
 import { useEffect, useState } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
-
-// const user = {
-//   name: 'truc',
-//   avatar: 'coucou',
-//   level: 5,
-// };
-
-// const array = [user, user, user, user];
+import { Link } from 'react-router-dom';
+import PendingFriends from '../components/PendingFriends.tsx';
 
 function Friends() {
   const axiosInstance = useAxiosPrivate();
   const [array, setArray] = useState([]);
-  // const [user, setUser] = useState<User>({
-  //   name: 'toi',
-  //   avatar: 'lol',
-  //   level: 8
-  // });
 
   useEffect(() => {
     axiosInstance
@@ -32,42 +21,25 @@ function Friends() {
 
   return (
     <>
-      {/* <NavBar/> */}
       <div className="findfriends-container friend-card">
-        {/* <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '} */}
-        {/* </div> */}
-        {array.map((elem) => {
-          return (
-            <div className="friend-card">
-              <UserCard user={elem} />
-            </div>
-          );
-        })}
+        {array.length <= 0 ? (
+          <div>
+            <PendingFriends />
+            <p>You don't have any Friends yet...</p>
+            <Link to='/findfriends'>You can invite your Friends <strong>here</strong></Link>
+          </div>
+        ) : (
+          array.map((elem) => {
+            return (
+              <>
+              <PendingFriends />
+              <div className="friend-card">
+                <UserCard user={elem} />
+              </div>
+              </>
+            );
+          })
+        )}
       </div>
     </>
   );

@@ -40,7 +40,10 @@ export class UserController {
   }
 
   @Patch('me')
-  editUser(@GetUserId() userId: number, @Body() dto: EditUserDto): Promise<{
+  editUser(
+    @GetUserId() userId: number,
+    @Body() dto: EditUserDto,
+  ): Promise<{
     id: number | null;
     login: string | null;
     name: string | null;
@@ -58,10 +61,17 @@ export class UserController {
   uploadAvatar(
     @UploadedFile() file: Express.Multer.File,
     @GetUser('login') userLogin: string,
-    @GetUser('sub') userId: number
+    @GetUser('sub') userId: number,
   ) {
     console.log('POST /user/avatar called', file);
     return this.userService.uploadAvatar(file, userLogin, userId);
+  }
+
+  @Get('pending-request')
+  getPendingFR(@GetUserId() userId: number) {
+    console.log({ userId });
+    console.log('[user/pending-request]: accessed controller');
+    return this.userService.getPendingFR(userId);
   }
 
   @Get(':id')

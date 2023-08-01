@@ -106,4 +106,18 @@ export class UserService {
     this.editUser(userId, { avatar: `http://localhost:3000/${newname}` });
     return `http://localhost:3000/${newname}`;
   }
+
+  async getPendingFR(userId: number) {
+    const pendingFR = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        receivedRequests: true,
+      },
+    });
+    console.log('getting Pending Friend Request');
+    console.log(pendingFR?.receivedRequests);
+    return pendingFR?.receivedRequests;
+  }
 }
