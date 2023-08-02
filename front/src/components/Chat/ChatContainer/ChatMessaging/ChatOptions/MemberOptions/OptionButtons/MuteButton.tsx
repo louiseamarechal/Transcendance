@@ -4,22 +4,17 @@ import { axiosPrivate } from '../../../../../../../api/axios';
 import { User } from '../../../../../../../types/User.type';
 import { useEffect, useState } from 'react';
 import { Channel } from '../../../../../../../types/Channel.type';
-import { useUser } from '../../../../../../../hooks/useUser';
 
 function MuteButton({ user, channel }: { user: User; channel: Channel }) {
-  const { myId } = useUser();
   const [muted, setMuted] = useState<boolean>(false);
   useEffect(() => {
     axiosPrivate.get(`channel/muted/${channel.id}/${user.id}`).then((res) => {
-      console.log({ res });
       if (res.data !== '') {
         setMuted(true);
       }
     });
   });
-  console.log(`muted: ${muted}`);
   async function mute() {
-    console.log(`I ${myId}, want to mute ${user.id}`);
     await axiosPrivate
       .post(`channel/muted/${channel.id}`, { mutedId: user.id })
       .then(() => {
@@ -32,7 +27,6 @@ function MuteButton({ user, channel }: { user: User; channel: Channel }) {
       });
   }
   async function unmute() {
-    console.log(`I ${myId}, want to unmute ${user.id}`);
     await axiosPrivate
       .delete(`channel/muted/${channel.id}/${user.id}`)
       .then(() => {

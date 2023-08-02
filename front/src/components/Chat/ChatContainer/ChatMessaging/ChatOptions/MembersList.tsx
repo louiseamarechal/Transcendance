@@ -53,7 +53,7 @@ const MembersList = ({
             </li>
           );
         })}
-        <li>
+        <li key={`add-member`}>
           <div className="add-member" onClick={() => setShowAddMember(true)}>
             <FontAwesomeIcon
               className="fa-3x"

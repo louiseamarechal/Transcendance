@@ -21,8 +21,10 @@ function KickButton({
   setMembers: Dispatch<SetStateAction<{ user: User }[]>>;
 }) {
   async function kick() {
-    const DeletedMemberOnChannel: { userId: number; channelId: number } =
-      await axiosPrivate.delete(`channel/member/${channel.id}/${user.id}`);
+    const DeletedMemberOnChannel: { userId: number; channelId: number } = (
+      await axiosPrivate.delete(`channel/member/${channel.id}/${user.id}`)
+    ).data;
+    console.log(`kick member: ${DeletedMemberOnChannel.userId}`);
     if (DeletedMemberOnChannel !== undefined) {
       setMembers(
         members.filter((memberUser: { user: User }) => {
