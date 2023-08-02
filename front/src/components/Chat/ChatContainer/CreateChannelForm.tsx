@@ -53,11 +53,13 @@ const CreateChannelForm = () => {
   return (
     <div className="channel-form">
       <FormHeader
+        key={`channel-form-header`}
         avatar={avatar}
         setAvatar={setAvatar}
         setChannelName={setChannelName}
       />
       <FriendsList
+        key={`channel-form-list`}
         selectedFriends={selectedFriends}
         setSelectedFriends={setSelectedFriends}
       />

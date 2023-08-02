@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  ParseUUIDPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -103,7 +104,7 @@ export class ChannelController {
     return this.channelService.deleteChannelById(userId, channelId);
   }
 
-  /*==============================================================================
+  /*============================================================================
                             Admin on Channels
 ==============================================================================*/
 
@@ -123,7 +124,7 @@ export class ChannelController {
     this.channelService.deleteAdminOnChannel(channelId, dto.userId);
   }
 
-  /*==============================================================================
+  /*============================================================================
                             Muted On Channel
 ==============================================================================*/
 
@@ -159,9 +160,9 @@ export class ChannelController {
     return this.channelService.deleteMutedOnChannel(channelId, userId, mutedId);
   }
 
-  /*------------------------------------------------------------------------------
+  /*============================================================================
                             Members on channels
-------------------------------------------------------------------------------*/
+==============================================================================*/
 
   @Post('member/:channelId/:userId')
   addMemberOnChannel(
@@ -170,6 +171,19 @@ export class ChannelController {
     @Param('userId', ParseIntPipe) newId: number,
   ): Promise<MembersOnChannel | undefined> {
     return this.channelService.createMemberOnChannel(userId, channelId, newId);
+  }
+
+  @Post('members/:channelId')
+  addMembersOnChannel(
+    @GetUserId() userId: number,
+    @Param('channelId', ParseIntPipe) channelId: number,
+    @Body() dto: { ids: number[] },
+  ) {
+    return this.channelService.createMembersOnChannel(
+      userId,
+      channelId,
+      dto.ids,
+    );
   }
 
   @Delete('member/:channelId/:userId')
@@ -186,9 +200,9 @@ export class ChannelController {
     );
   }
 
-  /*------------------------------------------------------------------------------
+  /*============================================================================
                             Blocked on channels
-------------------------------------------------------------------------------*/
+==============================================================================*/
 
   @Post('blocked/:channelId/:blockedId')
   addBlockedOnChannel(

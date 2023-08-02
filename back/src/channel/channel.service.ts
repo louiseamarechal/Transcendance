@@ -315,6 +315,10 @@ export class ChannelService {
     });
   }
 
+  /*============================================================================
+                            Admin on Channels
+==============================================================================*/
+
   async createAdminOnChannel(
     channelId: number,
     userId: number,
@@ -352,6 +356,10 @@ export class ChannelService {
         throw error;
       });
   }
+
+  /*============================================================================
+                            Muted On Channel
+==============================================================================*/
 
   async createMutedOnChannel(
     channelId: number,
@@ -411,6 +419,10 @@ export class ChannelService {
       });
   }
 
+  /*============================================================================
+                            Members on channels
+==============================================================================*/
+
   async createMemberOnChannel(
     userId: number,
     channelId: number,
@@ -435,6 +447,34 @@ export class ChannelService {
         channelId,
         userId: newId,
       },
+    });
+  }
+
+  async createMembersOnChannel(
+    userId: number,
+    channelId: number,
+    newIds: number[],
+  ) {
+    const ownerId: number | undefined = await this.prisma.channel
+      .findUnique({ where: { id: channelId } })
+      .then((res): number | undefined => res?.ownerId);
+    const admin = await this.prisma.adminsOnChannels.findUnique({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId,
+        },
+      },
+    });
+    if (admin === null && ownerId !== userId) {
+      throw new ForbiddenException('User not a member');
+    }
+    await this.prisma.membersOnChannels.createMany({
+      data: newIds.map(
+        (userId: number): { channelId: number; userId: number } => {
+          return { channelId, userId };
+        },
+      ),
     });
   }
 
@@ -468,6 +508,10 @@ export class ChannelService {
       },
     });
   }
+
+  /*============================================================================
+                            Blocked on channels
+==============================================================================*/
 
   async createBlockedOnChannel(
     userId: number,
