@@ -23,15 +23,12 @@ export class AuthController {
     @Body() dto: AuthDto,
     @Headers('origin') origin: string,
   ): Promise<Tokens> {
-    console.log('POST /auth/login called');
-    console.log(origin);
     return await this.authService.login(dto, origin);
   }
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   logout(@GetUserId() userId: number) {
-    console.log('POST /auth/logout called');
     return this.authService.logout(userId);
   }
 
@@ -43,7 +40,6 @@ export class AuthController {
     @GetUserId() userId: number,
     @GetUser('refreshToken') rt: string,
   ) {
-    console.log('POST /auth/refresh called');
     return this.authService.refreshTokens(userId, rt);
   }
 }

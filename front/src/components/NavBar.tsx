@@ -12,7 +12,6 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
 const NavBar = () => {
   const { navbarState, setNavbarState } = useNavbar();
-  const location = useLocation();
   const axiosInstance = useAxiosPrivate();
   const [receivedNotif, setReceivedNotif] = useState({
     friends: 0,
@@ -51,10 +50,6 @@ const NavBar = () => {
       })
       .catch((error) => console.log(error));
   }, []);
-
-  if (location.pathname === '/' || location.pathname === '/game/playgame') {
-    return null;
-  }
 
   if (navbarState === true)
     return (

@@ -26,18 +26,13 @@ export class AuthService {
   ) {}
 
   async login(dto: AuthDto, origin: string): Promise<Tokens> {
-    // exchange code
     if (!origin) {
       throw new UnauthorizedException('wrong origin - check login service');
     }
-    const token42 = await this.exchangeCode(dto.code, origin);
-    // console.log({ token42 });
 
-    // get info from 42 api
+    const token42: string = await this.exchangeCode(dto.code, origin);
     const userDto: createUserDto = await this.getUserInfo(token42);
-    // console.log(userDto);
 
-    // find or create user
     let user = await this.prisma.user.findUnique({
       where: {
         login: userDto.login,
@@ -45,24 +40,19 @@ export class AuthService {
     });
 
     if (!user) {
-      let avatarPath = `${BASE_URL}/public/default.jpg`;
-      await this.downloadPhoto(userDto.login, userDto.avatar)
-        .then(() => {
-          avatarPath = `${BASE_URL}/public/${userDto.login}.jpg`;
-        })
-        .catch(() => {
-          console.log(`Unable to download avatar for user ${userDto.login}`);
-        });
-      console.log(`Creating user with login: ${userDto.login}`);
+      const avatarFile: string = await this.downloadPhoto(
+        userDto.login,
+        userDto.avatar,
+      );
+      console.log(`Create user: ${userDto.login}`);
       user = await this.prisma.user.create({
         data: {
           login: userDto.login,
           name: userDto.login,
-          avatar: `${avatarPath}`,
+          avatar: avatarFile,
         },
       });
     }
-    // console.log({ user });
 
     // generate and returns jwts
     const tokens: Tokens = await this.getTokens(user);
@@ -198,25 +188,25 @@ export class AuthService {
   }
 
   async downloadPhoto(userLogin: string, url: string) {
-    console.log(__dirname);
-    console.log(process.cwd());
-    const writer = createWriteStream(
-      join(process.cwd(), `public/${userLogin}.jpg`),
-    );
-    console.log('dl file', join(process.cwd(), `public/${userLogin}.jpg`));
+    try {
+      const ext = url.split('.').pop();
+      const writer = createWriteStream(
+        join(process.cwd(), `assets/${userLogin}.${ext}`),
+      );
+      console.log('dl', join(process.cwd(), `assets/${userLogin}.${ext}`));
 
-    // response variable has to be typed with AxiosResponse<T>
-    const response: AxiosResponse<any> = await this.http.axiosRef({
-      url: url,
-      method: 'GET',
-      responseType: 'stream',
-    });
+      // response variable has to be typed with AxiosResponse<T>
+      const response: AxiosResponse<any> = await this.http.axiosRef({
+        url: url,
+        method: 'GET',
+        responseType: 'stream',
+      });
 
-    response.data.pipe(writer);
-
-    return new Promise((resolve, reject) => {
-      writer.on('finish', resolve);
-      writer.on('error', reject);
-    });
+      response.data.pipe(writer);
+      return `${userLogin}.${ext}`;
+    } catch (error) {
+      console.log('Could not download photo');
+      return 'default.jpg';
+    }
   }
 }
