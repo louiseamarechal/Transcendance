@@ -496,9 +496,27 @@ export class ChannelService {
       },
     });
     if (admin === null && ownerId !== userId) {
-      throw new ForbiddenException('User not a member');
+      throw new ForbiddenException('Access denied');
     }
-    console.log(`Remove member ${removeId} on channel ${channelId}`);
+    const userAdmin = await this.prisma.adminsOnChannels.findUnique({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId: removeId,
+        },
+      },
+    });
+    console.log({ userAdmin });
+    if (userAdmin !== null) {
+      await this.prisma.adminsOnChannels.delete({
+        where: {
+          channelId_userId: {
+            channelId,
+            userId: removeId,
+          },
+        },
+      });
+    }
     return this.prisma.membersOnChannels.delete({
       where: {
         channelId_userId: {
