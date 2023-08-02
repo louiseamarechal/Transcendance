@@ -1,44 +1,42 @@
 import { useEffect, useState } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
-import { User } from '../types/User.type';
+import UserCard from './UserCard';
+
+// type PendingFriendsProps = {
+//   pendingFR: [];
+//   setPendingFR: React.Dispatch<React.SetStateAction<[]>>;
+// };
 
 const PendingFriends = () => {
-  const [pendingFR, setPendingFR] = useState<User[]>([]);
-
-  const axiosPrivate = useAxiosPrivate();
+  const axiosInstance = useAxiosPrivate();
+  const [pendingFR, setPendingFR] = useState([]);
 
   useEffect(() => {
-    const getPendingFR = async () => {
-      await axiosPrivate
-        .get('user/pending-request')
-        .then((res) => {
-          res.data.map((re: any) => {
-            console.log(re.fromId);
-            // setUserId((previous) => {
-            //     return ([...previous, re.fromId])
-            // });
-            axiosPrivate.get(`user/${re.fromId}`).then((res) => {
-              console.log(res);
-              setPendingFR((previous) => {
-                [...previous, res];
-              });
-            });
-          });
-        })
-        .catch((err) => {
-          console.log({ err: err.response });
-        });
-    };
-    getPendingFR();
+    axiosInstance
+      .get('user/pending-request')
+      .then((res) => {
+        setPendingFR(res.data);
+      })
+      .catch((err) => console.log(err));
   }, []);
-  return (
-    <div>
-      {/* <h2>Pending Friend Requests : </h2>
-      {pendingFR.map((fr) => {
-        return <p>{fr}</p>;
-      })} */}
-    </div>
-  );
+
+  if (pendingFR.length > 0) {
+    return (
+      <div className='friend-inside-container'>
+        <h2>Pending Requests : </h2>
+        <div className="all-friends-cards">
+          {pendingFR.map((user) => {
+            return (
+              <div className="friend-card">
+                <UserCard user={user} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+  return <></>;
 };
 
 export default PendingFriends;

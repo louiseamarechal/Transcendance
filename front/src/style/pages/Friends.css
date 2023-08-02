@@ -1,16 +1,43 @@
-.findfriends-container{
-    display: flex;
-    align-items: center;
-    justify-content:center;
-    height: 100vh;
-    flex-wrap: wrap;
+.friends-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 95vh;
+  padding-top: 15vh;
+  flex-wrap: wrap;
+  margin-left: 5%;
+  gap: 5%;
+  /* width: 50%; */
 }
 
+.friends-container h2 {
+  font-weight: 600;
+}
 
-.findfriends-container .friend-card {
-    flex-direction : row;
-    flex-basis: 25%;
-    /* height: 0px;  */
-    margin-left: 5%;
-    margin-top: 5%;
-  }
+.my-friends-container {
+  height: 20vh;
+}
+
+.friend-inside-container {
+    width: 70%;
+    padding: 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    border-width: 1px 2px 2px 1px;
+    border-color: #0000001C;
+    /* border: 1px solid var(--faded-black); */
+    box-shadow: 0px 2px 4px 0px #0000001C;
+    border-radius: 30px;
+
+}
+
+.all-friends-cards {
+  padding-top: 3vh;
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  justify-content: start;
+}
+
+/* .my-friends-container .friend-card */

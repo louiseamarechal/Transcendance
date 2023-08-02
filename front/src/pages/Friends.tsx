@@ -9,6 +9,7 @@ import PendingFriends from '../components/PendingFriends.tsx';
 function Friends() {
   const axiosInstance = useAxiosPrivate();
   const [array, setArray] = useState([]);
+  // const [pendingFR, setPendingFR] = useState([]);
 
   useEffect(() => {
     axiosInstance
@@ -19,29 +20,38 @@ function Friends() {
       .catch((e) => console.log(e));
   }, []);
 
+  if (array.length <= 0) {
+    return (
+      <div className="friends-container">
+        <PendingFriends />
+        <div className='friend-inside-container'>
+          {/* <p>You don't have any Friends yet...</p> */}
+          <Link to="/findfriends">
+            You can invite your Friends <strong>here</strong>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <>
-      <div className="findfriends-container friend-card">
-        {array.length <= 0 ? (
-          <div>
-            <PendingFriends />
-            <p>You don't have any Friends yet...</p>
-            <Link to='/findfriends'>You can invite your Friends <strong>here</strong></Link>
-          </div>
-        ) : (
-          array.map((elem) => {
+    <div className="friends-container">
+      <PendingFriends />
+      <div className="friend-inside-container">
+        <h2>Friends :</h2>
+        <div className="all-friends-cards">
+          {array.map((elem) => {
             return (
               <>
-              <PendingFriends />
-              <div className="friend-card">
-                <UserCard user={elem} />
-              </div>
+                <div className="friend-card">
+                  <UserCard user={elem} />
+                </div>
               </>
             );
-          })
-        )}
+          })}
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 

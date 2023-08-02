@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { EditUserDto } from './dto';
 import { NoParamCallback, rename, rm } from 'fs';
 import { PublicUser } from './types';
+import { FRStatus, FriendRequest } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -108,16 +109,55 @@ export class UserService {
   }
 
   async getPendingFR(userId: number) {
-    const pendingFR = await this.prisma.user.findUnique({
+    const pendingFR: FriendRequest[] = await this.prisma.friendRequest.findMany(
+      {
+        where: {
+          OR: [
+            {
+              fromId: {
+                equals: userId,
+              },
+            },
+            {
+              toId: {
+                equals: userId,
+              },
+            },
+          ],
+          status: {
+            equals: FRStatus.PENDING,
+          },
+        },
+      },
+    );
+
+    const pendingFriendIds = pendingFR.map(
+      ({ fromId, toId }: { fromId: number; toId: number }) => {
+        if (fromId === userId) {
+          return toId;
+        } else {
+          return fromId;
+        }
+      },
+    );
+
+    console.log('getting Pending Friend Request');
+
+    return this.prisma.user.findMany({
       where: {
-        id: userId,
+        id: {
+          in: pendingFriendIds,
+        },
       },
       select: {
-        receivedRequests: true,
+        id: true,
+        name: true,
+        level: true,
+        avatar: true,
       },
     });
-    console.log('getting Pending Friend Request');
-    console.log(pendingFR?.receivedRequests);
-    return pendingFR?.receivedRequests;
+
+    // console.log(pendingFR?.receivedRequests);
+    // return pendingFR?.receivedRequests;
   }
 }
