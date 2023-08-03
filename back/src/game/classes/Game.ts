@@ -270,17 +270,30 @@ export class Game {
   }
 
   private rotateBallVelocity(side: 'p1' | 'p2', intersect: Vec2D) {
-    const maxAngle = Math.PI / 3;
+    const maxAngle = Math.PI / 6;
+    const vel = this.ball.velocity;
     let ratio;
     if (side === 'p1') {
-      const diffToPaddleCenter = this.p1.paddle.pos - intersect.y;
+      const diffToPaddleCenter = intersect.y - this.p1.paddle.pos;
       ratio = diffToPaddleCenter / this.p1.paddle.size;
     } else {
       const diffToPaddleCenter = this.p2.paddle.pos - intersect.y;
       ratio = diffToPaddleCenter / this.p2.paddle.size;
     }
     const angle = maxAngle * ratio;
-    this.ball.velocity = this.rotateVec2D(this.ball.velocity, angle);
+
+    const newVelocity: Vec2D = {
+      x: Math.sign(vel.x) * this.normVec2D(vel),
+      y: 0,
+    };
+    console.log({ vel });
+    console.log({ newVelocity });
+
+    const rotated = this.rotateVec2D(vel, angle);
+    console.log({ rotated, pos: this.ball.pos });
+    console.log();
+
+    this.ball.velocity = rotated;
   }
 
   private rotateVec2D(vec: Vec2D, angle: number): Vec2D {
@@ -288,5 +301,9 @@ export class Game {
       x: vec.x * Math.cos(angle) - vec.y * Math.sin(angle),
       y: vec.x * Math.sin(angle) + vec.y * Math.cos(angle),
     };
+  }
+
+  private normVec2D(vec: Vec2D): number {
+    return Math.sqrt(vec.x ** 2 + vec.y ** 2);
   }
 }
