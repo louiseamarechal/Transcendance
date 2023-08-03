@@ -1,4 +1,5 @@
 import '../style/pages/FindFriends.css';
+
 import { useEffect, useState } from 'react';
 import UserCard from '../components/UserCard.tsx';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
@@ -18,14 +19,14 @@ function FindFriends() {
 
   return (
     <>
-      <div className="findfriends-container friend-card">
-        {array.map((elem) => {
-          return (
-            <div className="friend-card">
-              <UserCard user={elem} />
-            </div>
-          );
-        })}
+      <div className="findfriends-container">
+          {array.map((elem) => {
+            return (
+              <div className="friend-card">
+                <UserCard user={elem} />
+              </div>
+            );
+          })}
       </div>
     </>
   );

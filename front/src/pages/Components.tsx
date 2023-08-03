@@ -1,4 +1,4 @@
-import NavBar from '../components/NavBar.tsx';
+import BACK_URL from '../api/backUrl.ts';
 import ProgressBar from '../components/ProgressBar.tsx';
 import UserCard from '../components/UserCard.tsx';
 import '../style/components/net.css';
@@ -6,7 +6,7 @@ import { User } from '../types/User.type.ts';
 
 const user: User = {
   name: 'toto',
-  avatar: 'http://localhost:3000/public/default.jpg',
+  avatar: `${BACK_URL}/public/default.jpg`,
   level: 99999.80,
 };
 

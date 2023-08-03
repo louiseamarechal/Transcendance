@@ -8,7 +8,7 @@ import { useUser } from '../hooks/useUser';
 import '../style/components/spinner.css';
 
 type JwtDecoded = {
-  id: number,
+  id: number;
   name: string;
   avatar: string;
   level: number;
@@ -21,7 +21,9 @@ export function Callback() {
   const navigate = useNavigate();
   const { setAuth } = useAuth();
   const { setMyId, setMyName, setMyLogin, setMyAvatar, setMyLevel } = useUser();
-  const [ loading, setLoading ] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  console.log({ callback: window.location.origin });
 
   useEffect(() => {
     // let isMounted = true;
@@ -40,13 +42,9 @@ export function Callback() {
           },
         );
         if (response?.data?.access_token) {
-          // console.log({ response_data: response.data });
-          // const access_token = response.data.access_token;
-          // const refresh_token = response.data.refresh_token;
           console.log({ access_token: response.data.access_token });
-          // console.log({ refresh_token });
           const user: JwtDecoded = jwtDecode(response.data.access_token);
-          setMyId(user.id)
+          setMyId(user.id);
           setMyName(user.name);
           setMyLogin(user.login);
           setMyAvatar(user.avatar);
@@ -70,8 +68,8 @@ export function Callback() {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      <p className='text-[25px]'>Waiting for connection</p>
-      <br/>
+      <p className="text-[25px]">Waiting for connection</p>
+      <br />
       {loading ? <div className="spinner"></div> : <div></div>}
     </div>
   );
