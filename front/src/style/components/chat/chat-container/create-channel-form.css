@@ -9,7 +9,7 @@
 }
 
 .channel-form button {
-	background-color: var(--black);
-	color: var(--white);
+  background-color: var(--black);
+  color: var(--white);
   align-self: center;
 }

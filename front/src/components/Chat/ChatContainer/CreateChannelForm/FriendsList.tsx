@@ -41,6 +41,7 @@ const FriendsList = ({
               return (
                 <li key={friend.id}>
                   <UserSmallCard
+                    key={`user-card-${friend.id}`}
                     friend={friend}
                     selectedFriends={selectedFriends}
                     setSelectedFriends={setSelectedFriends}

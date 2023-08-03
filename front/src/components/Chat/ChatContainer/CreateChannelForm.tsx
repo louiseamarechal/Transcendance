@@ -8,10 +8,11 @@ import FormHeader from './CreateChannelForm/FormHeader';
 import { useUser } from '../../../hooks/useUser';
 import { notifSocket } from '../../../api/socket';
 import { User } from '../../../types/User.type';
+import BACK_URL from '../../../api/backUrl';
 
 const CreateChannelForm = () => {
   const [avatar, setAvatar] = useState<string>(
-    'http://localhost:3000/public/default.jpg',
+    `${BACK_URL}/public/default.jpg`,
   );
   const axiosPrivate = useAxiosPrivate();
   const { myId, myLogin } = useUser();
@@ -53,11 +54,13 @@ const CreateChannelForm = () => {
   return (
     <div className="channel-form">
       <FormHeader
+        key={`channel-form-header`}
         avatar={avatar}
         setAvatar={setAvatar}
         setChannelName={setChannelName}
       />
       <FriendsList
+        key={`channel-form-list`}
         selectedFriends={selectedFriends}
         setSelectedFriends={setSelectedFriends}
       />

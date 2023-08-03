@@ -6,11 +6,12 @@ import { User } from '../types/User.type';
 import ProgressBar from '../components/ProgressBar';
 import { ProfilStat } from '../components/ProfilStat';
 import { FriendRequest } from '../types/FriendRequest.type';
+import Avatar from '../components/Avatar';
 
 export default function UserProfile() {
   const { id } = useParams();
   const axiosInstance = useAxiosPrivate();
-  const [user, setUser] = useState<User>({id: NaN});
+  const [user, setUser] = useState<User>({ id: NaN });
   const [isLoading, setLoading] = useState<boolean>(true);
   const { myId } = useUser();
   const navigate = useNavigate();
@@ -115,7 +116,7 @@ export default function UserProfile() {
     <div className="profil-container">
       <div className="flex flex-row w-[55%] justify-end">
         <div className="profil-card">
-          <img className="avatar" alt="avatar" src={user?.avatar} />
+          <Avatar id={user.id} />
           <div className="flex flex-row items-center">
             <p className="user-name">{user?.name}</p>
           </div>

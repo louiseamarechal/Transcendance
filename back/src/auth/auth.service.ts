@@ -27,22 +27,14 @@ export class AuthService {
     private mail: MailService,
   ) {}
 
-  async login(dto: AuthDto): Promise<Tokens> {
-    // exchange code
-    const token42 = await this.exchangeCode(dto.code);
-    // console.log({ token42 });
+  async login(dto: AuthDto, origin: string): Promise<Tokens> {
+    if (!origin) {
+      throw new UnauthorizedException('wrong origin - check login service');
+    }
 
-    // get info from 42 api
-    const {
-      login,
-      avatar,
-      email,
-    }: { login: string; avatar: string; email: string } =
-      await this.getUserInfo(token42);
-    const userDto: createUserDto = { login, avatar };
-    // console.log(userDto);
+    const token42: string = await this.exchangeCode(dto.code, origin);
+    const userDto: createUserDto = await this.getUserInfo(token42);
 
-    // find or create user
     let user = await this.prisma.user.findUnique({
       where: {
         login: userDto.login,
@@ -50,24 +42,19 @@ export class AuthService {
     });
 
     if (!user) {
-      let avatarPath = 'http://localhost:3000/public/default.jpg';
-      await this.downloadPhoto(userDto.login, userDto.avatar)
-        .then(() => {
-          avatarPath = `http://localhost:3000/public/${userDto.login}.jpg`;
-        })
-        .catch(() => {
-          console.log(`Unable to download avatar for user ${userDto.login}`);
-        });
-      console.log(`Creating user with login: ${userDto.login}`);
+      const avatarFile: string = await this.downloadPhoto(
+        userDto.login,
+        userDto.avatar,
+      );
+      console.log(`Create user: ${userDto.login}`);
       user = await this.prisma.user.create({
         data: {
           login: userDto.login,
           name: userDto.login,
-          avatar: `${avatarPath}`,
+          avatar: avatarFile,
         },
       });
     }
-    // console.log({ user });
 
     if (user.s2fa === Status2fa.SET) {
       const sixDigitCode = generateSixDigitCode();
@@ -142,7 +129,7 @@ export class AuthService {
 
   // HELPER FUNCTIONS
 
-  async exchangeCode(code: string): Promise<string> {
+  async exchangeCode(code: string, origin: string): Promise<string> {
     const axiosConfig: AxiosRequestConfig = {
       method: 'post',
       url: 'https://api.intra.42.fr/oauth/token',
@@ -151,7 +138,7 @@ export class AuthService {
         client_id: this.config.get('CLIENT_ID'),
         client_secret: this.config.get('CLIENT_SECRET'),
         code: code,
-        redirect_uri: this.config.get('REDIRECT_URI'),
+        redirect_uri: origin + '/callback',
       },
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -241,26 +228,26 @@ export class AuthService {
   }
 
   async downloadPhoto(userLogin: string, url: string) {
-    console.log(__dirname);
-    console.log(process.cwd());
-    const writer = createWriteStream(
-      join(process.cwd(), `public/${userLogin}.jpg`),
-    );
-    console.log('dl file', join(process.cwd(), `public/${userLogin}.jpg`));
+    try {
+      const ext = url.split('.').pop();
+      const writer = createWriteStream(
+        join(process.cwd(), `assets/${userLogin}.${ext}`),
+      );
+      console.log('dl', join(process.cwd(), `assets/${userLogin}.${ext}`));
 
-    // response variable has to be typed with AxiosResponse<T>
-    const response: AxiosResponse<any> = await this.http.axiosRef({
-      url: url,
-      method: 'GET',
-      responseType: 'stream',
-    });
+      // response variable has to be typed with AxiosResponse<T>
+      const response: AxiosResponse<any> = await this.http.axiosRef({
+        url: url,
+        method: 'GET',
+        responseType: 'stream',
+      });
 
-    response.data.pipe(writer);
-
-    return new Promise((resolve, reject) => {
-      writer.on('finish', resolve);
-      writer.on('error', reject);
-    });
+      response.data.pipe(writer);
+      return `${userLogin}.${ext}`;
+    } catch (error) {
+      console.log('Could not download photo');
+      return 'default.jpg';
+    }
   }
 }
 

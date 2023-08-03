@@ -1,5 +1,6 @@
 import { SetStateAction } from 'react';
 import '../../../../../style/components/chat/chat-container/create-channel-form/user-small-card.css';
+import Avatar from '../../../../Avatar';
 
 const UserSmallCard = ({
   friend,
@@ -26,7 +27,7 @@ const UserSmallCard = ({
       }
       onClick={() => handleOnClick()}
     >
-      <img src={friend.avatar} className="avatar-sm" alt="avatar" />
+      <Avatar id={friend.id} />
       <div>
         <p>{friend.name}</p>
       </div>
