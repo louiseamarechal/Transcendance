@@ -1,5 +1,6 @@
 export enum ServerEvents
 {
   // Game
-  updateOverlay = 'server.game.updateOverlay'
+  updateOverlay = 'server.game.updateOverlay',
+  gameData = 'server.game.gameData'
 }

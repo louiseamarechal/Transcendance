@@ -3,11 +3,15 @@ import { gameSocket } from '../../api/socket';
 import { ClientEvents } from '../../../../shared/client/ClientEvents';
 import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
 import { useParams } from 'react-router-dom';
-import GameOverlay, {
-  OverlayData,
-} from '../../components/game/GameOverlay/GameOverlay';
+import GameOverlay from '../../components/game/GameOverlay/GameOverlay';
 import GameCanvas from '../../components/game/GameCanvas';
 import GameBackground from '../../components/game/GameBackground';
+import {
+  GameData,
+  OverlayData,
+  ServerPayloads,
+} from '../../../../shared/server/ServerPayloads';
+import { ServerEvents } from '../../../../shared/server/ServerEvents';
 
 export default function GameLobby() {
   const { gameId } = useParams();
@@ -16,18 +20,20 @@ export default function GameLobby() {
 
   const [overlayType, setOverlayType] = useState<string>('ready');
   const [overlayData, setOverlayData] = useState<OverlayData>({});
-  const [gameData, setGameData] = useState<any>({});
+  const [gameData, setGameData] = useState<GameData | null>(null);
 
   useEffect(() => {
-    function updateOverlay(payload: { type: any; data: OverlayData }) {
-      console.log('In updateOverlay', { payload });
+    function updateOverlay(
+      payload: ServerPayloads[ServerEvents.updateOverlay],
+    ) {
+      // console.log('In updateOverlay', { payload });
       setOverlayType(payload.type);
       setOverlayData(payload.data);
     }
 
-    function gameData(payload: { data: any }) {
+    function gameData(payload: ServerPayloads[ServerEvents.gameData]) {
       console.log('In gameData', { payload });
-      setGameData(payload.data);
+      setGameData(payload);
     }
 
     gameSocket.on('server.game.updateOverlay', updateOverlay);
@@ -73,7 +79,9 @@ export default function GameLobby() {
         className="relative h-4/5 w-4/5 border-8 border-blue-600 flex flex-col justify-center items-center"
       >
         <GameBackground />
-        <GameCanvas data={gameData} />
+        {gameData ? (
+          <GameCanvas p1={gameData.p1} p2={gameData.p2} ball={gameData.ball} />
+        ) : null}
         <GameOverlay type={overlayType} data={overlayData} />
       </div>
     </div>

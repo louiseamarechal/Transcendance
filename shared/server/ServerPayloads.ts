@@ -1,6 +1,7 @@
 import { ServerEvents } from "./ServerEvents";
+import { Player, Ball } from "../common/classes/game.class";
 
-export type OverlayType = "ready" | "timer" | "playing";
+export type OverlayType = string;
 export type OverlayData = {
   p1name?: string;
   p2name?: string;
@@ -10,6 +11,13 @@ export type OverlayData = {
   score?: [number, number];
 };
 
+export type GameData = {
+  p1: Player;
+  p2: Player;
+  ball: Ball;
+};
+
 export type ServerPayloads = {
   [ServerEvents.updateOverlay]: { type: OverlayType; data: OverlayData };
+  [ServerEvents.gameData]: GameData;
 };

@@ -1,11 +1,13 @@
 import { useRef } from 'react';
-import { Layer, Stage } from 'react-konva';
+import { Layer, Rect, Stage } from 'react-konva';
 import GamePaddle from './GamePaddle';
 import GameBall from './GameBall';
+import { GameData } from '../../../../shared/server/ServerPayloads';
 
-type GameCanvasProps = any;
+type GameCanvasProps = GameData;
 
-export default function GameCanvas({ data }: GameCanvasProps) {
+export default function GameCanvas({ p1, p2, ball }: GameCanvasProps) {
+  console.log('Render GameCanvas', ball);
   const parentRef = useRef<HTMLDivElement>(null);
 
   const width = parentRef.current?.clientWidth;
@@ -13,22 +15,23 @@ export default function GameCanvas({ data }: GameCanvasProps) {
 
   // Left Paddle
   const lx = 0;
-  const ly = height && data.p1 ? data.p1.paddlePos * height : 0;
-  const lsize = height && data.p1 ? data.p1.paddleSize * height : 0;
+  const ly = height && p1 ? p1.paddle.pos * height : 0;
+  const lsize = height && p1 ? p1.paddle.size * height : 0;
 
   // Right Paddle
   const rx = width ? width - 10 : 100;
-  const ry = height && data.p2 ? data.p2.paddlePos * height : 0;
-  const rsize = height && data.p2 ? data.p2.paddleSize * height : 0;
+  const ry = height && p2 ? p2.paddle.pos * height : 0;
+  const rsize = height && p2 ? p2.paddle.size * height : 0;
 
   // Ball
-  const bx = width && data.ball ? data.ball.pos[0] * width : 0;
-  const by = height && data.ball ? data.ball.pos[1] * height : 0;
+  const bx = width && ball ? ball.pos.x * width : 0;
+  const by = height && ball ? ball.pos.y * height : 0;
 
   return (
     <div ref={parentRef} className="h-[95%] w-[95%]">
       <Stage width={width} height={height}>
         <Layer>
+          <Rect x={50} y={50} width={50} height={50} />
           <GamePaddle x={lx} y={ly} size={lsize} paddleWidth={10} />
           <GamePaddle x={rx} y={ry} size={rsize} paddleWidth={10} />
           <GameBall x={bx} y={by} radius={10} />

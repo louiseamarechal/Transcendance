@@ -1,8 +1,13 @@
 import { Namespace } from 'socket.io';
 import { v4 as uuid } from 'uuid';
-import Player from './Player';
-import Ball from './Ball';
-import { Vec2D } from '../types';
+import {
+  Player,
+  Ball,
+  Paddle,
+} from '../../../../shared/common/classes/game.class';
+import { Vec2D } from '../../../../shared/common/types/game.type';
+import { ServerEvents } from '../../../../shared/server/ServerEvents';
+import { ServerPayloads } from '../../../../shared/server/ServerPayloads';
 
 export enum GameStatus {
   Waiting = 'Waiting',
@@ -88,9 +93,13 @@ export class Game {
     }
   }
 
-  /**
-   * PRIVATE
-   */
+  /*****************************************************************************
+   *
+   *
+   ******************************* PRIVATE *************************************
+   *
+   *
+   ****************************************************************************/
   private gameLoopReady() {
     // console.log('  Ready');
 
@@ -100,10 +109,14 @@ export class Game {
       return;
     }
 
-    this.server.to(this.gameId).emit('server.game.updateOverlay', {
+    const updateOverlayPayload: ServerPayloads[ServerEvents.updateOverlay] = {
       type: 'ready',
       data: { p1ready: this.p1.ready, p2ready: this.p2.ready },
-    });
+    };
+
+    this.server
+      .to(this.gameId)
+      .emit(ServerEvents.updateOverlay, updateOverlayPayload);
   }
 
   private gameLoopTimer() {
@@ -114,10 +127,14 @@ export class Game {
       return;
     }
 
-    this.server.to(this.gameId).emit('server.game.updateOverlay', {
+    const updateOverlayPayload: ServerPayloads[ServerEvents.updateOverlay] = {
       type: 'timer',
       data: { timerval: Math.floor((this.gameStartedAt - Date.now()) / 1000) },
-    });
+    };
+
+    this.server
+      .to(this.gameId)
+      .emit(ServerEvents.updateOverlay, updateOverlayPayload);
   }
 
   private gameLoopPlaying() {
@@ -125,24 +142,25 @@ export class Game {
 
     this.computeNextState();
 
-    const overlayData: any = {
-      p1name: this.p1.user?.name,
-      p2name: this.p2.user?.name,
-      score: this.score,
-    };
-    this.server.to(this.gameId).emit('server.game.updateOverlay', {
+    const updateOverlayPayload: ServerPayloads[ServerEvents.updateOverlay] = {
       type: 'playing',
-      data: overlayData,
-    });
+      data: {
+        p1name: this.p1.user?.name,
+        p2name: this.p2.user?.name,
+        score: this.score,
+      },
+    };
+
+    this.server
+      .to(this.gameId)
+      .emit(ServerEvents.updateOverlay, updateOverlayPayload);
 
     const gameData: any = {
       p1: this.p1,
       p2: this.p2,
       ball: this.ball,
     };
-    this.server.to(this.gameId).emit('server.game.gameData', {
-      data: gameData,
-    });
+    this.server.to(this.gameId).emit('server.game.gameData', gameData);
   }
 
   private computeNextState() {
@@ -158,7 +176,14 @@ export class Game {
     }
 
     if (this.isOutHorizontally(newBallPos)) {
-      this.ball.velocity.x *= -1;
+      const side: 'p1' | 'p2' = this.getSide(newBallPos);
+      const intersect = this.getIntersect(prevBallPos, newBallPos, side);
+      const bounce = this.isBallBouncingOnPaddle(intersect, side);
+      this.updateForOutHorizontally(bounce, intersect, side);
+    }
+
+    if (this.isOutVertically(newBallPos)) {
+      this.ball.velocity.y *= -1;
     }
   }
 
@@ -179,11 +204,89 @@ export class Game {
     return false;
   }
 
-  private isPaddleIntersectingBall(
-    paddlePos: number,
-    paddleSize: number,
-    pos: Vec2D,
-  ) {}
+  private isOutVertically(pos: Vec2D) {
+    if (pos.y < 0 || pos.y > 1) {
+      return true;
+    }
+    return false;
+  }
 
-  private rotateVec2D(vec: Vec2D, angle: number) {}
+  private getSide(newBallPos: Vec2D): 'p1' | 'p2' {
+    if (newBallPos.x < 0) {
+      return 'p1';
+    } else if (newBallPos.x > 1) {
+      return 'p2';
+    }
+    throw new Error('Error in getSide()');
+  }
+
+  private getIntersect(prev: Vec2D, current: Vec2D, side: 'p1' | 'p2'): Vec2D {
+    if (side === 'p2') {
+      const xDiff = prev.x - current.x;
+      const yDiff = prev.y - current.y;
+      const yIntersect = prev.y + ((1 - prev.x) * yDiff) / xDiff;
+      return { x: 1, y: yIntersect };
+    } else if (side === 'p1') {
+      const xDiff = prev.x - current.x;
+      const yDiff = prev.y - current.y;
+      const yIntersect = prev.y + (prev.x * yDiff) / xDiff;
+      return { x: 0, y: yIntersect };
+    } else {
+      throw new Error(
+        `Unintended getIntersect call ! prev=${prev}, current=${current}`,
+      );
+    }
+  }
+
+  private isBallBouncingOnPaddle(intersect: Vec2D, side: 'p1' | 'p2'): boolean {
+    let bounce;
+    if (side === 'p1') {
+      bounce = this.isPaddleIntersectingBall(this.p1.paddle, intersect);
+    } else {
+      bounce = this.isPaddleIntersectingBall(this.p2.paddle, intersect);
+    }
+    return bounce;
+  }
+
+  private isPaddleIntersectingBall(paddle: Paddle, pos: Vec2D) {
+    if (paddle.pos - paddle.size < pos.y && paddle.pos + paddle.size > pos.y) {
+      return true;
+    }
+    return false;
+  }
+
+  private updateForOutHorizontally(
+    bounce: boolean,
+    intersect: Vec2D,
+    side: 'p1' | 'p2',
+  ) {
+    if (bounce) {
+      this.ball.velocity.x *= -1;
+      this.rotateBallVelocity(side, intersect);
+    } else {
+      intersect.x === 0 ? this.score[1]++ : this.score[0]++;
+      this.ball.pos = { x: 0.5, y: 0.5 };
+    }
+  }
+
+  private rotateBallVelocity(side: 'p1' | 'p2', intersect: Vec2D) {
+    const maxAngle = Math.PI / 3;
+    let ratio;
+    if (side === 'p1') {
+      const diffToPaddleCenter = this.p1.paddle.pos - intersect.y;
+      ratio = diffToPaddleCenter / this.p1.paddle.size;
+    } else {
+      const diffToPaddleCenter = this.p2.paddle.pos - intersect.y;
+      ratio = diffToPaddleCenter / this.p2.paddle.size;
+    }
+    const angle = maxAngle * ratio;
+    this.ball.velocity = this.rotateVec2D(this.ball.velocity, angle);
+  }
+
+  private rotateVec2D(vec: Vec2D, angle: number): Vec2D {
+    return {
+      x: vec.x * Math.cos(angle) - vec.y * Math.sin(angle),
+      y: vec.x * Math.sin(angle) + vec.y * Math.cos(angle),
+    };
+  }
 }

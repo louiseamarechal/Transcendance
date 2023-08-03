@@ -1,4 +1,4 @@
-import { OverlayData } from './GameOverlay';
+import { OverlayData } from '../../../../../shared/server/ServerPayloads';
 
 type GameOverlayPlayingProps = {
   data: OverlayData;
