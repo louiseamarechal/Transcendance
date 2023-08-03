@@ -9,6 +9,7 @@ import { User } from '../types/User.type.ts';
 import Settings, { ChangeName, Toggle2FA } from '../components/Settings.tsx';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Avatar from '../components/Avatar.tsx';
 
 function Profil() {
   // Profil page will depend on the user id => see later on
@@ -53,7 +54,7 @@ function Profil() {
     // <div className="grid grid-cols-1 place-items-center pt-[10%]">
     <div className="profil-container">
       <div className="profil-card">
-        <img className="avatar" alt="avatar" src={user?.avatar} />
+        <Avatar id={user.id}/>
         {!changingUsername ? (
           <div className="flex flex-row items-center gap-2">
             <p className="user-name">{user?.name}</p>

@@ -6,8 +6,18 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditUserDto } from './dto';
-import { NoParamCallback, rename, rm } from 'fs';
+import {
+  NoParamCallback,
+  createReadStream,
+  existsSync,
+  readFileSync,
+  rename,
+  rm,
+} from 'fs';
 import { PublicUser } from './types';
+import { cwd } from 'process';
+import { join } from 'path';
+import { Response } from 'express';
 
 @Injectable()
 export class UserService {
@@ -33,6 +43,25 @@ export class UserService {
       throw new BadRequestException(`User #${userId} not found`);
     }
     return user;
+  }
+
+  async getAvatarById(userId: number, res: Response) {
+    const user: PublicUser = await this.getUserById(userId);
+    const avatar = user.avatar;
+
+    if (!avatar) {
+      throw new Error('No avatar in getAvatar');
+    }
+
+    const file = createReadStream(join(process.cwd(), 'assets', avatar));
+    file.pipe(res);
+  }
+
+  async getAvatarByFile(file: string, res: Response) {
+    if (existsSync(join(process.cwd(), 'assets', file))) {
+      const stream = createReadStream(join(process.cwd(), 'assets', file));
+      stream.pipe(res);
+    }
   }
 
   async getAll(userId: number): Promise<
