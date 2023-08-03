@@ -2,6 +2,7 @@ import { Notification } from './notif/Notification';
 import { useUser } from '../hooks/useUser';
 import { Link } from 'react-router-dom';
 import useNavbar from '../hooks/useNavbar';
+import Avatar from './Avatar';
 
 type NavBarLinksProps = {
   receivedNotif: {
@@ -19,7 +20,7 @@ type NavBarLinksProps = {
 };
 
 const NavBarLinks = (props: NavBarLinksProps) => {
-  const { myAvatar } = useUser();
+  const { myId } = useUser();
   const { setNavbarState } = useNavbar();
 
   function handleClick(
@@ -41,10 +42,7 @@ const NavBarLinks = (props: NavBarLinksProps) => {
   }
 
   const navElems = [
-    {
-      to: '/profil',
-      content: <img className="avatar" alt="avatar" src={myAvatar} />,
-    },
+    { to: '/profil', content: <Avatar id={myId}/> },
     { to: '/game', content: 'Game' },
     { to: '/oldgame', content: 'OldGame' },
     { to: '/chat', content: 'Chat' },
@@ -59,10 +57,6 @@ const NavBarLinks = (props: NavBarLinksProps) => {
     { to: '/profil/6', content: 'Profil 6' },
     { to: '/profil/7', content: 'Profil 7' },
   ];
-
-  if (!myAvatar) {
-    return null;
-  }
 
   return (
     <ul className="navbar-links">

@@ -6,15 +6,17 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { GetUser, GetUserId } from 'src/common/decorators';
+import { GetUser, GetUserId, Public } from 'src/common/decorators';
 import { EditUserDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from 'src/config/multer.config';
 import { PublicUser } from './types';
+import { Response } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -22,8 +24,19 @@ export class UserController {
 
   @Get('me')
   getMe(@GetUser('sub') userId: number): Promise<PublicUser> {
-    console.log('GET /user/me called');
     return this.userService.getUserById(userId);
+  }
+
+  @Public()
+  @Get('avatarById/:id')
+  getAvatarById(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
+    return this.userService.getAvatarById(id, res);
+  }
+
+  @Public()
+  @Get('avatarByFile/:file')
+  getAvatar(@Param('file') file: string, @Res() res: Response) {
+    return this.userService.getAvatarByFile(file, res);
   }
 
   @Get('all')
@@ -35,7 +48,6 @@ export class UserController {
       level: number | null;
     }[]
   > {
-    console.log('GET /user/all called');
     return this.userService.getAll(userId);
   }
 
@@ -52,7 +64,6 @@ export class UserController {
     statTotalGame: number | null;
     statTotalWin: number | null;
   }> {
-    console.log('PATCH /user/me called', { dto });
     return this.userService.editUser(userId, dto);
   }
 
@@ -63,7 +74,6 @@ export class UserController {
     @GetUser('login') userLogin: string,
     @GetUser('sub') userId: number,
   ) {
-    console.log('POST /user/avatar called', file);
     return this.userService.uploadAvatar(file, userLogin, userId);
   }
 
@@ -76,7 +86,6 @@ export class UserController {
 
   @Get(':id')
   getUserById(@Param('id', ParseIntPipe) id: number) {
-    console.log(`GET /user/${id} called`);
     return this.userService.getUserById(id);
   }
 }
