@@ -5,3 +5,5 @@ build
 *build
 node_modules/
 *node_modules
+back/assets/*.png
+!back/assets/default.jpg
