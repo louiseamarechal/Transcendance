@@ -8,7 +8,9 @@ services:
     restart: on-failure
     environment:
       POSTGRES_PASSWORD: example
+      POSTGRES_USER: louisea
       POSTGRES_DB: mydb
+      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
@@ -19,7 +21,9 @@ services:
     restart: on-failure
     environment:
       POSTGRES_PASSWORD: example
+      POSTGRES_USER: louisea
       POSTGRES_DB: mydb
+      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - test-db-data:/var/lib/postgresql/data
     ports:
@@ -54,8 +58,12 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - db
-    restart: on-failure
     image: server
+    environment:
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_USER=louisea
+      - POSTGRES_DB=mydb
+      - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - "5555:5555"
 

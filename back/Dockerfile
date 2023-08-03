@@ -19,6 +19,7 @@
 # CMD ["npm", "run", "start"]
 
 # Load debian image
+# FROM node:16.18.0-alpine
 FROM node:20-bullseye-slim
 
 # Workdir to app.
@@ -34,5 +35,7 @@ RUN npm install
 COPY . .
 
 EXPOSE 5555
+
+# RUN ["npm", "run", "prisma:dev:deploy"]
 
 CMD ["npm", "run", "start"]
