@@ -10,12 +10,11 @@ import {
   NoParamCallback,
   createReadStream,
   existsSync,
-  readFileSync,
   rename,
   rm,
 } from 'fs';
 import { PublicUser } from './types';
-import { cwd } from 'process';
+import { FRStatus, FriendRequest } from '@prisma/client';
 import { join } from 'path';
 import { Response } from 'express';
 
@@ -134,5 +133,58 @@ export class UserService {
 
     this.editUser(userId, { avatar: `http://localhost:3000/${newname}` });
     return `http://localhost:3000/${newname}`;
+  }
+
+  async getPendingFR(userId: number) {
+    const pendingFR: FriendRequest[] = await this.prisma.friendRequest.findMany(
+      {
+        where: {
+          OR: [
+            {
+              fromId: {
+                equals: userId,
+              },
+            },
+            {
+              toId: {
+                equals: userId,
+              },
+            },
+          ],
+          status: {
+            equals: FRStatus.PENDING,
+          },
+        },
+      },
+    );
+
+    const pendingFriendIds = pendingFR.map(
+      ({ fromId, toId }: { fromId: number; toId: number }) => {
+        if (fromId === userId) {
+          return toId;
+        } else {
+          return fromId;
+        }
+      },
+    );
+
+    console.log('getting Pending Friend Request');
+
+    return this.prisma.user.findMany({
+      where: {
+        id: {
+          in: pendingFriendIds,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        level: true,
+        avatar: true,
+      },
+    });
+
+    // console.log(pendingFR?.receivedRequests);
+    // return pendingFR?.receivedRequests;
   }
 }

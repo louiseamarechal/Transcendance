@@ -3,23 +3,13 @@ import UserCard from '../components/UserCard.tsx';
 // import { User } from '../types/User.type.ts';
 import { useEffect, useState } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
-
-// const user = {
-//   name: 'truc',
-//   avatar: 'coucou',
-//   level: 5,
-// };
-
-// const array = [user, user, user, user];
+import { Link } from 'react-router-dom';
+import PendingFriends from '../components/PendingFriends.tsx';
 
 function Friends() {
   const axiosInstance = useAxiosPrivate();
   const [array, setArray] = useState([]);
-  // const [user, setUser] = useState<User>({
-  //   name: 'toi',
-  //   avatar: 'lol',
-  //   level: 8
-  // });
+  // const [pendingFR, setPendingFR] = useState([]);
 
   useEffect(() => {
     axiosInstance
@@ -30,46 +20,38 @@ function Friends() {
       .catch((e) => console.log(e));
   }, []);
 
-  return (
-    <>
-      {/* <NavBar/> */}
-      <div className="findfriends-container friend-card">
-        {/* <div className="friend-card">
-          <UserCard user={user} />{' '}
+  if (array.length <= 0) {
+    return (
+      <div className="friends-container">
+        <PendingFriends />
+        <div className='friend-inside-container'>
+          {/* <p>You don't have any Friends yet...</p> */}
+          <Link to="/findfriends">
+            You can invite your Friends <strong>here</strong>
+          </Link>
         </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '}
-        </div>
-        <div className="friend-card">
-          <UserCard user={user} />{' '} */}
-        {/* </div> */}
-        {array.map((elem) => {
-          return (
-            <div className="friend-card">
-              <UserCard user={elem} />
-            </div>
-          );
-        })}
       </div>
-    </>
+    );
+  }
+
+  return (
+    <div className="friends-container">
+      <PendingFriends />
+      <div className="friend-inside-container">
+        <h2>Friends :</h2>
+        <div className="all-friends-cards">
+          {array.map((elem) => {
+            return (
+              <>
+                <div className="friend-card">
+                  <UserCard user={elem} />
+                </div>
+              </>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -77,6 +77,13 @@ export class UserController {
     return this.userService.uploadAvatar(file, userLogin, userId);
   }
 
+  @Get('pending-request')
+  getPendingFR(@GetUserId() userId: number) {
+    console.log({ userId });
+    console.log('[user/pending-request]: accessed controller');
+    return this.userService.getPendingFR(userId);
+  }
+
   @Get(':id')
   getUserById(@Param('id', ParseIntPipe) id: number) {
     return this.userService.getUserById(id);
