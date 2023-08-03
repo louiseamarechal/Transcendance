@@ -71,7 +71,7 @@ export class AuthService {
         },
       });
       await this.mail.sendEmail(
-        email,
+        userDto.email,
         'transcendance 2FA',
         `Please enter this code : ${sixDigitCode}`,
       );
