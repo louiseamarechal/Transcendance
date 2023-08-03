@@ -8,7 +8,7 @@ export type Channel = {
   ownerId: number;
   members: {user: User}[];
   admins: {userId: number}[];
-  banned: {userId: number}[];
+  blocked: {userId: number}[];
   muted: {mutedUserId: number, mutedByUserId: number}[];
   passwordHash?: string;
 };

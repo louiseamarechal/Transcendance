@@ -10,7 +10,6 @@ import FindFriends from './pages/FindFriends.tsx';
 import Components from './pages/Components.tsx';
 import Callback from './pages/Callback.tsx';
 import RequireAuth from './components/RequireAuth.tsx';
-import NavBar from './components/NavBar.tsx';
 
 // CSS
 import './style/color.css';
