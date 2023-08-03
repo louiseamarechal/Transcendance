@@ -32,7 +32,7 @@ export class AuthController {
 
   @Post('checkcode')
   @HttpCode(HttpStatus.OK)
-  checkcode(@GetUserId() userId: number, @Body() code: string) {
+  checkcode(@GetUserId() userId: number, @Body('code') code: string) {
     return this.authService.checkcode(userId, code);
   }
 

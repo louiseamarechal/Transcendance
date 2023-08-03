@@ -72,6 +72,7 @@ export class AuthService {
     if (user.s2fa === Status2fa.SET) {
       const sixDigitCode = generateSixDigitCode();
       console.log('code 2FA a ete genere aves succes.');
+      console.log({ sixDigitCode });
 
       const hashedCode: string = await argon.hash(sixDigitCode.toString());
       await this.prisma.user.update({
@@ -97,22 +98,16 @@ export class AuthService {
   }
 
   async checkcode(userId: number, code: string) {
-    const hashedCode: string = await argon.hash(code.toString());
-    const object = await this.prisma.user.findUnique({
+    // const hashedCode: string = await argon.hash(code);
+    const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: { code2FA: true },
     });
-    const goodcode = '';
-    if (object !== null) {
-      const goodcode = object.code2FA;
-    }
-    try {
-      const isMatch = await argon.verify(goodcode, code);
-      return isMatch;
-    } catch (error) {
-      console.error('Erreur lors de la vérification du mot de passe:', error);
-      throw new ForbiddenException('Access Denied');
-    }
+
+    if (!user || !user.code2FA)  throw new ForbiddenException('Access Denied');
+    const isMatch = await argon.verify(user.code2FA, code);
+    if (!isMatch) throw new ForbiddenException('Access Denied');
+    //return isMatch;
   }
 
   async logout(userId: number) {
@@ -272,5 +267,7 @@ export class AuthService {
 function generateSixDigitCode() {
   const min = 100000;
   const max = 999999;
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  
+  const code =  Math.floor(Math.random() * (max - min + 1)) + min;
+  return (code.toString())
 }
