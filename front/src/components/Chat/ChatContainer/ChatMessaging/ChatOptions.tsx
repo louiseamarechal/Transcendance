@@ -1,12 +1,16 @@
-import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 import { Channel } from '../../../../types/Channel.type';
 import '../../../../style/components/chat/chat-container/chat-messaging/chat-options.css';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import MembersList from './ChatOptions/MembersList';
 import ChatSecurityOptions from './ChatOptions/ChatSecurityOptions';
 
-const ChatOptions = ({ channel }: { channel: Channel }) => {
-  const axiosPrivate = useAxiosPrivate();
+const ChatOptions = ({
+  channel,
+  setChannel,
+}: {
+  channel: Channel;
+  setChannel: Dispatch<SetStateAction<Channel>>;
+}) => {
   const [selected, setSelected] = useState<string>('members');
 
   console.log({ channel });
@@ -47,9 +51,9 @@ const ChatOptions = ({ channel }: { channel: Channel }) => {
       <div className="options-body">
         {selected === 'members' ? (
           <MembersList
-            users={channel.members}
-            ownerId={channel.ownerId}
-            admins={channel.admins}
+            key={`chat-options-member-list`}
+            channel={channel}
+            setChannel={setChannel}
           />
         ) : (
           <></>

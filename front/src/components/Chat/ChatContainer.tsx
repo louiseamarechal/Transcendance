@@ -9,9 +9,9 @@ const ChatContainer = () => {
   return (
     <div className="chat-container">
       {showCreateChannel ? (
-        <CreateChannelForm />
+        <CreateChannelForm key={`create-channel-form`} />
       ) : !Number.isNaN(showChannel) ? (
-        <ChatMessaging key={showChannel}/>
+        <ChatMessaging key={`Messaging-${showChannel}`} />
       ) : (
         <div />
       )}

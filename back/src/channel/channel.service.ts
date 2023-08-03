@@ -7,10 +7,16 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
-import { BlockedOnChannels, MembersOnChannels, VisType } from '@prisma/client';
+import {
+  BlockedOnChannels,
+  MembersOnChannels,
+  User,
+  VisType,
+} from '@prisma/client';
 import { Socket, Namespace } from 'socket.io';
-import { MutedOnChannel } from './types';
+import { MembersOnChannel, MutedOnChannel } from './types';
 import { NotifService } from 'src/notif/notif.service';
+import { channel } from 'diagnostics_channel';
 
 @Injectable()
 export class ChannelService {
@@ -309,6 +315,10 @@ export class ChannelService {
     });
   }
 
+  /*============================================================================
+                            Admin on Channels
+==============================================================================*/
+
   async createAdminOnChannel(
     channelId: number,
     userId: number,
@@ -346,6 +356,10 @@ export class ChannelService {
         throw error;
       });
   }
+
+  /*============================================================================
+                            Muted On Channel
+==============================================================================*/
 
   async createMutedOnChannel(
     channelId: number,
@@ -403,6 +417,146 @@ export class ChannelService {
           throw new HttpException('Does not exist', HttpStatus.NO_CONTENT);
         throw error;
       });
+  }
+
+  /*============================================================================
+                            Members on channels
+==============================================================================*/
+
+  async createMemberOnChannel(
+    userId: number,
+    channelId: number,
+    newId: number,
+  ): Promise<MembersOnChannel | undefined> {
+    const ownerId: number | undefined = await this.prisma.channel
+      .findUnique({ where: { id: channelId } })
+      .then((res): number | undefined => res?.ownerId);
+    const admin = await this.prisma.adminsOnChannels.findUnique({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId,
+        },
+      },
+    });
+    if (admin === null && ownerId !== userId) {
+      throw new ForbiddenException('User not a member');
+    }
+    return this.prisma.membersOnChannels.create({
+      data: {
+        channelId,
+        userId: newId,
+      },
+    });
+  }
+
+  async createMembersOnChannel(
+    userId: number,
+    channelId: number,
+    newIds: number[],
+  ) {
+    const ownerId: number | undefined = await this.prisma.channel
+      .findUnique({ where: { id: channelId } })
+      .then((res): number | undefined => res?.ownerId);
+    const admin = await this.prisma.adminsOnChannels.findUnique({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId,
+        },
+      },
+    });
+    if (admin === null && ownerId !== userId) {
+      throw new ForbiddenException('User not a member');
+    }
+    await this.prisma.membersOnChannels.createMany({
+      data: newIds.map(
+        (userId: number): { channelId: number; userId: number } => {
+          return { channelId, userId };
+        },
+      ),
+    });
+  }
+
+  async removeMemberOnChannel(
+    userId: number,
+    channelId: number,
+    removeId: number,
+  ): Promise<MembersOnChannel | undefined> {
+    console.log(`In removeMemberOnChannel ${removeId} in ${channelId}`);
+    const ownerId: number | undefined = await this.prisma.channel
+      .findUnique({ where: { id: channelId } })
+      .then((res): number | undefined => res?.ownerId);
+    const admin = await this.prisma.adminsOnChannels.findUnique({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId,
+        },
+      },
+    });
+    if (admin === null && ownerId !== userId) {
+      throw new ForbiddenException('Access denied');
+    }
+    const userAdmin = await this.prisma.adminsOnChannels.findUnique({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId: removeId,
+        },
+      },
+    });
+    console.log({ userAdmin });
+    if (userAdmin !== null) {
+      await this.prisma.adminsOnChannels.delete({
+        where: {
+          channelId_userId: {
+            channelId,
+            userId: removeId,
+          },
+        },
+      });
+    }
+    return this.prisma.membersOnChannels.delete({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId: removeId,
+        },
+      },
+    });
+  }
+
+  /*============================================================================
+                            Blocked on channels
+==============================================================================*/
+
+  async createBlockedOnChannel(
+    userId: number,
+    channelId: number,
+    blockedId: number,
+  ): Promise<MembersOnChannel | undefined> {
+    const ownerId: number | undefined = await this.prisma.channel
+      .findUnique({ where: { id: channelId } })
+      .then((res): number | undefined => res?.ownerId);
+    const admin = await this.prisma.adminsOnChannels.findUnique({
+      where: {
+        channelId_userId: {
+          channelId,
+          userId,
+        },
+      },
+    });
+    if (admin === null && ownerId !== userId) {
+      throw new ForbiddenException('User not a member');
+    }
+    console.log(`Add banned member: ${blockedId}`);
+    return this.prisma.blockedOnChannels.create({
+      data: {
+        channelId,
+        userId: blockedId,
+      },
+    });
   }
 
   /* =============================================================================
