@@ -25,18 +25,39 @@ services:
     ports:
       - 5435:5432
 
-  back:
-    container_name: back
-    stdin_open: true
+    # back:
+    #   container_name: back
+    #   stdin_open: true
+    #   build:
+    #     context: ./
+    #     dockerfile: ./back/requirements/Dockerfile
+    #   depends_on:
+    #     - db
+    #   restart: on-failure
+    #   ports:
+    #     - 8080:8080
+    #     - 5555:5555
+
+  frontend:
+    container_name: client
     build:
-      context: ./
-      dockerfile: ./back/requirements/Dockerfile
+      context: ./front
+      dockerfile: Dockerfile
+    image: react
+    ports:
+      - "3000:3000"
+
+  backend:
+    container_name: backend
+    build:
+      context: ./back
+      dockerfile: Dockerfile
     depends_on:
       - db
     restart: on-failure
+    image: server
     ports:
-      - 8080:8080
-      - 5555:5555
+      - "5555:5555"
 
 volumes:
   db-data:
