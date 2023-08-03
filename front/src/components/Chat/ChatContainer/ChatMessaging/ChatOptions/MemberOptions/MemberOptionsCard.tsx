@@ -24,7 +24,6 @@ function MemberOptionsCard({
   const { myId } = useUser();
   const myRole: number = determineRole(myId);
   const [userRole, setUserRole] = useState<number>(determineRole(member.id));
-  // const [muted, setMuted] =
 
   function determineRole(id: number): number {
     const adminIds: number[] = channel.admins.map(
