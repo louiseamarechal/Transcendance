@@ -14,6 +14,7 @@ export enum GameStatus {
   Ready = 'Ready',
   Timer = 'Timer',
   Playing = 'Playing',
+  Score = 'Score',
   Done = 'Done',
 }
 
@@ -75,6 +76,8 @@ export class Game {
       this.gameLoopTimer();
     } else if (this.status === GameStatus.Playing) {
       this.gameLoopPlaying();
+    } else if (this.status === GameStatus.Score) {
+      this.gameLoopScore();
     }
   }
 
@@ -142,6 +145,10 @@ export class Game {
 
     this.computeNextState();
 
+    if (this.isWinCondition() === true) {
+      this.status = GameStatus.Score;
+    }
+
     const updateOverlayPayload: ServerPayloads[ServerEvents.updateOverlay] = {
       type: 'playing',
       data: {
@@ -160,7 +167,26 @@ export class Game {
       p2: this.p2,
       ball: this.ball,
     };
-    this.server.to(this.gameId).emit('server.game.gameData', gameData);
+    this.server.to(this.gameId).emit(ServerEvents.gameData, gameData);
+  }
+
+  private gameLoopScore() {
+    this.stopGameLoop();
+
+    const updateOverlayPayload: ServerPayloads[ServerEvents.updateOverlay] = {
+      type: 'score',
+      data: {
+        p1name: this.p1.user?.name,
+        p2name: this.p2.user?.name,
+        score: this.score,
+      },
+    };
+
+    this.server
+      .to(this.gameId)
+      .emit(ServerEvents.updateOverlay, updateOverlayPayload);
+
+    this.status = GameStatus.Done;
   }
 
   private computeNextState() {
@@ -188,7 +214,11 @@ export class Game {
   }
 
   /**
+   *
+   *
    * ComputeNextState Helpers
+   *
+   *
    */
   private isOut(pos: Vec2D) {
     if (pos.x > 0 && pos.x < 1 && pos.y > 0 && pos.y < 1) {
@@ -305,5 +335,12 @@ export class Game {
 
   private normVec2D(vec: Vec2D): number {
     return Math.sqrt(vec.x ** 2 + vec.y ** 2);
+  }
+
+  private isWinCondition(): boolean {
+    if (this.score[0] >= 10 || this.score[1] >= 10) {
+      return true;
+    }
+    return false;
   }
 }

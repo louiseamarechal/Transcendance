@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Layer, Rect, Stage } from 'react-konva';
+import { Layer, Stage } from 'react-konva';
 import GamePaddle from './GamePaddle';
 import GameBall from './GameBall';
 import { GameData } from '../../../../shared/server/ServerPayloads';
@@ -31,7 +31,6 @@ export default function GameCanvas({ p1, p2, ball }: GameCanvasProps) {
     <div ref={parentRef} className="h-[95%] w-[95%]">
       <Stage width={width} height={height}>
         <Layer>
-          <Rect x={50} y={50} width={50} height={50} />
           <GamePaddle x={lx} y={ly} size={lsize} paddleWidth={10} />
           <GamePaddle x={rx} y={ry} size={rsize} paddleWidth={10} />
           <GameBall x={bx} y={by} radius={10} />

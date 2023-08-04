@@ -5,6 +5,7 @@ import {
   OverlayType,
   OverlayData,
 } from '../../../../../shared/server/ServerPayloads';
+import GameOverlayScore from './GameOverlayScore';
 
 type GameOverlayProps = {
   type: OverlayType;
@@ -22,6 +23,10 @@ export default function GameOverlay({ type, data }: GameOverlayProps) {
 
   if (type === 'playing') {
     return <GameOverlayPlaying data={data} />;
+  }
+
+  if (type === 'score') {
+    return <GameOverlayScore data={data} />;
   }
 
   return null;
