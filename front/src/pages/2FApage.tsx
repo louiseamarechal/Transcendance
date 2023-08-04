@@ -19,14 +19,13 @@ function TwoFApage() {
           navigate('/game');
         })
         .catch((e) => navigate('/'));
-      //ici faire la requete MAggle, et balancer le code au back sisi
-      console.log('Code saisi :', code); // Vous pouvez enregistrer le code ici ou le manipuler selon vos besoins
+      console.log('Code saisi :', code);
     }
   };
 
   useEffect(() => {
     axiosInstance
-      .get('user/me') //a modifier en fonction
+      .get('user/me')
       .then((res) => {
         if (res.data.s2fa === 'NOTSET') navigate('/game');
       })

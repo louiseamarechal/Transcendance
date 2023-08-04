@@ -76,7 +76,6 @@ export class AuthService {
         `Please enter this code : ${sixDigitCode}`,
       );
     }
-    //ici appeler le truc pour faire le mail et generer le code checker avec un if, status @FA et on appelle la fonciton qui fait tout
 
     // generate and returns jwts
     const tokens: Tokens = await this.getTokens(user);
@@ -85,13 +84,19 @@ export class AuthService {
   }
 
   async checkcode(userId: number, code: string) {
-    // const hashedCode: string = await argon.hash(code);
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: { code2FA: true },
+      select: { code2FA: true, updatedAt: true },
     });
 
-    if (!user || !user.code2FA)  throw new ForbiddenException('Access Denied');
+    if (!user || !user.code2FA) throw new ForbiddenException('Access Denied');
+
+    let date = Date.now();
+    const fiveMinutesInMillis = 5 * 60 * 1000;
+    const diffiMillis = date - user.updatedAt.getTime();
+    if (diffiMillis > fiveMinutesInMillis)
+      throw new ForbiddenException('Security code Expired');
+
     const isMatch = await argon.verify(user.code2FA, code);
     if (!isMatch) throw new ForbiddenException('Access Denied');
     //return isMatch;
@@ -254,7 +259,7 @@ export class AuthService {
 function generateSixDigitCode() {
   const min = 100000;
   const max = 999999;
-  
-  const code =  Math.floor(Math.random() * (max - min + 1)) + min;
-  return (code.toString())
+
+  const code = Math.floor(Math.random() * (max - min + 1)) + min;
+  return code.toString();
 }
