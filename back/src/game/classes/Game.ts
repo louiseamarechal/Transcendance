@@ -31,6 +31,8 @@ export class Game {
   gameStartedAt: number;
   #intervalId: NodeJS.Timer | null = null;
 
+  lastBallAcceleration: number;
+
   p1: Player;
   p2: Player;
   ball: Ball;
@@ -65,6 +67,28 @@ export class Game {
       p2: this.p2,
       ball: this.ball,
     });
+  }
+
+  updatePaddlePos(playerId: number, val: number) {
+    if (this.p1.user.id === playerId) {
+      const paddle = this.p1.paddle;
+      if (val < paddle.size + paddle.deathMargin) {
+        this.p1.paddle.pos = paddle.size + paddle.deathMargin;
+      } else if (val > 1 - paddle.size - paddle.deathMargin) {
+        this.p1.paddle.pos = 1 - paddle.size - paddle.deathMargin;
+      } else {
+        this.p1.paddle.pos = val;
+      }
+    } else if (this.p2.user.id === playerId) {
+      const paddle = this.p2.paddle;
+      if (val < paddle.size + paddle.deathMargin) {
+        this.p2.paddle.pos = paddle.size + paddle.deathMargin;
+      } else if (val > 1 - paddle.size - paddle.deathMargin) {
+        this.p2.paddle.pos = 1 - paddle.size - paddle.deathMargin;
+      } else {
+        this.p2.paddle.pos = val;
+      }
+    }
   }
 
   async gameLoop() {
@@ -126,6 +150,7 @@ export class Game {
     // console.log('  Timer');
 
     if (Date.now() > this.gameStartedAt) {
+      this.lastBallAcceleration = Date.now();
       this.status = GameStatus.Playing;
       return;
     }
@@ -186,6 +211,13 @@ export class Game {
       .to(this.gameId)
       .emit(ServerEvents.updateOverlay, updateOverlayPayload);
 
+    const gameData: any = {
+      p1: null,
+      p2: null,
+      ball: null,
+    };
+    this.server.to(this.gameId).emit(ServerEvents.gameData, gameData);
+
     this.status = GameStatus.Done;
   }
 
@@ -210,6 +242,15 @@ export class Game {
 
     if (this.isOutVertically(newBallPos)) {
       this.ball.velocity.y *= -1;
+    }
+
+    if (
+      Date.now() >
+      this.lastBallAcceleration + this.ball.velocityIncreaseInterval
+    ) {
+      this.ball.velocity.x *= 1 + this.ball.velocityIncreaseValue;
+      this.ball.velocity.y *= 1 + this.ball.velocityIncreaseValue;
+      this.lastBallAcceleration = Date.now();
     }
   }
 
@@ -296,6 +337,8 @@ export class Game {
     } else {
       intersect.x === 0 ? this.score[1]++ : this.score[0]++;
       this.ball.pos = { x: 0.5, y: 0.5 };
+      this.ball.velocity = { x: 0.01, y: 0 };
+      this.lastBallAcceleration = Date.now();
     }
   }
 

@@ -9,6 +9,7 @@ export class GameService {
     private notifService: NotifService,
     private prisma: PrismaService,
   ) {}
+
   async createGame(fromId: number, toId: number): Promise<Game> {
     const gameRequest = await this.prisma.game.create({
       data: {

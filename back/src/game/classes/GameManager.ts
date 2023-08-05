@@ -1,10 +1,17 @@
 import { Socket, Namespace } from 'socket.io';
 import { Game, GameStatus, GameVisibility } from './Game';
 import { Cron } from '@nestjs/schedule';
+import { GameService } from '../game.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 export class GameManager {
   public server: Namespace;
   readonly #games: Map<string, Game> = new Map<string, Game>();
+
+  constructor(
+    private gameService: GameService,
+    private prisma: PrismaService,
+  ) {}
 
   public joinQueue(client: Socket) {
     console.log('[GameManager] joinQueue');
@@ -45,11 +52,7 @@ export class GameManager {
       return;
     }
 
-    if (game.p1.user.id === playerId) {
-      game.p1.paddle.pos = val;
-    } else if (game.p2.user.id === playerId) {
-      game.p2.paddle.pos = val;
-    }
+    game.updatePaddlePos(playerId, val);
   }
 
   public setReady(playerId: number, gameId: string) {

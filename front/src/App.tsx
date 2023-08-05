@@ -30,6 +30,8 @@ import GameQueue from './pages/game/GameQueue.tsx';
 import GameGame from './pages/game/GameGame.tsx';
 
 import UserProfile from './pages/UserProfile.tsx';
+import GameSearch from './pages/game/GameSearch.tsx';
+import GameCreate from './pages/game/GameCreate.tsx';
 
 function App() {
   return (
@@ -46,6 +48,8 @@ function App() {
           </Route>
           <Route path="/game" Component={GameLayout}>
             <Route index Component={GameLobby} />
+            <Route path="search" Component={GameSearch} />
+            <Route path="create" Component={GameCreate} />
             <Route path="queue" Component={GameQueue} />
             <Route path=":gameId" Component={GameGame} />
           </Route>
