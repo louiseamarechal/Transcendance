@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import '../../../../style/components/chat/chat-container/chat-messaging/chat-header.css';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
+import Avatar from '../../../Avatar';
 
 const ChatHeader = ({
   channel,
@@ -29,7 +30,7 @@ const ChatHeader = ({
 
   return (
     <div className="chat-header">
-      <img className="avatar-sm" src={channelAvatar} />
+      <Avatar file={channelAvatar} small={true} />
       <p>{channelName}</p>
       <div
         className="options-menu"
