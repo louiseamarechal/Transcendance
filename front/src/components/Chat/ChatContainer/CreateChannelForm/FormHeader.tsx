@@ -1,5 +1,6 @@
 import { SetStateAction } from 'react';
-import '../../../../style/components/chat/chat-container/create-channel-form/form-header.css'
+import '../../../../style/components/chat/chat-container/create-channel-form/form-header.css';
+import Avatar from '../../../Avatar';
 
 const FormHeader = ({
   avatar,
@@ -10,13 +11,16 @@ const FormHeader = ({
   setAvatar: React.Dispatch<SetStateAction<string>>;
   setChannelName: React.Dispatch<SetStateAction<string | undefined>>;
 }) => {
+  async function changeAvatar(event: React.ChangeEvent<HTMLInputElement>) {
+    setAvatar(event.target.value);
+  }
   return (
     <div className="form-header">
       <div className="avatar-wrapper">
-        <img src={avatar} className="avatar-sm" />
+        <Avatar file={avatar} small={true} />
         <input
           type="file"
-          onChange={(event) => setAvatar(event.target.value)}
+          onChange={(event) => changeAvatar(event)}
           className="avatar-sm form-avatar"
         ></input>
       </div>

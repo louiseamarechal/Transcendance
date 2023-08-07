@@ -8,13 +8,10 @@ import FormHeader from './CreateChannelForm/FormHeader';
 import { useUser } from '../../../hooks/useUser';
 import { notifSocket } from '../../../api/socket';
 import { User } from '../../../types/User.type';
-import BACK_URL from '../../../api/backUrl';
 import ChannelVisibility from './CreateChannelForm/ChannelVisibility';
 
 const CreateChannelForm = () => {
-  const [avatar, setAvatar] = useState<string>(
-    `${BACK_URL}/public/default.jpg`,
-  );
+  const [avatar, setAvatar] = useState<string>('default.jpg');
   const axiosPrivate = useAxiosPrivate();
   const { myId, myLogin } = useUser();
   const { channelList, setChannelList, setShowCreateChannel, setShowChannel } =

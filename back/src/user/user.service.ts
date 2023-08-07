@@ -6,13 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditUserDto } from './dto';
-import {
-  NoParamCallback,
-  createReadStream,
-  existsSync,
-  rename,
-  rm,
-} from 'fs';
+import { NoParamCallback, createReadStream, existsSync, rename, rm } from 'fs';
 import { PublicUser } from './types';
 import { FRStatus, FriendRequest } from '@prisma/client';
 import { join } from 'path';
@@ -43,7 +37,7 @@ export class UserService {
     }
     return user;
   }
-
+ 
   async getAvatarById(userId: number, res: Response) {
     const user: PublicUser = await this.getUserById(userId);
     const avatar = user.avatar;
