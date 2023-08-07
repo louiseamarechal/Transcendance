@@ -9,7 +9,7 @@ const ChatOptions = ({
   setChannel,
 }: {
   channel: Channel;
-  setChannel: Dispatch<SetStateAction<Channel>>;
+  setChannel: Dispatch<SetStateAction<Channel | undefined>>;
 }) => {
   const [selected, setSelected] = useState<string>('members');
 

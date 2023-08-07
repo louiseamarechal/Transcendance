@@ -15,7 +15,7 @@ const AddMemberList = ({
   members: { user: User }[];
   setShowAddMember: Dispatch<SetStateAction<boolean>>;
   channel: Channel;
-  setChannel: Dispatch<SetStateAction<Channel>>;
+  setChannel: Dispatch<SetStateAction<Channel | undefined>>;
 }) => {
   const [friends, setFriends] = useState<
     { id: number; name: string; level: number; avatar: string }[]

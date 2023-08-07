@@ -22,6 +22,7 @@ const ChannelList = () => {
       .catch((err) => {
         console.log(err.response.status + ' -> ' + err.response.statusText);
       });
+    // axiosPrivate
   }, []);
 
   return (

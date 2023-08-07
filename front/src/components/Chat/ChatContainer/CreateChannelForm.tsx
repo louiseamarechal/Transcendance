@@ -9,6 +9,7 @@ import { useUser } from '../../../hooks/useUser';
 import { notifSocket } from '../../../api/socket';
 import { User } from '../../../types/User.type';
 import BACK_URL from '../../../api/backUrl';
+import ChannelVisibility from './CreateChannelForm/ChannelVisibility';
 
 const CreateChannelForm = () => {
   const [avatar, setAvatar] = useState<string>(
@@ -20,6 +21,8 @@ const CreateChannelForm = () => {
     useChatContext();
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]);
   const [channelName, setChannelName] = useState<string>();
+  const [channelVis, setChannelVis] = useState<string>('PUBLIC');
+  const [channelPassword, setChannelPassword] = useState<string>('');
 
   async function handleSubmit() {
     if (!channelName) {
@@ -63,6 +66,13 @@ const CreateChannelForm = () => {
         key={`channel-form-list`}
         selectedFriends={selectedFriends}
         setSelectedFriends={setSelectedFriends}
+      />
+      <ChannelVisibility
+        key={`channel-form-visibility`}
+        channelVis={channelVis}
+        setChannelVis={setChannelVis}
+        channelPassword={channelPassword}
+        setChannelPassword={setChannelPassword}
       />
       <button
         className="small-button"

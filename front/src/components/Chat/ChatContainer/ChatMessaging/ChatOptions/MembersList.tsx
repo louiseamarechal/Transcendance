@@ -12,7 +12,7 @@ const MembersList = ({
   setChannel,
 }: {
   channel: Channel;
-  setChannel: Dispatch<SetStateAction<Channel>>;
+  setChannel: Dispatch<SetStateAction<Channel | undefined>>;
 }) => {
   const [members, setMembers] = useState<{ user: User }[]>(channel.members);
   const [admins, setAdmins] = useState<{ userId: number }[]>(channel.admins);
