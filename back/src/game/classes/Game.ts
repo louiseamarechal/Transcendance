@@ -357,12 +357,8 @@ export class Game {
       x: Math.sign(vel.x) * this.normVec2D(vel),
       y: 0,
     };
-    // console.log({ vel });
-    // console.log({ newVelocity });
 
     const rotated = this.rotateVec2D(newVelocity, rotation);
-    // console.log({ rotated, pos: this.ball.pos });
-    // console.log();
 
     this.ball.velocity = rotated;
   }

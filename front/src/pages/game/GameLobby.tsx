@@ -1,8 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 
 export default function GameLobby() {
-  const [mode, setMode] = useState<string>('timed');
   const navigate = useNavigate();
 
   const handleSearchGame = async () => {
