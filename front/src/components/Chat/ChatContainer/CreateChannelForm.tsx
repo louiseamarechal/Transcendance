@@ -26,12 +26,15 @@ const CreateChannelForm = () => {
       alert('Channel name must be filled.');
     } else if (selectedFriends.length < 2) {
       alert('Group channel should have at least 3 members.');
+    } else if (channelVis === 'PROTECTED' && !channelPassword) {
+      alert('Protected channel must have a password.');
     } else {
       await axiosPrivate
         .post('channel', {
           name: channelName,
           avatar,
           members: [...selectedFriends, myId],
+					
         })
         .then((res) => {
           setChannelList([...channelList, res.data]);
@@ -73,6 +76,7 @@ const CreateChannelForm = () => {
       />
       <button
         className="small-button"
+        id="submit-button"
         onClick={() => handleSubmit()}
         // onKeyUp={(event) => {
         //   event.key === 'Enter' && handleSubmit();

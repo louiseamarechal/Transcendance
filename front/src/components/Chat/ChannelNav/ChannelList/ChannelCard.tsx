@@ -35,7 +35,7 @@ function ChannelCard({ id, name, avatar }: ChannelCardProps) {
         console.log(`Now showing channel ${id}`);
       }}
     >
-      <Avatar file={channelAvatar}/>
+      <Avatar file={channelAvatar} />
       <div>
         <p>{channelName}</p>
       </div>

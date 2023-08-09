@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction } from 'react';
-import ChannelList from '../../ChannelNav/ChannelList';
 
 function ChannelVisibility({
   channelVis,
@@ -13,64 +12,71 @@ function ChannelVisibility({
   setChannelPassword: Dispatch<SetStateAction<string>>;
 }) {
   function handleOnChangePublic() {
-    if (channelVis === 'PUBLIC') {
-      setChannelVis('');
-    } else {
+    if (channelVis !== 'PUBLIC') {
       setChannelVis('PUBLIC');
     }
   }
 
   function handleOnChangeProtected() {
-    if (channelVis === 'PROTECTED') {
-      setChannelVis('');
-    } else {
+    if (channelVis !== 'PROTECTED') {
       setChannelVis('PROTECTED');
     }
   }
 
   function handleOnChangePrivate() {
-    if (channelVis === 'PRIVATE') {
-      setChannelVis('');
-    } else {
+    if (channelVis !== 'PRIVATE') {
       setChannelVis('PRIVATE');
     }
   }
 
   return (
-    <div className="friends-list">
+    <div className="visibility-list">
       <p>Choose channel visibility</p>
-      <div className="box-check-vis">
+      <div className="vis-choice">
         <div className="vis-option">
-          <p>PUBLIC</p>
-          <input
-            type="checkbox"
-            id="PUBLIC"
-            value="PUBLIC"
-            checked={channelVis === 'PUBLIC'}
-            onChange={handleOnChangePublic}
-          />
+          <button
+            className={`small-button ${
+              channelVis === 'PUBLIC' ? 'vis-selected' : 'vis-unselected'
+            }`}
+            onClick={handleOnChangePublic}
+          >
+            PUBLIC
+          </button>
         </div>
         <div className="vis-option">
-          <p>PROTECTED</p>
-          <input
-            type="checkbox"
-            id="PROTECTED"
-            value="PROTECTED"
-            checked={channelVis === 'PROTECTED'}
-            onChange={handleOnChangeProtected}
-          />
+          <button
+            className={`small-button ${
+              channelVis === 'PROTECTED' ? 'vis-selected' : 'vis-unselected'
+            }`}
+            onClick={handleOnChangeProtected}
+          >
+            PROTECTED
+          </button>
         </div>
         <div className="vis-option">
-          <p>PRIVATE</p>
-          <input
-            type="checkbox"
-            id="PRIVATE"
-            value="PRIVATE"
-            checked={channelVis === 'PRIVATE'}
-            onChange={handleOnChangePrivate}
-          />
+          <button
+            className={`small-button ${
+              channelVis === 'PRIVATE' ? 'vis-selected' : 'vis-unselected'
+            }`}
+            onClick={handleOnChangePrivate}
+          >
+            PRIVATE
+          </button>
         </div>
       </div>
+      {channelVis === 'PROTECTED' ? (
+        <div className="password">
+          <p>password: </p>
+          <div />
+          <input
+            value={channelPassword}
+            placeholder="password"
+            onChange={(event) => setChannelPassword(event.target.value)}
+          ></input>
+        </div>
+      ) : (
+        <div />
+      )}
     </div>
   );
 }
