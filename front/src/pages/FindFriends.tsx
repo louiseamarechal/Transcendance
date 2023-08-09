@@ -10,7 +10,7 @@ function FindFriends() {
 
   useEffect(() => {
     axiosInstance
-      .get('user/all') //a modifier en fonction
+      .get('user/all')
       .then((res) => {
         setArray(res.data);
       })
@@ -20,13 +20,13 @@ function FindFriends() {
   return (
     <>
       <div className="findfriends-container">
-          {array.map((elem) => {
-            return (
-              <div className="friend-card">
-                <UserCard user={elem} />
-              </div>
-            );
-          })}
+        {array.map((elem) => {
+          return (
+            <div className="friend-card">
+              <UserCard user={elem} />
+            </div>
+          );
+        })}
       </div>
     </>
   );

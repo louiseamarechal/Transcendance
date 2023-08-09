@@ -38,6 +38,7 @@ function App() {
       <Routes>
         <Route path="/" Component={WelcomePage} />
         <Route path="/callback" Component={Callback} />
+        <Route path="/2FApage" Component={TwoFApage} />
         {/* PROTECTED ROUTES */}
         <Route Component={RequireAuth}>
           <Route path="/oldgame" Component={OldGame}>
@@ -56,7 +57,6 @@ function App() {
           <Route path="/profil/:id" Component={UserProfile} />
           <Route path="/test" Component={Components} />
           <Route path="/findfriends" Component={FindFriends} />
-          <Route path="/2FApage" Component={TwoFApage} />
         </Route>
       </Routes>
     </div>

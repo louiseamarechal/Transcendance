@@ -18,7 +18,10 @@ function TwoFApage() {
         .then((res) => {
           navigate('/game');
         })
-        .catch((e) => navigate('/'));
+        .catch((e) => {
+          alert('Wrong code/code has expired');
+          navigate('/');
+        });
       console.log('Code saisi :', code);
     }
   };
@@ -33,7 +36,6 @@ function TwoFApage() {
   }, []);
 
   return (
-    //
     <div className="h-screen flex flex-col items-center justify-center">
       <p className="text-[25px]">Waiting for two factors authentification</p>
       <h1>Please enter the security code :</h1>
