@@ -7,16 +7,11 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
-import {
-  BlockedOnChannels,
-  MembersOnChannels,
-  User,
-  VisType,
-} from '@prisma/client';
+import { BlockedOnChannels, MembersOnChannels, VisType } from '@prisma/client';
+import * as argon from 'argon2';
 import { Socket, Namespace } from 'socket.io';
 import { MembersOnChannel, MutedOnChannel } from './types';
 import { NotifService } from 'src/notif/notif.service';
-import { channel } from 'diagnostics_channel';
 
 @Injectable()
 export class ChannelService {
@@ -49,7 +44,7 @@ export class ChannelService {
         },
       },
     });
-    console.log({ channels });
+    // console.log({ channels });
     const filteredChannels = channels.filter(async (channel) => {
       const channelMembers = await this.prisma.membersOnChannels.findMany({
         where: {
@@ -67,13 +62,17 @@ export class ChannelService {
     if (filteredChannels.length > 0) {
       throw new ConflictException({ channelId: filteredChannels[0].channelId });
     } else {
+      let hash: string | undefined = undefined;
+      if (password) {
+        const hash: string = await argon.hash(password);
+      }
       const channel = await this.prisma.channel.create({
         data: {
           ownerId,
           name,
           avatar,
           visibility: visibility,
-					
+          passwordHash: hash,
         },
         select: {
           id: true,
@@ -278,15 +277,31 @@ export class ChannelService {
 
     return this.prisma.channel.findMany({
       where: {
-        id: {
-          in: channelIds,
-          notIn: blockedIds,
-        },
+        OR: [
+          {
+            id: {
+              in: channelIds,
+              notIn: blockedIds,
+            },
+          },
+          {
+            visibility: VisType.PROTECTED,
+            id: {
+              notIn: channelIds,
+            },
+          },
+        ],
       },
       select: {
         id: true,
         name: true,
         avatar: true,
+        visibility: true,
+        members: {
+          select: {
+            userId: true,
+          },
+        },
       },
     });
   }

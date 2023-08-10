@@ -7,16 +7,14 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
-  ParseUUIDPipe,
   Patch,
   Post,
 } from '@nestjs/common';
-import { GetUser, GetUserId } from 'src/common/decorators';
+import { GetUserId } from 'src/common/decorators';
 import { ChannelService } from './channel.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
 import { VisType } from '@prisma/client';
 import { MembersOnChannel, MutedOnChannel } from './types';
-import { channel } from 'diagnostics_channel';
 
 @Controller('channel')
 export class ChannelController {
@@ -31,9 +29,15 @@ export class ChannelController {
   }
 
   @Get('my-channels')
-  getUserChannels(
-    @GetUserId() userId: number,
-  ): Promise<{ name: string | null; avatar: string | null; id: number }[]> {
+  getUserChannels(@GetUserId() userId: number): Promise<
+    {
+      name: string | null;
+      avatar: string | null;
+      id: number;
+      visibility: string;
+      members: { userId: number }[];
+    }[]
+  > {
     return this.channelService.getUserChannels(userId);
   }
 
