@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import '../../../style/components/chat/channel-nav/channel-list.css';
 import '../../../style/components/buttons.css';
 import { Link } from 'react-router-dom';
@@ -12,6 +12,7 @@ const ChannelList = () => {
   const axiosPrivate = useAxiosPrivate();
   const { myId } = useUser();
   const { channelList, setChannelList } = useChatContext();
+  const [isClicked, setIsClicked] = useState<number>(NaN);
 
   useEffect(() => {
     axiosPrivate
@@ -28,43 +29,51 @@ const ChannelList = () => {
     <div className="channel-list">
       <div className="scrollable-list">
         <ul>
-          <li>
+          <li id="add-friend">
             <Link to={'/FindFriends'}>
-              <p className="text-center">Add friend</p>
+              <p>Add friend</p>
             </Link>
           </li>
           <li>
-            <p className='text-center'>Your channels</p>
+            <p className="channel-group">Your channels</p>
           </li>
           {channelList
             .filter((elem: Channel) => {
-              return elem.members.includes({ userId: myId });
+              console.log(
+                `channel ${elem.id}: ${elem.members.map((e) => e.userId)}`,
+              );
+              return elem.members.some((e) => e.userId === myId);
             })
             .map((elem: Channel) => {
               return (
-                <li key={elem.id}>
+                <li key={`channel-${elem.id}`}>
                   <ChannelCard
-                    id={elem.id}
-                    name={elem.name}
-                    avatar={elem.avatar}
+                    channel={elem}
+                    isMember={true}
+                    isClicked={isClicked}
+                    setIsClicked={setIsClicked}
                   />
                 </li>
               );
             })}
-            <li>
-              <p className='text-center'>Channels you can join</p>
-            </li>
-            {channelList
+          <li>
+            <p className="channel-group">Channels you can join</p>
+          </li>
+          {channelList
             .filter((elem: Channel) => {
-              return !elem.members.includes({ userId: myId });
+              console.log(
+                `channel ${elem.id}: ${elem.members.map((e) => e.userId)}`,
+              );
+              return !elem.members.some((e) => e.userId === myId);
             })
             .map((elem: Channel) => {
               return (
                 <li key={elem.id}>
                   <ChannelCard
-                    id={elem.id}
-                    name={elem.name}
-                    avatar={elem.avatar}
+                    channel={elem}
+                    isMember={false}
+                    isClicked={isClicked}
+                    setIsClicked={setIsClicked}
                   />
                 </li>
               );

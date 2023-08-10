@@ -28,7 +28,13 @@ export class ChannelService {
   async createChannel(
     ownerId: number,
     { name, avatar, members, visibility, password }: CreateChannelDto,
-  ): Promise<{ id: number; name: string; avatar: string | null }> {
+  ): Promise<{
+    id: number;
+    name: string;
+    avatar: string | null;
+    visibility: VisType;
+    members: { userId: number }[];
+  }> {
     const channels = await this.prisma.membersOnChannels.groupBy({
       by: ['channelId'],
       where: {
@@ -73,30 +79,32 @@ export class ChannelService {
           avatar,
           visibility: visibility,
           passwordHash: hash,
+          members: {
+            create: members.map((m: number) => {
+              return { userId: m };
+            }),
+          },
         },
         select: {
           id: true,
           name: true,
           avatar: true,
+          visibility: true,
           members: {
             select: {
               user: true,
+              userId: true,
             },
           },
         },
       });
+      console.log({ channel });
       channel.members.map((member) => {
         if (member.user.id !== ownerId) {
           this.notifService.handleChatNotif(member.user.login);
         }
       });
       console.log('Created channel.');
-      await this.prisma.membersOnChannels.createMany({
-        data: members.map((id: number) => {
-          console.log(`Creating member ${id} in channel ${channel.id}`);
-          return { channelId: channel.id, userId: id };
-        }),
-      });
       return channel;
     }
   }

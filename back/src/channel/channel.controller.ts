@@ -24,7 +24,13 @@ export class ChannelController {
   createChannel(
     @GetUserId() userId: number,
     @Body() dto: CreateChannelDto,
-  ): Promise<{ id: number; name: string; avatar: string | null }> {
+  ): Promise<{
+    id: number;
+    name: string;
+    avatar: string | null;
+    visibility: VisType;
+		members: {userId: number}[]
+  }> {
     return this.channelService.createChannel(userId, dto);
   }
 

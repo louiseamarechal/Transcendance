@@ -34,7 +34,8 @@ const CreateChannelForm = () => {
           name: channelName,
           avatar,
           members: [...selectedFriends, myId],
-					
+          visibility: channelVis,
+          password: channelVis === 'PROTECTED' ? channelPassword : undefined,
         })
         .then((res) => {
           setChannelList([...channelList, res.data]);
