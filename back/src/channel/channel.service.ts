@@ -290,6 +290,12 @@ export class ChannelService {
               notIn: channelIds,
             },
           },
+          {
+            visibility: VisType.PUBLIC,
+            id: {
+              notIn: channelIds,
+            },
+          },
         ],
       },
       select: {

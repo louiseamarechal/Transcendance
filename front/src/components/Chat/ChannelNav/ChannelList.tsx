@@ -6,23 +6,22 @@ import ChannelCard from './ChannelList/ChannelCard';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import { Channel } from '../../../types/Channel.type';
 import { useChatContext } from '../../../hooks/useChatContext';
+import { useUser } from '../../../hooks/useUser';
 
 const ChannelList = () => {
   const axiosPrivate = useAxiosPrivate();
+  const { myId } = useUser();
   const { channelList, setChannelList } = useChatContext();
 
   useEffect(() => {
     axiosPrivate
       .get('channel/my-channels')
       .then((res) => {
-        console.log('Got response from GET channel/my-channels');
-        console.log(res);
         setChannelList(res.data);
       })
       .catch((err) => {
         console.log(err.response.status + ' -> ' + err.response.statusText);
       });
-    // axiosPrivate
   }, []);
 
   return (
@@ -34,17 +33,42 @@ const ChannelList = () => {
               <p className="text-center">Add friend</p>
             </Link>
           </li>
-          {channelList.map((elem: Channel) => {
-            return (
-              <li key={elem.id}>
-                <ChannelCard
-                  id={elem.id}
-                  name={elem.name}
-                  avatar={elem.avatar}
-                />
-              </li>
-            );
-          })}
+          <li>
+            <p className='text-center'>Your channels</p>
+          </li>
+          {channelList
+            .filter((elem: Channel) => {
+              return elem.members.includes({ userId: myId });
+            })
+            .map((elem: Channel) => {
+              return (
+                <li key={elem.id}>
+                  <ChannelCard
+                    id={elem.id}
+                    name={elem.name}
+                    avatar={elem.avatar}
+                  />
+                </li>
+              );
+            })}
+            <li>
+              <p className='text-center'>Channels you can join</p>
+            </li>
+            {channelList
+            .filter((elem: Channel) => {
+              return !elem.members.includes({ userId: myId });
+            })
+            .map((elem: Channel) => {
+              return (
+                <li key={elem.id}>
+                  <ChannelCard
+                    id={elem.id}
+                    name={elem.name}
+                    avatar={elem.avatar}
+                  />
+                </li>
+              );
+            })}
         </ul>
       </div>
     </div>
