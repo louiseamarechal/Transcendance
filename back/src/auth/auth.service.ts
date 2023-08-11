@@ -14,7 +14,8 @@ import * as argon from 'argon2';
 import { createUserDto } from 'src/user/dto';
 import { createWriteStream } from 'fs';
 import { join } from 'path';
-import { User } from '@prisma/client';
+import { Status2fa, User } from '@prisma/client';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +24,7 @@ export class AuthService {
     private config: ConfigService,
     private http: HttpService,
     private jwt: JwtService,
+    private mail: MailService,
   ) {}
 
   async login(dto: AuthDto, origin: string): Promise<Tokens> {
@@ -54,10 +56,50 @@ export class AuthService {
       });
     }
 
+    if (user.s2fa === Status2fa.SET) {
+      const sixDigitCode = generateSixDigitCode();
+      console.log('code 2FA a ete genere aves succes.');
+      console.log({ sixDigitCode });
+
+      const hashedCode: string = await argon.hash(sixDigitCode.toString());
+      await this.prisma.user.update({
+        where: {
+          login: userDto.login,
+        },
+        data: {
+          code2FA: hashedCode,
+        },
+      });
+      await this.mail.sendEmail(
+        userDto.email,
+        'transcendance 2FA',
+        `Please enter this code : ${sixDigitCode}`,
+      );
+    }
+
     // generate and returns jwts
     const tokens: Tokens = await this.getTokens(user);
     await this.updateRTHash(user.id, tokens.refresh_token);
     return tokens;
+  }
+
+  async checkcode(userId: number, code: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { code2FA: true, updatedAt: true },
+    });
+
+    if (!user || !user.code2FA) throw new ForbiddenException('Access Denied');
+
+    let date = Date.now();
+    const fiveMinutesInMillis = 5 * 60 * 1000;
+    const diffiMillis = date - user.updatedAt.getTime();
+    if (diffiMillis > fiveMinutesInMillis)
+      throw new ForbiddenException('Security code Expired');
+
+    const isMatch = await argon.verify(user.code2FA, code);
+    if (!isMatch) throw new ForbiddenException('Access Denied');
+    //return isMatch;
   }
 
   async logout(userId: number) {
@@ -121,7 +163,9 @@ export class AuthService {
     }
   }
 
-  async getUserInfo(token42: string): Promise<createUserDto> {
+  async getUserInfo(
+    token42: string,
+  ): Promise<{ login: string; avatar: string; email: string }> {
     const axiosConfig: AxiosRequestConfig = {
       method: 'get',
       url: 'https://api.intra.42.fr/v2/me',
@@ -136,10 +180,11 @@ export class AuthService {
       throw new UnauthorizedException('Nop! (getUserLogin)');
     });
 
-    // console.log({ response })
+    console.log({ response });
     const login = response.data?.login;
     const avatar = response.data?.image?.link;
-    return { login, avatar };
+    const email: string = response.data.email;
+    return { login, avatar, email };
   }
 
   async getTokens(user: User): Promise<Tokens> {
@@ -209,4 +254,12 @@ export class AuthService {
       return 'default.jpg';
     }
   }
+}
+
+function generateSixDigitCode() {
+  const min = 100000;
+  const max = 999999;
+
+  const code = Math.floor(Math.random() * (max - min + 1)) + min;
+  return code.toString();
 }
