@@ -3,36 +3,55 @@ import { gameSocket } from '../../api/socket';
 import { ClientEvents } from '../../../../shared/client/ClientEvents';
 import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
 import { useParams } from 'react-router-dom';
-import GameOverlay, { OverlayData } from '../../components/game/GameOverlay';
+import GameOverlay from '../../components/game/GameOverlay/GameOverlay';
 import GameCanvas from '../../components/game/GameCanvas';
 import GameBackground from '../../components/game/GameBackground';
+import {
+  GameData,
+  OverlayData,
+  ServerPayloads,
+} from '../../../../shared/server/ServerPayloads';
+import { ServerEvents } from '../../../../shared/server/ServerEvents';
 
 export default function GameLobby() {
   const { gameId } = useParams();
-  const [pos, setPos] = useState({ x: 0, y: 0 }); // debug
 
   const divRef = useRef<HTMLDivElement>(null);
 
   const [overlayType, setOverlayType] = useState<string>('ready');
   const [overlayData, setOverlayData] = useState<OverlayData>({});
+  const [gameData, setGameData] = useState<GameData | null>(null);
 
   useEffect(() => {
-    function updateOverlay(payload: { type: any; data: any }) {
-      console.log('In updateOverlay', { payload });
+    function updateOverlay(
+      payload: ServerPayloads[ServerEvents.updateOverlay],
+    ) {
+      // console.log('In updateOverlay', { payload });
       setOverlayType(payload.type);
       setOverlayData(payload.data);
     }
 
+    function gameData(payload: ServerPayloads[ServerEvents.gameData]) {
+      console.log('In gameData', { payload });
+      setGameData(payload);
+    }
+
     gameSocket.on('server.game.updateOverlay', updateOverlay);
+    gameSocket.on('server.game.gameData', gameData);
 
     return () => {
       gameSocket.off('server.game.updateOverlay', updateOverlay);
+      gameSocket.off('server.game.gameData', gameData);
     };
   }, []);
 
   function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
-    const divMinY = divRef.current!.offsetTop;
-    const divMaxY = divMinY + divRef.current!.offsetHeight;
+    const divElem = divRef.current;
+
+    if (!gameId || !divElem) return;
+
+    const divMinY = divElem.offsetTop;
+    const divMaxY = divMinY + divElem.offsetHeight;
 
     let input;
     if (event.clientY <= divMinY) {
@@ -42,8 +61,6 @@ export default function GameLobby() {
     } else {
       input = (event.clientY - divMinY) / (divMaxY - divMinY);
     }
-
-    setPos({ ...pos, y: input }); // debug
 
     const payload: ClientPayloads[ClientEvents.GameInput] = {
       gameId: gameId,
@@ -62,7 +79,9 @@ export default function GameLobby() {
         className="relative h-4/5 w-4/5 border-8 border-blue-600 flex flex-col justify-center items-center"
       >
         <GameBackground />
-        <GameCanvas />
+        {gameData ? (
+          <GameCanvas p1={gameData.p1} p2={gameData.p2} ball={gameData.ball} />
+        ) : null}
         <GameOverlay type={overlayType} data={overlayData} />
       </div>
     </div>
