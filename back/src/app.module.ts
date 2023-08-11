@@ -10,6 +10,7 @@ import { FriendRequestModule } from './friend-request/friend-request.module';
 import { ChannelModule } from './channel/channel.module';
 import { MessageModule } from './message/message.module';
 import { GameModule } from './game/game.module';
+import { MailModule } from './mail/mail.module';
 import { NotifModule } from './notif/notif.module';
 
 @Module({
@@ -23,6 +24,7 @@ import { NotifModule } from './notif/notif.module';
     MessageModule,
     NotifModule,
     GameModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [
