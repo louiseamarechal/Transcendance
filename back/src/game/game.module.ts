@@ -8,6 +8,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { NotifModule } from 'src/notif/notif.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { SocketModule } from 'src/sockets/socket.module';
+import { Game } from './classes/Game';
 
 @Module({
   imports: [
