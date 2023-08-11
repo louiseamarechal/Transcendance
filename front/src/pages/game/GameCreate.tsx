@@ -21,7 +21,7 @@ export default function GameCreate() {
 
   return (
     <div className="h-full flex-row-center overflow-auto">
-      <div className="border-8 border-red-700 w-[80%] flex-col-center">
+      <div className="border-8 border-red-700 w-[80%] flex-col-center h-full">
         <div>Choose mode</div>
         <select value={mode} onChange={(e) => setMode(e.target.value)}>
           <option value="timed">Timed</option>

@@ -165,9 +165,6 @@ function ActionButtons({
         >
           Remove Friend
         </button>
-        <button className="small-button game-request-button">
-          Send game request
-        </button>
       </div>
     );
   } else if (parseInt(fromId) === myId && status !== 'REFUSED') {
@@ -195,9 +192,6 @@ function ActionButtons({
         >
           Decline
         </button>
-        <button className="small-button game-request-button">
-          Send game request
-        </button>
       </div>
     );
   } else {
@@ -210,9 +204,6 @@ function ActionButtons({
           }}
         >
           Add friend
-        </button>
-        <button className="small-button game-request-button">
-          Send game request
         </button>
       </div>
     );
