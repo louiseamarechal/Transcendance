@@ -19,7 +19,7 @@
 # CMD ["npm", "run", "start"]
 
 # Load debian image
-FROM node:20-bullseye-slim
+FROM node:lts
 
 # Workdir to app.
 WORKDIR /app

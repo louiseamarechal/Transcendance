@@ -1,13 +1,21 @@
-FROM node:14.16.1
+FROM node:lts AS development
 
-WORKDIR /app
+WORKDIR /code/front
+COPY ./front/package.json /code/front/package.json
+COPY ./front/package-lock.json /code/front/package-lock.json
+RUN npm ci
+COPY ./front /code/front
+COPY ./shared /code/shared
 
-COPY package.json ./ 
+CMD [ "npm", "start" ]
 
-RUN npm install
 
-COPY . .
+# FROM development AS builder
 
-EXPOSE 3000
+# RUN npm run build
 
-CMD ["npm", "run", "dev"]
+
+
+# FROM nginx:1.13-alpine
+
+# COPY --from=builder /code/build /usr/share/nginx/html
