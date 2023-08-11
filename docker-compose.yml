@@ -6,28 +6,33 @@ services:
   db:
     image: postgres:15-bullseye
     restart: on-failure
-    environment:
-      POSTGRES_PASSWORD: example
-      POSTGRES_USER: louisea
-      POSTGRES_DB: mydb
-      POSTGRES_HOST_AUTH_METHOD: trust
+    # environment:
+    #   POSTGRES_PASSWORD: example
+      # POSTGRES_USER: louisea
+      # POSTGRES_DB: mydb
+      # POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
       - 5434:5432
+    env_file:
+      - ./back/.env
+    networks:
+      - transcendance
 
-  test-db:
-    image: postgres:15-bullseye
-    restart: on-failure
-    environment:
-      POSTGRES_PASSWORD: example
-      POSTGRES_USER: louisea
-      POSTGRES_DB: mydb
-      POSTGRES_HOST_AUTH_METHOD: trust
-    volumes:
-      - test-db-data:/var/lib/postgresql/data
-    ports:
-      - 5435:5432
+
+  # test-db:
+  #   image: postgres:15-bullseye
+  #   restart: on-failure
+  #   environment:
+  #     POSTGRES_PASSWORD: example
+  #     # POSTGRES_USER: louisea
+  #     POSTGRES_DB: mydb
+  #     POSTGRES_HOST_AUTH_METHOD: trust
+  #   volumes:
+  #     - test-db-data:/var/lib/postgresql/data
+  #   ports:
+  #     - 5435:5432
 
     # back:
     #   container_name: back
@@ -49,7 +54,9 @@ services:
       dockerfile: Dockerfile
     image: react
     ports:
-      - "3000:3000"
+      - "5173:5173"
+    networks:
+      - transcendance
 
   backend:
     container_name: backend
@@ -64,8 +71,12 @@ services:
       - POSTGRES_USER=louisea
       - POSTGRES_DB=mydb
       - POSTGRES_HOST_AUTH_METHOD=trust
-    ports:
-      - "5555:5555"
+    networks:
+      - transcendance
+
+
+networks:
+  transcendance:
 
 volumes:
   db-data:
