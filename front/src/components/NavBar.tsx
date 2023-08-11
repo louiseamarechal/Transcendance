@@ -1,5 +1,4 @@
 // import React, { useState } from "react";
-import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -7,26 +6,21 @@ import useNavbar from '../hooks/useNavbar';
 import NavBarLinks from './NavBarLinks';
 
 import '../style/components/navbar.css';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import useNotif from '../hooks/useNotif';
 
 const NavBar = () => {
   const { navbarState, setNavbarState } = useNavbar();
   const axiosInstance = useAxiosPrivate();
-  const [receivedNotif, setReceivedNotif] = useState({
-    friends: 0,
-    game: 0,
-    chat: 0,
-  });
+  const notif = useNotif();
 
   useEffect(() => {
     axiosInstance
       .get('/notif/friend')
       .then((response) => {
         const data = response.data;
-        setReceivedNotif((previous) => {
-          return { ...previous, friends: data.length };
-        });
+        notif.increment('friends', data.length);
       })
       .catch((error) => console.log(error));
 
@@ -34,9 +28,7 @@ const NavBar = () => {
       .get('/notif/game')
       .then((response) => {
         const data = response.data;
-        setReceivedNotif((previous) => {
-          return { ...previous, game: data.length };
-        });
+        notif.increment('game', data.length);
       })
       .catch((error) => console.log(error));
 
@@ -44,9 +36,7 @@ const NavBar = () => {
       .get('/notif/chat')
       .then((response) => {
         const data = response.data;
-        setReceivedNotif((previous) => {
-          return { ...previous, game: data.length };
-        });
+        notif.increment('chat', data.length);
       })
       .catch((error) => console.log(error));
   }, []);
@@ -62,22 +52,22 @@ const NavBar = () => {
             setNavbarState(false);
           }}
         />
-        <NavBarLinks
-          receivedNotif={receivedNotif}
-          setReceivedNotif={setReceivedNotif}
-        />
+        <NavBarLinks />
       </div>
     );
   else
     return (
-      <FontAwesomeIcon
-        icon={faBars}
-        className="navbar-close"
-        style={{ color: 'var(--black)' }}
-        onClick={() => {
-          setNavbarState(true);
-        }}
-      />
+      <>
+        <FontAwesomeIcon
+          icon={faBars}
+          className="navbar-close"
+          style={{ color: 'var(--black)' }}
+          onClick={() => {
+            setNavbarState(true);
+          }}
+        />
+        <NavBarLinks />
+      </>
     );
 };
 
