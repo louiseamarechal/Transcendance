@@ -1,10 +1,9 @@
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import NavBar from './NavBar';
 import useNavbar from '../hooks/useNavbar';
 import { notifSocket } from '../api/socket';
-// import { Socket, io } from 'socket.io-client';
 
 const RequireAuth = () => {
   const { auth } = useAuth();
