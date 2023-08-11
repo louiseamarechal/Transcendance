@@ -27,12 +27,16 @@ WORKDIR /app
 # Copy packages file
 COPY package.json ./
 
-# Install packages and deps.
-RUN npm install
-
 # Copy all necessary content to container.
 COPY . .
 
-EXPOSE 5555
+# Install packages and deps.
+RUN npm install
 
-CMD ["npm", "run", "start"]
+EXPOSE 3000
+
+# RUN ["npm", "run", "prisma:dev:deploy"]
+
+# CMD ["npm", "run", "start"]
+CMD ["sh", "-c", "npm", "run", "init"]
+ENTRYPOINT ["sh", "-c", "npm run start:prod"]
