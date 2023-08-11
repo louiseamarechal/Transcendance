@@ -20,6 +20,7 @@ const NavBar = () => {
       .get('/notif/friend')
       .then((response) => {
         const data = response.data;
+        notif.reset('friends');
         notif.increment('friends', data.length);
       })
       .catch((error) => console.log(error));
@@ -28,14 +29,16 @@ const NavBar = () => {
       .get('/notif/game')
       .then((response) => {
         const data = response.data;
+        notif.reset('game');
         notif.increment('game', data.length);
       })
       .catch((error) => console.log(error));
-
-    axiosInstance
+      
+      axiosInstance
       .get('/notif/chat')
       .then((response) => {
         const data = response.data;
+        notif.reset('chat');
         notif.increment('chat', data.length);
       })
       .catch((error) => console.log(error));
