@@ -18,9 +18,26 @@ function Profil() {
   const [isLoading, setLoading] = useState<boolean>(true);
   const [reload, setReload] = useState<number>(0);
   const [changingUsername, setChangingUsername] = useState(false);
+  const [is2FAset, setIs2FAEnabled] = useState(false);
 
   console.log('Entering Profil component');
 
+  useEffect(() => {
+    axiosInstance.get('user/me').then((res) => {
+      if (res.data.s2fa === 'SET') setIs2FAEnabled(true);
+    });
+  }, []);
+
+  const handle2FA = () => {
+    if (is2FAset === false) {
+      axiosInstance.patch('user/me', { s2fa: 'SET' });
+      setIs2FAEnabled(true);
+    }
+    if (is2FAset === true) {
+      axiosInstance.patch('user/me', { s2fa: 'NOTSET' });
+      setIs2FAEnabled(false);
+    }
+  };
   const divStyle = [
     'w-3/5',
     'h-3/5',
@@ -54,7 +71,7 @@ function Profil() {
     // <div className="grid grid-cols-1 place-items-center pt-[10%]">
     <div className="profil-container">
       <div className="profil-card">
-        <Avatar id={user.id}/>
+        <Avatar id={user.id} />
         {!changingUsername ? (
           <div className="flex flex-row items-center gap-2">
             <p className="user-name">{user?.name}</p>
@@ -66,7 +83,10 @@ function Profil() {
             </button>
           </div>
         ) : (
-          <ChangeName setReload={setReload} setChangingUsername={setChangingUsername}  />
+          <ChangeName
+            setReload={setReload}
+            setChangingUsername={setChangingUsername}
+          />
         )}
       </div>
       {/* <UserCard user={user} /> */}
@@ -75,8 +95,15 @@ function Profil() {
         <ProfilStat user={user} />
         <div className="line"></div>
         <div className="game-history"></div>
+        <button
+          className="small-button friend-request-button"
+          onClick={handle2FA}
+        >
+          {' '}
+          {is2FAset ? 'Unset 2FA' : 'Set 2FA'}{' '}
+        </button>
       </div>
-      <Toggle2FA toggled={false}/>
+
       {/* <Settings setReload={setReload} /> */}
     </div>
   );

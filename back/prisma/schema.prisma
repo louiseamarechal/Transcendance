@@ -18,6 +18,7 @@ model User {
   login    String  @unique
   name     String  @unique
   hashedRT String?
+  code2FA String? @unique
 
   online Boolean @default(false)
 

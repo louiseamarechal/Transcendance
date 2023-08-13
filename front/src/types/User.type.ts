@@ -6,4 +6,5 @@ export type User = {
   avatar?: string;
   statTotalGame?: number;
   statTotalWin?: number;
+  s2fa?: string,
 };

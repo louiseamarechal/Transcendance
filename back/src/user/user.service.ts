@@ -29,6 +29,7 @@ export class UserService {
         avatar: true,
         statTotalGame: true,
         statTotalWin: true,
+        s2fa: true,
       },
     });
 
