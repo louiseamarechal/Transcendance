@@ -1,18 +1,66 @@
+.channel-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .channel-card {
   display: flex;
-	flex-direction: row;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-	border-radius: 50vh;
+  border-radius: 50vh;
   font-family: 'Montserrat Alternates';
-	background-color: transparent;
-	box-shadow: 0 3px 3px rgba(0,0,0,0.2);
-	margin-top: 10%;
-	padding-right: 10px;
+  background-color: transparent;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+  margin-top: 10%;
+  padding-right: 10px;
 }
 
-
 .selected {
-	background-color: var(--faded-blue);
+  background-color: var(--faded-blue);
+}
+
+.join-channel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  /* width: 80%; */
+  border-radius: 40vh;
+  font-family: 'Montserrat Alternates';
+  background-color: transparent;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+#join-public {
+  display: flex;
+  text-align: center;
+  font-size: small;
+  padding: 0px 20px;
+  width: 100%;
+  color: black;
+  background-color: transparent;
+}
+
+.div-protected {
+  display: flex;
+  flex-direction: row;
+  /* align-items: center; */
+  width: 100%;
+}
+
+#password-input {
+  background-color: transparent;
+  width: 75%;
+}
+
+#join-private {
+  display: flex;
+  text-align: center;
+  background-color: transparent;
+  padding: 0px 15px;
+  color: black;
+  width: 25%;
 }

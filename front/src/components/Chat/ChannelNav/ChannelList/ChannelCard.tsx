@@ -19,8 +19,13 @@ function ChannelCard({
   isClicked: number;
   setIsClicked: Dispatch<SetStateAction<number>>;
 }) {
-  const { showChannel, setShowChannel, setShowCreateChannel } =
-    useChatContext();
+  const {
+    showChannel,
+    setShowChannel,
+    setShowCreateChannel,
+    channelList,
+    setChannelList,
+  } = useChatContext();
   const { myId } = useUser();
   const axiosPrivate = useAxiosPrivate();
   const [channelName, setChannelName] = useState<string>(channel.name);
@@ -40,7 +45,9 @@ function ChannelCard({
     if (isMember) {
       setShowCreateChannel(false);
       setShowChannel(channel.id);
+      setIsClicked(channel.id);
     } else {
+      setShowChannel(NaN);
       setIsClicked(channel.id);
     }
     console.log(`Now showing channel ${channel.id}`);
@@ -51,13 +58,20 @@ function ChannelCard({
       alert('Cannot join protected channel without password.');
     } else {
       axiosPrivate
-        .patch(`channel/${channel.id}`, {
-          member: myId,
-          password: channel.visibility === 'PROTECTED' ? password : undefined,
+        .patch(`channel/join/${channel.id}`, {
+          password: channel.visibility === 'PROTECTED' ? password : null,
         })
         .then((_) => {
           setShowChannel(channel.id);
           setIsClicked(NaN);
+          setChannelList(
+            channelList.map((c: Channel) => {
+              if (c.id === channel.id) {
+                c.members = [...c.members, { userId: myId }];
+              }
+              return c;
+            }),
+          );
         })
         .catch((err) => {
           console.log(err);
@@ -70,12 +84,12 @@ function ChannelCard({
   }
 
   return (
-    <div>
+    <div className="channel-div">
       <div
         className={
           'channel-card ' + (showChannel === channel.id ? 'selected' : '')
         }
-        onClick={() => openChannel}
+        onClick={openChannel}
       >
         <Avatar file={channelAvatar} />
         <div>
@@ -97,16 +111,20 @@ function ChannelCard({
       {isClicked === channel.id && !isMember ? (
         <div className="join-channel">
           {channel.visibility === 'PUBLIC' ? (
-            <div>
-              <button onClick={joinChannel}>Join channel</button>
-            </div>
+            <button id="join-public" onClick={joinChannel}>
+              Join
+            </button>
           ) : (
-            <div>
+            <div className="div-protected">
               <input
+                id="password-input"
+                type="password"
                 placeholder="channel password"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button onClick={joinChannel}>Join</button>
+              <button id="join-private" onClick={joinChannel}>
+                Join
+              </button>
             </div>
           )}
         </div>

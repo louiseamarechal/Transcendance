@@ -29,7 +29,7 @@ export class ChannelController {
     name: string;
     avatar: string | null;
     visibility: VisType;
-		members: {userId: number}[]
+    members: { userId: number }[];
   }> {
     return this.channelService.createChannel(userId, dto);
   }
@@ -194,6 +194,15 @@ export class ChannelController {
       channelId,
       dto.ids,
     );
+  }
+
+  @Patch('join/:channelId')
+  joinChannel(
+    @GetUserId() userId: number,
+    @Param('channelId', ParseIntPipe) channelId: number,
+    @Body() dto: { password?: string },
+  ) {
+    return this.channelService.joinChannel(userId, channelId, dto?.password);
   }
 
   @Delete('member/:channelId/:userId')
