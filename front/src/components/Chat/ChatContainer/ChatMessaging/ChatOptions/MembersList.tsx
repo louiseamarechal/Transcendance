@@ -14,7 +14,13 @@ const MembersList = ({
   channel: Channel;
   setChannel: Dispatch<SetStateAction<Channel | undefined>>;
 }) => {
-  const [members, setMembers] = useState<{ user: User }[]>(channel.members);
+  const [members, setMembers] = useState<{ user: User | undefined }[]>(
+    channel.members.map((m) => {
+      return {
+        user: m.user,
+      };
+    }),
+  );
   const [admins, setAdmins] = useState<{ userId: number }[]>(channel.admins);
   const [showAddMember, setShowAddMember] = useState<boolean>(false);
 

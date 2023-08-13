@@ -7,11 +7,17 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
-import { BlockedOnChannels, MembersOnChannels, VisType } from '@prisma/client';
+import {
+  BlockedOnChannels,
+  Channel,
+  MembersOnChannels,
+  VisType,
+} from '@prisma/client';
 import * as argon from 'argon2';
 import { Socket, Namespace } from 'socket.io';
 import { MembersOnChannel, MutedOnChannel } from './types';
 import { NotifService } from 'src/notif/notif.service';
+import { channel } from 'diagnostics_channel';
 
 @Injectable()
 export class ChannelService {
@@ -507,6 +513,37 @@ export class ChannelService {
         },
       ),
     });
+  }
+
+  async joinChannel(
+    userId: number,
+    channelId: number,
+    password: string | undefined,
+  ) {
+    const channel: Channel | null = await this.prisma.channel.findUnique({
+      where: {
+        id: channelId,
+      },
+    });
+    if (!channel) {
+      throw new ForbiddenException('Channel id not found.');
+    } else if (channel.visibility === VisType.PRIVATE) {
+      throw new ForbiddenException('Cannot join PRIVATE channel');
+    } else if (
+      channel.visibility === VisType.PROTECTED &&
+      (!password ||
+        (channel.passwordHash &&
+          (await argon.verify(channel.passwordHash, password))))
+    ) {
+      throw new ConflictException('Wrong password');
+    } else {
+      return this.prisma.membersOnChannels.create({
+        data: {
+          channelId,
+          userId: userId,
+        },
+      });
+    }
   }
 
   async removeMemberOnChannel(
