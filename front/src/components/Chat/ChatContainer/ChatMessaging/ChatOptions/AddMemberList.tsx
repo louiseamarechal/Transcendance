@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-// import '../../../../style/components/chat/chat-container/create-channel-form/friends-list.css';
 import '../../../../../style/components/buttons.css';
 import UserSmallCard from '../../CreateChannelForm/FriendsList/UserSmallCard';
 import { User } from '../../../../../types/User.type';
@@ -15,7 +14,7 @@ const AddMemberList = ({
   members: { user: User }[];
   setShowAddMember: Dispatch<SetStateAction<boolean>>;
   channel: Channel;
-  setChannel: Dispatch<SetStateAction<Channel | undefined>>;
+  setChannel: Dispatch<SetStateAction<Channel>>;
 }) => {
   const [friends, setFriends] = useState<
     { id: number; name: string; level: number; avatar: string }[]

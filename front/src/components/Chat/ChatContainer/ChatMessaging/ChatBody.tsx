@@ -33,9 +33,9 @@ const ChatBody = ({ channel }: { channel: Channel }) => {
 
       channelSocket.emit('client.channel.sendMessage', channel.id);
       channel.members.map((member) => {
-        if (member.user.login !== myLogin) {
-          console.log(`sending chat notif on socket for ${member.user.login}`)
-          notifSocket.emit('client.notif.chatNotif', member.user.login);
+        if (member.user?.login !== myLogin) {
+          console.log(`sending chat notif on socket for ${member.user?.login}`)
+          notifSocket.emit('client.notif.chatNotif', member.user?.login);
         }
       });
       console.log({ channelMembers: channel.members });

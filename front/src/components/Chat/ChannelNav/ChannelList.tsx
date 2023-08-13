@@ -4,7 +4,7 @@ import '../../../style/components/buttons.css';
 import { Link } from 'react-router-dom';
 import ChannelCard from './ChannelList/ChannelCard';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
-import { Channel } from '../../../types/Channel.type';
+import { ChannelShort } from '../../../types/Channel.type';
 import { useChatContext } from '../../../hooks/useChatContext';
 import { useUser } from '../../../hooks/useUser';
 
@@ -38,13 +38,13 @@ const ChannelList = () => {
             <p className="channel-group">Your channels</p>
           </li>
           {channelList
-            .filter((elem: Channel) => {
+            .filter((elem: ChannelShort) => {
               console.log(
                 `channel ${elem.id}: ${elem.members.map((e) => e.userId)}`,
               );
               return elem.members.some((e) => e.userId === myId);
             })
-            .map((elem: Channel) => {
+            .map((elem: ChannelShort) => {
               return (
                 <li key={`channel-${elem.id}`}>
                   <ChannelCard
@@ -60,13 +60,15 @@ const ChannelList = () => {
             <p className="channel-group">Channels you can join</p>
           </li>
           {channelList
-            .filter((elem: Channel) => {
+            .filter((elem: ChannelShort) => {
               console.log(
-                `channel ${elem.id}: ${elem.members.map((e) => e.userId)}`,
+                `channelShoChannel ${elem.id}: ${elem.members.map(
+                  (e) => e.userId,
+                )}`,
               );
               return !elem.members.some((e) => e.userId === myId);
             })
-            .map((elem: Channel) => {
+            .map((elem: ChannelShort) => {
               return (
                 <li key={elem.id}>
                   <ChannelCard

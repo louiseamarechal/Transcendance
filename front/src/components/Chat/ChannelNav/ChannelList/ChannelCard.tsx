@@ -3,7 +3,7 @@ import { useChatContext } from '../../../../hooks/useChatContext';
 import '../../../../style/components/chat/channel-nav/channel-list/channel-card.css';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 import Avatar from '../../../Avatar';
-import { Channel } from '../../../../types/Channel.type';
+import { ChannelShort } from '../../../../types/Channel.type';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
 import { useUser } from '../../../../hooks/useUser';
@@ -14,7 +14,7 @@ function ChannelCard({
   isClicked,
   setIsClicked,
 }: {
-  channel: Channel;
+  channel: ChannelShort;
   isMember: boolean;
   isClicked: number;
   setIsClicked: Dispatch<SetStateAction<number>>;
@@ -65,7 +65,7 @@ function ChannelCard({
           setShowChannel(channel.id);
           setIsClicked(NaN);
           setChannelList(
-            channelList.map((c: Channel) => {
+            channelList.map((c: ChannelShort) => {
               if (c.id === channel.id) {
                 c.members = [...c.members, { userId: myId }];
               }
@@ -97,7 +97,9 @@ function ChannelCard({
         </div>
         <div>
           {channel.visibility === 'PROTECTED' &&
-          !channel.members.some((m) => m.userId === myId) ? (
+          !channel.members.some(
+            (m: { userId: number }) => m.userId === myId,
+          ) ? (
             <FontAwesomeIcon
               className="fa-sm"
               icon={faKey}

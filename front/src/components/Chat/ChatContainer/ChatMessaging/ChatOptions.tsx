@@ -9,7 +9,7 @@ const ChatOptions = ({
   setChannel,
 }: {
   channel: Channel;
-  setChannel: Dispatch<SetStateAction<Channel | undefined>>;
+  setChannel: Dispatch<SetStateAction<Channel>>;
 }) => {
   const [selected, setSelected] = useState<string>('members');
 
@@ -56,8 +56,7 @@ const ChatOptions = ({
             setChannel={setChannel}
           />
         ) : (
-          <></>
-          // <ChatSecurityOptions />
+          <ChatSecurityOptions channel={channel} />
         )}
       </div>
     </div>
