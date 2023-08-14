@@ -69,13 +69,13 @@ const NavBarLinks = () => {
     <>
       {navElems.map((elem, index) => {
         return (
-          <>
+          <div key={index}>
             {typeof elem.content === 'string' ? (
-              <Notification element={elem.content} />
+              <Notification element={elem.content}/>
             ) : (
               ''
             )}
-          </>
+          </div>
         );
       })}
     </>
