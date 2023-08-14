@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 
 // TypeScript
 import WelcomePage from './pages/WelcomePage.tsx';
-import Chat from './pages/Chat.tsx';
+// import Chat from './pages/Chat.tsx';
 import Friends from './pages/Friends.tsx';
 import Profil from './pages/Profil.tsx';
 import FindFriends from './pages/FindFriends.tsx';
@@ -33,6 +33,9 @@ import UserProfile from './pages/UserProfile.tsx';
 import TwoFApage from './pages/2FApage.tsx';
 import GameSearch from './pages/game/GameSearch.tsx';
 import GameCreate from './pages/game/GameCreate.tsx';
+import ChatLayout from './pages/chat/ChatLayout.tsx';
+import ChatCreate from './pages/chat/ChatCreate.tsx';
+import ChatMessaging from './pages/chat/ChatMessaging.tsx';
 
 function App() {
   return (
@@ -55,7 +58,11 @@ function App() {
             <Route path="queue" Component={GameQueue} />
             <Route path=":gameId" Component={GameGame} />
           </Route>
-          <Route path="/chat" Component={Chat} />
+          <Route path="/chat" Component={ChatLayout}>
+            <Route index Component={null} />
+            <Route path="create" Component={ChatCreate} />
+            <Route path=":channelId" Component={ChatMessaging} />
+          </Route>
           <Route path="/friends" Component={Friends} />
           <Route path="/profil" Component={Profil} />
           <Route path="/profil/:id" Component={UserProfile} />
