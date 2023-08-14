@@ -1,45 +1,44 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
+import { Layer, Stage } from 'react-konva';
+import GamePaddle from './GamePaddle';
+import GameBall from './GameBall';
+import { GameData } from '../../../../shared/server/ServerPayloads';
 
-type GameCanvasProps = any;
+type GameCanvasProps = GameData;
 
-function GameCanvas(props: GameCanvasProps) {
+export default function GameCanvas({ p1, p2, ball }: GameCanvasProps) {
+  console.log('Render GameCanvas', ball);
   const parentRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvas = canvasRef.current;
-  const context = canvas?.getContext('2d');
 
-  useEffect(() => {
-    if (context && canvas) {
-      const widht = canvas.width;
-      const height = canvas.height;
+  const width = parentRef.current?.clientWidth;
+  const height = parentRef.current?.clientHeight;
 
-      context.clearRect(0, 0, widht, height)
-      // context.fillStyle = '#000000';
-      // context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+  // Left Paddle
+  const lx = 0;
+  const ly = height && p1 ? p1.paddle.pos * height : 0;
+  const lsize = height && p1 ? p1.paddle.size * height : 0;
+  const lw = width && p1 ? p1.paddle.width * width : 0;
 
-      // context.fillStyle = '#000000';
-      // context.beginPath();
-      // context.arc(0, 0, 5, 0, 2 * Math.PI);
-      // context.fill();
+  // Right Paddle
+  const rx = width && p2 ? width - p2.paddle.width * width : 100;
+  const ry = height && p2 ? p2.paddle.pos * height : 0;
+  const rsize = height && p2 ? p2.paddle.size * height : 0;
+  const rw = width && p2 ? p2.paddle.width * width : 0;
 
-      context.beginPath();
-      context.roundRect(10, height / 4, widht / 100, height / 10, [50]);
-      context.fillStyle = '#000000';
-      context.lineWidth = 1;
-      context.fill();
-    }
-  }, [props]);
+  // Ball
+  const bx = width && ball ? ball.pos.x * width : 0;
+  const by = height && ball ? ball.pos.y * height : 0;
+  const br = width && ball ? ball.radius * width : 0;
 
   return (
     <div ref={parentRef} className="h-[95%] w-[95%]">
-      <canvas
-        ref={canvasRef}
-        width={parentRef.current?.clientWidth}
-        height={parentRef.current?.clientHeight}
-        id="canvas"
-      ></canvas>
+      <Stage width={width} height={height}>
+        <Layer>
+          <GamePaddle x={lx} y={ly} size={lsize} paddleWidth={lw} />
+          <GamePaddle x={rx} y={ry} size={rsize} paddleWidth={rw} />
+          <GameBall x={bx} y={by} radius={br} />
+        </Layer>
+      </Stage>
     </div>
   );
 }
-
-export default GameCanvas;

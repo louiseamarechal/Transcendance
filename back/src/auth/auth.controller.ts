@@ -32,6 +32,12 @@ export class AuthController {
     return this.authService.logout(userId);
   }
 
+  @Post('checkcode')
+  @HttpCode(HttpStatus.OK)
+  checkcode(@GetUserId() userId: number, @Body('code') code: string) {
+    return this.authService.checkcode(userId, code);
+  }
+
   @Public()
   @UseGuards(RtGuard)
   @Post('refresh')
