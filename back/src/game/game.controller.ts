@@ -14,6 +14,16 @@ export class GameController {
     return this.gameService.createGame(userId, dto.toId);
   }
 
+  @Post('createPublicGame')
+  createPublicGame(@Body() dto: any) {
+    return 0;
+  }
+
+  @Post('createPrivateGame')
+  createPrivateGame() {
+    return 0;
+  }
+
   @Post(':id')
   createGameById(
     @GetUserId() userId: number,

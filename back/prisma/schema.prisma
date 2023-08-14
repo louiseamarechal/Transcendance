@@ -18,7 +18,7 @@ model User {
   login    String  @unique
   name     String  @unique
   hashedRT String?
-  code2FA String? @unique
+  code2FA  String? @unique
 
   online Boolean @default(false)
 
@@ -142,7 +142,7 @@ model MutedByUserOnChannel {
   mutedByUser   User @relation(name: "mutedByUser", fields: [mutedByUserId], references: [id])
   mutedByUserId Int  @map("muted_by_user_id")
 
-	@@id([channelId, mutedUserId, mutedByUserId])
+  @@id([channelId, mutedUserId, mutedByUserId])
 }
 
 model Message {
