@@ -40,15 +40,15 @@ const NavBar = () => {
       })
       .catch((error) => console.log(error));
 
-    axiosInstance
-      .get('/notif/chat')
-      .then((response) => {
-        const data = response.data;
-        setReceivedNotif((previous) => {
-          return { ...previous, game: data.length };
-        });
-      })
-      .catch((error) => console.log(error));
+    // axiosInstance
+    //   .get('/notif/chat')
+    //   .then((response) => {
+    //     const data = response.data;
+    //     setReceivedNotif((previous) => {
+    //       return { ...previous, game: data.length };
+    //     });
+    //   })
+    //   .catch((error) => console.log(error));
   }, []);
 
   if (navbarState === true)
