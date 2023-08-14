@@ -3,7 +3,7 @@ version: "3.1"
 name: "transcendance"
 
 services:
-  postgresql:
+  db:
     image: postgres:15-bullseye
     restart: always
     # healthcheck:
@@ -14,7 +14,7 @@ services:
     #   start_period: 80s
     environment:
       - POSTGRES_DB=mydb
-      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_PASSWORD=example
     networks:
       - server-side
     ports:
@@ -22,18 +22,18 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
 
-  # backend:
-  #   build:
-  #     context: .
-  #     dockerfile: back/Dockerfile
-  #     target: development
-  #   ports:
-  #     - 3000:3000
-  #   networks:
-  #     - server-side
-  #     - client-side
-  #   depends_on:
-  #     - postgresql
+  backend:
+    build:
+      context: .
+      dockerfile: back/Dockerfile
+      target: development
+    ports:
+      - 3000:3000
+    networks:
+      - server-side
+      - client-side
+    depends_on:
+      - db
 
   frontend:
     build:
