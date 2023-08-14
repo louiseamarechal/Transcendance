@@ -24,8 +24,7 @@ function Friends() {
     return (
       <div className="friends-container">
         <PendingFriends />
-        <div className='friend-inside-container'>
-          {/* <p>You don't have any Friends yet...</p> */}
+        <div className="friend-inside-container">
           <Link to="/findfriends">
             You can invite your Friends <strong>here</strong>
           </Link>
@@ -40,13 +39,11 @@ function Friends() {
       <div className="friend-inside-container">
         <h2>Friends :</h2>
         <div className="all-friends-cards">
-          {array.map((elem) => {
+          {array.map((elem, index) => {
             return (
-              <>
-                <div className="friend-card">
-                  <UserCard user={elem} />
-                </div>
-              </>
+              <div className="friend-card" key={index}>
+                <UserCard user={elem} />
+              </div>
             );
           })}
         </div>
