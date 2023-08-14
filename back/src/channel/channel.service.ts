@@ -15,9 +15,8 @@ import {
 } from '@prisma/client';
 import * as argon from 'argon2';
 import { Socket, Namespace } from 'socket.io';
-import { MembersOnChannel, MutedOnChannel } from './types';
+import { MembersOnChannel, MutedOnChannel, UpdateChannel } from './types';
 import { NotifService } from 'src/notif/notif.service';
-import { channel } from 'diagnostics_channel';
 
 @Injectable()
 export class ChannelService {
@@ -220,24 +219,47 @@ export class ChannelService {
     id: number | null;
     name: string | null;
     avatar: string | null;
-    visibility: VisType | null;
+    // visibility: VisType | null;
   }> {
     const channel = await this.prisma.channel.findUnique({
       where: {
         id: channelId,
       },
+      select: {
+        ownerId: true,
+        admins: {
+          select: {
+            userId: true,
+          },
+        },
+      },
     });
 
     //	Check ownership of channel.
-    if (!channel || channel?.ownerId != ownerId)
+    if (
+      !channel ||
+      (!channel.admins.some(
+        (el: { userId: number }) => el.userId === ownerId,
+      ) &&
+        channel.ownerId !== ownerId)
+    )
       throw new ForbiddenException('Access to ressource denied');
 
+    const updateDto: UpdateChannel = { name: dto.name, avatar: dto.avatar };
+    if (dto.password) {
+      updateDto.passwordHash = await argon.hash(dto.password);
+    }
     return this.prisma.channel.update({
       where: {
         id: channelId,
       },
       data: {
-        ...dto,
+        ...updateDto,
+      },
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
       },
     });
   }
@@ -250,7 +272,7 @@ export class ChannelService {
     });
 
     //	Check ownership of channel.
-    if (!channel || channel?.ownerId != ownerId)
+    if (!channel || channel.ownerId != ownerId)
       throw new ForbiddenException('Access to ressource denied');
     await this.prisma.channel.delete({
       where: {

@@ -44,7 +44,7 @@ const MembersList = ({
     );
   } else {
     return (
-      <ul>
+      <ul className={'member-list'}>
         {channel.members.map((member) => {
           return (
             <li key={`member-list-${member.user.id}`}>

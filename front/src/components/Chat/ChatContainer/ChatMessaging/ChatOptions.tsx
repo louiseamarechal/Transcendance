@@ -13,6 +13,7 @@ const ChatOptions = ({
 }) => {
   const [selected, setSelected] = useState<string>('members');
 
+  console.log('options.');
   console.log({ channel });
   return (
     <div className="options-window">
@@ -56,7 +57,7 @@ const ChatOptions = ({
             setChannel={setChannel}
           />
         ) : (
-          <ChatSecurityOptions channel={channel} />
+          <ChatSecurityOptions channel={channel} setChannel={setChannel} />
         )}
       </div>
     </div>

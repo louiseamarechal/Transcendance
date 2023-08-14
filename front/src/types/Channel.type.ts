@@ -20,3 +20,15 @@ export type ChannelShort = {
   ownerId: number;
   members: { userId: number }[];
 };
+
+export const emptyChannel: Channel = {
+  id: NaN,
+  name: '',
+  avatar: '',
+  visibility: '',
+  ownerId: NaN,
+  members: [],
+  admins: [],
+  blocked: [],
+  muted: [],
+};

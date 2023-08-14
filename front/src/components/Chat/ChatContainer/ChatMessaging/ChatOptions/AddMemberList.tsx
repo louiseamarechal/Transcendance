@@ -51,7 +51,7 @@ const AddMemberList = ({
     <div className="add-member-list">
       <p>Choose friends to add to channel</p>
       <div className="scrollable-list">
-        <ul /*className="dual-column"*/>
+        <ul>
           {friends.map(
             (friend: {
               id: number;

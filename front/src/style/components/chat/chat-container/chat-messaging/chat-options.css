@@ -33,16 +33,22 @@
 .options-body {
   height: 92%;
   width: 100%;
-  /* margin-bottom: 5%; */
+  padding: 5% 0%;
   display: flex;
   flex-direction: column;
   align-self: center;
+  align-items: center;
   overflow: auto;
+}
+
+.member-list {
+  width: 90%;
 }
 
 .card {
   display: flex;
   flex-direction: row;
+  width: 100%;
   justify-content: space-between;
   padding: 5%;
   /* border-top: 1px dashed grey;
@@ -81,10 +87,6 @@
   justify-content: space-around;
 }
 
-.dual-column {
-  columns: 2;
-}
-
 .scrollable-list {
   /* border: solid var(--green); */
   width: 90%;
@@ -95,5 +97,45 @@
 .add-member-list button {
   background-color: var(--black);
   color: var(--white);
+  align-self: center;
+}
+
+/* ======== */
+
+.security-options {
+  display: flex;
+  width: 90%;
+  height: 100%;
+  padding: 10px 0px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.change-option {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.change-option input {
+  padding-left: 5px;
+  border: var(--faded-blue) 1px solid;
+  border-radius: 3px;
+  background-color: transparent;
+}
+
+#edit-avatar {
+  padding-left: 0px;
+}
+
+.change-option button {
+  background-color: var(--faded-blue);
+}
+
+#delete-channel-button {
+  background-color: red;
   align-self: center;
 }

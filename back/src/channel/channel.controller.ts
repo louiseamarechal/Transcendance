@@ -100,7 +100,7 @@ export class ChannelController {
     id: number | null;
     name: string | null;
     avatar: string | null;
-    visibility: VisType | null;
+    // visibility: VisType | null;
   }> {
     return this.channelService.editChannelById(userId, channelId, dto);
   }
