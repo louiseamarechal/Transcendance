@@ -21,7 +21,7 @@ type NavBarLinksProps = {
 
 const NavBarLinks = (props: NavBarLinksProps) => {
   const { myId } = useUser();
-  const { setNavbarState } = useNavbar();
+  const navbarState = useNavbar();
 
   function handleClick(
     link:
@@ -38,7 +38,7 @@ const NavBarLinks = (props: NavBarLinksProps) => {
     } else if (link === 'Chat') {
       props.setReceivedNotif({ ...props.receivedNotif, chat: 0 });
     }
-    setNavbarState(false);
+    navbarState.toggle(false);
   }
 
   const navElems = [
