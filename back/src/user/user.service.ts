@@ -6,17 +6,12 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditUserDto } from './dto';
-import {
-  NoParamCallback,
-  createReadStream,
-  existsSync,
-  rename,
-  rm,
-} from 'fs';
+import { NoParamCallback, createReadStream, existsSync, rename, rm } from 'fs';
 import { PublicUser } from './types';
 import { FRStatus, FriendRequest } from '@prisma/client';
 import { join } from 'path';
 import { Response } from 'express';
+// import BACK_URL from '../../../front/src/api/backUrl'
 
 @Injectable()
 export class UserService {
@@ -111,29 +106,26 @@ export class UserService {
     userLogin: string,
     userId: number,
   ) {
-    const oldname: string = file.path;
-    const newname: string = `public/${userLogin}${file.filename}`;
-    const cb: NoParamCallback = (err) => {
-      if (err) throw err;
-      console.log('Successfully renamed - AKA moved!');
-    };
+    // const oldname: string = file.path;
+    // const newname: string = `${userLogin}${file.filename}`;
+    console.log(file);
+    // console.log(oldname);
+    // console.log(newname);
 
-    const oldAvatar = (await this.getUserById(userId)).avatar?.replace(
-      'http://localhost:3000/',
-      '',
-    );
-    console.log({ oldAvatar });
+    // const cb: NoParamCallback = (err) => {
+    //   if (err) throw err;
+    //   console.log('Successfully renamed - AKA moved!');
+    // };
 
-    try {
-      rename(oldname, newname, cb);
-      if (oldAvatar) rm(oldAvatar, () => {});
-    } catch (err) {
-      console.log(err);
-      new InternalServerErrorException('Rename failed in uploadAvatar');
-    }
+    // try {
+    //   rename(oldname, newname, cb);
+    // } catch (err) {
+    //   console.log(err);
+    //   new InternalServerErrorException('Rename failed in uploadAvatar');
+    // }
 
-    this.editUser(userId, { avatar: `http://localhost:3000/${newname}` });
-    return `http://localhost:3000/${newname}`;
+    // this.editUser(userId, { avatar: `http://localhost:3000/${newname}` });
+    // return `http://localhost:3000/${newname}`;
   }
 
   async getPendingFR(userId: number) {
