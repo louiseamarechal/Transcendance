@@ -8,7 +8,7 @@ import useNotif from '../hooks/useNotif';
 const NavBarLinks = () => {
   const { myId } = useUser();
   const notif = useNotif();
-  const navbarState = useNavbar();
+  const navbar = useNavbar();
 
 
   function handleClick(
@@ -26,7 +26,7 @@ const NavBarLinks = () => {
     } else if (link === 'Chat') {
       notif.reset('chat');
     }
-    navbarState.toggle(false);
+    navbar.toggle(false);
   }
 
   const navElems = [
@@ -46,7 +46,7 @@ const NavBarLinks = () => {
     { to: '/profil/7', content: 'Profil 7' },
   ];
 
-  if (navbarState === true) {
+  if (navbar.navbarState === true) {
     return (
       <ul className="navbar-links">
         {navElems.map((elem, index) => {

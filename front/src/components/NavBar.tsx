@@ -32,16 +32,15 @@ const NavBar = () => {
         notif.increment('game', data.length);
       })
       .catch((error) => console.log(error));
-      
-      // axiosInstance
-      // .get('/notif/chat')
-      // .then((response) => {
-      //   const data = response.data;
-      //   notif.reset('chat');
-      //   notif.increment('chat', data.length);
-      // })
-      // .catch((error) => console.log(error));
 
+    // axiosInstance
+    // .get('/notif/chat')
+    // .then((response) => {
+    //   const data = response.data;
+    //   notif.reset('chat');
+    //   notif.increment('chat', data.length);
+    // })
+    // .catch((error) => console.log(error));
   }, []);
 
   if (navbar.navbarState === true)
@@ -60,15 +59,17 @@ const NavBar = () => {
     );
   else
     return (
-      <FontAwesomeIcon
-        icon={faBars}
-        className="navbar-close"
-        style={{ color: 'var(--black)' }}
-        onClick={() => {
-          navbar.toggle(true);
-        }}
-      />
-       <NavBarLinks />
+      <>
+        <FontAwesomeIcon
+          icon={faBars}
+          className="navbar-close"
+          style={{ color: 'var(--black)' }}
+          onClick={() => {
+            navbar.toggle(true);
+          }}
+        />
+        <NavBarLinks />
+      </>
     );
 };
 
