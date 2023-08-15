@@ -5,39 +5,51 @@ name: "transcendance"
 services:
   db:
     image: postgres:15-bullseye
-    restart: on-failure
+    restart: always
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready"]
+    #   interval: 30s
+    #   timeout: 60s
+    #   retries: 5
+    #   start_period: 80s
     environment:
-      POSTGRES_PASSWORD: example
-      POSTGRES_DB: mydb
+      - POSTGRES_DB=mydb
+      - POSTGRES_PASSWORD=example
+    networks:
+      - server-side
+    ports:
+      - 5432:5432
     volumes:
       - db-data:/var/lib/postgresql/data
-    ports:
-      - 5434:5432
 
-  test-db:
-    image: postgres:15-bullseye
-    restart: on-failure
-    environment:
-      POSTGRES_PASSWORD: example
-      POSTGRES_DB: mydb
-    volumes:
-      - test-db-data:/var/lib/postgresql/data
-    ports:
-      - 5435:5432
-
-  back:
-    container_name: back
-    stdin_open: true
+  backend:
     build:
-      context: ./
-      dockerfile: ./back/requirements/Dockerfile
+      context: .
+      dockerfile: back/Dockerfile
+      target: development
+    ports:
+      - 3000:3000
+    networks:
+      - server-side
+      - client-side
     depends_on:
       - db
-    restart: on-failure
+
+  frontend:
+    build:
+      context: .
+      dockerfile: front/Dockerfile
+      target: development
     ports:
-      - 8080:8080
-      - 5555:5555
+      - 5173:5173
+    networks:
+      - client-side
+    depends_on:
+      - backend
+
+networks:
+  client-side: {}
+  server-side: {}
 
 volumes:
-  db-data:
-  test-db-data:
+  db-data: {}
