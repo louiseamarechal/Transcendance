@@ -78,8 +78,9 @@ const ChatBody = ({ channel }: { channel: Channel }) => {
           {messageList.map((messageContent) => {
             return (
               <div
-                className="message"
-                id={myId === messageContent.senderId ? 'you' : 'other'}
+                // className="message"
+                className={"message " + (myId === messageContent.senderId ? 'you' : 'other')}
+                // id={myId === messageContent.senderId ? 'you' : 'other'}
               >
                 <div>
                   <div className="message-content">
