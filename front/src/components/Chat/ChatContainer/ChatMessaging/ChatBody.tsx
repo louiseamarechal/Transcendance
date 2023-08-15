@@ -16,6 +16,14 @@ const ChatBody = ({ channel }: { channel: Channel }) => {
   const [messageList, setMessageList] = useState<Message[]>([]);
   const [reloadMessage, setReloadMessage] = useState(true);
 
+  function userIsMuted(senderId: number): boolean {
+    console.log({ senderId });
+    console.log({ myId });
+    return channel.muted.some((user) => {
+      return user.mutedUserId === senderId && myId === user.mutedByUserId;
+    });
+  }
+
   const sendMessage = async () => {
     if (currentMessage !== '') {
       axiosInstance
