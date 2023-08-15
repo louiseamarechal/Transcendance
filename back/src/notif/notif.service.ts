@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { FRStatus } from '@prisma/client';
 import { Namespace } from 'socket.io';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -22,10 +23,13 @@ export class NotifService {
 
   async getFriendsNotif(myId: number) {
     const receivedFRRequests = await this.prisma.friendRequest.findMany({
-      where: { toId: myId },
+      where: {
+        toId: myId,
+        status: {
+          equals: FRStatus.PENDING,
+        },
+      },
     });
-    // console.log({ receivedFRRequests });
-    // console.log({ myId });
     return receivedFRRequests;
   }
 
@@ -33,8 +37,6 @@ export class NotifService {
     const receivedGameRequests = await this.prisma.game.findMany({
       where: { player2Id: myId },
     });
-    // console.log({ receivedGameRequests });
-    // console.log({ myId });
     return receivedGameRequests;
   }
 }

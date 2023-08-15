@@ -3,25 +3,13 @@ import { useUser } from '../hooks/useUser';
 import { Link } from 'react-router-dom';
 import useNavbar from '../hooks/useNavbar';
 import Avatar from './Avatar';
+import useNotif from '../hooks/useNotif';
 
-type NavBarLinksProps = {
-  receivedNotif: {
-    friends: number;
-    game: number;
-    chat: number;
-  };
-  setReceivedNotif: React.Dispatch<
-    React.SetStateAction<{
-      friends: number;
-      game: number;
-      chat: number;
-    }>
-  >;
-};
-
-const NavBarLinks = (props: NavBarLinksProps) => {
+const NavBarLinks = () => {
   const { myId } = useUser();
+  const notif = useNotif();
   const navbarState = useNavbar();
+
 
   function handleClick(
     link:
@@ -32,17 +20,17 @@ const NavBarLinks = (props: NavBarLinksProps) => {
         >,
   ) {
     if (link === 'Game') {
-      props.setReceivedNotif({ ...props.receivedNotif, game: 0 });
+      notif.reset('game');
     } else if (link === 'Friends') {
-      props.setReceivedNotif({ ...props.receivedNotif, friends: 0 });
+      notif.reset('friends');
     } else if (link === 'Chat') {
-      props.setReceivedNotif({ ...props.receivedNotif, chat: 0 });
+      notif.reset('chat');
     }
     navbarState.toggle(false);
   }
 
   const navElems = [
-    { to: '/profil', content: <Avatar id={myId}/> },
+    { to: '/profil', content: <Avatar id={myId} /> },
     { to: '/game', content: 'Game' },
     { to: '/oldgame', content: 'OldGame' },
     { to: '/chat', content: 'Chat' },
@@ -58,27 +46,40 @@ const NavBarLinks = (props: NavBarLinksProps) => {
     { to: '/profil/7', content: 'Profil 7' },
   ];
 
+  if (navbarState === true) {
+    return (
+      <ul className="navbar-links">
+        {navElems.map((elem, index) => {
+          return (
+            <div className="relative" key={index}>
+              {typeof elem.content === 'string' ? (
+                <Notification element={elem.content} />
+              ) : (
+                ''
+              )}
+              <Link to={elem.to} onClick={() => handleClick(elem.content)}>
+                {elem.content}
+              </Link>
+            </div>
+          );
+        })}
+      </ul>
+    );
+  }
   return (
-    <ul className="navbar-links">
+    <>
       {navElems.map((elem, index) => {
         return (
-          <div className="relative" key={index}>
+          <div key={index}>
             {typeof elem.content === 'string' ? (
-              <Notification
-                element={elem.content}
-                receivedNotif={props.receivedNotif}
-                setReceivedNotif={props.setReceivedNotif}
-              />
+              <Notification element={elem.content}/>
             ) : (
               ''
             )}
-            <Link to={elem.to} onClick={() => handleClick(elem.content)}>
-              {elem.content}
-            </Link>
           </div>
         );
       })}
-    </ul>
+    </>
   );
 };
 

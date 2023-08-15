@@ -5,26 +5,22 @@ import useNavbar from '../hooks/useNavbar';
 import NavBarLinks from './NavBarLinks';
 
 import '../style/components/navbar.css';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import useNotif from '../hooks/useNotif';
 
 const NavBar = () => {
   const navbar = useNavbar();
   const axiosInstance = useAxiosPrivate();
-  const [receivedNotif, setReceivedNotif] = useState({
-    friends: 0,
-    game: 0,
-    chat: 0,
-  });
+  const notif = useNotif();
 
   useEffect(() => {
     axiosInstance
       .get('/notif/friend')
       .then((response) => {
         const data = response.data;
-        setReceivedNotif((previous) => {
-          return { ...previous, friends: data.length };
-        });
+        notif.reset('friends');
+        notif.increment('friends', data.length);
       })
       .catch((error) => console.log(error));
 
@@ -32,21 +28,20 @@ const NavBar = () => {
       .get('/notif/game')
       .then((response) => {
         const data = response.data;
-        setReceivedNotif((previous) => {
-          return { ...previous, game: data.length };
-        });
+        notif.reset('game');
+        notif.increment('game', data.length);
       })
       .catch((error) => console.log(error));
+      
+      // axiosInstance
+      // .get('/notif/chat')
+      // .then((response) => {
+      //   const data = response.data;
+      //   notif.reset('chat');
+      //   notif.increment('chat', data.length);
+      // })
+      // .catch((error) => console.log(error));
 
-    // axiosInstance
-    //   .get('/notif/chat')
-    //   .then((response) => {
-    //     const data = response.data;
-    //     setReceivedNotif((previous) => {
-    //       return { ...previous, game: data.length };
-    //     });
-    //   })
-    //   .catch((error) => console.log(error));
   }, []);
 
   if (navbar.navbarState === true)
@@ -60,10 +55,7 @@ const NavBar = () => {
             navbar.toggle(false);
           }}
         />
-        <NavBarLinks
-          receivedNotif={receivedNotif}
-          setReceivedNotif={setReceivedNotif}
-        />
+        <NavBarLinks />
       </div>
     );
   else
@@ -76,6 +68,7 @@ const NavBar = () => {
           navbar.toggle(true);
         }}
       />
+       <NavBarLinks />
     );
 };
 

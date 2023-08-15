@@ -101,16 +101,16 @@ export default function UserProfile() {
     });
   };
 
-  // const handleGameRequest = async () => {
-  //   await axiosInstance
-  //     .post(`game/${id}`, {})
-  //     .then((response) => {
-  //       console.log({ handleGameRequest: response.data });
-  //     })
-  //     .catch((error) => {
-  //       if (error.response.status !== 409) console.error(error);
-  //     });
-  // };
+  const handleGameRequest = async () => {
+    await axiosInstance
+      .post(`game/${id}`, {})
+      .then((response) => {
+        console.log({ handleGameRequest: response.data });
+      })
+      .catch((error) => {
+        if (error.response.status !== 409) console.error(error);
+      });
+  };
 
   return (
     <div className="profil-container">
@@ -128,6 +128,7 @@ export default function UserProfile() {
           handleAddFriend={handleAddFriend}
           handleAcceptFriend={handleAcceptFriend}
           handleRemoveFR={handleRemoveFR}
+          handleGameRequest={handleGameRequest}
         />
       </div>
       <ProgressBar user={user} />
@@ -143,6 +144,7 @@ type ActionButtonsProps = {
   handleAddFriend: Function;
   handleAcceptFriend: Function;
   handleRemoveFR: Function;
+  handleGameRequest: Function;
   myId: number;
   fromId: string;
 };
@@ -153,6 +155,7 @@ function ActionButtons({
   handleAddFriend,
   handleAcceptFriend,
   handleRemoveFR,
+  handleGameRequest,
 }: ActionButtonsProps) {
   if (status === 'ACCEPTED') {
     return (
@@ -165,7 +168,12 @@ function ActionButtons({
         >
           Remove Friend
         </button>
-        <button className="small-button game-request-button">
+        <button
+          className="small-button game-request-button"
+          onClick={() => {
+            handleGameRequest();
+          }}
+        >
           Send game request
         </button>
       </div>
@@ -195,7 +203,9 @@ function ActionButtons({
         >
           Decline
         </button>
-        <button className="small-button game-request-button">
+        <button
+          className="small-button game-request-button"
+        >
           Send game request
         </button>
       </div>
@@ -211,7 +221,9 @@ function ActionButtons({
         >
           Add friend
         </button>
-        <button className="small-button game-request-button">
+        <button
+          className="small-button game-request-button"
+        >
           Send game request
         </button>
       </div>
