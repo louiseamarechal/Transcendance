@@ -1,8 +1,16 @@
-import { useContext } from 'react';
-import NavbarContext from '../context/NavbarProvider';
+import { create } from 'zustand';
 
-const useNavbar = () => {
-  return useContext(NavbarContext);
+type State = {
+  navbarState: boolean;
 };
+
+type Actions = {
+  toggle: (isVisible: boolean) => void;
+};
+
+const useNavbar = create<State & Actions>((set) => ({
+  navbarState: false,
+  toggle: (isVisible: boolean) => set((state) => ({ navbarState: (state.navbarState = isVisible) })),
+}));
 
 export default useNavbar;
