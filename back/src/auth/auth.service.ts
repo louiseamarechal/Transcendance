@@ -180,7 +180,7 @@ export class AuthService {
       throw new UnauthorizedException('Nop! (getUserLogin)');
     });
 
-    console.log({ response });
+    // console.log({ response });
     const login = response.data?.login;
     const avatar = response.data?.image?.link;
     const email: string = response.data.email;

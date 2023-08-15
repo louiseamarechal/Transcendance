@@ -20,11 +20,13 @@ export class GameManager {
     const filtGames = this.getGames(GameVisibility.Public, GameStatus.Waiting);
 
     if (filtGames.length === 0) {
+      console.log('[GameManager] joinQueue > No games');
       const newGame = new Game(this.server);
       newGame.p1.user = client.data.user;
       client.join(newGame.gameId);
       this.addGame(newGame);
     } else {
+      console.log('[GameManager] joinQueue > Found game');
       const game = filtGames[0];
       game.p2.user = client.data.user;
       game.status = GameStatus.Ready;
@@ -114,14 +116,18 @@ export class GameManager {
     console.log(`[GameManager] Remove ${game.gameId}`);
     this.server.adapter.rooms.delete(game.gameId);
     game.stopGameLoop();
-    const gameDb = await this.prisma.game.findUnique({
-      where: { uuid: game.gameId },
-    });
-    this.prisma.game;
+    // const gameDb = await this.prisma.game.findUnique({
+    //   where: { uuid: game.gameId },
+    // });
+    // if (gameDb && gameDb.winnerId === null) {
+    //   await this.prisma.game.delete({
+    //     where: { uuid: gameDb.uuid },
+    //   });
+    // }
     this.#games.delete(game.gameId);
   }
 
-  private async updateDb(game: Game) {
+  private async updateDbAfterDone(game: Game) {
     const p1Id = game.p1.user.id;
     const p2Id = game.p2.user.id;
     const winnerId = game.score[0] > game.score[1] ? p1Id : p2Id;
@@ -143,7 +149,7 @@ export class GameManager {
       game.debug();
       if (game.status === GameStatus.Done) {
         console.log('Remove game. Cause: Game is done');
-        this.updateDb(game);
+        // this.updateDbAfterDone(game);
         this.removeGame(game);
         return;
       }

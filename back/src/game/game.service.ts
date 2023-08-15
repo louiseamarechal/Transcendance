@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { Game } from '@prisma/client';
 import { NotifService } from 'src/notif/notif.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Game } from './classes/Game';
 
 @Injectable()
 export class GameService {
@@ -10,12 +10,12 @@ export class GameService {
     private prisma: PrismaService,
   ) {}
 
-  async createGameInDb(player1Id: number, player2Id: number, uuid: string) {
+  async createGameInDb(game: Game) {
     await this.prisma.game.create({
       data: {
-        player1Id: player1Id,
-        player2Id: player2Id,
-        uuid: uuid,
+        player1Id: game.p1.user.id,
+        player2Id: game.p2.user.id,
+        uuid: game.gameId,
       },
     });
   }
