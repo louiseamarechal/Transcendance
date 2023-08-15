@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import '../../../style/components/chat/chat-container/create-channel-form.css';
 import '../../../style/components/buttons.css';
-import { useChatContext } from '../../../hooks/useChatContext';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import FriendsList from './CreateChannelForm/FriendsList';
 import FormHeader from './CreateChannelForm/FormHeader';
@@ -9,13 +8,15 @@ import { useUser } from '../../../hooks/useUser';
 import { notifSocket } from '../../../api/socket';
 import { User } from '../../../types/User.type';
 import ChannelVisibility from './CreateChannelForm/ChannelVisibility';
+import useChannelList from '../../../hooks/useChannelList';
+import { useNavigate } from 'react-router-dom';
 
 const CreateChannelForm = () => {
   const [avatar, setAvatar] = useState<string>('default.jpg');
   const axiosPrivate = useAxiosPrivate();
   const { myId, myLogin } = useUser();
-  const { channelList, setChannelList, setShowCreateChannel, setShowChannel } =
-    useChatContext();
+  const channelListState = useChannelList();
+  const navigate = useNavigate();
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]);
   const [channelName, setChannelName] = useState<string>();
   const [channelVis, setChannelVis] = useState<string>('PUBLIC');
@@ -38,18 +39,16 @@ const CreateChannelForm = () => {
           password: channelVis === 'PROTECTED' ? channelPassword : undefined,
         })
         .then((res) => {
-          setChannelList([...channelList, res.data]);
+          channelListState.add(res.data);
           res.data.members.map((member: { user: User }) => {
             if (member.user.login !== myLogin)
               notifSocket.emit('client.notif.chatNotif', member.user.login);
           });
-          setShowCreateChannel(false);
-          setShowChannel(res.data.id);
+          navigate(`chat/${res.data.id}`);
         })
         .catch((err) => {
           if (err.response.status === 409) {
-            setShowCreateChannel(false);
-            setShowChannel(err.response.data.channelId);
+            navigate(`chat/${err.response.data.channelId}`);
           }
         });
     }

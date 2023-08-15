@@ -1,4 +1,4 @@
-import { useChatContext } from '../../hooks/useChatContext';
+import { useChatContext } from '../../hooks/useChannelList';
 import '../../style/components/chat/chat-container.css';
 import ChatMessaging from './ChatContainer/ChatMessaging';
 import CreateChannelForm from './ChatContainer/CreateChannelForm';

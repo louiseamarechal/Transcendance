@@ -2,40 +2,39 @@ import { Dispatch, SetStateAction } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeartCrack, faMedal } from '@fortawesome/free-solid-svg-icons';
 import { User } from '../../../../../../../types/User.type';
-import { Channel } from '../../../../../../../types/Channel.type';
 import { axiosPrivate } from '../../../../../../../api/axios';
+import useChannel from '../../../../../../../hooks/useChannel';
 
 function PromoteButton({
   user,
   userRole,
   setUserRole,
   myRole,
-  channel,
   setAdmins,
 }: {
   user: User;
   userRole: number;
   setUserRole: Dispatch<SetStateAction<number>>;
   myRole: number;
-  channel: Channel;
   setAdmins: Dispatch<SetStateAction<{ userId: number }[]>>;
 }) {
+  const channelState = useChannel();
   async function promote() {
-    await axiosPrivate.post(`channel/admin/${channel.id}`, {
+    await axiosPrivate.post(`channel/admin/${channelState.self.id}`, {
       userId: user.id,
     });
     const updatedAdmins: { userId: number }[] = [
-      ...channel.admins,
+      ...channelState.self.admins,
       { userId: user.id },
     ];
     setAdmins(updatedAdmins);
     setUserRole(userRole + 1);
   }
   async function demote() {
-    await axiosPrivate.delete(`channel/admin/${channel.id}`, {
+    await axiosPrivate.delete(`channel/admin/${channelState.self.id}`, {
       data: { userId: user.id },
     });
-    const updatedAdmins: { userId: number }[] = channel.admins.filter(
+    const updatedAdmins: { userId: number }[] = channelState.self.admins.filter(
       (adminUser: { userId: number }) => {
         if (adminUser.userId === user.id) {
           return false;

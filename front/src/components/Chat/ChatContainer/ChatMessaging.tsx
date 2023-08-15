@@ -1,4 +1,4 @@
-import { useChatContext } from '../../../hooks/useChatContext';
+import { useChatContext } from '../../../hooks/useChannelList';
 import { useEffect, useState } from 'react';
 import '../../../style/components/chat/chat-container/chat-messaging.css';
 import ChatHeader from './ChatMessaging/ChatHeader';

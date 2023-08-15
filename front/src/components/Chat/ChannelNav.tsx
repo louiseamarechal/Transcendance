@@ -1,14 +1,8 @@
-import { useChatContext } from '../../hooks/useChatContext';
 import ChannelList from './ChannelNav/ChannelList';
 import '../../style/components/chat/channel-nav.css';
-import { ChannelShort } from '../../types/Channel.type';
 import { useNavigate } from 'react-router-dom';
 
-type ChannelNavProps = {
-  channelList: ChannelShort[];
-};
-
-function ChannelNav({ channelList }: ChannelNavProps) {
+function ChannelNav() {
   // const { showCreateChannel, setShowCreateChannel, setShowChannel } =
   //   useChatContext();
   const navigate = useNavigate();
@@ -18,15 +12,10 @@ function ChannelNav({ channelList }: ChannelNavProps) {
         className="small-button"
         id="create-channel"
         onClick={() => navigate('create')}
-        // if (!showCreateChannel) {
-        //   setShowCreateChannel(true);
-        //   setShowChannel(NaN);
-        // }
-        // }}
       >
         new group chat
       </button>
-      <ChannelList channelList={channelList}/>
+      <ChannelList />
     </div>
   );
 }

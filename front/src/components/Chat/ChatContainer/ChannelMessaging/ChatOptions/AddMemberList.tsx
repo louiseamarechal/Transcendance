@@ -1,26 +1,21 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import '../../../../../style/components/buttons.css';
 import UserSmallCard from '../../CreateChannelForm/FriendsList/UserSmallCard';
-import { User } from '../../../../../types/User.type';
 import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
-import { Channel } from '../../../../../types/Channel.type';
+import useChannel from '../../../../../hooks/useChannel';
 
-const AddMemberList = ({
-  members,
+export default function AddMemberList({
+  memberIds,
   setShowAddMember,
-  channel,
-  setChannel,
 }: {
-  members: { user: User }[];
+  memberIds: number[];
   setShowAddMember: Dispatch<SetStateAction<boolean>>;
-  channel: Channel;
-  setChannel: Dispatch<SetStateAction<Channel>>;
-}) => {
+}) {
+  const channelState = useChannel();
   const [friends, setFriends] = useState<
     { id: number; name: string; level: number; avatar: string }[]
   >([]);
   const [selectedMembers, setSelectedMembers] = useState<number[]>([]);
-  const memberIds: number[] = members.map((member) => member.user.id);
   const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
@@ -37,11 +32,11 @@ const AddMemberList = ({
 
   async function addMembers() {
     if (selectedMembers.length !== 0) {
-      await axiosPrivate.post(`channel/members/${channel.id}`, {
+      await axiosPrivate.post(`channel/members/${channelState.self.id}`, {
         ids: selectedMembers,
       });
-      axiosPrivate.get('channel/' + channel.id).then((res) => {
-        setChannel(res.data);
+      axiosPrivate.get('channel/' + channelState.self.id).then((res) => {
+        channelState.reset(res.data);
       });
     }
     setShowAddMember(false);
@@ -82,6 +77,4 @@ const AddMemberList = ({
       </button>
     </div>
   );
-};
-
-export default AddMemberList;
+}

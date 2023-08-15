@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Message } from '../../../../types/Message.type';
-import { Channel } from '../../../../types/Channel.type';
+import useChannel from '../../../../hooks/useChannel';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
+import { Message } from '../../../../types/Message.type';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,9 +9,10 @@ import { useUser } from '../../../../hooks/useUser';
 import '../../../../style/components/chat/chat-container/chat-messaging/chat-body.css';
 import { channelSocket, notifSocket } from '../../../../api/socket';
 
-const ChatBody = ({ channel }: { channel: Channel }) => {
+export default function ChatBody() {
   const axiosInstance = useAxiosPrivate();
   const { myId, myLogin } = useUser();
+  const channelState = useChannel();
   const [currentMessage, setCurrentMessage] = useState('');
   const [messageList, setMessageList] = useState<Message[]>([]);
   const [reloadMessage, setReloadMessage] = useState(true);
@@ -19,7 +20,7 @@ const ChatBody = ({ channel }: { channel: Channel }) => {
   const sendMessage = async () => {
     if (currentMessage !== '') {
       axiosInstance
-        .post(`message/${channel.id}`, {
+        .post(`message/${channelState.self.id}`, {
           body: currentMessage,
         })
         .then((res) => {
@@ -31,14 +32,14 @@ const ChatBody = ({ channel }: { channel: Channel }) => {
           setCurrentMessage('');
         });
 
-      channelSocket.emit('client.channel.sendMessage', channel.id);
-      channel.members.map((member) => {
+      channelSocket.emit('client.channel.sendMessage', channelState.self.id);
+      channelState.self.members.map((member) => {
         if (member.user?.login !== myLogin) {
-          console.log(`sending chat notif on socket for ${member.user?.login}`)
+          console.log(`sending chat notif on socket for ${member.user?.login}`);
           notifSocket.emit('client.notif.chatNotif', member.user?.login);
         }
       });
-      console.log({ channelMembers: channel.members });
+      console.log({ channelMembers: channelState.self.members });
     }
   };
 
@@ -48,7 +49,7 @@ const ChatBody = ({ channel }: { channel: Channel }) => {
   }
 
   async function uploadMessages() {
-    await axiosInstance.get(`message/${channel.id}`).then((res) => {
+    await axiosInstance.get(`message/${channelState.self.id}`).then((res) => {
       // const {createdAt, ...obj} = res.data;
       setMessageList(res.data);
     });
@@ -117,6 +118,4 @@ const ChatBody = ({ channel }: { channel: Channel }) => {
       </div>
     </div>
   );
-};
-
-export default ChatBody;
+}

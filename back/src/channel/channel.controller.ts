@@ -15,6 +15,7 @@ import { ChannelService } from './channel.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
 import { VisType } from '@prisma/client';
 import { MembersOnChannel, MutedOnChannel } from './types';
+import { PublicUser } from '../../../shared/common/types/user.type';
 
 @Controller('channel')
 export class ChannelController {
@@ -201,7 +202,7 @@ export class ChannelController {
     @GetUserId() userId: number,
     @Param('channelId', ParseIntPipe) channelId: number,
     @Body() dto: { password?: string },
-  ) {
+  ): Promise<PublicUser> {
     return this.channelService.joinChannel(userId, channelId, dto?.password);
   }
 

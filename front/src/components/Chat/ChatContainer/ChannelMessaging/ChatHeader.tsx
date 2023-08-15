@@ -1,30 +1,31 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Channel } from '../../../../types/Channel.type';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import '../../../../style/components/chat/chat-container/chat-messaging/chat-header.css';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 import Avatar from '../../../Avatar';
+import { useNavigate } from 'react-router-dom';
+import useChannel from '../../../../hooks/useChannel';
+import { useEffect, useState } from 'react';
 
-const ChatHeader = ({
-  channel,
-  showOptions,
-  setShowOptions,
-}: {
-  channel: Channel;
-  showOptions: boolean;
-  setShowOptions: Dispatch<SetStateAction<boolean>>;
-}) => {
+export default function ChatHeader() {
   const axiosPrivate = useAxiosPrivate();
-  const [channelName, setChannelName] = useState<string>(channel.name);
-  const [channelAvatar, setChannelAvatar] = useState<string>(channel.avatar);
+  const channelState = useChannel();
+  const [channelName, setChannelName] = useState<string>(
+    channelState.self.name,
+  );
+  const [channelAvatar, setChannelAvatar] = useState<string>(
+    channelState.self.avatar,
+  );
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (channelName === '' && channelAvatar === '') {
-      axiosPrivate.get('channel/correspondent/' + channel.id).then((res) => {
-        setChannelName(res.data.name);
-        setChannelAvatar(res.data.avatar);
-      });
+      axiosPrivate
+        .get('channel/correspondent/' + channelState.self.id)
+        .then((res) => {
+          setChannelName(res.data.name);
+          setChannelAvatar(res.data.avatar);
+        });
     }
   });
 
@@ -35,8 +36,8 @@ const ChatHeader = ({
       <div
         className="options-menu"
         onClick={() => {
-          console.log('menu ' + showOptions);
-          setShowOptions(!showOptions);
+          // setShowOptions(!showOptions);
+          navigate('options/members');
         }}
       >
         <FontAwesomeIcon
@@ -47,6 +48,4 @@ const ChatHeader = ({
       </div>
     </div>
   );
-};
-
-export default ChatHeader;
+}

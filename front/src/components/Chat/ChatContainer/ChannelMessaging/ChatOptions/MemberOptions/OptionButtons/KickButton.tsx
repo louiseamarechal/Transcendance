@@ -1,28 +1,29 @@
 import { Dispatch, SetStateAction } from 'react';
 import { User } from '../../../../../../../types/User.type';
 import { axiosPrivate } from '../../../../../../../api/axios';
-import { Channel } from '../../../../../../../types/Channel.type';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
+import useChannel from '../../../../../../../hooks/useChannel';
 
 function KickButton({
   user,
   userRole,
   myRole,
-  channel,
   members,
   setMembers,
 }: {
   user: User;
   userRole: number;
   myRole: number;
-  channel: Channel;
   members: { user: User }[];
   setMembers: Dispatch<SetStateAction<{ user: User }[]>>;
 }) {
+  const channelState = useChannel();
   async function kick() {
     const DeletedMemberOnChannel: { userId: number; channelId: number } = (
-      await axiosPrivate.delete(`channel/member/${channel.id}/${user.id}`)
+      await axiosPrivate.delete(
+        `channel/member/${channelState.self.id}/${user.id}`,
+      )
     ).data;
     console.log(`kick member: ${DeletedMemberOnChannel.userId}`);
     if (DeletedMemberOnChannel !== undefined) {

@@ -17,6 +17,7 @@ import * as argon from 'argon2';
 import { Socket, Namespace } from 'socket.io';
 import { MembersOnChannel, MutedOnChannel, UpdateChannel } from './types';
 import { NotifService } from 'src/notif/notif.service';
+import { PublicUser } from '../../../shared/common/types/user.type';
 
 @Injectable()
 export class ChannelService {
@@ -40,78 +41,44 @@ export class ChannelService {
     visibility: VisType;
     members: { userId: number }[];
   }> {
-    const channels = await this.prisma.membersOnChannels.groupBy({
-      by: ['channelId'],
-      where: {
-        userId: {
-          in: members,
-        },
-      },
-      having: {
-        userId: {
-          _count: {
-            equals: members.length,
-          },
-        },
-      },
-    });
-    // console.log({ channels });
-    const filteredChannels = channels.filter(async (channel) => {
-      const channelMembers = await this.prisma.membersOnChannels.findMany({
-        where: {
-          channelId: channel.channelId,
-        },
-      });
-      if (channelMembers.length === members.length) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-    // console.log(`found ${filteredChannels.length} with same members.`);
-    // console.log({ filteredChannels });
-    if (filteredChannels.length > 0) {
-      throw new ConflictException({ channelId: filteredChannels[0].channelId });
-    } else {
-      let hash: string | undefined = undefined;
-      if (password) {
-        const hash: string = await argon.hash(password);
-      }
-      const channel = await this.prisma.channel.create({
-        data: {
-          ownerId,
-          name,
-          avatar,
-          visibility: visibility,
-          passwordHash: hash,
-          members: {
-            create: members.map((m: number) => {
-              return { userId: m };
-            }),
-          },
-        },
-        select: {
-          id: true,
-          name: true,
-          avatar: true,
-          visibility: true,
-          members: {
-            select: {
-              user: true,
-              userId: true,
-            },
-          },
-        },
-      });
-      console.log({ channel });
-      channel.members.map((member) => {
-        if (member.user.id !== ownerId) {
-          this.notifService.handleChatNotif(member.user.login);
-        }
-      });
-      console.log('Created channel.');
-      return channel;
+    let hash: string | undefined = undefined;
+    if (password) {
+      const hash: string = await argon.hash(password);
     }
+    const channel = await this.prisma.channel.create({
+      data: {
+        ownerId,
+        name,
+        avatar,
+        visibility: visibility,
+        passwordHash: hash,
+        members: {
+          create: members.map((m: number) => {
+            return { userId: m };
+          }),
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
+        visibility: true,
+        members: {
+          select: {
+            user: true,
+            userId: true,
+          },
+        },
+      },
+    });
+    console.log({ channel });
+    channel.members.map((member) => {
+      if (member.user.id !== ownerId) {
+        this.notifService.handleChatNotif(member.user.login);
+      }
+    });
+    console.log('Created channel.');
+    return channel;
   }
 
   getChannels(ownerId: number) {
@@ -541,7 +508,7 @@ export class ChannelService {
     userId: number,
     channelId: number,
     password: string | undefined,
-  ) {
+  ): Promise<PublicUser> {
     const channel: Channel | null = await this.prisma.channel.findUnique({
       where: {
         id: channelId,
@@ -559,12 +526,27 @@ export class ChannelService {
     ) {
       throw new ConflictException('Wrong password');
     } else {
-      return this.prisma.membersOnChannels.create({
-        data: {
-          channelId,
-          userId: userId,
-        },
-      });
+      return (
+        await this.prisma.membersOnChannels.create({
+          data: {
+            channelId,
+            userId: userId,
+          },
+          select: {
+            user: {
+              select: {
+                id: true,
+                login: true,
+                name: true,
+                level: true,
+                avatar: true,
+                statTotalGame: true,
+                statTotalWin: true,
+              },
+            },
+          },
+        })
+      ).user;
     }
   }
 

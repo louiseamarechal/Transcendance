@@ -3,20 +3,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { axiosPrivate } from '../../../../../../../api/axios';
 import { User } from '../../../../../../../types/User.type';
 import { useEffect, useState } from 'react';
-import { Channel } from '../../../../../../../types/Channel.type';
+import useChannel from '../../../../../../../hooks/useChannel';
 
-function MuteButton({ user, channel }: { user: User; channel: Channel }) {
+function MuteButton({ user }: { user: User }) {
+  const channelState = useChannel();
   const [muted, setMuted] = useState<boolean>(false);
   useEffect(() => {
-    axiosPrivate.get(`channel/muted/${channel.id}/${user.id}`).then((res) => {
-      if (res.data !== '') {
-        setMuted(true);
-      }
-    });
+    axiosPrivate
+      .get(`channel/muted/${channelState.self.id}/${user.id}`)
+      .then((res) => {
+        if (res.data !== '') {
+          setMuted(true);
+        }
+      });
   });
   async function mute() {
     await axiosPrivate
-      .post(`channel/muted/${channel.id}`, { mutedId: user.id })
+      .post(`channel/muted/${channelState.self.id}`, { mutedId: user.id })
       .then(() => {
         setMuted(true);
       })
@@ -28,7 +31,7 @@ function MuteButton({ user, channel }: { user: User; channel: Channel }) {
   }
   async function unmute() {
     await axiosPrivate
-      .delete(`channel/muted/${channel.id}/${user.id}`)
+      .delete(`channel/muted/${channelState.self.id}/${user.id}`)
       .then(() => {
         setMuted(false);
       })

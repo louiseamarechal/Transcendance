@@ -1,37 +1,36 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { useUser } from '../../../../../../hooks/useUser';
-import { Channel } from '../../../../../../types/Channel.type';
 import { User } from '../../../../../../types/User.type';
 import UserCard from '../../../../../UserCard';
 import PromoteButton from './OptionButtons/PromoteButton';
 import MuteButton from './OptionButtons/MuteButton';
 import KickButton from './OptionButtons/KickButton';
 import BlockButton from './OptionButtons/BlockButton';
+import useChannel from '../../../../../../hooks/useChannel';
 
 function MemberOptionsCard({
   member,
-  channel,
   setAdmins,
   members,
   setMembers,
 }: {
   member: User;
-  channel: Channel;
   setAdmins: Dispatch<SetStateAction<{ userId: number }[]>>;
   members: { user: User }[];
   setMembers: Dispatch<SetStateAction<{ user: User }[]>>;
 }) {
+  const channelState = useChannel();
   const { myId } = useUser();
   const myRole: number = determineRole(myId);
   const [userRole, setUserRole] = useState<number>(determineRole(member.id));
 
   function determineRole(id: number): number {
-    const adminIds: number[] = channel.admins.map(
+    const adminIds: number[] = channelState.self.admins.map(
       (adminUser: { userId: number }): number => {
         return adminUser.userId;
       },
     );
-    if (id === channel.ownerId) {
+    if (id === channelState.self.ownerId) {
       return 2; // OWNER
     } else if (adminIds.includes(id)) {
       return 1; // ADMIN
@@ -53,20 +52,17 @@ function MemberOptionsCard({
             userRole={userRole}
             setUserRole={setUserRole}
             myRole={myRole}
-            channel={channel}
             setAdmins={setAdmins}
           />
           <MuteButton
             key={`option-${member.id}-mute`}
             user={member}
-            channel={channel}
           />
           <KickButton
             key={`option-${member.id}-kick`}
             user={member}
             userRole={userRole}
             myRole={myRole}
-            channel={channel}
             members={members}
             setMembers={setMembers}
           />
@@ -75,7 +71,6 @@ function MemberOptionsCard({
             user={member}
             userRole={userRole}
             myRole={myRole}
-            channel={channel}
             members={members}
             setMembers={setMembers}
           />
