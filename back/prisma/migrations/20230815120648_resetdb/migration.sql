@@ -15,6 +15,8 @@ CREATE TABLE "users" (
     "login" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "hashedRT" TEXT,
+    "code2FA" TEXT,
+    "online" BOOLEAN NOT NULL DEFAULT false,
     "level" DOUBLE PRECISION NOT NULL DEFAULT 1,
     "avatar" TEXT,
     "s2fa" "Status2fa" NOT NULL DEFAULT 'NOTSET',
@@ -51,14 +53,6 @@ CREATE TABLE "channels" (
 );
 
 -- CreateTable
-CREATE TABLE "AdminsOnChannels" (
-    "channelId" INTEGER NOT NULL,
-    "userId" INTEGER NOT NULL,
-
-    CONSTRAINT "AdminsOnChannels_pkey" PRIMARY KEY ("channelId","userId")
-);
-
--- CreateTable
 CREATE TABLE "MembersOnChannels" (
     "channelId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
@@ -67,11 +61,28 @@ CREATE TABLE "MembersOnChannels" (
 );
 
 -- CreateTable
+CREATE TABLE "AdminsOnChannels" (
+    "channelId" INTEGER NOT NULL,
+    "userId" INTEGER NOT NULL,
+
+    CONSTRAINT "AdminsOnChannels_pkey" PRIMARY KEY ("channelId","userId")
+);
+
+-- CreateTable
 CREATE TABLE "BlockedOnChannels" (
     "channelId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
 
     CONSTRAINT "BlockedOnChannels_pkey" PRIMARY KEY ("channelId","userId")
+);
+
+-- CreateTable
+CREATE TABLE "MutedByUserOnChannel" (
+    "channel_id" INTEGER NOT NULL,
+    "muted_user_id" INTEGER NOT NULL,
+    "muted_by_user_id" INTEGER NOT NULL,
+
+    CONSTRAINT "MutedByUserOnChannel_pkey" PRIMARY KEY ("channel_id","muted_user_id","muted_by_user_id")
 );
 
 -- CreateTable
@@ -91,9 +102,9 @@ CREATE TABLE "games" (
     "id" SERIAL NOT NULL,
     "create_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
-    "payer1_id" INTEGER NOT NULL,
+    "player1_id" INTEGER NOT NULL,
     "player2_id" INTEGER NOT NULL,
-    "winner_id" INTEGER NOT NULL,
+    "winner_id" INTEGER,
     "score" TEXT,
 
     CONSTRAINT "games_pkey" PRIMARY KEY ("id")
@@ -112,10 +123,10 @@ CREATE UNIQUE INDEX "users_login_key" ON "users"("login");
 CREATE UNIQUE INDEX "users_name_key" ON "users"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "friend_requests_from_user_id_to_user_id_key" ON "friend_requests"("from_user_id", "to_user_id");
+CREATE UNIQUE INDEX "users_code2FA_key" ON "users"("code2FA");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "channels_name_key" ON "channels"("name");
+CREATE UNIQUE INDEX "friend_requests_from_user_id_to_user_id_key" ON "friend_requests"("from_user_id", "to_user_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_friends_AB_unique" ON "_friends"("A", "B");
@@ -133,16 +144,16 @@ ALTER TABLE "friend_requests" ADD CONSTRAINT "friend_requests_to_user_id_fkey" F
 ALTER TABLE "channels" ADD CONSTRAINT "channels_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "AdminsOnChannels" ADD CONSTRAINT "AdminsOnChannels_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "channels"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "AdminsOnChannels" ADD CONSTRAINT "AdminsOnChannels_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "MembersOnChannels" ADD CONSTRAINT "MembersOnChannels_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "channels"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "MembersOnChannels" ADD CONSTRAINT "MembersOnChannels_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AdminsOnChannels" ADD CONSTRAINT "AdminsOnChannels_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "channels"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AdminsOnChannels" ADD CONSTRAINT "AdminsOnChannels_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BlockedOnChannels" ADD CONSTRAINT "BlockedOnChannels_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "channels"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -151,13 +162,22 @@ ALTER TABLE "BlockedOnChannels" ADD CONSTRAINT "BlockedOnChannels_channelId_fkey
 ALTER TABLE "BlockedOnChannels" ADD CONSTRAINT "BlockedOnChannels_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "MutedByUserOnChannel" ADD CONSTRAINT "MutedByUserOnChannel_channel_id_fkey" FOREIGN KEY ("channel_id") REFERENCES "channels"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "MutedByUserOnChannel" ADD CONSTRAINT "MutedByUserOnChannel_muted_user_id_fkey" FOREIGN KEY ("muted_user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "MutedByUserOnChannel" ADD CONSTRAINT "MutedByUserOnChannel_muted_by_user_id_fkey" FOREIGN KEY ("muted_by_user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "messages" ADD CONSTRAINT "messages_sender_id_fkey" FOREIGN KEY ("sender_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "messages" ADD CONSTRAINT "messages_channel_id_fkey" FOREIGN KEY ("channel_id") REFERENCES "channels"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "games" ADD CONSTRAINT "games_payer1_id_fkey" FOREIGN KEY ("payer1_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "games" ADD CONSTRAINT "games_player1_id_fkey" FOREIGN KEY ("player1_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "games" ADD CONSTRAINT "games_player2_id_fkey" FOREIGN KEY ("player2_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -10,20 +10,30 @@ export class GameService {
     private prisma: PrismaService,
   ) {}
 
-  async createGame(fromId: number, toId: number): Promise<Game> {
-    const gameRequest = await this.prisma.game.create({
+  async createGameInDb(player1Id: number, player2Id: number, uuid: string) {
+    await this.prisma.game.create({
       data: {
-        player1Id: fromId,
-        player2Id: toId,
+        player1Id: player1Id,
+        player2Id: player2Id,
+        uuid: uuid,
       },
     });
-    const receiver = await this.prisma.user.findUnique({
-      where: { id: toId },
-    });
-    if (receiver === null) {
-      throw new ConflictException();
-    }
-    this.notifService.handleGamesNotif(receiver.login);
-    return gameRequest;
   }
+
+  // async createGame(fromId: number, toId: number): Promise<Game> {
+  //   const gameRequest = await this.prisma.game.create({
+  //     data: {
+  //       player1Id: fromId,
+  //       player2Id: toId,
+  //     },
+  //   });
+  //   const receiver = await this.prisma.user.findUnique({
+  //     where: { id: toId },
+  //   });
+  //   if (receiver === null) {
+  //     throw new ConflictException();
+  //   }
+  //   this.notifService.handleGamesNotif(receiver.login);
+  //   return gameRequest;
+  // }
 }

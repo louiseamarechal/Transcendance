@@ -3,7 +3,9 @@ import { Game, GameStatus, GameVisibility } from './Game';
 import { Cron } from '@nestjs/schedule';
 import { GameService } from '../game.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class GameManager {
   public server: Namespace;
   readonly #games: Map<string, Game> = new Map<string, Game>();
@@ -13,7 +15,7 @@ export class GameManager {
     private prisma: PrismaService,
   ) {}
 
-  public joinQueue(client: Socket) {
+  public async joinQueue(client: Socket) {
     console.log('[GameManager] joinQueue');
     const filtGames = this.getGames(GameVisibility.Public, GameStatus.Waiting);
 
@@ -27,6 +29,14 @@ export class GameManager {
       game.p2.user = client.data.user;
       game.status = GameStatus.Ready;
       client.join(game.gameId);
+
+      await this.prisma.game.create({
+        data: {
+          player1Id: game.p1.user.id,
+          player2Id: game.p2.user.id,
+          uuid: game.gameId,
+        },
+      });
 
       game.startGameLoop(20);
 
@@ -100,11 +110,30 @@ export class GameManager {
     this.#games.set(game.gameId, game);
   }
 
-  private removeGame(game: Game) {
+  private async removeGame(game: Game) {
     console.log(`[GameManager] Remove ${game.gameId}`);
     this.server.adapter.rooms.delete(game.gameId);
     game.stopGameLoop();
+    const gameDb = await this.prisma.game.findUnique({
+      where: { uuid: game.gameId },
+    });
+    this.prisma.game;
     this.#games.delete(game.gameId);
+  }
+
+  private async updateDb(game: Game) {
+    const p1Id = game.p1.user.id;
+    const p2Id = game.p2.user.id;
+    const winnerId = game.score[0] > game.score[1] ? p1Id : p2Id;
+
+    await this.prisma.game.update({
+      where: { uuid: game.gameId },
+      data: {
+        winnerId: winnerId,
+        score1: game.score[0],
+        score2: game.score[1],
+      },
+    });
   }
 
   @Cron('*/5 * * * * *')
@@ -114,6 +143,7 @@ export class GameManager {
       game.debug();
       if (game.status === GameStatus.Done) {
         console.log('Remove game. Cause: Game is done');
+        this.updateDb(game);
         this.removeGame(game);
         return;
       }

@@ -8,11 +8,11 @@ import { CreateGameDto } from './dto/create-game.dto';
 export class GameController {
   constructor(private gameService: GameService) {}
 
-  @Post()
-  async createGame(@GetUserId() userId: number, @Body() dto: CreateGameDto) {
-    console.log('creating game without ID');
-    return this.gameService.createGame(userId, dto.toId);
-  }
+  // @Post()
+  // async createGame(@GetUserId() userId: number, @Body() dto: CreateGameDto) {
+  //   console.log('creating game without ID');
+  //   return this.gameService.createGame(userId, dto.toId);
+  // }
 
   @Post('createPublicGame')
   createPublicGame(@Body() dto: any) {
@@ -24,11 +24,11 @@ export class GameController {
     return 0;
   }
 
-  @Post(':id')
-  createGameById(
-    @GetUserId() userId: number,
-    @Param('id', ParseIntPipe) toId: number,
-  ) {
-    return this.gameService.createGame(userId, toId);
-  }
+  // @Post(':id')
+  // createGameById(
+  //   @GetUserId() userId: number,
+  //   @Param('id', ParseIntPipe) toId: number,
+  // ) {
+  //   return this.gameService.createGame(userId, toId);
+  // }
 }
