@@ -7,8 +7,9 @@ import useNotif from '../hooks/useNotif';
 
 const NavBarLinks = () => {
   const { myId } = useUser();
-  const { navbarState, setNavbarState } = useNavbar();
   const notif = useNotif();
+  const navbarState = useNavbar();
+
 
   function handleClick(
     link:
@@ -25,7 +26,7 @@ const NavBarLinks = () => {
     } else if (link === 'Chat') {
       notif.reset('chat');
     }
-    setNavbarState(false);
+    navbarState.toggle(false);
   }
 
   const navElems = [

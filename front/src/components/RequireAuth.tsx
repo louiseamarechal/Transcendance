@@ -8,7 +8,7 @@ import { notifSocket } from '../api/socket';
 const RequireAuth = () => {
   const { auth } = useAuth();
   const location = useLocation();
-  const { navbarState } = useNavbar();
+  const navbar = useNavbar();
 
   useEffect(() => {
     notifSocket.auth = { token: auth.access_token };
@@ -26,7 +26,7 @@ const RequireAuth = () => {
       <div
         className={
           'h-screen overflow-auto main-content ' +
-          (navbarState ? 'opened-nav-margin' : 'w-full')
+          (navbar.navbarState ? 'opened-nav-margin' : 'w-full')
         }
       >
         <Outlet />
