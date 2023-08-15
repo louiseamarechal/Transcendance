@@ -91,8 +91,19 @@ const ChatBody = ({ channel }: { channel: Channel }) => {
                 // id={myId === messageContent.senderId ? 'you' : 'other'}
               >
                 <div>
-                  <div className="message-content">
-                    <p>{messageContent.body}</p>
+                <div
+                    className="message-content"
+                    id={
+                      userIsMuted(messageContent.senderId)
+                        ? 'muted-message'
+                        : ''
+                    }
+                  >
+                    {userIsMuted(messageContent.senderId) ? (
+                      <p></p>
+                    ) : (
+                      <p>{messageContent.body}</p>
+                    )}
                   </div>
                   <div className="message-meta">
                     <p id="time">{formatDate(messageContent.createdAt)}</p>
