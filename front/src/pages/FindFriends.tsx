@@ -3,32 +3,52 @@ import '../style/pages/FindFriends.css';
 import { useEffect, useState } from 'react';
 import UserCard from '../components/UserCard.tsx';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
+import { User } from '../types/User.type.ts';
+import { Link } from 'react-router-dom';
 
 function FindFriends() {
   const axiosInstance = useAxiosPrivate();
-  const [array, setArray] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [myFriends, setMyFriends] = useState([]);
 
   useEffect(() => {
     axiosInstance
       .get('user/all')
       .then((res) => {
-        setArray(res.data);
+        setAllUsers(res.data);
       })
       .catch((e) => console.log(e));
+
+    axiosInstance.get('friend-request/my-friends').then((res) => {
+      setMyFriends(res.data);
+    });
   }, []);
 
+  const unkownUsers = allUsers.filter(
+    (user: User) =>
+      myFriends.find((friend: User) => friend.id === user.id) === undefined,
+  );
+
+  if (unkownUsers.length > 0) {
+    return (
+      <>
+        <div className="findfriends-container">
+          {unkownUsers.map((elem, index) => {
+            return (
+              <div className="friend-card" key={index}>
+                <UserCard user={elem} />
+              </div>
+            );
+          })}
+        </div>
+      </>
+    );
+  }
   return (
-    <>
-      <div className="findfriends-container">
-        {array.map((elem) => {
-          return (
-            <div className="friend-card">
-              <UserCard user={elem} />
-            </div>
-          );
-        })}
-      </div>
-    </>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <p>It seems you are already friends with all our users ...</p>
+      <Link to="/friends">Go check out your friends <strong>here</strong> !</Link>
+    </div>
   );
 }
 
