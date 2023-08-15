@@ -1,5 +1,3 @@
-// import React, { useState } from "react";
-import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -11,7 +9,7 @@ import { useEffect, useState } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
 const NavBar = () => {
-  const { navbarState, setNavbarState } = useNavbar();
+  const navbar = useNavbar();
   const axiosInstance = useAxiosPrivate();
   const [receivedNotif, setReceivedNotif] = useState({
     friends: 0,
@@ -40,18 +38,18 @@ const NavBar = () => {
       })
       .catch((error) => console.log(error));
 
-    axiosInstance
-      .get('/notif/chat')
-      .then((response) => {
-        const data = response.data;
-        setReceivedNotif((previous) => {
-          return { ...previous, game: data.length };
-        });
-      })
-      .catch((error) => console.log(error));
+    // axiosInstance
+    //   .get('/notif/chat')
+    //   .then((response) => {
+    //     const data = response.data;
+    //     setReceivedNotif((previous) => {
+    //       return { ...previous, game: data.length };
+    //     });
+    //   })
+    //   .catch((error) => console.log(error));
   }, []);
 
-  if (navbarState === true)
+  if (navbar.navbarState === true)
     return (
       <div className="navbar-open">
         <FontAwesomeIcon
@@ -59,7 +57,7 @@ const NavBar = () => {
           className="opened-nav-button"
           style={{ color: 'var(--black)' }}
           onClick={() => {
-            setNavbarState(false);
+            navbar.toggle(false);
           }}
         />
         <NavBarLinks
@@ -75,7 +73,7 @@ const NavBar = () => {
         className="navbar-close"
         style={{ color: 'var(--black)' }}
         onClick={() => {
-          setNavbarState(true);
+          navbar.toggle(true);
         }}
       />
     );
