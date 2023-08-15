@@ -33,7 +33,7 @@ export default function ChannelOptions() {
               optionLoc === 'settings' ? 'text-black-500' : 'text-gray-500'
             }
           >
-            Security
+            Settings
           </p>
         </div>
       </div>

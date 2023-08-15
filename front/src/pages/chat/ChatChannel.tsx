@@ -8,7 +8,7 @@ import useChannel from '../../hooks/useChannel';
 
 export default function ChatChannel() {
   const axiosInstance = useAxiosPrivate();
-	const channelState = useChannel();
+  const channelState = useChannel();
   const routeParams = useParams();
   console.log({ routeParams });
   const channelId: number = Number(routeParams.channelId);

@@ -3,11 +3,12 @@ import '../../../../style/components/chat/chat-container/chat-messaging/chat-hea
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 import Avatar from '../../../Avatar';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useChannel from '../../../../hooks/useChannel';
 import { useEffect, useState } from 'react';
 
 export default function ChatHeader() {
+  const { pathname } = useLocation();
   const axiosPrivate = useAxiosPrivate();
   const channelState = useChannel();
   const [channelName, setChannelName] = useState<string>(
@@ -27,7 +28,7 @@ export default function ChatHeader() {
           setChannelAvatar(res.data.avatar);
         });
     }
-  });
+  }, [channelState]);
 
   return (
     <div className="chat-header">
@@ -36,8 +37,11 @@ export default function ChatHeader() {
       <div
         className="options-menu"
         onClick={() => {
-          // setShowOptions(!showOptions);
-          navigate('options/members');
+          if (pathname.includes('options')) {
+            navigate(`/chat/${channelState.self.id}`);
+          } else {
+            navigate('options/members');
+          }
         }}
       >
         <FontAwesomeIcon
