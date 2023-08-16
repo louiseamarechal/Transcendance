@@ -1,15 +1,14 @@
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import NavBar from './NavBar';
 import useNavbar from '../hooks/useNavbar';
 import { notifSocket } from '../api/socket';
-// import { Socket, io } from 'socket.io-client';
 
 const RequireAuth = () => {
   const { auth } = useAuth();
   const location = useLocation();
-  const { navbarState } = useNavbar();
+  const navbar = useNavbar();
 
   useEffect(() => {
     notifSocket.auth = { token: auth.access_token };
@@ -27,7 +26,7 @@ const RequireAuth = () => {
       <div
         className={
           'h-screen overflow-auto main-content ' +
-          (navbarState ? 'opened-nav-margin' : 'w-full')
+          (navbar.navbarState ? 'opened-nav-margin' : 'w-full')
         }
       >
         <Outlet />

@@ -52,29 +52,33 @@
   word-break: break-word;
 }
 
-#you {
+#muted-message {
+  background-color: var(--faded-black);
+}
+
+.you {
   justify-content: flex-start;
 }
 
-#you .message-content {
+.you .message-content {
   justify-content: flex-start;
 }
 
-#you .message-meta {
+.you .message-meta {
   justify-content: flex-start;
   margin-left: 5px;
 }
 
-#other {
+.other {
   justify-content: flex-end;
 }
 
-#other .message-content {
+.other .message-content {
   justify-content: flex-end;
   background-color: cornflowerblue;
 }
 
-#other .message-meta {
+.other .message-meta {
   justify-content: flex-end;
   margin-right: 5px;
 }

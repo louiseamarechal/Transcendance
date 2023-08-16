@@ -17,6 +17,14 @@ export default function ChatBody() {
   const [messageList, setMessageList] = useState<Message[]>([]);
   const [reloadMessage, setReloadMessage] = useState(true);
 
+  function userIsMuted(senderId: number): boolean {
+    console.log({ senderId });
+    console.log({ myId });
+    return channelState.self.muted.some((user) => {
+      return user.mutedUserId === senderId && myId === user.mutedByUserId;
+    });
+  }
+
   const sendMessage = async () => {
     if (currentMessage !== '') {
       axiosInstance
@@ -50,7 +58,6 @@ export default function ChatBody() {
 
   async function uploadMessages() {
     await axiosInstance.get(`message/${channelState.self.id}`).then((res) => {
-      // const {createdAt, ...obj} = res.data;
       setMessageList(res.data);
     });
   }
@@ -79,13 +86,23 @@ export default function ChatBody() {
           {messageList.map((messageContent: Message) => {
             return (
               <div
-                className="message"
                 key={`message-${messageContent.id}`}
-                id={myId === messageContent.senderId ? 'you' : 'other'}
+                className={"message " + (myId === messageContent.senderId ? 'you' : 'other')}
               >
                 <div>
-                  <div className="message-content">
-                    <p>{messageContent.body}</p>
+                <div
+                    className="message-content"
+                    id={
+                      userIsMuted(messageContent.senderId)
+                        ? 'muted-message'
+                        : ''
+                    }
+                  >
+                    {userIsMuted(messageContent.senderId) ? (
+                      <p></p>
+                    ) : (
+                      <p>{messageContent.body}</p>
+                    )}
                   </div>
                   <div className="message-meta">
                     <p id="time">{formatDate(messageContent.createdAt)}</p>
