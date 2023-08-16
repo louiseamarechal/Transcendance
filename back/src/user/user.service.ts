@@ -106,26 +106,26 @@ export class UserService {
     userLogin: string,
     userId: number,
   ) {
-    // const oldname: string = file.path;
-    // const newname: string = `${userLogin}${file.filename}`;
+    const oldname: string = file.path;
+    const newname: string = `assets/${userLogin}.jpg`;
     console.log(file);
-    // console.log(oldname);
-    // console.log(newname);
+    console.log(oldname);
+    console.log(newname);
 
-    // const cb: NoParamCallback = (err) => {
-    //   if (err) throw err;
-    //   console.log('Successfully renamed - AKA moved!');
-    // };
+    const cb: NoParamCallback = (err) => {
+      if (err) throw err;
+      console.log('Successfully renamed - AKA moved!');
+    };
 
-    // try {
-    //   rename(oldname, newname, cb);
-    // } catch (err) {
-    //   console.log(err);
-    //   new InternalServerErrorException('Rename failed in uploadAvatar');
-    // }
+    try {
+      rename(oldname, newname, cb);
+    } catch (err) {
+      console.log(err);
+      new InternalServerErrorException('Rename failed in uploadAvatar');
+    }
 
-    // this.editUser(userId, { avatar: `http://localhost:3000/${newname}` });
-    // return `http://localhost:3000/${newname}`;
+    this.editUser(userId, { avatar: `${userLogin}.jpg` });
+    return `${userLogin}.jpg`;
   }
 
   async getPendingFR(userId: number) {

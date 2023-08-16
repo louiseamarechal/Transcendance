@@ -20,7 +20,7 @@ function Profil() {
   const [changingUsername, setChangingUsername] = useState(false);
   const [is2FAset, setIs2FAEnabled] = useState(false);
   const [image, setImage] = useState({ preview: '', data: '' });
-  const [status, setStatus] = useState('');
+  const [changingAvatar, setChangingAvatar] = useState(false);
 
   console.log('Entering Profil component');
 
@@ -73,11 +73,18 @@ function Profil() {
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', image.data);
-    // console.log(formData);
     console.log(image.data);
-    const response = await axiosInstance.post('user/upload-avatar', formData);
-    if (response) setStatus(response.statusText);
-    console.log(status);
+    try {
+      await axiosInstance({
+        method: "post",
+        url: "/user/upload-avatar",
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    } catch(error) {
+      console.log(error)
+    }
+    setChangingAvatar(false);
   };
 
   const handleFileChange = (e) => {
@@ -86,6 +93,7 @@ function Profil() {
       data: e.target.files[0],
     };
     setImage(img);
+    setChangingAvatar(true);
   }; // function changeAvatar(avatar: string) {
   //   axiosInstance.post('user/upload-avatar');
   // }
@@ -94,7 +102,7 @@ function Profil() {
     // <div className="grid grid-cols-1 place-items-center pt-[10%]">
     <div className="profil-container">
       <div className="profil-card">
-        <div className="inline-block relative">
+        <div className="inline-block relative flex flex-row items-end">
           {image.data ? (
             image.preview && <img src={image.preview} className="avatar" />
           ) : (
@@ -107,7 +115,7 @@ function Profil() {
               // onChange={(event) => changeAvatar(event.target.value)}
               className="avatar-sm form-avatar"
             />
-            <button type="submit">√</button>
+            {changingAvatar ? <button type="submit" className='text-xs'>ok</button> : <></>}
           </form>
         </div>
         {!changingUsername ? (

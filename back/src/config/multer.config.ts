@@ -6,7 +6,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 
 // Multer configuration
 export const multerConfig = {
-  dest: './upload',
+  dest: './assets',
 };
 
 // Multer upload options
