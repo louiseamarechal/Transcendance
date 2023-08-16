@@ -10,9 +10,7 @@ import { notifSocket } from '../../../api/socket';
 import { User } from '../../../types/User.type';
 
 const CreateChannelForm = () => {
-  const [avatar, setAvatar] = useState<string>(
-    `default.jpg`,
-  );
+  const [avatar, setAvatar] = useState<string>('default.jpg');
   const axiosPrivate = useAxiosPrivate();
   const { myId, myLogin } = useUser();
   const { channelList, setChannelList, setShowCreateChannel, setShowChannel } =

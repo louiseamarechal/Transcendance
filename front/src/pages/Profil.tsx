@@ -94,9 +94,7 @@ function Profil() {
     };
     setImage(img);
     setChangingAvatar(true);
-  }; // function changeAvatar(avatar: string) {
-  //   axiosInstance.post('user/upload-avatar');
-  // }
+  }
 
   return (
     // <div className="grid grid-cols-1 place-items-center pt-[10%]">
