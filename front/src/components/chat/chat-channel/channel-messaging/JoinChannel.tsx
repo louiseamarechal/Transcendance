@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Channel, ChannelShort } from '../../../../types/Channel.type';
-import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 import { useUser } from '../../../../hooks/useUser';
-import useChannelList from '../../../../hooks/useChannelList';
+import { Channel, ChannelShort } from '../../../../types/Channel.type';
 import { User } from '../../../../types/User.type';
+import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
+import useChannelList from '../../../../hooks/useChannelList';
 import useChannel from '../../../../hooks/useChannel';
 
 export default function JoinChannel() {

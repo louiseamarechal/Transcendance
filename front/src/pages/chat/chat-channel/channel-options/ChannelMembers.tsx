@@ -1,4 +1,4 @@
-import MembersList from "../../../../components/Chat/ChatContainer/ChannelMessaging/ChatOptions/MembersList";
+import MembersList from "../../../../components/chat/chat-channel/channel-options/channel-members/MembersList";
 
 export default function ChannelMembers() {
   return <MembersList />;

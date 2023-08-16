@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import '../../../../../style/components/buttons.css';
-import UserSmallCard from '../../CreateChannelForm/FriendsList/UserSmallCard';
-import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
-import useChannel from '../../../../../hooks/useChannel';
+import useAxiosPrivate from '../../../../../../hooks/useAxiosPrivate';
+import useChannel from '../../../../../../hooks/useChannel';
+import UserSmallCard from '../../../../chat-create/components/UserSmallCard';
+import '../../../../../../style/components/buttons.css';
 
 export default function AddMemberList({
   memberIds,

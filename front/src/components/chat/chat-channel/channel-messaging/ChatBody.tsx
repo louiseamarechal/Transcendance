@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import useChannel from '../../../../hooks/useChannel';
-import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
-import { Message } from '../../../../types/Message.type';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import ScrollToBottom from 'react-scroll-to-bottom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useUser } from '../../../../hooks/useUser';
-import '../../../../style/components/chat/chat-container/chat-messaging/chat-body.css';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { channelSocket, notifSocket } from '../../../../api/socket';
+import { useUser } from '../../../../hooks/useUser';
+import { Message } from '../../../../types/Message.type';
+import ScrollToBottom from 'react-scroll-to-bottom';
+import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
+import useChannel from '../../../../hooks/useChannel';
+import '../../../../style/components/chat/chat-container/chat-messaging/chat-body.css';
 
 export default function ChatBody() {
   const axiosInstance = useAxiosPrivate();
@@ -76,10 +76,11 @@ export default function ChatBody() {
     <div className="chat-window">
       <div className="chat-body">
         <ScrollToBottom className="message-container">
-          {messageList.map((messageContent) => {
+          {messageList.map((messageContent: Message) => {
             return (
               <div
                 className="message"
+                key={`message-${messageContent.id}`}
                 id={myId === messageContent.senderId ? 'you' : 'other'}
               >
                 <div>

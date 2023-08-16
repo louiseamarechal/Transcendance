@@ -1,12 +1,12 @@
+import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
-import '../../../../../style/components/chat/chat-container/chat-messaging/chat-options.css';
-import { useEffect, useState } from 'react';
 import { Channel } from '../../../../../types/Channel.type';
-import AddMemberList from './AddMemberList';
-import MemberOptionsCard from './MemberOptions/MemberOptionsCard';
 import { User } from '../../../../../types/User.type';
 import useChannel from '../../../../../hooks/useChannel';
+import '../../../../../style/components/chat/chat-container/chat-messaging/chat-options.css';
+import MemberOptionsCard from './components/MemberOptionsCard';
+import AddMemberList from './components/AddMemberList';
 
 export default function MembersList() {
   const channelState = useChannel();

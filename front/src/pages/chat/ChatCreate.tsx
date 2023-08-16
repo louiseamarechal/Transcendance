@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import '../../style/components/chat/chat-container/create-channel-form.css';
-import '../../style/components/buttons.css';
 import { useNavigate } from 'react-router-dom';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import { useUser } from '../../hooks/useUser';
-import useChannelList from '../../hooks/useChannelList';
-import FormHeader from '../../components/Chat/ChatContainer/CreateChannelForm/FormHeader';
-import FriendsList from '../../components/Chat/ChatContainer/CreateChannelForm/FriendsList';
-import ChannelVisibility from '../../components/Chat/ChatContainer/CreateChannelForm/ChannelVisibility';
 import { notifSocket } from '../../api/socket';
+import { useUser } from '../../hooks/useUser';
 import { User } from '../../types/User.type';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import useChannelList from '../../hooks/useChannelList';
+import FormHeader from '../../components/chat/chat-create/FormHeader';
+import FriendsList from '../../components/chat/chat-create/FriendsList';
+import ChannelVisibility from '../../components/chat/chat-create/ChannelVisibility';
+import '../../style/components/buttons.css';
+import '../../style/components/chat/chat-container/create-channel-form.css';
 
 export default function ChatCreate() {
   const [avatar, setAvatar] = useState<string>('default.jpg');

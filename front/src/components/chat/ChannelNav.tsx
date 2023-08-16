@@ -1,10 +1,8 @@
-import ChannelList from './ChannelNav/ChannelList';
 import '../../style/components/chat/channel-nav.css';
 import { useNavigate } from 'react-router-dom';
+import ChannelList from './components/ChannelList';
 
 function ChannelNav() {
-  // const { showCreateChannel, setShowCreateChannel, setShowChannel } =
-  //   useChatContext();
   const navigate = useNavigate();
   return (
     <div className="channel-nav">

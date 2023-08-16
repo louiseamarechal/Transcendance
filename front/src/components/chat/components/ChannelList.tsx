@@ -1,10 +1,10 @@
 import '../../../style/components/chat/channel-nav/channel-list.css';
 import '../../../style/components/buttons.css';
 import { useNavigate } from 'react-router-dom';
-import ChannelCard from './ChannelList/ChannelCard';
 import { ChannelShort } from '../../../types/Channel.type';
 import { useUser } from '../../../hooks/useUser';
 import useChannelList from '../../../hooks/useChannelList';
+import ChannelCard from './components/ChannelCard';
 
 function ChannelList() {
   const { myId } = useUser();

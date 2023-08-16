@@ -2,10 +2,10 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import { useUser } from '../../../../../../hooks/useUser';
 import { User } from '../../../../../../types/User.type';
 import UserCard from '../../../../../UserCard';
-import PromoteButton from './OptionButtons/PromoteButton';
-import MuteButton from './OptionButtons/MuteButton';
-import KickButton from './OptionButtons/KickButton';
-import BlockButton from './OptionButtons/BlockButton';
+import PromoteButton from './components/PromoteButton';
+import MuteButton from './components/MuteButton';
+import KickButton from './components/KickButton';
+import BlockButton from './components/BlockButton';
 import useChannel from '../../../../../../hooks/useChannel';
 
 function MemberOptionsCard({

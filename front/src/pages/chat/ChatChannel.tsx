@@ -3,8 +3,8 @@ import '../../style/components/chat/chat-container/chat-messaging.css';
 import { Outlet, useParams } from 'react-router-dom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { channelSocket } from '../../api/socket';
-import ChatHeader from '../../components/Chat/ChatContainer/ChannelMessaging/ChatHeader';
 import useChannel from '../../hooks/useChannel';
+import ChatHeader from '../../components/chat/chat-channel/ChatHeader';
 
 export default function ChatChannel() {
   const axiosInstance = useAxiosPrivate();

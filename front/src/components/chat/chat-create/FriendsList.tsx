@@ -1,7 +1,7 @@
 import { SetStateAction, useEffect, useState } from 'react';
-import '../../../../style/components/chat/chat-container/create-channel-form/friends-list.css';
-import UserSmallCard from './FriendsList/UserSmallCard';
-import { axiosPrivate } from '../../../../api/axios';
+import '../../../style/components/chat/chat-container/create-channel-form/friends-list.css';
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
+import UserSmallCard from './components/UserSmallCard';
 
 const FriendsList = ({
   selectedFriends,
@@ -10,6 +10,7 @@ const FriendsList = ({
   selectedFriends: number[];
   setSelectedFriends: React.Dispatch<SetStateAction<number[]>>;
 }) => {
+  const axiosPrivate = useAxiosPrivate();
   const [friends, setFriends] = useState<
     { id: number; name: string; level: number; avatar: string }[]
   >([]);

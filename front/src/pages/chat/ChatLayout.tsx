@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import ChannelNav from '../../components/Chat/ChannelNav';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Outlet } from 'react-router-dom';
-import '../../style/pages/Chat.css';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import useChannelList from '../../hooks/useChannelList';
+import ChannelNav from '../../components/chat/ChannelNav';
+import '../../style/pages/Chat.css';
 
 export default function ChatLayout() {
   const channelListState = useChannelList();

@@ -1,6 +1,6 @@
 import { SetStateAction } from 'react';
-import '../../../../../style/components/chat/chat-container/create-channel-form/user-small-card.css';
-import Avatar from '../../../../Avatar';
+import '../../../../style/components/chat/chat-container/create-channel-form/user-small-card.css';
+import Avatar from '../../../Avatar';
 
 const UserSmallCard = ({
   friend,
