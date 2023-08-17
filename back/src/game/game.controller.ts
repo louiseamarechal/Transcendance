@@ -1,12 +1,11 @@
 import { Body, Controller, Param, ParseIntPipe, Post } from '@nestjs/common';
 
 import { GetUserId } from 'src/common/decorators';
-import { GameService } from './game.service';
 import { CreateGameDto } from './dto/create-game.dto';
 
 @Controller('game')
 export class GameController {
-  constructor(private gameService: GameService) {}
+  constructor() {}
 
   // @Post()
   // async createGame(@GetUserId() userId: number, @Body() dto: CreateGameDto) {

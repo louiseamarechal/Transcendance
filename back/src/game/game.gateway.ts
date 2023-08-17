@@ -9,13 +9,13 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Socket, Namespace } from 'socket.io';
-import { GameManager } from './classes/GameManager';
 import { AtJwt } from 'src/auth/types';
 import { Cron } from '@nestjs/schedule';
 import { SocketService } from 'src/sockets/socket.service';
 import { ClientEvents } from '../../../shared/client/ClientEvents';
 import { ClientPayloads } from '../../../shared/client/ClientPayloads';
 import { Logger } from '@nestjs/common';
+import { GameManagerService } from './services/gameManager.service';
 
 // @UseGuards(WsJwtGuard)
 
@@ -31,7 +31,7 @@ export class GameGateway
   server: Namespace;
 
   constructor(
-    private readonly gameManager: GameManager,
+    private readonly gameManager: GameManagerService,
     private socketService: SocketService,
   ) {}
 
@@ -69,12 +69,8 @@ export class GameGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: ClientPayloads[ClientEvents.GameInput],
   ) {
-    this.gameManager.handleInput(
-      client.data.user.id,
-      // ...payload,
-      payload.gameId,
-      payload.val,
-    );
+    const id = client.data.user.id;
+    this.gameManager.handleInput(id, payload.gameId, payload.val);
   }
 
   @SubscribeMessage(ClientEvents.GameJoinQueue)
@@ -83,8 +79,8 @@ export class GameGateway
   }
 
   @SubscribeMessage(ClientEvents.GameLeaveQueue)
-  handleLeaveQueue() {
-    this.gameManager.leaveQueue();
+  handleLeaveQueue(@ConnectedSocket() client: Socket) {
+    this.gameManager.leaveQueue(client);
   }
 
   @SubscribeMessage(ClientEvents.GameSetReady)
