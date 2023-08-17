@@ -15,8 +15,11 @@ export default function ChatBody() {
   const channelState = useChannel();
   const [currentMessage, setCurrentMessage] = useState('');
   const [messageList, setMessageList] = useState<Message[]>([]);
-  const [reloadMessage, setReloadMessage] = useState(true);
+  const [MessageReceived, setMessageReceived] = useState(false);
+  // const [reloadMessage, setReloadMessage] = useState(true);
 
+  console.log(`In chat body: ${channelState.self.id}`);
+  // console.log(`reload ? ${reloadMessage}`);
   function userIsMuted(senderId: number): boolean {
     console.log({ senderId });
     console.log({ myId });
@@ -56,28 +59,26 @@ export default function ChatBody() {
     return date.toLocaleString();
   }
 
-  async function uploadMessages() {
+  async function updateMessages() {
     await axiosInstance.get(`message/${channelState.self.id}`).then((res) => {
       setMessageList(res.data);
     });
+    console.log('Refreshed message list.');
+    console.log({ messageList });
   }
 
-  if (reloadMessage === true) {
-    uploadMessages();
-    setReloadMessage(false);
-  }
+  // if (reloadMessage === true) {
+  //   uploadMessages();
+  //   setReloadMessage(false);
+  // }
 
   useEffect(() => {
-    function onMessageUpdate() {
-      setReloadMessage(true);
-    }
-
-    channelSocket.on('server.channel.messageUpdate', onMessageUpdate);
-
+    updateMessages();
+    channelSocket.on('server.channel.messageUpdate', () => setMessageReceived(true));
     return () => {
-      channelSocket.off('server.channel.messageUpdate', onMessageUpdate);
+      channelSocket.off('server.channel.messageUpdate', () => setMessageReceived(true));
     };
-  }, [reloadMessage, setReloadMessage]);
+  }, [MessageReceived, channelState]);
 
   return (
     <div className="chat-window">
@@ -87,10 +88,13 @@ export default function ChatBody() {
             return (
               <div
                 key={`message-${messageContent.id}`}
-                className={"message " + (myId === messageContent.senderId ? 'you' : 'other')}
+                className={
+                  'message ' +
+                  (myId === messageContent.senderId ? 'you' : 'other')
+                }
               >
                 <div>
-                <div
+                  <div
                     className="message-content"
                     id={
                       userIsMuted(messageContent.senderId)
