@@ -251,36 +251,27 @@ export class ChannelService {
     });
   }
 
-  async uploadAvatar(
-    file: Express.Multer.File,
-    channelId: number,
-    userId: number,
-  ) {
-    const pictureName: string = `channel_${channelId}.jpg`;
+  // async uploadAvatar(file: Express.Multer.File) {
+  async uploadAvatar(file: Express.Multer.File) {
+    // const pictureName: string = `channel_.jpg`;
+    // const pictureName: string = `channel_${channelId}.jpg`;
     const oldname: string = file.path;
-    const newname: string = `assets/${pictureName}`;
+    // const newname: string = `assets/${file.path}.jpeg`;
     console.log(file);
     console.log(oldname);
-    console.log(newname);
+    // console.log(newname);
 
-    const cb: NoParamCallback = (err) => {
-      if (err) throw err;
-      console.log('Successfully renamed - AKA moved!');
-    };
+    // const cb: NoParamCallback = (err) => {
+    //   if (err) throw err;
+    //   console.log('Successfully renamed - AKA moved!');
+    // };
 
-    try {
-      rename(oldname, newname, cb);
-    } catch (err) {
-      console.log(err);
-      new InternalServerErrorException('Rename failed in uploadAvatar');
-    }
-
-    const dto: EditChannelDto = {
-      avatar: `${pictureName}`,
-    };
-
-    this.editChannelById(userId, channelId, dto);
-    return `${pictureName}`;
+    // try {
+    //   rename(oldname, newname, cb);
+    // } catch (err) {
+    //   console.log(err);
+    //   new InternalServerErrorException('Rename failed in uploadAvatar');
+    // }
   }
 
   /* =============================================================================

@@ -9,8 +9,7 @@ export class EditChannelDto {
   @IsOptional()
   @IsString()
   avatar?: string;
-  @IsOptional()
-  @IsString()
+
   @IsOptional()
   @IsString()
   password?: string | undefined;

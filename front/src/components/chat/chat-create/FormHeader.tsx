@@ -1,8 +1,9 @@
 import { SetStateAction, useState } from 'react';
-import '../../../../style/components/chat/chat-container/create-channel-form/form-header.css';
-import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
+// import '../../../../style/components/chat/chat-container/create-channel-form/form-header.css';
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import '../../../style/components/chat/chat-container/create-channel-form/form-header.css';
 import Avatar from '../../Avatar';
+import useChannel from '../../../hooks/useChannel';
 
 const FormHeader = ({
   avatar,
@@ -18,15 +19,17 @@ const FormHeader = ({
   const [changingAvatar, setChangingAvatar] = useState(true);
 
   const handleSubmit = async (e) => {
+    console.log({avatar});
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', image.data);
     console.log(image.data);
+    console.log(formData);
     try {
       await axiosInstance({
         method: 'post',
         url: '/channel/upload-avatar',
-       data: { formData, },
+        data: formData,
         headers: { 'Content-Type': 'multipart/form-data' },
       });
     } catch (error) {
@@ -36,14 +39,17 @@ const FormHeader = ({
   };
 
   const handleFileChange = (e) => {
-    console.log(e.target.files[0]);
+    if (!changingAvatar) {
+      setChangingAvatar(true);
+    }
+    console.log({targetFile: e.target.files[0]});
+    console.log({targetFileType: typeof(e.target.files[0])});
     const img = {
       preview: URL.createObjectURL(e.target.files[0]),
       data: e.target.files[0],
     };
     setImage(img);
-    setAvatar(image.data);
-    console.log(image.data)
+    setAvatar(img.data.name);
   };
 
   return (
