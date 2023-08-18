@@ -1,0 +1,35 @@
+.prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  height: 150px;
+  width: 350px;
+  position: absolute;
+  top: 50vh;
+  right: 50vh;
+  background-color: var(--faded-blue);
+  border-radius: 1vh;
+	border: 3px black solid;
+}
+
+.prompt-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.prompt button {
+  border: 1px solid black;
+  padding: 3px 5px;
+  border-radius: 50vh;
+}
+
+#cancel-button {
+  background-color: crimson;
+}
+
+#continue-button {
+  background-color: var(--dark-blue);
+}

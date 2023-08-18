@@ -39,7 +39,7 @@ export class UserService {
     }
     return user;
   }
-
+ 
   async getAvatarById(userId: number, res: Response) {
     const user: PublicUser = await this.getUserById(userId);
     const avatar = user.avatar;

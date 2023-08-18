@@ -39,7 +39,6 @@
   height: auto;
   min-height: 40px;
   max-width: 120px;
-  background-color: #43a047;
   border-radius: 5px;
   color: white;
   display: flex;
@@ -62,6 +61,7 @@
 
 .you .message-content {
   justify-content: flex-start;
+  background-color: #43a047;
 }
 
 .you .message-meta {
