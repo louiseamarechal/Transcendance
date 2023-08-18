@@ -3,7 +3,7 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { FRStatus, FriendRequest } from '@prisma/client';
+import { FRStatus, FriendRequest, VisType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFriendRequestDto } from './dto';
 import { CreateChannelDto } from 'src/channel/dto';
@@ -179,6 +179,7 @@ export class FriendRequestService {
         name: '',
         avatar: '',
         members: [updatedRequest.fromId, updatedRequest.toId],
+        visibility: VisType.PRIVATE,
       };
       this.channelService.createChannel(userId, dto);
     }

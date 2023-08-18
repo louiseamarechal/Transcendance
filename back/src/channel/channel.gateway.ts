@@ -29,7 +29,7 @@ export class ChannelGateway
   ) {}
 
   afterInit(server: Namespace) {
-    console.log('ChannelGateway on')
+    console.log('ChannelGateway on');
 
     this.channelService.server = server;
     // this is debug, not necessary for production
@@ -86,6 +86,9 @@ export class ChannelGateway
   @SubscribeMessage('client.channel.sendMessage')
   handleSendMessage(@MessageBody() channelId: number) {
     this.channelService.handleSendMessage(this.server, channelId);
+    console.log(
+      `[channelGateway] accessing sendMessage from channel : ${channelId}`,
+    );
   }
 
   // @Cron('*/5 * * * * *')

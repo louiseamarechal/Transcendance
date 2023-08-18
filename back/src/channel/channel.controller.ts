@@ -7,16 +7,15 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
-  ParseUUIDPipe,
   Patch,
   Post,
 } from '@nestjs/common';
-import { GetUser, GetUserId } from 'src/common/decorators';
+import { GetUserId } from 'src/common/decorators';
 import { ChannelService } from './channel.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
 import { VisType } from '@prisma/client';
 import { MembersOnChannel, MutedOnChannel } from './types';
-import { channel } from 'diagnostics_channel';
+import { PublicUser } from '../../../shared/common/types/user.type';
 
 @Controller('channel')
 export class ChannelController {
@@ -26,14 +25,26 @@ export class ChannelController {
   createChannel(
     @GetUserId() userId: number,
     @Body() dto: CreateChannelDto,
-  ): Promise<{ id: number; name: string; avatar: string | null }> {
+  ): Promise<{
+    id: number;
+    name: string;
+    avatar: string | null;
+    visibility: VisType;
+    members: { userId: number }[];
+  }> {
     return this.channelService.createChannel(userId, dto);
   }
 
   @Get('my-channels')
-  getUserChannels(
-    @GetUserId() userId: number,
-  ): Promise<{ name: string | null; avatar: string | null; id: number }[]> {
+  getUserChannels(@GetUserId() userId: number): Promise<
+    {
+      name: string | null;
+      avatar: string | null;
+      id: number;
+      visibility: string;
+      members: { userId: number }[];
+    }[]
+  > {
     return this.channelService.getUserChannels(userId);
   }
 
@@ -90,7 +101,7 @@ export class ChannelController {
     id: number | null;
     name: string | null;
     avatar: string | null;
-    visibility: VisType | null;
+    // visibility: VisType | null;
   }> {
     return this.channelService.editChannelById(userId, channelId, dto);
   }
@@ -184,6 +195,15 @@ export class ChannelController {
       channelId,
       dto.ids,
     );
+  }
+
+  @Patch('join/:channelId')
+  joinChannel(
+    @GetUserId() userId: number,
+    @Param('channelId', ParseIntPipe) channelId: number,
+    @Body() dto: { password?: string },
+  ): Promise<PublicUser> {
+    return this.channelService.joinChannel(userId, channelId, dto?.password);
   }
 
   @Delete('member/:channelId/:userId')

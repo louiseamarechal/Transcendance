@@ -9,14 +9,15 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
 import {
   BlockedOnChannels,
+  Channel,
   MembersOnChannels,
-  User,
   VisType,
 } from '@prisma/client';
+import * as argon from 'argon2';
 import { Socket, Namespace } from 'socket.io';
-import { MembersOnChannel, MutedOnChannel } from './types';
+import { MembersOnChannel, MutedOnChannel, UpdateChannel } from './types';
 import { NotifService } from 'src/notif/notif.service';
-import { channel } from 'diagnostics_channel';
+import { PublicUser } from '../../../shared/common/types/user.type';
 
 @Injectable()
 export class ChannelService {
@@ -32,72 +33,52 @@ export class ChannelService {
 
   async createChannel(
     ownerId: number,
-    { name, avatar, members }: CreateChannelDto,
-  ): Promise<{ id: number; name: string; avatar: string | null }> {
-    const channels = await this.prisma.membersOnChannels.groupBy({
-      by: ['channelId'],
-      where: {
-        userId: {
-          in: members,
+    { name, avatar, members, visibility, password }: CreateChannelDto,
+  ): Promise<{
+    id: number;
+    name: string;
+    avatar: string | null;
+    visibility: VisType;
+    members: { userId: number }[];
+  }> {
+    let hash: string | undefined = undefined;
+    if (password) {
+      const hash: string = await argon.hash(password);
+    }
+    const channel = await this.prisma.channel.create({
+      data: {
+        ownerId,
+        name,
+        avatar,
+        visibility: visibility,
+        passwordHash: hash,
+        members: {
+          create: members.map((m: number) => {
+            return { userId: m };
+          }),
         },
       },
-      having: {
-        userId: {
-          _count: {
-            equals: members.length,
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
+        visibility: true,
+        members: {
+          select: {
+            user: true,
+            userId: true,
           },
         },
       },
     });
-    console.log({ channels });
-    const filteredChannels = channels.filter(async (channel) => {
-      const channelMembers = await this.prisma.membersOnChannels.findMany({
-        where: {
-          channelId: channel.channelId,
-        },
-      });
-      if (channelMembers.length === members.length) {
-        return true;
-      } else {
-        return false;
+    console.log({ channel });
+    channel.members.map((member) => {
+      if (member.user.id !== ownerId) {
+        this.notifService.handleChatNotif(member.user.login);
       }
     });
-    // console.log(`found ${filteredChannels.length} with same members.`);
-    // console.log({ filteredChannels });
-    if (filteredChannels.length > 0) {
-      throw new ConflictException({ channelId: filteredChannels[0].channelId });
-    } else {
-      const channel = await this.prisma.channel.create({
-        data: {
-          ownerId,
-          name,
-          avatar,
-        },
-        select: {
-          id: true,
-          name: true,
-          avatar: true,
-          members: {
-            select: {
-              user: true,
-            },
-          },
-        },
-      });
-      channel.members.map((member) => {
-        if (member.user.id !== ownerId) {
-          this.notifService.handleChatNotif(member.user.login);
-        }
-      });
-      console.log('Created channel.');
-      await this.prisma.membersOnChannels.createMany({
-        data: members.map((id: number) => {
-          console.log(`Creating member ${id} in channel ${channel.id}`);
-          return { channelId: channel.id, userId: id };
-        }),
-      });
-      return channel;
-    }
+    console.log('Created channel.');
+    return channel;
   }
 
   getChannels(ownerId: number) {
@@ -205,24 +186,47 @@ export class ChannelService {
     id: number | null;
     name: string | null;
     avatar: string | null;
-    visibility: VisType | null;
+    // visibility: VisType | null;
   }> {
     const channel = await this.prisma.channel.findUnique({
       where: {
         id: channelId,
       },
+      select: {
+        ownerId: true,
+        admins: {
+          select: {
+            userId: true,
+          },
+        },
+      },
     });
 
     //	Check ownership of channel.
-    if (!channel || channel?.ownerId != ownerId)
+    if (
+      !channel ||
+      (!channel.admins.some(
+        (el: { userId: number }) => el.userId === ownerId,
+      ) &&
+        channel.ownerId !== ownerId)
+    )
       throw new ForbiddenException('Access to ressource denied');
 
+    const updateDto: UpdateChannel = { name: dto.name, avatar: dto.avatar };
+    if (dto.password) {
+      updateDto.passwordHash = await argon.hash(dto.password);
+    }
     return this.prisma.channel.update({
       where: {
         id: channelId,
       },
       data: {
-        ...dto,
+        ...updateDto,
+      },
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
       },
     });
   }
@@ -235,7 +239,7 @@ export class ChannelService {
     });
 
     //	Check ownership of channel.
-    if (!channel || channel?.ownerId != ownerId)
+    if (!channel || channel.ownerId != ownerId)
       throw new ForbiddenException('Access to ressource denied');
     await this.prisma.channel.delete({
       where: {
@@ -276,15 +280,37 @@ export class ChannelService {
 
     return this.prisma.channel.findMany({
       where: {
-        id: {
-          in: channelIds,
-          notIn: blockedIds,
-        },
+        OR: [
+          {
+            id: {
+              in: channelIds,
+              notIn: blockedIds,
+            },
+          },
+          {
+            visibility: VisType.PROTECTED,
+            id: {
+              notIn: channelIds,
+            },
+          },
+          {
+            visibility: VisType.PUBLIC,
+            id: {
+              notIn: channelIds,
+            },
+          },
+        ],
       },
       select: {
         id: true,
         name: true,
         avatar: true,
+        visibility: true,
+        members: {
+          select: {
+            userId: true,
+          },
+        },
       },
     });
   }
@@ -478,6 +504,52 @@ export class ChannelService {
     });
   }
 
+  async joinChannel(
+    userId: number,
+    channelId: number,
+    password: string | undefined,
+  ): Promise<PublicUser> {
+    const channel: Channel | null = await this.prisma.channel.findUnique({
+      where: {
+        id: channelId,
+      },
+    });
+    if (!channel) {
+      throw new ForbiddenException('Channel id not found.');
+    } else if (channel.visibility === VisType.PRIVATE) {
+      throw new ForbiddenException('Cannot join PRIVATE channel');
+    } else if (
+      channel.visibility === VisType.PROTECTED &&
+      (!password ||
+        (channel.passwordHash &&
+          (await argon.verify(channel.passwordHash, password))))
+    ) {
+      throw new ConflictException('Wrong password');
+    } else {
+      return (
+        await this.prisma.membersOnChannels.create({
+          data: {
+            channelId,
+            userId: userId,
+          },
+          select: {
+            user: {
+              select: {
+                id: true,
+                login: true,
+                name: true,
+                level: true,
+                avatar: true,
+                statTotalGame: true,
+                statTotalWin: true,
+              },
+            },
+          },
+        })
+      ).user;
+    }
+  }
+
   async removeMemberOnChannel(
     userId: number,
     channelId: number,
@@ -584,5 +656,8 @@ export class ChannelService {
 
   handleSendMessage(server: Namespace, channelId: number) {
     server.to(`channel_${channelId}`).emit('server.channel.messageUpdate');
+    console.log(
+      `[channelService] receiving sendMessage from channel: ${channelId}`,
+    );
   }
 }

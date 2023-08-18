@@ -1,13 +1,22 @@
-import { VisType } from "@prisma/client";
-import { IsEnum, IsOptional, IsString } from "class-validator";
+import { VisType } from '@prisma/client';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 export class EditChannelDto {
+  @IsOptional()
+  @IsString()
+  name: string;
 
-	@IsOptional()
-	@IsString()
-	passwordHash: string;
+  @IsOptional()
+  @IsString()
+  avatar: string;  @IsOptional()
+  @IsString()
 
-	@IsOptional()
-	@IsEnum(VisType)
-	visibility: VisType;
+
+  @IsOptional()
+  @IsString()
+  password: string | undefined;
+
+  // @IsOptional()
+  // @IsEnum(VisType)
+  // visibility: VisType;
 }
