@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom';
+import GameLobbyGR from '../../components/game/GameLobbyGR';
 
 export default function GameLobby() {
   return (
     <div className="gamepage-container">
       <div className="text-9xl text-red-900">Test</div>
       <h1 className="gamepage-title">PONG</h1>
-      <div className="text-3xl">If invite, show here</div>
+
+      <GameLobbyGR />
+
       <div className="net-container">
         {/* <button className="searchgame-button mr-2" onClick={handleSearchGame}>
           Search Game

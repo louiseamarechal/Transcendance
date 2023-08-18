@@ -7,17 +7,29 @@ import { Game as GameSchema } from '@prisma/client';
 export class GameDbService {
   constructor(private prisma: PrismaService) {}
 
+  async writeToDb(game: Game) {
+    await this.prisma.game.create({
+      data: {
+        uuid: '',
+        player1Id: game.p1.user.id,
+        player2Id: game.p2.user?.id,
+        private: game.visibility === GameVisibility.Private ? true : false,
+      },
+    });
+  }
+
   async createGame(game: Game) {
     console.log('[GameDb] createGame', game.gameId);
+
+    const data = {
+      uuid: game.gameId,
+      player1Id: game.p1.user.id,
+      player2Id: game.p2.user?.id,
+      private: game.visibility === GameVisibility.Private ? true : false,
+    };
+
     try {
-      await this.prisma.game.create({
-        data: {
-          uuid: game.gameId,
-          player1Id: game.p1.user.id,
-          player2Id: game.p2?.user.id,
-          private: game.visibility === GameVisibility.Private ? true : false,
-        },
-      });
+      await this.prisma.game.create({ data: data });
     } catch (error) {
       console.log('[GameDb] createGame failed...');
       // throw error;

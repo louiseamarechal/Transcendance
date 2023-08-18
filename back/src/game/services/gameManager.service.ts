@@ -1,8 +1,6 @@
 import { Socket, Namespace } from 'socket.io';
 import { Game, GameStatus, GameVisibility } from '../classes/Game';
 import { Cron } from '@nestjs/schedule';
-import { GameService } from '../game.service';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { GameDbService } from './gameDb.service';
 import { UserService } from 'src/user/user.service';
@@ -20,7 +18,7 @@ export class GameManagerService {
     private userService: UserService,
   ) {}
 
-  public async joinQueue(client: Socket) {
+  public joinQueue(client: Socket) {
     console.log('[GameManager] joinQueue');
     const filtGames = this.getGames(GameVisibility.Public, GameStatus.Waiting);
 
@@ -48,11 +46,11 @@ export class GameManagerService {
     }
   }
 
-  public async leaveQueue(client: Socket) {
+  public leaveQueue(client: Socket) {
     console.log('[GameManager] leaveQueue');
     const filtGames = this.getGames(GameVisibility.Public, GameStatus.Waiting);
 
-    filtGames.forEach(async (game) => {
+    filtGames.forEach((game) => {
       if (game.p1.user.id === client.data.user.id) {
         this.removeGame(game);
       }
@@ -91,6 +89,21 @@ export class GameManagerService {
     client.join(newGame.gameId);
     this.addGame(newGame);
     // SEND NOTIF
+  }
+
+  public getGameRequestById(id: number) {
+    return Array.from(this.#games.values())
+      .filter((game) => game.visibility === GameVisibility.Private)
+      .filter((game) => game.status === GameStatus.Waiting)
+      .filter((game) => game.p2.user.id === id)
+      .map((game) => {
+        return {
+          gameId: game.gameId,
+          p1: game.p1.user,
+          p2: game.p2.user,
+          score: game.score,
+        };
+      });
   }
 
   /**

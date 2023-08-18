@@ -31,7 +31,7 @@ export class GameGateway
   server: Namespace;
 
   constructor(
-    private readonly gameManager: GameManagerService,
+    private gameManager: GameManagerService,
     private socketService: SocketService,
   ) {}
 

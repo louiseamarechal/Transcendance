@@ -1,11 +1,13 @@
-import { Body, Controller, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 
 import { GetUserId } from 'src/common/decorators';
 import { CreateGameDto } from './dto/create-game.dto';
+import { GameManagerService } from './services/gameManager.service';
+import { Game } from './classes/Game';
 
 @Controller('game')
 export class GameController {
-  constructor() {}
+  constructor(private gameManager: GameManagerService) {}
 
   // @Post()
   // async createGame(@GetUserId() userId: number, @Body() dto: CreateGameDto) {
@@ -13,14 +15,9 @@ export class GameController {
   //   return this.gameService.createGame(userId, dto.toId);
   // }
 
-  @Post('createPublicGame')
-  createPublicGame(@Body() dto: any) {
-    return 0;
-  }
-
-  @Post('createPrivateGame')
-  createPrivateGame() {
-    return 0;
+  @Get('myGameRequests')
+  getMyGameRequest(@GetUserId() userId: number) {
+    return this.gameManager.getGameRequestById(userId);
   }
 
   // @Post(':id')
