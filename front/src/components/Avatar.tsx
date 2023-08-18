@@ -3,19 +3,14 @@ import BACK_URL from '../api/backUrl';
 type AvatarProps = {
   id?: number;
   file?: string;
-  selected?: boolean;
+  small?: boolean;
 };
 
-export default function Avatar({ id, file, selected = false }: AvatarProps) {
-  let className = 'avatar';
-  if (selected) {
-    className += ' border-pink-500';
-  }
-
+export default function Avatar({ id, file, small }: AvatarProps) {
   if (id) {
     return (
       <img
-        className={className}
+        className={`avatar${small ? '-sm' : ''}`}
         alt="avatar"
         src={`${BACK_URL}/user/avatarById/${id}`}
       />
@@ -27,7 +22,7 @@ export default function Avatar({ id, file, selected = false }: AvatarProps) {
 
     return (
       <img
-        className={className}
+        className={`avatar${small ? '-sm' : ''}`}
         alt="avatar"
         src={`${BACK_URL}/user/avatarByFile/${file}`}
       />

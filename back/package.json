@@ -6,7 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "init": "npm run build && npm run prisma:generate && prisma migrate deploy",
     "dev": "npm run db:dev:restart && npm run start:dev",
+    "prisma:generate": "npx prisma generate",
     "prisma:dev:deploy": "prisma migrate deploy && prisma db seed",
     "db:dev:rm": "docker compose -f ../docker-compose.yml rm -s -f -v db && docker volume rm -f transcendance_db-data",
     "db:dev:up": "docker compose -f ../docker-compose.yml up -d db",

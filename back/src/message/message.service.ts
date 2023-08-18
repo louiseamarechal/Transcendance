@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMessageDto } from './dto/create-message.dto';
+import { NotifService } from 'src/notif/notif.service';
 
 @Injectable()
 export class MessageService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private notifService: NotifService,
+    private prisma: PrismaService,
+  ) {}
 
   async createMessage(
     senderId: number,
@@ -18,7 +22,7 @@ export class MessageService {
     channelId: number;
     body: string;
   }> {
-    // socket
+    // this.notifService.handleChatNotif('');
     return this.prisma.message.create({
       data: {
         channelId,
