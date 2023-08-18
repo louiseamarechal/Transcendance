@@ -25,7 +25,6 @@ function MuteButton({ user }: { user: User }) {
     await axiosPrivate
       .post(`channel/muted/${channelState.self.id}`, { mutedId: user.id })
       .then(() => {
-        setMuted(true);
         const updatedMuted: {
           mutedUserId: number;
           mutedByUserId: number;
@@ -44,13 +43,13 @@ function MuteButton({ user }: { user: User }) {
           throw e;
         }
       });
+    setMuted(true);
   }
 
   async function unmute() {
     await axiosPrivate
       .delete(`channel/muted/${channelState.self.id}/${user.id}`)
       .then(() => {
-        setMuted(false);
         const updatedMuted: {
           mutedUserId: number;
           mutedByUserId: number;
@@ -68,6 +67,7 @@ function MuteButton({ user }: { user: User }) {
           throw e;
         }
       });
+    setMuted(false);
   }
   if (muted) {
     return (
