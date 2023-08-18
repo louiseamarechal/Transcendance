@@ -5,13 +5,20 @@ import { GameService } from '../game.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { GameDbService } from './gameDb.service';
+import { UserService } from 'src/user/user.service';
+import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
+import { ClientEvents } from '../../../../shared/client/ClientEvents';
+import { PublicUser } from '../../../../shared/common/types/user.type';
 
 @Injectable()
 export class GameManagerService {
   public server: Namespace;
   readonly #games: Map<string, Game> = new Map<string, Game>();
 
-  constructor(private gameDb: GameDbService) {}
+  constructor(
+    private gameDb: GameDbService,
+    private userService: UserService,
+  ) {}
 
   public async joinQueue(client: Socket) {
     console.log('[GameManager] joinQueue');
@@ -72,6 +79,18 @@ export class GameManagerService {
     } else if (game.p2.user.id === playerId) {
       game.p2.ready = true;
     }
+  }
+
+  public async createPrivateGame(client: Socket, p1Id: number, p2Id: number) {
+    const newGame = new Game(this.server);
+    newGame.visibility = GameVisibility.Private;
+    const p1: PublicUser = await this.userService.getUserById(p1Id);
+    const p2: PublicUser = await this.userService.getUserById(p2Id);
+    newGame.p1.user = p1;
+    newGame.p2.user = p2;
+    client.join(newGame.gameId);
+    this.addGame(newGame);
+    // SEND NOTIF
   }
 
   /**

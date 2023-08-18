@@ -10,6 +10,8 @@ function MiniUserCard({ user, selected = false }: MiniUserCardProps) {
   let style = 'w-28 h-28 flex-col-center';
   if (selected) {
     style += ' border-2 border-pink-500';
+  } else {
+    style += ' hover:border-2 hover:border-pink-200';
   }
 
   return (

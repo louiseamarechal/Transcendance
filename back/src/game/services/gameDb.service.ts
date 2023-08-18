@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Game } from '../classes/Game';
+import { Game, GameVisibility } from '../classes/Game';
+import { Game as GameSchema } from '@prisma/client';
 
 @Injectable()
 export class GameDbService {
@@ -13,6 +14,8 @@ export class GameDbService {
         data: {
           uuid: game.gameId,
           player1Id: game.p1.user.id,
+          player2Id: game.p2?.user.id,
+          private: game.visibility === GameVisibility.Private ? true : false,
         },
       });
     } catch (error) {

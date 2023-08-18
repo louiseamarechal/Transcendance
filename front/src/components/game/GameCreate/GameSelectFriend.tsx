@@ -33,7 +33,7 @@ function GameSelectFriend({
   }, []);
 
   return (
-    <div className="flex-row-center flex-wrap">
+    <div className="flex-row-center flex-wrap space-x-4">
       {friendList.map((friend) => {
         return (
           <div

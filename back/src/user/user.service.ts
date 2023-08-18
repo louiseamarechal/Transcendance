@@ -6,17 +6,11 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditUserDto } from './dto';
-import {
-  NoParamCallback,
-  createReadStream,
-  existsSync,
-  rename,
-  rm,
-} from 'fs';
-import { PublicUser } from './types';
+import { NoParamCallback, createReadStream, existsSync, rename, rm } from 'fs';
 import { FRStatus, FriendRequest } from '@prisma/client';
 import { join } from 'path';
 import { Response } from 'express';
+import { PublicUser } from '../../../shared/common/types/user.type';
 
 @Injectable()
 export class UserService {

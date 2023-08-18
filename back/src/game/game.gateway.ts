@@ -41,7 +41,7 @@ export class GameGateway
     // this is debug, not necessary for production
     server.use((client: Socket, next) => {
       client.use((event, next) => {
-        Logger.warn(`New Game Event ${event[0]}`);
+        Logger.warn(`Game Event | ${client.data?.user?.name} | ${event[0]}`);
         next();
       });
       next();
@@ -89,6 +89,14 @@ export class GameGateway
     @MessageBody() payload: ClientPayloads[ClientEvents.GameSetReady],
   ) {
     this.gameManager.setReady(client.data.user.id, payload.gameId);
+  }
+
+  @SubscribeMessage(ClientEvents.GameCreateGame)
+  handleCreateGame(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: ClientPayloads[ClientEvents.GameCreateGame],
+  ) {
+    this.gameManager.createPrivateGame(client, payload.p1Id, payload.p2Id);
   }
 
   // @Cron('*/5 * * * * *')
