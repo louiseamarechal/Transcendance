@@ -21,8 +21,8 @@ export default function ChatBody() {
   console.log(`In chat body: ${channelState.self.id}`);
   // console.log(`reload ? ${reloadMessage}`);
   function userIsMuted(senderId: number): boolean {
-    console.log({ senderId });
-    console.log({ myId });
+    // console.log({ senderId });
+    // console.log({ myId });
     return channelState.self.muted.some((user) => {
       return user.mutedUserId === senderId && myId === user.mutedByUserId;
     });
@@ -67,16 +67,20 @@ export default function ChatBody() {
     console.log({ messageList });
   }
 
-  // if (reloadMessage === true) {
-  //   uploadMessages();
-  //   setReloadMessage(false);
-  // }
+  if (MessageReceived === true) {
+    updateMessages();
+    setMessageReceived(false);
+  }
 
-  channelSocket.on('server.channel.messageUpdate', () => setMessageReceived(true));
+  channelSocket.on('server.channel.messageUpdate', () =>
+    setMessageReceived(true),
+  );
   useEffect(() => {
     updateMessages();
     return () => {
-      channelSocket.off('server.channel.messageUpdate', () => setMessageReceived(true));
+      channelSocket.off('server.channel.messageUpdate', () =>
+        setMessageReceived(true),
+      );
     };
   }, [MessageReceived, channelState]);
 

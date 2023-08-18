@@ -656,5 +656,8 @@ export class ChannelService {
 
   handleSendMessage(server: Namespace, channelId: number) {
     server.to(`channel_${channelId}`).emit('server.channel.messageUpdate');
+    console.log(
+      `[channelService] receiving sendMessage from channel: ${channelId}`,
+    );
   }
 }
