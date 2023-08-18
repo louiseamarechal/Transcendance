@@ -17,7 +17,7 @@ export class GameDbService {
       });
     } catch (error) {
       console.log('[GameDb] createGame failed...');
-      throw error;
+      // throw error;
     }
   }
 
@@ -43,7 +43,7 @@ export class GameDbService {
       });
     } catch (error) {
       console.log('[GameDb] updateGame failed...');
-      throw error;
+      // throw error;
     }
   }
 
@@ -53,7 +53,7 @@ export class GameDbService {
       await this.prisma.game.delete({ where: { uuid: game.gameId } });
     } catch (error) {
       console.log('[GameDb] deleteGame failed...');
-      throw error;
+      // throw error;
     }
   }
 }

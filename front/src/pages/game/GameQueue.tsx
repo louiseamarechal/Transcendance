@@ -19,6 +19,7 @@ export default function GameQueue() {
 
   return (
     <div className="waiting-for-game">
+      <div className="text-7xl text-center">OUTDATED DO NOT USE THIS WAY</div>
       <h1 className="pong-title">PONG</h1>
       <p>Wait until we find you the perfect match !</p>
       <br />

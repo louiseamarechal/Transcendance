@@ -117,7 +117,7 @@ export class GameManagerService {
     this.#games.delete(game.gameId);
   }
 
-  @Cron('*/5 * * * * *')
+  @Cron('*/1 * * * * *')
   private cleaner() {
     // console.log('[GameManager] Cleaner')
     this.#games.forEach((game: Game) => {
