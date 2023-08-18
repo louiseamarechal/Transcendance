@@ -64,9 +64,9 @@ const CreateChannelForm = () => {
       <button
         className="small-button"
         onClick={() => handleSubmit()}
-        // onKeyUp={(event) => {
-        //   event.key === 'Enter' && handleSubmit();
-        // }}
+        onKeyUp={(event) => {
+          event.key === 'Enter' && handleSubmit();
+        }}
       >
         create channel
       </button>

@@ -17,19 +17,19 @@ const FormHeader = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // const formData = new FormData();
-    // formData.append('file', image.data);
-    // console.log(image.data);
-    // try {
-    //   await axiosInstance({
-    //     method: 'post',
-    //     url: '/user/upload-avatar',
-    //     data: formData,
-    //     headers: { 'Content-Type': 'multipart/form-data' },
-    //   });
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    const formData = new FormData();
+    formData.append('file', image.data);
+    console.log(image.data);
+    try {
+      await axiosInstance({
+        method: 'post',
+        url: '/channel/upload-avatar',
+       data: { formData, },
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+    } catch (error) {
+      console.log(error);
+    }
     setChangingAvatar(false);
   };
 
@@ -39,8 +39,8 @@ const FormHeader = ({
       preview: URL.createObjectURL(e.target.files[0]),
       data: e.target.files[0],
     };
-    console.log(image.data)
     setImage(img);
+    console.log(image.data)
   };
 
   return (
