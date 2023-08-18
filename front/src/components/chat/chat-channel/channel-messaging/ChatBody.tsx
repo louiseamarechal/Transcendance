@@ -45,7 +45,7 @@ export default function ChatBody() {
 
       channelSocket.emit('client.channel.sendMessage', channelState.self.id);
       channelState.self.members.map((member) => {
-        if (member.user?.login !== myLogin) {
+        if (member.user.login !== myLogin) {
           console.log(`sending chat notif on socket for ${member.user?.login}`);
           notifSocket.emit('client.notif.chatNotif', member.user?.login);
         }
@@ -72,9 +72,9 @@ export default function ChatBody() {
   //   setReloadMessage(false);
   // }
 
+  channelSocket.on('server.channel.messageUpdate', () => setMessageReceived(true));
   useEffect(() => {
     updateMessages();
-    channelSocket.on('server.channel.messageUpdate', () => setMessageReceived(true));
     return () => {
       channelSocket.off('server.channel.messageUpdate', () => setMessageReceived(true));
     };
