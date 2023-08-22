@@ -143,6 +143,7 @@ export default function UserProfile() {
 
 type ActionButtonsProps = {
   status: string;
+  activity: string,
   handleAddFriend: Function;
   handleAcceptFriend: Function;
   handleRemoveFR: Function;
