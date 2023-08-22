@@ -18,7 +18,7 @@ export default function Avatar({ id, file, small }: AvatarProps) {
   }
 
   if (file) {
-    console.log(file);
+    // console.log(file);
 
     return (
       <img
