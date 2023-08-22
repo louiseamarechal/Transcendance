@@ -10,7 +10,6 @@ export default function ChatChannel() {
   const axiosInstance = useAxiosPrivate();
   const channelState = useChannel();
   const routeParams = useParams();
-  console.log({ routeParams });
   const channelId: number = Number(routeParams.channelId);
 
   useEffect(() => {
