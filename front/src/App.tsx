@@ -12,7 +12,6 @@ import WelcomePage from './pages/WelcomePage.tsx';
 import Friends from './pages/Friends.tsx';
 import Profil from './pages/Profil.tsx';
 import FindFriends from './pages/FindFriends.tsx';
-import Components from './pages/Components.tsx';
 import Callback from './pages/Callback.tsx';
 import RequireAuth from './components/RequireAuth.tsx';
 
@@ -82,7 +81,6 @@ function App() {
         <Route path="/friends" Component={Friends} />
         <Route path="/profil" Component={Profil} />
         <Route path="/profil/:id" Component={UserProfile} />
-        <Route path="/test" Component={Components} />
         <Route path="/findfriends" Component={FindFriends} />
       </Route>,
     ]),

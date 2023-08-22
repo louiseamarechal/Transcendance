@@ -1,4 +1,4 @@
-import { User } from './User.type';
+import { PublicUser } from "../../../shared/common/types/user.type";
 
 export type Channel = {
   id: number;
@@ -6,7 +6,7 @@ export type Channel = {
   avatar: string;
   visibility: string;
   ownerId: number;
-  members: { user: User }[];
+  members: { user: PublicUser }[];
   admins: { userId: number }[];
   blocked: { userId: number }[];
   muted: { mutedUserId: number; mutedByUserId: number }[];

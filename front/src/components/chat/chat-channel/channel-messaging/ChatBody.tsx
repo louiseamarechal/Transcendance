@@ -18,11 +18,7 @@ export default function ChatBody() {
   const [MessageReceived, setMessageReceived] = useState(false);
   // const [reloadMessage, setReloadMessage] = useState(true);
 
-  console.log(`In chat body: ${channelState.self.id}`);
-  // console.log(`reload ? ${reloadMessage}`);
   function userIsMuted(senderId: number): boolean {
-    // console.log({ senderId });
-    // console.log({ myId });
     return channelState.self.muted.some((user) => {
       return user.mutedUserId === senderId && myId === user.mutedByUserId;
     });
@@ -39,18 +35,15 @@ export default function ChatBody() {
           const date: Date = new Date(createdAt);
           const message: Message = { ...obj, createdAt: date };
           setMessageList((list) => [...list, message]);
-          console.log(`type of message.createAt: ${typeof message.createdAt}`);
           setCurrentMessage('');
         });
 
       channelSocket.emit('client.channel.sendMessage', channelState.self.id);
       channelState.self.members.map((member) => {
         if (member.user.login !== myLogin) {
-          console.log(`sending chat notif on socket for ${member.user?.login}`);
           notifSocket.emit('client.notif.chatNotif', member.user?.login);
         }
       });
-      console.log({ channelMembers: channelState.self.members });
     }
   };
 
@@ -63,8 +56,6 @@ export default function ChatBody() {
     await axiosInstance.get(`message/${channelState.self.id}`).then((res) => {
       setMessageList(res.data);
     });
-    console.log('Refreshed message list.');
-    console.log({ messageList });
   }
 
   if (MessageReceived === true) {

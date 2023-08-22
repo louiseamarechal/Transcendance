@@ -1,4 +1,4 @@
-import { Status2fa } from '@prisma/client';
+import { Status2fa, UserStatus } from '@prisma/client';
 import { IsEnum, IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class EditUserDto {
@@ -29,4 +29,8 @@ export class EditUserDto {
   @IsOptional()
   @IsPositive()
   statTotalWin?: number;
+
+  @IsOptional()
+  @IsEnum(UserStatus)
+  status?: UserStatus;
 }
