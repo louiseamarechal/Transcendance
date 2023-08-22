@@ -55,13 +55,6 @@ export class NotifGateway
       console.log(`[NotifGateway] ${client.data.user.name} arrived`);
       const room: string = client.data.user.login;
       client.join(room);
-      // if (client.rooms.has(room)) {
-      //   console.log('Success, you just joined the room !', room);
-      //   console.log(client.rooms.size);
-      //   client.rooms.forEach((key) => {
-      //     console.log(key);
-      //   });
-      // }
     } catch (error) {
       console.log('[NotifGateway] handleConnection threw:', error.message);
       client.disconnect();
