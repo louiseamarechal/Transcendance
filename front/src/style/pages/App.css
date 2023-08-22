@@ -23,3 +23,10 @@
   width: 80%;
   margin-left: 20%;
 }
+
+.user-status {
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 500;
+  padding-right: 5%;
+}

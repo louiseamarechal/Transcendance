@@ -21,6 +21,7 @@ model User {
   code2FA String? @unique
 
   online Boolean @default(false)
+  status   UserStatus @default(OFFLINE)
 
   level         Float     @default(1)
   avatar        String?
@@ -48,6 +49,12 @@ model User {
   hasMutedOnChannel MutedByUserOnChannel[] @relation("mutedByUser")
 
   @@map("users")
+}
+
+enum UserStatus {
+  ONLINE
+  OFFLINE
+  PLAYING
 }
 
 enum Status2fa {

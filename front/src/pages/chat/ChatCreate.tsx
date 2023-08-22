@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { notifSocket } from '../../api/socket';
 import { useUser } from '../../hooks/useUser';
-import { User } from '../../types/User.type';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import useChannelList from '../../hooks/useChannelList';
 import FormHeader from '../../components/chat/chat-create/FormHeader';
@@ -10,6 +9,7 @@ import FriendsList from '../../components/chat/chat-create/FriendsList';
 import ChannelVisibility from '../../components/chat/chat-create/ChannelVisibility';
 import '../../style/components/buttons.css';
 import '../../style/components/chat/chat-container/create-channel-form.css';
+import { PublicUser } from '../../../../shared/common/types/user.type';
 
 export default function ChatCreate() {
   const [avatar, setAvatar] = useState<string>('default.jpg');
@@ -42,7 +42,7 @@ export default function ChatCreate() {
         })
         .then((res) => {
           channelListState.add(res.data);
-          res.data.members.map((member: { user: User }) => {
+          res.data.members.map((member: { user: PublicUser }) => {
             if (member.user.login !== myLogin)
               notifSocket.emit('client.notif.chatNotif', member.user.login);
           });

@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction } from 'react';
-import { User } from '../../../../../../../types/User.type';
 import { axiosPrivate } from '../../../../../../../api/axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 import useChannel from '../../../../../../../hooks/useChannel';
+import { PublicUser } from '../../../../../../../../../shared/common/types/user.type';
 
 function KickButton({
   user,
@@ -12,11 +12,11 @@ function KickButton({
   members,
   setMembers,
 }: {
-  user: User;
+  user: PublicUser;
   userRole: number;
   myRole: number;
-  members: { user: User }[];
-  setMembers: Dispatch<SetStateAction<{ user: User }[]>>;
+  members: { user: PublicUser }[];
+  setMembers: Dispatch<SetStateAction<{ user: PublicUser }[]>>;
 }) {
   const channelState = useChannel();
   async function kick() {
@@ -28,7 +28,7 @@ function KickButton({
     console.log(`kick member: ${DeletedMemberOnChannel.userId}`);
     if (DeletedMemberOnChannel !== undefined) {
       setMembers(
-        members.filter((memberUser: { user: User }) => {
+        members.filter((memberUser: { user: PublicUser }) => {
           if (memberUser.user.id === DeletedMemberOnChannel.userId) {
             return false;
           } else {

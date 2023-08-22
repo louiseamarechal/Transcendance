@@ -31,6 +31,7 @@ export class UserService {
         statTotalGame: true,
         statTotalWin: true,
         s2fa: true,
+        status: true,
       },
     });
 

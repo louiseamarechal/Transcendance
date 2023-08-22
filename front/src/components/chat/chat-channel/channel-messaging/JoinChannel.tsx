@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useUser } from '../../../../hooks/useUser';
 import { Channel, ChannelShort } from '../../../../types/Channel.type';
-import { User } from '../../../../types/User.type';
+import { PublicUser } from '../../../../../../shared/common/types/user.type';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 import useChannelList from '../../../../hooks/useChannelList';
 import useChannel from '../../../../hooks/useChannel';
@@ -23,7 +23,7 @@ export default function JoinChannel() {
             channelState.self.visibility === 'PROTECTED' ? password : null,
         })
         .then((res) => {
-          const newMembers: { user: User }[] = [
+          const newMembers: { user: PublicUser }[] = [
             ...channelState.self.members,
             { user: res.data },
           ];

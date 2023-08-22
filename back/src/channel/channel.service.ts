@@ -568,6 +568,7 @@ export class ChannelService {
                 avatar: true,
                 statTotalGame: true,
                 statTotalWin: true,
+                status: true,
               },
             },
           },
