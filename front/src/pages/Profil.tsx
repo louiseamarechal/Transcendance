@@ -5,16 +5,16 @@ import ProgressBar from '../components/ProgressBar.tsx';
 import UserCard from '../components/UserCard.tsx';
 import '../style/pages/Profil.css';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
-import { User } from '../types/User.type.ts';
 import Settings, { ChangeName, Toggle2FA } from '../components/Settings.tsx';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Avatar from '../components/Avatar.tsx';
+import { PublicUser } from '../../../shared/common/types/user.type.ts';
 
 function Profil() {
   // Profil page will depend on the user id => see later on
   const axiosInstance = useAxiosPrivate();
-  const [user, setUser] = useState<User>({});
+  const [user, setUser] = useState<PublicUser>({} as PublicUser);
   const [isLoading, setLoading] = useState<boolean>(true);
   const [reload, setReload] = useState<number>(0);
   const [changingUsername, setChangingUsername] = useState(false);

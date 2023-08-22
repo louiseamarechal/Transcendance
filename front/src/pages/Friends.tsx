@@ -1,6 +1,5 @@
 import '../style/pages/Friends.css';
 import UserCard from '../components/UserCard.tsx';
-// import { User } from '../types/User.type.ts';
 import { useEffect, useState } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
 import { Link } from 'react-router-dom';

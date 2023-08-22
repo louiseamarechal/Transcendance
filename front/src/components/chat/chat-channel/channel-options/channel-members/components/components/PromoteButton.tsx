@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeartCrack, faMedal } from '@fortawesome/free-solid-svg-icons';
-import { User } from '../../../../../../../types/User.type';
 import { axiosPrivate } from '../../../../../../../api/axios';
 import useChannel from '../../../../../../../hooks/useChannel';
+import { PublicUser } from '../../../../../../../../../shared/common/types/user.type';
 
 function PromoteButton({
   user,
@@ -12,7 +12,7 @@ function PromoteButton({
   myRole,
   setAdmins,
 }: {
-  user: User;
+  user: PublicUser;
   userRole: number;
   setUserRole: Dispatch<SetStateAction<number>>;
   myRole: number;

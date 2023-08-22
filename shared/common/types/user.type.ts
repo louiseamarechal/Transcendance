@@ -6,4 +6,5 @@ export type PublicUser = {
   avatar: string | null;
   statTotalGame: number;
   statTotalWin: number;
+  status: string;
 };

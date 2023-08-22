@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { useUser } from '../../../../../../hooks/useUser';
-import { User } from '../../../../../../types/User.type';
 import UserCard from '../../../../../UserCard';
 import PromoteButton from './components/PromoteButton';
 import MuteButton from './components/MuteButton';
 import KickButton from './components/KickButton';
 import BlockButton from './components/BlockButton';
 import useChannel from '../../../../../../hooks/useChannel';
+import { PublicUser } from '../../../../../../../../shared/common/types/user.type';
 
 function MemberOptionsCard({
   member,
@@ -14,10 +14,10 @@ function MemberOptionsCard({
   members,
   setMembers,
 }: {
-  member: User;
+  member: PublicUser;
   setAdmins: Dispatch<SetStateAction<{ userId: number }[]>>;
-  members: { user: User }[];
-  setMembers: Dispatch<SetStateAction<{ user: User }[]>>;
+  members: { user: PublicUser }[];
+  setMembers: Dispatch<SetStateAction<{ user: PublicUser }[]>>;
 }) {
   const channelState = useChannel();
   const { myId } = useUser();
