@@ -5,8 +5,6 @@ export class Ball {
   pos: Vec2D = { x: 0.5, y: 0.5 };
   velocityInitial: Vec2D = { x: 0.01, y: 0 };
   velocity: Vec2D = { x: 0.01, y: 0 };
-  // velocityIncreaseValue: number = 0.5;
-  // velocityIncreaseInterval: number = 2000;
   velocityIncreaseValue: number = 0.05;
   velocityIncreaseInterval: number = 1000;
   radius: number = 0.01;
@@ -21,6 +19,7 @@ export class Paddle {
 
 export class Player {
   user: PublicUser;
+  lastPing: number;
   ready: boolean = false;
   paddle: Paddle = new Paddle();
 }

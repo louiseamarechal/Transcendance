@@ -7,6 +7,8 @@ import { UserService } from 'src/user/user.service';
 import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
 import { ClientEvents } from '../../../../shared/client/ClientEvents';
 import { PublicUser } from '../../../../shared/common/types/user.type';
+import { GameRequest } from '../../../../shared/common/types/game.type';
+import { ServerEvents } from '../../../../shared/server/ServerEvents';
 
 @Injectable()
 export class GameManagerService {
@@ -77,6 +79,10 @@ export class GameManagerService {
     } else if (game.p2.user.id === playerId) {
       game.p2.ready = true;
     }
+
+    if (game.p1.ready && game.p2.ready) {
+      // this.userService.editUser(game.p1.user.id, {});
+    }
   }
 
   public async createPrivateGame(client: Socket, p1Id: number, p2Id: number) {
@@ -91,7 +97,7 @@ export class GameManagerService {
     // SEND NOTIF
   }
 
-  public getGameRequestById(id: number) {
+  public getGameRequestById(id: number): GameRequest[] {
     return Array.from(this.#games.values())
       .filter((game) => game.visibility === GameVisibility.Private)
       .filter((game) => game.status === GameStatus.Waiting)
@@ -101,9 +107,22 @@ export class GameManagerService {
           gameId: game.gameId,
           p1: game.p1.user,
           p2: game.p2.user,
-          score: game.score,
         };
       });
+  }
+
+  public ping(userId: number) {
+    const game = Array.from(this.#games.values())
+      .filter((g) => g.status === GameStatus.Playing)
+      .filter((g) => g.p1.user.id === userId || g.p2.user.id === userId);
+
+    if (game.length !== 0) {
+      if (game[0].p1.user.id === userId) {
+        game[0].p1.lastPing = Date.now();
+      } else if (game[0].p2.user.id === userId) {
+        game[0].p2.lastPing = Date.now();
+      }
+    }
   }
 
   /**
@@ -161,17 +180,30 @@ export class GameManagerService {
         return;
       }
 
+      const now = Date.now();
+      if (
+        game.status === GameStatus.Playing &&
+        (now - game.p1.lastPing > 3000 || now - game.p2.lastPing > 3000)
+      ) {
+        console.log('Remove game. Cause: No ping for 3secs while playing');
+        this.server.to(game.gameId).emit(ServerEvents.gameAbort);
+        this.removeGame(game);
+        return;
+      }
+
       if (
         game.status !== GameStatus.Waiting &&
         this.server.adapter.rooms.get(game.gameId)?.size !== 2
       ) {
         console.log('Remove game. Cause: Room contains only 1 player');
+        this.server.to(game.gameId).emit(ServerEvents.gameAbort);
         this.removeGame(game);
         return;
       }
 
       if (this.server.adapter.rooms.has(game.gameId) === false) {
         console.log('Remove game. Cause: Room destroyed');
+        this.server.to(game.gameId).emit(ServerEvents.gameAbort);
         this.removeGame(game);
         return;
       }
@@ -179,6 +211,7 @@ export class GameManagerService {
       const durationMs = Date.now() - game.createdAt;
       if (durationMs > 1000 * 60 * 30) {
         console.log('Remove game. Cause: Existing for more than 30mins');
+        this.server.to(game.gameId).emit(ServerEvents.gameAbort);
         this.removeGame(game);
         // This should be unnecessary of well coded
       }

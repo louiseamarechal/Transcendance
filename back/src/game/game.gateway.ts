@@ -99,6 +99,21 @@ export class GameGateway
     this.gameManager.createPrivateGame(client, payload.p1Id, payload.p2Id);
   }
 
+  @SubscribeMessage(ClientEvents.GameAcceptGR)
+  handleAcceptGR() {
+    // this.gameManager.acceptGameRequest();
+  }
+
+  @SubscribeMessage(ClientEvents.GameRefuseGR)
+  handleRefuseGR() {
+    // this.gameManager.refuseGameRequest();
+  }
+
+  @SubscribeMessage(ClientEvents.GamePing)
+  handlePing(@ConnectedSocket() client: Socket) {
+    this.gameManager.ping(client.data.user.id);
+  }
+
   // @Cron('*/5 * * * * *')
   // private debug() {
   //   console.log('[Debug GameGateway] ', { rooms: this.server.adapter.rooms });

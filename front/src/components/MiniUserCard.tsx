@@ -1,9 +1,9 @@
-import { User } from '../types/User.type';
+import { PublicUser } from '../../../shared/common/types/user.type';
 import Avatar from './Avatar';
 
 type MiniUserCardProps = {
-  user: User;
-  selected: boolean;
+  user: PublicUser;
+  selected?: boolean;
 };
 
 function MiniUserCard({ user, selected = false }: MiniUserCardProps) {

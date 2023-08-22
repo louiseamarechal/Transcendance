@@ -4,6 +4,7 @@ import { GetUserId } from 'src/common/decorators';
 import { CreateGameDto } from './dto/create-game.dto';
 import { GameManagerService } from './services/gameManager.service';
 import { Game } from './classes/Game';
+import { GameRequest } from '../../../shared/common/types/game.type';
 
 @Controller('game')
 export class GameController {
@@ -16,7 +17,7 @@ export class GameController {
   // }
 
   @Get('myGameRequests')
-  getMyGameRequest(@GetUserId() userId: number) {
+  getMyGameRequest(@GetUserId() userId: number): GameRequest[] {
     return this.gameManager.getGameRequestById(userId);
   }
 
