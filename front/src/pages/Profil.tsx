@@ -19,6 +19,8 @@ function Profil() {
   const [reload, setReload] = useState<number>(0);
   const [changingUsername, setChangingUsername] = useState(false);
   const [is2FAset, setIs2FAEnabled] = useState(false);
+  const [image, setImage] = useState({ preview: '', data: '' });
+  const [changingAvatar, setChangingAvatar] = useState(false);
 
   console.log('Entering Profil component');
 
@@ -67,11 +69,53 @@ function Profil() {
     return <div className="grid place-items-center h-screen">Loading...</div>;
   }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('file', image.data);
+    console.log(image.data);
+    try {
+      await axiosInstance({
+        method: "post",
+        url: "/user/upload-avatar",
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    } catch(error) {
+      console.log(error)
+    }
+    setChangingAvatar(false);
+  };
+
+  const handleFileChange = (e) => {
+    const img = {
+      preview: URL.createObjectURL(e.target.files[0]),
+      data: e.target.files[0],
+    };
+    setImage(img);
+    setChangingAvatar(true);
+  }
+
   return (
     // <div className="grid grid-cols-1 place-items-center pt-[10%]">
     <div className="profil-container">
       <div className="profil-card">
-        <Avatar id={user.id} />
+        <div className="inline-block relative flex flex-row items-end">
+          {image.data ? (
+            image.preview && <img src={image.preview} className="avatar" />
+          ) : (
+            <Avatar id={user.id} />
+          )}
+          <form onSubmit={handleSubmit}>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              // onChange={(event) => changeAvatar(event.target.value)}
+              className="avatar-sm form-avatar"
+            />
+            {changingAvatar ? <button type="submit" className='text-xs'>ok</button> : <></>}
+          </form>
+        </div>
         {!changingUsername ? (
           <div className="flex flex-row items-center gap-2">
             <p className="user-name">{user?.name}</p>

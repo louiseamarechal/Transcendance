@@ -4,6 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
@@ -17,6 +18,8 @@ import * as argon from 'argon2';
 import { Socket, Namespace } from 'socket.io';
 import { MembersOnChannel, MutedOnChannel, UpdateChannel } from './types';
 import { NotifService } from 'src/notif/notif.service';
+import { channel } from 'diagnostics_channel';
+import { NoParamCallback, rename } from 'fs';
 import { PublicUser } from '../../../shared/common/types/user.type';
 
 @Injectable()
@@ -246,6 +249,29 @@ export class ChannelService {
         id: channelId,
       },
     });
+  }
+
+  // async uploadAvatar(file: Express.Multer.File) {
+  async uploadAvatar(file: Express.Multer.File) {
+    // const pictureName: string = `channel_.jpg`;
+    // const pictureName: string = `channel_${channelId}.jpg`;
+    const oldname: string = file.path;
+    // const newname: string = `assets/${file.path}.jpeg`;
+    console.log(file);
+    console.log(oldname);
+    // console.log(newname);
+
+    // const cb: NoParamCallback = (err) => {
+    //   if (err) throw err;
+    //   console.log('Successfully renamed - AKA moved!');
+    // };
+
+    // try {
+    //   rename(oldname, newname, cb);
+    // } catch (err) {
+    //   console.log(err);
+    //   new InternalServerErrorException('Rename failed in uploadAvatar');
+    // }
   }
 
   /* =============================================================================

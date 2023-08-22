@@ -7,6 +7,9 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  UploadedFile,
+  ParseUUIDPipe,
+  UseInterceptors,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -15,6 +18,10 @@ import { ChannelService } from './channel.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
 import { VisType } from '@prisma/client';
 import { MembersOnChannel, MutedOnChannel } from './types';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from 'src/config/multer.config';
+
+import { channel } from 'diagnostics_channel';
 import { PublicUser } from '../../../shared/common/types/user.type';
 
 @Controller('channel')
@@ -113,6 +120,12 @@ export class ChannelController {
     @Param('id', ParseIntPipe) channelId: number,
   ) {
     return this.channelService.deleteChannelById(userId, channelId);
+  }
+
+  @Post('upload-avatar')
+  @UseInterceptors(FileInterceptor('file', multerOptions))
+  uploadAvatar(@UploadedFile() file: Express.Multer.File) {
+    return this.channelService.uploadAvatar(file);
   }
 
   /*============================================================================

@@ -4,17 +4,15 @@ import { IsEnum, IsOptional, IsString } from 'class-validator';
 export class EditChannelDto {
   @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 
   @IsOptional()
   @IsString()
-  avatar: string;  @IsOptional()
-  @IsString()
-
+  avatar?: string;
 
   @IsOptional()
   @IsString()
-  password: string | undefined;
+  password?: string | undefined;
 
   // @IsOptional()
   // @IsEnum(VisType)
