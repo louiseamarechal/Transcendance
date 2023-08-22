@@ -5,7 +5,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-	MaxLength,
+  MaxLength,
 } from 'class-validator';
 
 const validVisibility = ['PUBLIC', 'PROTECTED', 'PRIVATE'];
@@ -24,12 +24,12 @@ export class CreateChannelDto {
   members: number[];
 
   @IsString()
-	@IsNotEmpty()
+  @IsNotEmpty()
   @IsIn(validVisibility)
   visibility?: VisType;
 
-	@IsOptional()
-	@IsNotEmpty()
-	@MaxLength(15)
-	password?: string;
+  @IsOptional()
+  @IsNotEmpty()
+  @MaxLength(15)
+  password?: string;
 }

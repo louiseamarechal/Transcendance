@@ -30,6 +30,8 @@ export default function ChatCreate() {
     } else if (channelVis === 'PROTECTED' && !channelPassword) {
       alert('Protected channel must have a password.');
     } else {
+      console.log({avatar});
+      console.log(typeof(avatar));
       await axiosPrivate
         .post('channel', {
           name: channelName,
