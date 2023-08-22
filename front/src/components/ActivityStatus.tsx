@@ -5,7 +5,7 @@ const ActivityStatus = ( props: {activity: string}) => {
     case 'PLAYGAME':
       return <p className="user-status text-pink-600">Currently playing</p>;
     default:
-      return <p className="user-status text-red-600">Off-line</p>;
+      return <p className="user-status text-red-600">Offline</p>;
   }
 };
 
