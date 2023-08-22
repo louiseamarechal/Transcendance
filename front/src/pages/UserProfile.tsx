@@ -2,16 +2,17 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { useEffect, useState } from 'react';
 import { useUser } from '../hooks/useUser';
-import { User } from '../types/User.type';
+import { PublicUser } from '../../../shared/common/types/user.type';
 import ProgressBar from '../components/ProgressBar';
 import { ProfilStat } from '../components/ProfilStat';
 import { FriendRequest } from '../types/FriendRequest.type';
 import Avatar from '../components/Avatar';
+import ActivityStatus from '../components/ActivityStatus';
 
 export default function UserProfile() {
   const { id } = useParams();
   const axiosInstance = useAxiosPrivate();
-  const [user, setUser] = useState<User>({ id: NaN });
+  const [user, setUser] = useState<PublicUser>({} as PublicUser);
   const [isLoading, setLoading] = useState<boolean>(true);
   const { myId } = useUser();
   const navigate = useNavigate();
@@ -123,6 +124,7 @@ export default function UserProfile() {
         </div>
         <ActionButtons
           status={FR.status ?? ''}
+          activity={user.status}
           myId={myId}
           fromId={FR.fromId ?? ''}
           handleAddFriend={handleAddFriend}
@@ -150,6 +152,7 @@ type ActionButtonsProps = {
 };
 function ActionButtons({
   status,
+  activity,
   myId,
   fromId,
   handleAddFriend,
@@ -176,6 +179,7 @@ function ActionButtons({
         >
           Send game request
         </button>
+        <ActivityStatus activity={activity} />
       </div>
     );
   } else if (parseInt(fromId) === myId && status !== 'REFUSED') {
@@ -203,9 +207,7 @@ function ActionButtons({
         >
           Decline
         </button>
-        <button
-          className="small-button game-request-button"
-        >
+        <button className="small-button game-request-button">
           Send game request
         </button>
       </div>
@@ -221,9 +223,7 @@ function ActionButtons({
         >
           Add friend
         </button>
-        <button
-          className="small-button game-request-button"
-        >
+        <button className="small-button game-request-button">
           Send game request
         </button>
       </div>

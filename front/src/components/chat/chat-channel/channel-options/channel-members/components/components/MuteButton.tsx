@@ -1,11 +1,11 @@
 import { faVolumeHigh, faVolumeXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { axiosPrivate } from '../../../../../../../api/axios';
-import { User } from '../../../../../../../types/User.type';
 import { useEffect, useState } from 'react';
 import useChannel from '../../../../../../../hooks/useChannel';
+import { PublicUser } from '../../../../../../../../../shared/common/types/user.type';
 
-function MuteButton({ user }: { user: User }) {
+function MuteButton({ user }: { user: PublicUser }) {
   const channelState = useChannel();
   const [muted, setMuted] = useState<boolean>(false);
   useEffect(() => {

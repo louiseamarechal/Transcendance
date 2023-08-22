@@ -11,7 +11,9 @@ import { Socket, Namespace } from 'socket.io';
 import { NotifService } from './notif.service';
 import { SocketService } from 'src/sockets/socket.service';
 import { AtJwt } from 'src/auth/types';
-import { Cron } from '@nestjs/schedule';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { UserStatus } from '@prisma/client';
+import { UserService } from 'src/user/user.service';
 
 @WebSocketGateway({
   cors: {
@@ -23,14 +25,16 @@ export class NotifGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
 {
   constructor(
+    private userService: UserService,
     private socketService: SocketService,
     private notifService: NotifService,
+    private prisma: PrismaService,
   ) {}
   @WebSocketServer()
   server: Namespace;
 
   afterInit(server: Namespace) {
-    console.log('NotifGateway on')
+    console.log('NotifGateway on');
     this.notifService.server = server;
 
     // this is debug, not necessary for production
@@ -54,7 +58,11 @@ export class NotifGateway
       await this.socketService.attachUserDataToClient(client, token);
       console.log(`[NotifGateway] ${client.data.user.name} arrived`);
       const room: string = client.data.user.login;
+      console.log({ dataHandleConnection: client.data.user });
       client.join(room);
+      this.userService.editUser(client.data.user.id, {
+        status: UserStatus.ONLINE,
+      });
     } catch (error) {
       console.log('[NotifGateway] handleConnection threw:', error.message);
       client.disconnect();
@@ -64,6 +72,9 @@ export class NotifGateway
   // handle disconnect
   handleDisconnect(client: Socket) {
     console.log(`[NotifGateway] ${client.data?.user?.name} left`);
+    this.userService.editUser(client.data.user.id, {
+      status: UserStatus.OFFLINE,
+    });
     client.disconnect();
   }
 

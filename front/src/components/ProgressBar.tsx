@@ -1,11 +1,11 @@
 import '../style/components/progress-bar.css';
 // import { useUser } from "../context/UserProvider";
 import { CSSProperties } from 'react';
-import { User } from '../types/User.type';
+import { PublicUser } from '../../../shared/common/types/user.type'; 
 
 type Props = {
   completed?: string;
-  user?: User;
+  user?: PublicUser;
 };
 
 function ProgressBar({ user }: Props) {

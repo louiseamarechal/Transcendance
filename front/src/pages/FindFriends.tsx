@@ -3,8 +3,8 @@ import '../style/pages/FindFriends.css';
 import { useEffect, useState } from 'react';
 import UserCard from '../components/UserCard.tsx';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
-import { User } from '../types/User.type.ts';
 import { Link } from 'react-router-dom';
+import { PublicUser } from '../../../shared/common/types/user.type.ts';
 
 function FindFriends() {
   const axiosInstance = useAxiosPrivate();
@@ -25,8 +25,8 @@ function FindFriends() {
   }, []);
 
   const unkownUsers = allUsers.filter(
-    (user: User) =>
-      myFriends.find((friend: User) => friend.id === user.id) === undefined,
+    (user: PublicUser) =>
+      myFriends.find((friend: PublicUser) => friend.id === user.id) === undefined,
   );
 
   if (unkownUsers.length > 0) {

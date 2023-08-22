@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { User } from '../types/User.type';
+import { PublicUser } from '../../../shared/common/types/user.type';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMedal,
@@ -9,7 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 
-export const ProfilStat = ({ user }: { user: User }) => {
+export const ProfilStat = ({ user }: { user: PublicUser }) => {
   useEffect(() => {
     console.log('ProfileStat loaded', user);
   }, []);
