@@ -181,7 +181,7 @@ export class FriendRequestService {
         members: [updatedRequest.fromId, updatedRequest.toId],
         visibility: VisType.PRIVATE,
       };
-      this.channelService.createChannel(userId, dto);
+      this.channelService.createChannel(userId, dto, 'FR');
     }
   }
 

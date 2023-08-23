@@ -1,10 +1,12 @@
 
-.findfriends-container{
+.findfriends-container {
+    padding-top: 10vh;
     display: flex;
-    flex-direction: row;
+    /* flex-direction: row; */
     align-items: center;
-    justify-content:center;
-    height: 100vh;
+    justify-content: start;
+    height: 90vh;
+    padding-left: 10%;
     flex-wrap: wrap;
 }
 

@@ -39,7 +39,7 @@ export class ChannelController {
     visibility: VisType;
     members: { userId: number }[];
   }> {
-    return this.channelService.createChannel(userId, dto);
+    return this.channelService.createChannel(userId, dto, '');
   }
 
   @Get('my-channels')

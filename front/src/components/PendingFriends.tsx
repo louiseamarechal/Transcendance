@@ -1,34 +1,35 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import UserCard from './UserCard';
+import { PublicUser } from '../../../shared/common/types/user.type';
 
-// type PendingFriendsProps = {
-//   pendingFR: [];
-//   setPendingFR: React.Dispatch<React.SetStateAction<[]>>;
-// };
+type PendingFriendsProps = {
+  pendingFR: PublicUser[];
+  setPendingFR: React.Dispatch<React.SetStateAction<PublicUser[]>>;
+};
 
-const PendingFriends = () => {
+const PendingFriends = (props: PendingFriendsProps) => {
   const axiosInstance = useAxiosPrivate();
-  const [pendingFR, setPendingFR] = useState([]);
+  // const [pendingFR, setPendingFR] = useState([]);
 
   useEffect(() => {
     axiosInstance
       .get('user/pending-request')
       .then((res) => {
-        setPendingFR(res.data);
+        props.setPendingFR(res.data);
       })
       .catch((err) => console.log(err));
   }, []);
 
-  if (pendingFR.length > 0) {
+  if (props.pendingFR.length > 0) {
     return (
-      <div className='friend-inside-container'>
+      <div className="friend-inside-container">
         <h2>Pending Requests : </h2>
         <div className="all-friends-cards">
-          {pendingFR.map((user) => {
+          {props.pendingFR.map((user, index) => {
             return (
               <div className="friend-card">
-                <UserCard user={user} />
+                <UserCard user={user} key={index} />
               </div>
             );
           })}
