@@ -11,7 +11,6 @@ import { FRStatus, FriendRequest } from '@prisma/client';
 import { join } from 'path';
 import { Response } from 'express';
 import { PublicUser } from '../../../shared/common/types/user.type';
-// import BACK_URL from '../../../front/src/api/backUrl'
 
 @Injectable()
 export class UserService {

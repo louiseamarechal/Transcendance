@@ -30,7 +30,6 @@ import OldGameLobby from './pages/OldGame/OldGameLobby.tsx';
 
 import GameLayout from './pages/game/GameLayout.tsx';
 import GameLobby from './pages/game/GameLobby.tsx';
-import GameQueue from './pages/game/GameQueue.tsx';
 import GameGame from './pages/game/GameGame.tsx';
 
 import UserProfile from './pages/UserProfile.tsx';
@@ -62,7 +61,6 @@ function App() {
           <Route index Component={GameLobby} />
           <Route path="search" Component={GameSearch} />
           <Route path="create" Component={GameCreate} />
-          <Route path="queue" Component={GameQueue} />
           <Route path=":gameId" Component={GameGame} />
         </Route>
         <Route path="/chat" Component={ChatLayout}>

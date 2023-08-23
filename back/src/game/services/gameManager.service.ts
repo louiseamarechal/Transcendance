@@ -4,16 +4,15 @@ import { Cron } from '@nestjs/schedule';
 import { Injectable } from '@nestjs/common';
 import { GameDbService } from './gameDb.service';
 import { UserService } from 'src/user/user.service';
-import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
-import { ClientEvents } from '../../../../shared/client/ClientEvents';
 import { PublicUser } from '../../../../shared/common/types/user.type';
 import { GameRequest } from '../../../../shared/common/types/game.type';
 import { ServerEvents } from '../../../../shared/server/ServerEvents';
+import { getGameByUserId } from '../utils/game.utils';
 
 @Injectable()
 export class GameManagerService {
   public server: Namespace;
-  readonly #games: Map<string, Game> = new Map<string, Game>();
+  #games: Map<string, Game> = new Map<string, Game>();
 
   constructor(
     private gameDb: GameDbService,
@@ -22,9 +21,16 @@ export class GameManagerService {
 
   public joinQueue(client: Socket) {
     console.log('[GameManager] joinQueue');
-    const filtGames = this.getGames(GameVisibility.Public, GameStatus.Waiting);
+    const userId = client.data.user.id;
 
-    filtGames.forEach((game) => console.log({ uuid: game.gameId }));
+    // Check if already in a game
+    const userGame: Game | null = getGameByUserId(this.#games, userId);
+    if (userGame) {
+      console.log('[GameManager] joinQueue > User already in a game');
+      return;
+    }
+
+    const filtGames = this.getGames(GameVisibility.Public, GameStatus.Waiting);
     if (filtGames.length === 0) {
       console.log('[GameManager] joinQueue > No games');
       const newGame = new Game(this.server);
@@ -81,7 +87,7 @@ export class GameManagerService {
     }
 
     if (game.p1.ready && game.p2.ready) {
-      // this.userService.editUser(game.p1.user.id, {});
+      this.userService.editUser(game.p1.user.id, { status: 'PLAYING' });
     }
   }
 
@@ -155,16 +161,16 @@ export class GameManagerService {
   private async addGame(game: Game) {
     console.log(`[GameManager] addGame ${game.gameId}`);
     this.#games.set(game.gameId, game);
-    this.gameDb.createGame(game);
+    // this.gameDb.createGame(game);
   }
 
   private async removeGame(game: Game) {
     console.log(`[GameManager] removeGame ${game.gameId}`);
     this.server.adapter.rooms.delete(game.gameId);
     game.stopGameLoop();
-    if (game.status !== GameStatus.Done) {
-      this.gameDb.deleteGame(game);
-    }
+    // if (game.status !== GameStatus.Done) {
+    //   this.gameDb.deleteGame(game);
+    // }
     this.#games.delete(game.gameId);
   }
 
@@ -173,48 +179,72 @@ export class GameManagerService {
     // console.log('[GameManager] Cleaner')
     this.#games.forEach((game: Game) => {
       // game.debug();
-      if (game.status === GameStatus.Done) {
-        console.log('Remove game. Cause: Game is done');
-        this.gameDb.updateGame(game);
-        this.removeGame(game);
-        return;
-      }
-
-      const now = Date.now();
-      if (
-        game.status === GameStatus.Playing &&
-        (now - game.p1.lastPing > 3000 || now - game.p2.lastPing > 3000)
-      ) {
-        console.log('Remove game. Cause: No ping for 3secs while playing');
-        this.server.to(game.gameId).emit(ServerEvents.gameAbort);
-        this.removeGame(game);
-        return;
-      }
-
-      if (
-        game.status !== GameStatus.Waiting &&
-        this.server.adapter.rooms.get(game.gameId)?.size !== 2
-      ) {
-        console.log('Remove game. Cause: Room contains only 1 player');
-        this.server.to(game.gameId).emit(ServerEvents.gameAbort);
-        this.removeGame(game);
-        return;
-      }
-
-      if (this.server.adapter.rooms.has(game.gameId) === false) {
-        console.log('Remove game. Cause: Room destroyed');
-        this.server.to(game.gameId).emit(ServerEvents.gameAbort);
-        this.removeGame(game);
-        return;
-      }
-
-      const durationMs = Date.now() - game.createdAt;
-      if (durationMs > 1000 * 60 * 30) {
-        console.log('Remove game. Cause: Existing for more than 30mins');
-        this.server.to(game.gameId).emit(ServerEvents.gameAbort);
-        this.removeGame(game);
-        // This should be unnecessary of well coded
-      }
+      if (this.checkGameDone(game)) return;
+      if (this.checkGameNoPing(game)) return;
+      if (this.checkGameDisconnection(game)) return;
+      if (this.checkGameDestoyed(game)) return;
+      if (this.checkGameTooLong(game)) return;
     });
+  }
+
+  private checkGameDone(game: Game): boolean {
+    if (game.status === GameStatus.Done) {
+      console.log('Remove game. Cause: Game is done');
+      // this.gameDb.updateGame(game);
+      this.gameDb.writeToDb(game);
+      this.removeGame(game);
+      return true;
+    }
+    return false;
+  }
+
+  private checkGameNoPing(game: Game): boolean {
+    const isPlaying = game.status === GameStatus.Playing;
+    const now = Date.now();
+    const isP1NoPing = now - game.p1.lastPing > 3000;
+    const isP2NoPing = now - game.p2.lastPing > 3000;
+    if (isPlaying && (isP1NoPing || isP2NoPing)) {
+      console.log('Remove game. Cause: No ping for 3secs while playing');
+      this.server.to(game.gameId).emit(ServerEvents.gameAbort);
+      this.removeGame(game);
+      return true;
+    }
+    return false;
+  }
+
+  private checkGameDisconnection(game: Game): boolean {
+    const isNotWaiting = game.status !== GameStatus.Waiting;
+    const hasNotTwoSocket =
+      this.server.adapter.rooms.get(game.gameId)?.size !== 2;
+
+    if (isNotWaiting && hasNotTwoSocket) {
+      console.log('Remove game. Cause: Room contains only 1 player');
+      this.server.to(game.gameId).emit(ServerEvents.gameAbort);
+      this.removeGame(game);
+      return true;
+    }
+    return false;
+  }
+
+  private checkGameDestoyed(game: Game): boolean {
+    if (this.server.adapter.rooms.has(game.gameId) === false) {
+      console.log('Remove game. Cause: Room destroyed');
+      this.server.to(game.gameId).emit(ServerEvents.gameAbort);
+      this.removeGame(game);
+      return true;
+    }
+    return false;
+  }
+
+  private checkGameTooLong(game: Game): boolean {
+    const durationMs = Date.now() - game.createdAt;
+    if (durationMs > 1000 * 60 * 30) {
+      console.log('Remove game. Cause: Existing for more than 30mins');
+      this.server.to(game.gameId).emit(ServerEvents.gameAbort);
+      this.removeGame(game);
+      // This should be unnecessary of well coded
+      return true;
+    }
+    return false;
   }
 }
