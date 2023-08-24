@@ -92,6 +92,16 @@ export class GameManagerService {
   }
 
   public async createPrivateGame(client: Socket, p1Id: number, p2Id: number) {
+    // Check if already in a game
+    const userGame: Game | null = getGameByUserId(this.#games, p1Id);
+    if (userGame) {
+      console.log('[GameManager] createPrivateGame > User already in a game');
+      client.emit(ServerEvents.privateGameNotCreated, {
+        why: 'Failed ! You are already in a game.',
+      });
+      return;
+    }
+
     const newGame = new Game(this.server);
     newGame.visibility = GameVisibility.Private;
     const p1: PublicUser = await this.userService.getUserById(p1Id);
@@ -100,6 +110,8 @@ export class GameManagerService {
     newGame.p2.user = p2;
     client.join(newGame.gameId);
     this.addGame(newGame);
+
+    this.server.to(newGame.gameId).emit(ServerEvents.privateGameCreated);
     // SEND NOTIF
   }
 
@@ -116,6 +128,23 @@ export class GameManagerService {
         };
       });
   }
+
+  public acceptGameRequest(client: Socket, gameId: string) {
+    const game = this.#games.get(gameId);
+    if (!game) return;
+
+    game.p2.user = client.data.user;
+    game.status = GameStatus.Ready;
+    client.join(game.gameId);
+
+    game.startGameLoop(20);
+
+    this.server
+      .to(game.gameId)
+      .emit('server.game.navigate', { to: `/game/${game.gameId}` });
+  }
+
+  public refuseGameRequest(gameId: string) {}
 
   public ping(userId: number) {
     const game = Array.from(this.#games.values())

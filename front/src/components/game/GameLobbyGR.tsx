@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import MiniUserCard from '../MiniUserCard';
 import { GameRequest } from '../../../../shared/common/types/game.type';
+import { gameSocket } from '../../api/socket';
+import { ClientEvents } from '../../../../shared/client/ClientEvents';
 
 function GameLobbyGR() {
   const axiosInstance = useAxiosPrivate();
@@ -18,11 +20,13 @@ function GameLobbyGR() {
       });
   }, []); // add dependency: game notif to refresh when new game notif
 
-  function handleGRAccept() {
-    // gameSocket.emit(ClientEvents.GameAcceptGR);
+  function handleGRAccept(gr: GameRequest) {
+    console.log({ gr });
+    gameSocket.emit(ClientEvents.GameAcceptGR, { gameId: gr.gameId });
   }
-  function handleGRRefuse() {
-    // gameSocket.emit(ClientEvents.GameRefuseGR);
+  function handleGRRefuse(gr: GameRequest) {
+    console.log({ gr });
+    gameSocket.emit(ClientEvents.GameRefuseGR, { gameId: gr.gameId });
   }
 
   if (gameRequests.length === 0) {
@@ -40,8 +44,8 @@ function GameLobbyGR() {
               key={gr.gameId}
             >
               <MiniUserCard user={gr.p1} />
-              <button onClick={handleGRAccept}>Accept</button>
-              <button onClick={handleGRRefuse}>Refuse</button>
+              <button onClick={() => handleGRAccept(gr)}>Accept</button>
+              <button onClick={() => handleGRRefuse(gr)}>Refuse</button>
             </div>
           );
         })}

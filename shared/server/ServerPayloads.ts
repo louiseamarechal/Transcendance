@@ -20,4 +20,5 @@ export type GameData = {
 export type ServerPayloads = {
   [ServerEvents.updateOverlay]: { type: OverlayType; data: OverlayData };
   [ServerEvents.gameData]: GameData;
+  [ServerEvents.privateGameNotCreated]: { why: string };
 };

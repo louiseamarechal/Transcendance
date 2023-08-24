@@ -100,13 +100,19 @@ export class GameGateway
   }
 
   @SubscribeMessage(ClientEvents.GameAcceptGR)
-  handleAcceptGR() {
-    // this.gameManager.acceptGameRequest();
+  handleAcceptGR(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: ClientPayloads[ClientEvents.GameAcceptGR],
+  ) {
+    this.gameManager.acceptGameRequest(client, payload.gameId);
   }
 
   @SubscribeMessage(ClientEvents.GameRefuseGR)
-  handleRefuseGR() {
-    // this.gameManager.refuseGameRequest();
+  handleRefuseGR(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: ClientPayloads[ClientEvents.GameRefuseGR],
+  ) {
+    this.gameManager.refuseGameRequest(payload.gameId);
   }
 
   @SubscribeMessage(ClientEvents.GamePing)

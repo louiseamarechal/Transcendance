@@ -8,6 +8,7 @@ export class GameDbService {
   constructor(private prisma: PrismaService) {}
 
   async writeToDb(game: Game) {
+    console.log('[GameGb] writeToDb');
     const p1Id = game.p1.user.id;
     const p2Id = game.p2.user.id;
     const isPrivate = game.visibility === GameVisibility.Private ? true : false;

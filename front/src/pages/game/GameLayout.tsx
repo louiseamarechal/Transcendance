@@ -9,7 +9,7 @@ export default function GameLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('Connect to websocket');
+    console.log('Connect to gameSocket');
 
     gameSocket.auth = {
       token: auth.access_token,
@@ -18,15 +18,15 @@ export default function GameLayout() {
     gameSocket.connect();
 
     return () => {
-      console.log('Disconnect from websocket');
+      console.log('Disconnect from gameSocket');
       gameSocket.disconnect();
     };
   }, [auth]);
 
   useEffect(() => {
-    function onServerGameNavigate(value: {to: string}) {
-      console.log(`Server asked client to navigate to ${value.to}`)
-      navigate(value.to)
+    function onServerGameNavigate(value: { to: string }) {
+      console.log(`Server asked client to navigate to ${value.to}`);
+      navigate(value.to);
     }
 
     // gameSocket.on('server.game.navigateGame', onServerGameNavigateGame);
