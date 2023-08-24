@@ -1,34 +1,49 @@
 .friends-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 95vh;
-  padding-top: 5vh;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-evenly;
   flex-wrap: wrap;
-  margin-left: 5%;
-  gap: 5%;
-  /* width: 50%; */
+  /* width: 85%; */
+  height: 95vh;
+  padding-left: 15%;
+  padding-right: 5%;
+  padding-top: 5vh;
+  /* gap: 5%; */
 }
 
 .friends-container h2 {
   font-weight: 600;
+  font-size: 20px;
 }
 
 .my-friends-container {
   height: 20vh;
 }
 
+.text {
+  font-size: 15px;
+  width: 100%;
+  font-style: italic;
+  padding-left: 3%;
+  /* margin: 0 0%; */
+  /* width: inherit; */
+}
+
 .friend-inside-container {
-  width: auto;
-  padding: 5%;
+  /* width: 80%;
+  height: 90%; */
+  /* padding: 5%; */
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
+  /* gap: 20%; */
   align-items: flex-start;
-  border-width: 1px 2px 2px 1px;
-  border-color: #0000001c;
+  /* border-width: 1px 2px 2px 1px; */
+  /* border-color: #0000001c; */
   /* border: 1px solid var(--faded-black); */
-  box-shadow: 0px 2px 4px 0px #0000001c;
-  border-radius: 30px;
+  /* box-shadow: 0px 2px 4px 0px #0000001c;
+  border-radius: 30px; */
 }
 
 .all-friends-cards {

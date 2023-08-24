@@ -12,24 +12,27 @@ function Friends() {
   const [pendingFR, setPendingFR] = useState<PublicUser[]>([]);
 
   useEffect(() => {
-    axiosInstance
-      .get('friend-request/my-friends')
-      .then((res) => {
-        setArray(res.data);
-      })
-      .catch((e) => console.log(e));
+      axiosInstance
+        .get('friend-request/my-friends')
+        .then((res) => {
+          setArray(res.data);
+        })
+        .catch((e) => console.log(e));
   }, [axiosInstance]);
 
   if (array.length <= 0 && pendingFR.length <= 0) {
     return (
       <div className="friends-container">
+        {/* <div className="friend-inside-container"> */}
         <PendingFriends pendingFR={pendingFR} setPendingFR={setPendingFR} />
-        <div className="friend-inside-container">
-          <Link to="/findfriends">
+        <div className="w-full">
+          <h2>Friends :</h2>
+          <Link to="/findfriends" className="text">
             You can invite your Friends <strong>here</strong>
           </Link>
         </div>
       </div>
+      // </div>
     );
   } else if (array.length > 0) {
     return (
@@ -52,8 +55,16 @@ function Friends() {
   }
   return (
     <div className="friends-container">
+      {/* <div className="friend-inside-container"> */}
       <PendingFriends pendingFR={pendingFR} setPendingFR={setPendingFR} />
+      <div className='w-full'>
+        <h2>Friends :</h2>
+        <Link to="/findfriends" className="text">
+          You can invite your Friends <strong>here</strong>
+        </Link>
+      </div>
     </div>
+    // </div>
   );
 }
 
