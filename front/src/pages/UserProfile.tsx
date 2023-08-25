@@ -8,6 +8,7 @@ import { ProfilStat } from '../components/ProfilStat';
 import { FriendRequest } from '../types/FriendRequest.type';
 import Avatar from '../components/Avatar';
 import ActivityStatus from '../components/ActivityStatus';
+import { notifSocket } from '../api/socket';
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -40,15 +41,22 @@ export default function UserProfile() {
       navigate('/profil');
     }
 
-    axiosInstance
-      .get(`user/${id}`)
-      .then((res) => {
-        setUser(res.data);
-        setLoading(false);
-      })
-      .catch((_) => {
-        navigate('/game');
-      });
+    function getUserInfo() {
+      axiosInstance
+        .get(`user/${id}`)
+        .then((res) => {
+          setUser(res.data);
+          setLoading(false);
+        })
+        .catch((_) => {
+          navigate('/game');
+        });
+    }
+
+    getUserInfo();
+
+    notifSocket.on('disconnect', getUserInfo);
+    notifSocket.on('reconnect', getUserInfo);
 
     axiosInstance
       .get(`friend-request/with/${id}`)
@@ -63,7 +71,12 @@ export default function UserProfile() {
       .catch((error) => {
         console.error(error);
       });
-  }, [id, refresh]);
+
+      return() => {
+        notifSocket.off('disconnect', getUserInfo);
+        notifSocket.off('reconnect', getUserInfo);
+      }
+  }, [id, refresh, axiosInstance]);
 
   if (isLoading) {
     return <div className="grid place-items-center h-screen">Loading...</div>;

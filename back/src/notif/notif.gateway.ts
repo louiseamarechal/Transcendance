@@ -72,10 +72,12 @@ export class NotifGateway
   // handle disconnect
   handleDisconnect(client: Socket) {
     console.log(`[NotifGateway] ${client.data?.user?.name} left`);
-    this.userService.editUser(client.data.user.id, {
-      status: UserStatus.OFFLINE,
-    });
-    client.disconnect();
+    if (client.data.user?.id) {
+      this.userService.editUser(client.data.user.id, {
+        status: UserStatus.OFFLINE,
+      });
+      client.disconnect();
+    }
   }
 
   @SubscribeMessage('client.notif.chatNotif')
