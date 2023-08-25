@@ -1,8 +1,8 @@
 .chat-page {
   display: flex;
 	flex-direction: row;
-  justify-content: space-between;
-  min-width: 1000px;
+  justify-content: space-evenly;
+  /* min-width: 1000px; */
 }
 
 #chat-net {

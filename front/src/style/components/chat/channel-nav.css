@@ -1,6 +1,7 @@
 .channel-nav {
 	margin: 0px 30px;
-	margin-top: 100px;
+	margin-top: 10%;
+	margin-left: 3%;
 	width: 23%;
 	height: 100% - 100px;
 	display: flex;
@@ -9,7 +10,19 @@
 	justify-content: space-between;
 }
 
-.channel-nav button {
+.black-button {
 	background-color: var(--black);
 	color: var(--white);
-}
+	font-size: 13px;
+	width: 75%;
+	text-align: center;
+	/* align-items: center; */
+	line-height: 10%;
+  }
+
+  @media (max-width: 900px) {
+	.black-button {
+		font-size: 10px;
+		width: 85%;
+	}
+  }
