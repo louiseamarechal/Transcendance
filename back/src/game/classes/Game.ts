@@ -8,6 +8,7 @@ import {
 import { Vec2D } from '../../../../shared/common/types/game.type';
 import { ServerEvents } from '../../../../shared/server/ServerEvents';
 import { ServerPayloads } from '../../../../shared/server/ServerPayloads';
+import { normVec2D, rotateVec2D } from '../utils/math';
 
 export enum GameStatus {
   Waiting = 'Waiting',
@@ -37,6 +38,7 @@ export class Game {
   p2: Player;
   ball: Ball;
   score: [number, number] = [0, 0];
+  maxScore: number = 10;
 
   status: GameStatus = GameStatus.Waiting;
   visibility: GameVisibility = GameVisibility.Public;
@@ -354,32 +356,17 @@ export class Game {
 
     const vel = this.ball.velocity;
     const newVelocity: Vec2D = {
-      x: Math.sign(vel.x) * this.normVec2D(vel),
+      x: Math.sign(vel.x) * normVec2D(vel),
       y: 0,
     };
-    // console.log({ vel });
-    // console.log({ newVelocity });
 
-    const rotated = this.rotateVec2D(newVelocity, rotation);
-    // console.log({ rotated, pos: this.ball.pos });
-    // console.log();
+    const rotated = rotateVec2D(newVelocity, rotation);
 
     this.ball.velocity = rotated;
   }
 
-  private rotateVec2D(vec: Vec2D, angle: number): Vec2D {
-    return {
-      x: vec.x * Math.cos(angle) - vec.y * Math.sin(angle),
-      y: vec.x * Math.sin(angle) + vec.y * Math.cos(angle),
-    };
-  }
-
-  private normVec2D(vec: Vec2D): number {
-    return Math.sqrt(vec.x ** 2 + vec.y ** 2);
-  }
-
   private isWinCondition(): boolean {
-    if (this.score[0] >= 10 || this.score[1] >= 10) {
+    if (this.score[0] >= this.maxScore || this.score[1] >= this.maxScore) {
       return true;
     }
     return false;

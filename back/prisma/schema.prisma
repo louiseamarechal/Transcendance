@@ -18,7 +18,7 @@ model User {
   login    String  @unique
   name     String  @unique
   hashedRT String?
-  code2FA String? @unique
+  code2FA  String? @unique
 
   online Boolean @default(false)
   status   UserStatus @default(OFFLINE)
@@ -149,7 +149,7 @@ model MutedByUserOnChannel {
   mutedByUser   User @relation(name: "mutedByUser", fields: [mutedByUserId], references: [id])
   mutedByUserId Int  @map("muted_by_user_id")
 
-	@@id([channelId, mutedUserId, mutedByUserId])
+  @@id([channelId, mutedUserId, mutedByUserId])
 }
 
 model Message {
@@ -173,16 +173,20 @@ model Game {
   createdAt DateTime @default(now()) @map("create_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  uuid    String  @unique
+  private Boolean @default(false)
+
   player1   User @relation(name: "player1", fields: [player1Id], references: [id], onDelete: Cascade)
   player1Id Int  @map("player1_id")
 
-  player2   User @relation(name: "player2", fields: [player2Id], references: [id], onDelete: Cascade)
-  player2Id Int  @map("player2_id")
+  player2   User? @relation(name: "player2", fields: [player2Id], references: [id], onDelete: Cascade)
+  player2Id Int?  @map("player2_id")
 
   winner   User? @relation(name: "winner", fields: [winnerId], references: [id], onDelete: Cascade)
   winnerId Int?  @map("winner_id")
 
-  score String?
+  score1 Int?
+  score2 Int?
 
   @@map("games")
 }

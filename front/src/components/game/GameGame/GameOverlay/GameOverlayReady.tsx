@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
-import { gameSocket } from '../../../api/socket';
-import { OverlayData } from '../../../../../shared/server/ServerPayloads';
+import { gameSocket } from '../../../../api/socket';
+import { OverlayData } from '../../../../../../shared/server/ServerPayloads';
 
 type GameOverlayReadyProps = {
   data: OverlayData;

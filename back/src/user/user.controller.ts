@@ -15,8 +15,8 @@ import { GetUser, GetUserId, Public } from 'src/common/decorators';
 import { EditUserDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from 'src/config/multer.config';
-import { PublicUser } from './types';
 import { Response } from 'express';
+import { PublicUser } from '../../../shared/common/types/user.type';
 
 @Controller('user')
 export class UserController {

@@ -7,11 +7,10 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditUserDto } from './dto';
 import { NoParamCallback, createReadStream, existsSync, rename, rm } from 'fs';
-import { PublicUser } from './types';
 import { FRStatus, FriendRequest } from '@prisma/client';
 import { join } from 'path';
 import { Response } from 'express';
-// import BACK_URL from '../../../front/src/api/backUrl'
+import { PublicUser } from '../../../shared/common/types/user.type';
 
 @Injectable()
 export class UserService {
@@ -40,7 +39,7 @@ export class UserService {
     }
     return user;
   }
- 
+
   async getAvatarById(userId: number, res: Response) {
     const user: PublicUser = await this.getUserById(userId);
     const avatar = user.avatar;

@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { Layer, Stage } from 'react-konva';
 import GamePaddle from './GamePaddle';
 import GameBall from './GameBall';
-import { GameData } from '../../../../shared/server/ServerPayloads';
+import { GameData } from '../../../../../shared/server/ServerPayloads';
 
 type GameCanvasProps = GameData;
 
