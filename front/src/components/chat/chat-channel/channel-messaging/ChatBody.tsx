@@ -127,7 +127,7 @@ export default function ChatBody() {
         />
         <div className="send-button" onClick={() => sendMessage()}>
           <FontAwesomeIcon
-            className="fa-lg fa-regular"
+            className="fa-sm fa-regular"
             icon={faPaperPlane}
             style={{ color: 'var(--black)' }}
           />

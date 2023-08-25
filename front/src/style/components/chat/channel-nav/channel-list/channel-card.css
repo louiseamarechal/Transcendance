@@ -12,6 +12,7 @@
   width: 100%;
   border-radius: 50vh;
   font-family: 'Montserrat Alternates';
+  font-size: 15px;
   background-color: transparent;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
   margin-top: 10%;
@@ -63,4 +64,36 @@
   padding: 0px 15px;
   color: black;
   width: 25%;
+}
+
+/* .channel-name {
+  font-size: 10px;
+} */
+
+@media (max-width: 900px) {
+  .channel-card {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 750px) {
+
+  .selected {
+    width: 60% !important;
+  }
+
+  .channel-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 50%;
+    border-radius: 50vh;
+    font-family: 'Montserrat Alternates';
+    font-size: 15px;
+    background-color: transparent;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+    margin-top: 10%;
+    padding-right: 0px;
+    color: transparent;
+  }
 }

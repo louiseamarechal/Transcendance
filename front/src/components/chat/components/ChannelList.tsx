@@ -13,40 +13,44 @@ function ChannelList() {
 
   return (
     <div className="channel-list">
+      <p id="add-friend">
+        Add friends{' '}
+        <button onClick={() => navigate('/FindFriends')}>here</button>
+      </p>
       <div className="scrollable-list">
-        <ul>
-          <li id="add-friend">
-            <button onClick={() => navigate('/FindFriends')}>Add friend</button>
-          </li>
-          <li>
-            <p className="channel-group">Your channels</p>
-          </li>
-          {channelListState.self
-            .filter((elem: ChannelShort) => {
-              return elem.members.some((e) => e.userId === myId);
-            })
-            .map((elem: ChannelShort) => {
-              return (
-                <li key={`channel-${elem.id}`}>
-                  <ChannelCard channel={elem} />
-                </li>
-              );
-            })}
-          <li>
-            <p className="channel-group">Channels you can join</p>
-          </li>
-          {channelListState.self
-            .filter((elem: ChannelShort) => {
-              return !elem.members.some((e) => e.userId === myId);
-            })
-            .map((elem: ChannelShort) => {
-              return (
-                <li key={elem.id}>
-                  <ChannelCard channel={elem} />
-                </li>
-              );
-            })}
-        </ul>
+        <div>
+          <h3 className="channel-group">My channels</h3>
+          <ul>
+            {channelListState.self
+              .filter((elem: ChannelShort) => {
+                return elem.members.some((e) => e.userId === myId);
+              })
+              .map((elem: ChannelShort) => {
+                return (
+                  <li key={`channel-${elem.id}`}>
+                    <ChannelCard channel={elem} />
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
+        <div>
+          {/* <h3 className="channel-group">Channels you can join</h3> */}
+          <h3 className="channel-group">Public Channels</h3>
+          <ul>
+            {channelListState.self
+              .filter((elem: ChannelShort) => {
+                return !elem.members.some((e) => e.userId === myId);
+              })
+              .map((elem: ChannelShort) => {
+                return (
+                  <li key={elem.id}>
+                    <ChannelCard channel={elem} />
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
       </div>
     </div>
   );
