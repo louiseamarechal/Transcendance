@@ -4,18 +4,29 @@ import { useEffect } from 'react';
 import NavBar from './NavBar';
 import useNavbar from '../hooks/useNavbar';
 import { notifSocket } from '../api/socket';
+import useRefreshToken from '../hooks/useRefreshToken';
 
 const RequireAuth = () => {
   const { auth } = useAuth();
   const location = useLocation();
   const navbar = useNavbar();
+  const refresh = useRefreshToken();
+  
+  function refreshToken () {
+    refresh();
+  }
 
   useEffect(() => {
     notifSocket.auth = { token: auth.access_token };
     console.log('Connect notifSocket')
     notifSocket.connect();
+    notifSocket.on('connect_error', (error) => {
+      console.log({reconnectError: error.message});
+      refreshToken();
+    })
     return () => {
-      console.log('Disconnect notifSocket')
+      console.log('Disconnect notifSocket');
+      notifSocket.off("connect_error");
       notifSocket.disconnect();
     };
   }, [auth]);

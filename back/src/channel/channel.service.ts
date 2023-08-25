@@ -37,6 +37,7 @@ export class ChannelService {
   async createChannel(
     ownerId: number,
     { name, avatar, members, visibility, password }: CreateChannelDto,
+    origin: string,
   ): Promise<{
     id: number;
     name: string;
@@ -75,11 +76,13 @@ export class ChannelService {
       },
     });
     console.log({ channel });
-    channel.members.map((member) => {
-      if (member.user.id !== ownerId) {
-        this.notifService.handleChatNotif(member.user.login);
-      }
-    });
+    if (origin !== 'FR') {
+      channel.members.map((member) => {
+        if (member.user.id !== ownerId) {
+          this.notifService.handleChatNotif(member.user.login);
+        }
+      });
+    }
     console.log('Created channel.');
     return channel;
   }

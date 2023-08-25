@@ -1,34 +1,47 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import UserCard from './UserCard';
+import { PublicUser } from '../../../shared/common/types/user.type';
+import { notifSocket } from '../api/socket';
 
-// type PendingFriendsProps = {
-//   pendingFR: [];
-//   setPendingFR: React.Dispatch<React.SetStateAction<[]>>;
-// };
+type PendingFriendsProps = {
+  pendingFR: PublicUser[];
+  setPendingFR: React.Dispatch<React.SetStateAction<PublicUser[]>>;
+};
 
-const PendingFriends = () => {
+const PendingFriends = (props: PendingFriendsProps) => {
   const axiosInstance = useAxiosPrivate();
-  const [pendingFR, setPendingFR] = useState([]);
+  // const [pendingFR, setPendingFR] = useState([]);
 
   useEffect(() => {
-    axiosInstance
-      .get('user/pending-request')
-      .then((res) => {
-        setPendingFR(res.data);
-      })
-      .catch((err) => console.log(err));
+    function getPendingRequests() {
+      axiosInstance
+        .get('user/pending-request')
+        .then((res) => {
+          props.setPendingFR(res.data);
+        })
+        .catch((err) => console.log(err));
+    }
+
+    getPendingRequests();
+    
+    notifSocket.on('server.notif.friends', getPendingRequests);
+
+    return () => {
+      notifSocket?.off('server.notif.friends', getPendingRequests);
+    };
   }, []);
 
-  if (pendingFR.length > 0) {
+  if (props.pendingFR.length > 0) {
     return (
-      <div className='friend-inside-container'>
+      <div>
+        {/* <div className="friend-inside-container"> */}
         <h2>Pending Requests : </h2>
         <div className="all-friends-cards">
-          {pendingFR.map((user) => {
+          {props.pendingFR.map((user, index) => {
             return (
               <div className="friend-card">
-                <UserCard user={user} />
+                <UserCard user={user} key={index} />
               </div>
             );
           })}
@@ -36,7 +49,12 @@ const PendingFriends = () => {
       </div>
     );
   }
-  return <></>;
+  return (
+    <div className="w-full">
+      <h2>Pending Requests : </h2>
+      <p className="text">No pending requests</p>
+    </div>
+  );
 };
 
 export default PendingFriends;
