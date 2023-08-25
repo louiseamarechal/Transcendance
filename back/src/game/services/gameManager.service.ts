@@ -8,6 +8,8 @@ import { PublicUser } from '../../../../shared/common/types/user.type';
 import { GameRequest } from '../../../../shared/common/types/game.type';
 import { ServerEvents } from '../../../../shared/server/ServerEvents';
 import { getGameByUserId } from '../utils/game.utils';
+import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
+import { ClientEvents } from '../../../../shared/client/ClientEvents';
 
 @Injectable()
 export class GameManagerService {
@@ -91,9 +93,12 @@ export class GameManagerService {
     }
   }
 
-  public async createPrivateGame(client: Socket, p1Id: number, p2Id: number) {
+  public async createPrivateGame(
+    client: Socket,
+    payload: ClientPayloads[ClientEvents.GameCreateGame],
+  ) {
     // Check if already in a game
-    const userGame: Game | null = getGameByUserId(this.#games, p1Id);
+    const userGame: Game | null = getGameByUserId(this.#games, payload.p1Id);
     if (userGame) {
       console.log('[GameManager] createPrivateGame > User already in a game');
       client.emit(ServerEvents.privateGameNotCreated, {
@@ -104,10 +109,13 @@ export class GameManagerService {
 
     const newGame = new Game(this.server);
     newGame.visibility = GameVisibility.Private;
-    const p1: PublicUser = await this.userService.getUserById(p1Id);
-    const p2: PublicUser = await this.userService.getUserById(p2Id);
+    const p1: PublicUser = await this.userService.getUserById(payload.p1Id);
+    const p2: PublicUser = await this.userService.getUserById(payload.p2Id);
     newGame.p1.user = p1;
     newGame.p2.user = p2;
+    newGame.p1.paddle.size = Number(payload.p1PaddleSize);
+    newGame.p2.paddle.size = Number(payload.p2PaddleSize);
+
     client.join(newGame.gameId);
     this.addGame(newGame);
 
@@ -215,7 +223,7 @@ export class GameManagerService {
   private cleaner() {
     // console.log('[GameManager] Cleaner')
     this.#games.forEach((game: Game) => {
-      // game.debug();
+      game.debug();
       if (this.checkGameDone(game)) return;
       if (this.checkGameNoPing(game)) return;
       if (this.checkGameDisconnection(game)) return;
@@ -227,7 +235,6 @@ export class GameManagerService {
   private checkGameDone(game: Game): boolean {
     if (game.status === GameStatus.Done) {
       console.log('Remove game. Cause: Game is done');
-      // this.gameDb.updateGame(game);
       this.gameDb.writeToDb(game);
       this.removeGame(game);
       return true;

@@ -3,15 +3,15 @@ import { gameSocket } from '../../api/socket';
 import { ClientEvents } from '../../../../shared/client/ClientEvents';
 import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
 import { useNavigate, useParams } from 'react-router-dom';
-import GameOverlay from '../../components/game/GameOverlay/GameOverlay';
-import GameCanvas from '../../components/game/GameCanvas';
-import GameBackground from '../../components/game/GameBackground';
+import GameCanvas from '../../components/game/GameGame/GameCanvas';
+import GameBackground from '../../components/game/GameGame/GameBackground';
 import {
   GameData,
   OverlayData,
   ServerPayloads,
 } from '../../../../shared/server/ServerPayloads';
 import { ServerEvents } from '../../../../shared/server/ServerEvents';
+import GameOverlay from '../../components/game/GameGame/GameOverlay/GameOverlay';
 
 export default function GameLobby() {
   const { gameId } = useParams();

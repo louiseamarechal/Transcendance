@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import GameLobbyGR from '../../components/game/GameLobbyGR';
+import GameLobbyGR from '../../components/game/GameLobby/GameLobbyGR';
 
 export default function GameLobby() {
   return (

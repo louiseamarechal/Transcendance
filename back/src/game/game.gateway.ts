@@ -96,7 +96,7 @@ export class GameGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: ClientPayloads[ClientEvents.GameCreateGame],
   ) {
-    this.gameManager.createPrivateGame(client, payload.p1Id, payload.p2Id);
+    this.gameManager.createPrivateGame(client, payload);
   }
 
   @SubscribeMessage(ClientEvents.GameAcceptGR)

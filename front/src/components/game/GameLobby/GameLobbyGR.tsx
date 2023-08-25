@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import MiniUserCard from '../MiniUserCard';
-import { GameRequest } from '../../../../shared/common/types/game.type';
-import { gameSocket } from '../../api/socket';
-import { ClientEvents } from '../../../../shared/client/ClientEvents';
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
+import MiniUserCard from '../../MiniUserCard';
+import { GameRequest } from '../../../../../shared/common/types/game.type';
+import { gameSocket } from '../../../api/socket';
+import { ClientEvents } from '../../../../../shared/client/ClientEvents';
 
 function GameLobbyGR() {
   const axiosInstance = useAxiosPrivate();
@@ -31,7 +31,9 @@ function GameLobbyGR() {
   function handleGRRefuse(gr: GameRequest) {
     console.log({ gr });
     gameSocket.emit(ClientEvents.GameRefuseGR, { gameId: gr.gameId });
-    fetchGameRequests();
+    setTimeout(() => {
+      fetchGameRequests();
+    }, 100);
   }
 
   if (gameRequests.length === 0) {
