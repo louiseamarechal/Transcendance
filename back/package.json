@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "migrate": "npx prisma migrate dev && npx prisma generate",
     "init": "npm run build && npm run prisma:generate && prisma migrate deploy",
     "dev": "npm run db:dev:restart && npm run start:dev",
     "prisma:generate": "npx prisma generate",

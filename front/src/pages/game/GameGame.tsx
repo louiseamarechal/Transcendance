@@ -2,19 +2,20 @@ import { PointerEvent, useEffect, useRef, useState } from 'react';
 import { gameSocket } from '../../api/socket';
 import { ClientEvents } from '../../../../shared/client/ClientEvents';
 import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
-import { useParams } from 'react-router-dom';
-import GameOverlay from '../../components/game/GameOverlay/GameOverlay';
-import GameCanvas from '../../components/game/GameCanvas';
-import GameBackground from '../../components/game/GameBackground';
+import { useNavigate, useParams } from 'react-router-dom';
+import GameCanvas from '../../components/game/GameGame/GameCanvas';
+import GameBackground from '../../components/game/GameGame/GameBackground';
 import {
   GameData,
   OverlayData,
   ServerPayloads,
 } from '../../../../shared/server/ServerPayloads';
 import { ServerEvents } from '../../../../shared/server/ServerEvents';
+import GameOverlay from '../../components/game/GameGame/GameOverlay/GameOverlay';
 
 export default function GameLobby() {
   const { gameId } = useParams();
+  const navigate = useNavigate();
 
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -36,12 +37,29 @@ export default function GameLobby() {
       setGameData(payload);
     }
 
-    gameSocket.on('server.game.updateOverlay', updateOverlay);
-    gameSocket.on('server.game.gameData', gameData);
+    function gameAbort() {
+      navigate('/game');
+      alert('Game Aborted');
+    }
+
+    gameSocket.on(ServerEvents.updateOverlay, updateOverlay);
+    gameSocket.on(ServerEvents.gameData, gameData);
+    gameSocket.on(ServerEvents.gameAbort, gameAbort);
 
     return () => {
-      gameSocket.off('server.game.updateOverlay', updateOverlay);
-      gameSocket.off('server.game.gameData', gameData);
+      gameSocket.off(ServerEvents.updateOverlay, updateOverlay);
+      gameSocket.off(ServerEvents.gameData, gameData);
+      gameSocket.off(ServerEvents.gameAbort, gameAbort);
+    };
+  }, []);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      gameSocket.emit(ClientEvents.GamePing);
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
     };
   }, []);
 

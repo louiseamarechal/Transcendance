@@ -115,17 +115,6 @@ export default function UserProfile() {
     });
   };
 
-  const handleGameRequest = async () => {
-    await axiosInstance
-      .post(`game/${id}`, {})
-      .then((response) => {
-        console.log({ handleGameRequest: response.data });
-      })
-      .catch((error) => {
-        if (error.response.status !== 409) console.error(error);
-      });
-  };
-
   return (
     <div className="profil-container">
       <div className="flex flex-row w-[55%] justify-end">
@@ -143,7 +132,6 @@ export default function UserProfile() {
           handleAddFriend={handleAddFriend}
           handleAcceptFriend={handleAcceptFriend}
           handleRemoveFR={handleRemoveFR}
-          handleGameRequest={handleGameRequest}
         />
       </div>
       <ProgressBar user={user} />
@@ -156,11 +144,10 @@ export default function UserProfile() {
 
 type ActionButtonsProps = {
   status: string;
-  activity: string,
+  activity: string;
   handleAddFriend: Function;
   handleAcceptFriend: Function;
   handleRemoveFR: Function;
-  handleGameRequest: Function;
   myId: number;
   fromId: string;
 };
@@ -172,7 +159,6 @@ function ActionButtons({
   handleAddFriend,
   handleAcceptFriend,
   handleRemoveFR,
-  handleGameRequest,
 }: ActionButtonsProps) {
   if (status === 'ACCEPTED') {
     return (
@@ -184,14 +170,6 @@ function ActionButtons({
           }}
         >
           Remove Friend
-        </button>
-        <button
-          className="small-button game-request-button"
-          onClick={() => {
-            handleGameRequest();
-          }}
-        >
-          Send game request
         </button>
         <ActivityStatus activity={activity} />
       </div>
@@ -221,9 +199,6 @@ function ActionButtons({
         >
           Decline
         </button>
-        <button className="small-button game-request-button">
-          Send game request
-        </button>
       </div>
     );
   } else {
@@ -236,9 +211,6 @@ function ActionButtons({
           }}
         >
           Add friend
-        </button>
-        <button className="small-button game-request-button">
-          Send game request
         </button>
       </div>
     );

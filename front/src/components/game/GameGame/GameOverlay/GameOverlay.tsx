@@ -4,7 +4,7 @@ import GameOverlayTimer from './GameOverlayTimer';
 import {
   OverlayType,
   OverlayData,
-} from '../../../../../shared/server/ServerPayloads';
+} from '../../../../../../shared/server/ServerPayloads';
 import GameOverlayScore from './GameOverlayScore';
 
 type GameOverlayProps = {

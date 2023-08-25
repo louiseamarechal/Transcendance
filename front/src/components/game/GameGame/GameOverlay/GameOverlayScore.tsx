@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { OverlayData } from '../../../../../shared/server/ServerPayloads';
+import { OverlayData } from '../../../../../../shared/server/ServerPayloads';
 
 type GameOverlayReadyProps = {
   data: OverlayData;
