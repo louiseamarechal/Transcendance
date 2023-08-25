@@ -7,6 +7,7 @@ import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
 import { useUser } from '../../hooks/useUser';
 import { ServerEvents } from '../../../../shared/server/ServerEvents';
 import { ServerPayloads } from '../../../../shared/server/ServerPayloads';
+import { useNavigate } from 'react-router-dom';
 
 export default function GameCreate() {
   const [selectedFriend, setSelectedFriend] = useState<number>(-1);
@@ -14,7 +15,7 @@ export default function GameCreate() {
   const [error, setError] = useState<string>('');
 
   const { myId } = useUser();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     function handlePrivateGameCreatedEvent() {
@@ -29,6 +30,13 @@ export default function GameCreate() {
       setError(data.why);
     }
 
+    function handleGameRefused() {
+      setError('Game Refused');
+      setTimeout(() => {
+        navigate('/game');
+      }, 2000);
+    }
+
     gameSocket.on(
       ServerEvents.privateGameCreated,
       handlePrivateGameCreatedEvent,
@@ -37,8 +45,10 @@ export default function GameCreate() {
       ServerEvents.privateGameNotCreated,
       handlePrivateGameNotCreatedEvent,
     );
+    gameSocket.on(ServerEvents.gameRefused, handleGameRefused);
 
     return () => {
+      gameSocket.off(ServerEvents.gameRefused, handleGameRefused);
       gameSocket.off(
         ServerEvents.privateGameNotCreated,
         handlePrivateGameNotCreatedEvent,
@@ -75,7 +85,10 @@ export default function GameCreate() {
           {error && <p className="text-red-500">{error}</p>}
         </div>
       ) : (
-        <div>Waiting for your opponent</div>
+        <>
+          <div>Waiting for your opponent</div>
+          {error && <p className="text-red-500">{error}</p>}
+        </>
       )}
     </div>
   );

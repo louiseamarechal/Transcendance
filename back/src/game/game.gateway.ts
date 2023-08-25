@@ -112,7 +112,7 @@ export class GameGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: ClientPayloads[ClientEvents.GameRefuseGR],
   ) {
-    this.gameManager.refuseGameRequest(payload.gameId);
+    this.gameManager.refuseGameRequest(client, payload.gameId);
   }
 
   @SubscribeMessage(ClientEvents.GamePing)

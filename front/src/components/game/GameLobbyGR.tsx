@@ -9,7 +9,7 @@ function GameLobbyGR() {
   const axiosInstance = useAxiosPrivate();
   const [gameRequests, setGameRequests] = useState<GameRequest[]>([]);
 
-  useEffect(() => {
+  function fetchGameRequests() {
     axiosInstance
       .get('game/myGameRequests')
       .then((res) => {
@@ -18,6 +18,10 @@ function GameLobbyGR() {
       .catch(() => {
         console.log("get('game/myGameRequests') failed");
       });
+  }
+
+  useEffect(() => {
+    fetchGameRequests();
   }, []); // add dependency: game notif to refresh when new game notif
 
   function handleGRAccept(gr: GameRequest) {
@@ -27,6 +31,7 @@ function GameLobbyGR() {
   function handleGRRefuse(gr: GameRequest) {
     console.log({ gr });
     gameSocket.emit(ClientEvents.GameRefuseGR, { gameId: gr.gameId });
+    fetchGameRequests();
   }
 
   if (gameRequests.length === 0) {

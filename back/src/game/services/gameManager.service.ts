@@ -132,6 +132,7 @@ export class GameManagerService {
   public acceptGameRequest(client: Socket, gameId: string) {
     const game = this.#games.get(gameId);
     if (!game) return;
+    if (game.status !== GameStatus.Waiting) return;
 
     game.p2.user = client.data.user;
     game.status = GameStatus.Ready;
@@ -141,10 +142,17 @@ export class GameManagerService {
 
     this.server
       .to(game.gameId)
-      .emit('server.game.navigate', { to: `/game/${game.gameId}` });
+      .emit(ServerEvents.gameNavigate, { to: `/game/${game.gameId}` });
   }
 
-  public refuseGameRequest(gameId: string) {}
+  public refuseGameRequest(client: Socket, gameId: string) {
+    const game = this.#games.get(gameId);
+    if (!game) return;
+    if (game.status !== GameStatus.Waiting) return;
+
+    this.server.to(game.gameId).emit(ServerEvents.gameRefused);
+    this.removeGame(game);
+  }
 
   public ping(userId: number) {
     const game = Array.from(this.#games.values())
