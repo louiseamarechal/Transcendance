@@ -3,7 +3,8 @@
   align-items: center;
   justify-content: space-between;
   padding-right: 2%;
-  height: max(5%, 50px);
+  height: 7vh;
+  /* height: max(5%, 50px); */
   gap: 10px;
   width: 100%;
   border-bottom: 1px solid rgba(0, 0, 0, 0.19);
