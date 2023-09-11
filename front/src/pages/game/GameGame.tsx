@@ -2,7 +2,7 @@ import { PointerEvent, useEffect, useRef, useState } from 'react';
 import { gameSocket } from '../../api/socket';
 import { ClientEvents } from '../../../../shared/client/ClientEvents';
 import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import GameCanvas from '../../components/game/GameGame/GameCanvas';
 import GameBackground from '../../components/game/GameGame/GameBackground';
 import {
@@ -16,6 +16,7 @@ import GameOverlay from '../../components/game/GameGame/GameOverlay/GameOverlay'
 export default function GameLobby() {
   const { gameId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -55,6 +56,7 @@ export default function GameLobby() {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
+      console.log({ location });
       gameSocket.emit(ClientEvents.GamePing);
     }, 1000);
 
