@@ -72,10 +72,10 @@ export default function UserProfile() {
         console.error(error);
       });
 
-      return() => {
-        notifSocket.off('disconnect', getUserInfo);
-        notifSocket.off('reconnect', getUserInfo);
-      }
+    return () => {
+      notifSocket.off('disconnect', getUserInfo);
+      notifSocket.off('reconnect', getUserInfo);
+    };
   }, [id, refresh, axiosInstance]);
 
   if (isLoading) {
@@ -134,6 +134,7 @@ export default function UserProfile() {
           handleRemoveFR={handleRemoveFR}
         />
       </div>
+      {`Level ${Math.floor(user.level)} `}
       <ProgressBar user={user} />
       <div className={divStyle}>
         <ProfilStat user={user} />
