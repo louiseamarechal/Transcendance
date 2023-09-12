@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Game, GameVisibility } from '../classes/Game';
-import { Game as GameSchema } from '@prisma/client';
+import { GameSchema } from '../../../../shared/common/types/game.type';
+// import { Game as GameSchema } from '@prisma/client';
 
 @Injectable()
 export class GameDbService {
@@ -10,7 +11,9 @@ export class GameDbService {
   async writeToDb(game: Game) {
     console.log('[GameGb] writeToDb');
     const p1Id = game.p1.user.id;
+    const p1Name = game.p1.user.name;
     const p2Id = game.p2.user.id;
+    const p2Name = game.p2.user.name;
     const isPrivate = game.visibility === GameVisibility.Private ? true : false;
     const score1 = game.score[0];
     const score2 = game.score[1];
@@ -20,7 +23,9 @@ export class GameDbService {
       data: {
         uuid: game.gameId,
         player1Id: p1Id,
+        player1Name: p1Name,
         player2Id: p2Id,
+        player2Name: p2Name,
         private: isPrivate,
         winnerId: winnerId,
         score1: score1,
@@ -37,6 +42,20 @@ export class GameDbService {
       where: { id: loserId },
       data: { level: { increment: 0.2 } },
     });
+  }
+
+  // async getMyGames(userId: number): Promise<GameSchema[]> {
+  //   const games: GameSchema[] = await this.prisma.game.findMany({
+  //     where: { OR: [{ player1Id: userId }, { player2Id: userId }] },
+  //   });
+  //   return games;
+  // }
+
+  async getGamesById(id: number) {
+    const games: GameSchema[] = await this.prisma.game.findMany({
+      where: { OR: [{ player1Id: id }, { player2Id: id }] },
+    });
+    return games;
   }
 
   // async createGame(game: Game) {

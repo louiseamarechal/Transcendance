@@ -2,14 +2,16 @@
 import { useEffect, useState } from 'react';
 import { ProfilStat } from '../components/ProfilStat.tsx';
 import ProgressBar from '../components/ProgressBar.tsx';
-import UserCard from '../components/UserCard.tsx';
 import '../style/pages/Profil.css';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
-import Settings, { ChangeName, Toggle2FA } from '../components/Settings.tsx';
+import { ChangeName } from '../components/Settings.tsx';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Avatar from '../components/Avatar.tsx';
 import { PublicUser } from '../../../shared/common/types/user.type.ts';
+import GameHistory from '../components/profile/GameHistory.tsx';
+import { GameSchema } from '../../../shared/common/types/game.type.ts';
+import { useUser } from '../hooks/useUser.ts';
 
 function Profil() {
   // Profil page will depend on the user id => see later on
@@ -21,6 +23,8 @@ function Profil() {
   const [is2FAset, setIs2FAEnabled] = useState(false);
   const [image, setImage] = useState({ preview: '', data: '' });
   const [changingAvatar, setChangingAvatar] = useState(false);
+  // const [games, setGames] = useState<GameSchema[]>([]);
+  const { myId } = useUser();
 
   console.log('Entering Profil component');
 
@@ -56,6 +60,15 @@ function Profil() {
 
   useEffect(() => {
     axiosInstance
+      .get('game/myGames')
+      .then((res) => {
+        setGames(res.data);
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    axiosInstance
       .get('user/me')
       .then((res) => {
         setUser(res.data);
@@ -69,20 +82,20 @@ function Profil() {
     return <div className="grid place-items-center h-screen">Loading...</div>;
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', image.data);
     console.log(image.data);
     try {
       await axiosInstance({
-        method: "post",
-        url: "/user/upload-avatar",
+        method: 'post',
+        url: '/user/upload-avatar',
         data: formData,
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-    } catch(error) {
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
     setChangingAvatar(false);
   };
@@ -94,7 +107,7 @@ function Profil() {
     };
     setImage(img);
     setChangingAvatar(true);
-  }
+  };
 
   return (
     // <div className="grid grid-cols-1 place-items-center pt-[10%]">
@@ -113,7 +126,13 @@ function Profil() {
               // onChange={(event) => changeAvatar(event.target.value)}
               className="avatar-sm form-avatar"
             />
-            {changingAvatar ? <button type="submit" className='text-xs'>ok</button> : <></>}
+            {changingAvatar ? (
+              <button type="submit" className="text-xs">
+                ok
+              </button>
+            ) : (
+              <></>
+            )}
           </form>
         </div>
         {!changingUsername ? (
@@ -133,12 +152,12 @@ function Profil() {
           />
         )}
       </div>
-      {/* <UserCard user={user} /> */}
+      {`Level ${Math.floor(user.level)} `}
       <ProgressBar user={user} />
       <div className={divStyle}>
         <ProfilStat user={user} />
         <div className="line"></div>
-        <div className="game-history"></div>
+        {/* <div className="game-history"></div> */}
         <button
           className="small-button friend-request-button"
           onClick={handle2FA}
@@ -147,6 +166,8 @@ function Profil() {
           {is2FAset ? 'Unset 2FA' : 'Set 2FA'}{' '}
         </button>
       </div>
+
+      <GameHistory id={myId} />
 
       {/* <Settings setReload={setReload} /> */}
     </div>

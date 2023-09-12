@@ -20,8 +20,8 @@ model User {
   hashedRT String?
   code2FA  String? @unique
 
-  online Boolean @default(false)
-  status   UserStatus @default(OFFLINE)
+  online Boolean    @default(false)
+  status UserStatus @default(OFFLINE)
 
   level         Float     @default(1)
   avatar        String?
@@ -176,11 +176,13 @@ model Game {
   uuid    String  @unique
   private Boolean @default(false)
 
-  player1   User @relation(name: "player1", fields: [player1Id], references: [id], onDelete: Cascade)
-  player1Id Int  @map("player1_id")
+  player1     User    @relation(name: "player1", fields: [player1Id], references: [id], onDelete: Cascade)
+  player1Id   Int     @map("player1_id")
+  player1Name String?
 
-  player2   User? @relation(name: "player2", fields: [player2Id], references: [id], onDelete: Cascade)
-  player2Id Int?  @map("player2_id")
+  player2     User?   @relation(name: "player2", fields: [player2Id], references: [id], onDelete: Cascade)
+  player2Id   Int?    @map("player2_id")
+  player2Name String?
 
   winner   User? @relation(name: "winner", fields: [winnerId], references: [id], onDelete: Cascade)
   winnerId Int?  @map("winner_id")
