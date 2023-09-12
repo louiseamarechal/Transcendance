@@ -164,7 +164,12 @@ export class GameManagerService {
 
   public ping(userId: number) {
     const game = Array.from(this.#games.values())
-      .filter((g) => g.status === GameStatus.Playing)
+      .filter(
+        (g) =>
+          g.status === GameStatus.Ready ||
+          g.status === GameStatus.Timer ||
+          g.status === GameStatus.Playing,
+      )
       .filter((g) => g.p1.user.id === userId || g.p2.user.id === userId);
 
     if (game.length !== 0) {
@@ -243,12 +248,17 @@ export class GameManagerService {
   }
 
   private checkGameNoPing(game: Game): boolean {
-    const isPlaying = game.status === GameStatus.Playing;
+    const isPlaying =
+      game.status === GameStatus.Ready ||
+      game.status === GameStatus.Timer ||
+      game.status === GameStatus.Playing;
     const now = Date.now();
     const isP1NoPing = now - game.p1.lastPing > 3000;
     const isP2NoPing = now - game.p2.lastPing > 3000;
     if (isPlaying && (isP1NoPing || isP2NoPing)) {
-      console.log('Remove game. Cause: No ping for 3secs while playing');
+      console.log(
+        'Remove game. Cause: No ping for 3secs while ready, timer or playing',
+      );
       this.server.to(game.gameId).emit(ServerEvents.gameAbort);
       this.removeGame(game);
       return true;

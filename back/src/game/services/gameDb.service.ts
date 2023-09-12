@@ -15,6 +15,7 @@ export class GameDbService {
     const score1 = game.score[0];
     const score2 = game.score[1];
     const winnerId = score1 > score2 ? p1Id : p2Id;
+    const loserId = score1 > score2 ? p2Id : p1Id;
     await this.prisma.game.create({
       data: {
         uuid: game.gameId,
@@ -25,6 +26,16 @@ export class GameDbService {
         score1: score1,
         score2: score2,
       },
+    });
+
+    await this.prisma.user.update({
+      where: { id: winnerId },
+      data: { level: { increment: 1 } },
+    });
+
+    await this.prisma.user.update({
+      where: { id: loserId },
+      data: { level: { increment: 0.2 } },
     });
   }
 
