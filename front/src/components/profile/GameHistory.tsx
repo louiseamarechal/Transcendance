@@ -1,31 +1,36 @@
+import { useEffect, useState } from 'react';
 import { GameSchema } from '../../../../shared/common/types/game.type';
+import { useUser } from '../../hooks/useUser';
 import NiceBox from '../box/NiceBox';
+import GameHistoryCard from './GameHistoryCard';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 type GameHistoryProps = {
-  games: GameSchema[];
+  // games: GameSchema[];
+  id: number;
 };
 
-function GameHistory({ games }: GameHistoryProps) {
+function GameHistory({ id }: GameHistoryProps) {
+  const axiosInstance = useAxiosPrivate();
+  const [games, setGames] = useState<GameSchema[]>([]);
+
+  useEffect(() => {
+    axiosInstance
+      .get(`game/${id}`)
+      .then((res) => {
+        setGames(res.data);
+      })
+      .catch(() => {});
+  }, []);
+
   const gameList = games.map((g) => {
-    return (
-      <div className="flex-row-center ">
-        <div>{g.score1}</div>
-        <div className="w-5"></div>
-        <div>{g.player1Name}</div>
-        <div className="w-5"></div>
-        <div>VS</div>
-        <div className="w-5"></div>
-        <div>{g.player2Name}</div>
-        <div className="w-5"></div>
-        <div>{g.score2}</div>
-      </div>
-    );
+    return <GameHistoryCard game={g} id={id} />;
   });
 
   return (
     <NiceBox title="Match History">
       {games.length === 0 && <div>No game played yet</div>}
-      <div>{gameList}</div>
+      <div className="w-[80%]">{gameList}</div>
     </NiceBox>
   );
 }

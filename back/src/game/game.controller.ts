@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 
 import { GetUserId } from 'src/common/decorators';
 import { CreateGameDto } from './dto/create-game.dto';
@@ -25,9 +25,9 @@ export class GameController {
     return this.gameManager.getGameRequestById(userId);
   }
 
-  @Get('myGames')
-  getMyGames(@GetUserId() userId: number) {
-    return this.gameDb.getMyGames(userId);
+  @Get(':id')
+  getGamesById(@Param('id', ParseIntPipe) id: number) {
+    return this.gameDb.getGamesById(id);
   }
 
   // @Post(':id')

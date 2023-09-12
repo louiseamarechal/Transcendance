@@ -11,6 +11,7 @@ import Avatar from '../components/Avatar.tsx';
 import { PublicUser } from '../../../shared/common/types/user.type.ts';
 import GameHistory from '../components/profile/GameHistory.tsx';
 import { GameSchema } from '../../../shared/common/types/game.type.ts';
+import { useUser } from '../hooks/useUser.ts';
 
 function Profil() {
   // Profil page will depend on the user id => see later on
@@ -22,7 +23,8 @@ function Profil() {
   const [is2FAset, setIs2FAEnabled] = useState(false);
   const [image, setImage] = useState({ preview: '', data: '' });
   const [changingAvatar, setChangingAvatar] = useState(false);
-  const [games, setGames] = useState<GameSchema[]>([]);
+  // const [games, setGames] = useState<GameSchema[]>([]);
+  const { myId } = useUser();
 
   console.log('Entering Profil component');
 
@@ -165,7 +167,7 @@ function Profil() {
         </button>
       </div>
 
-      <GameHistory games={games} />
+      <GameHistory id={myId} />
 
       {/* <Settings setReload={setReload} /> */}
     </div>

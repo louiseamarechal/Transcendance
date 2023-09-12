@@ -9,6 +9,7 @@ import { FriendRequest } from '../types/FriendRequest.type';
 import Avatar from '../components/Avatar';
 import ActivityStatus from '../components/ActivityStatus';
 import { notifSocket } from '../api/socket';
+import GameHistory from '../components/profile/GameHistory';
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -139,6 +140,8 @@ export default function UserProfile() {
       <div className={divStyle}>
         <ProfilStat user={user} />
       </div>
+
+      {id && <GameHistory id={Number(id)} />}
     </div>
   );
 }

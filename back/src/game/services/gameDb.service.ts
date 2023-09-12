@@ -44,11 +44,18 @@ export class GameDbService {
     });
   }
 
-  async getMyGames(userId: number): Promise<GameSchema[]> {
-    const myGames: GameSchema[] = await this.prisma.game.findMany({
-      where: { OR: [{ player1Id: userId }, { player2Id: userId }] },
+  // async getMyGames(userId: number): Promise<GameSchema[]> {
+  //   const games: GameSchema[] = await this.prisma.game.findMany({
+  //     where: { OR: [{ player1Id: userId }, { player2Id: userId }] },
+  //   });
+  //   return games;
+  // }
+
+  async getGamesById(id: number) {
+    const games: GameSchema[] = await this.prisma.game.findMany({
+      where: { OR: [{ player1Id: id }, { player2Id: id }] },
     });
-    return myGames;
+    return games;
   }
 
   // async createGame(game: Game) {
