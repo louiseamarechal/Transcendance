@@ -13,7 +13,7 @@ function GameRequestButton({ user }: { user: PublicUser }) {
         /*navigate somewhere ?*/
       }}
     >
-      <FontAwesomeIcon icon={faGamepad} style={{ color: 'green' }} />
+      <FontAwesomeIcon icon={faGamepad} style={{ color: 'blue' }} />
     </div>
   );
 }
