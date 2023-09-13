@@ -10,7 +10,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Avatar from '../components/Avatar.tsx';
 import { PublicUser } from '../../../shared/common/types/user.type.ts';
 import GameHistory from '../components/profile/GameHistory.tsx';
-import { GameSchema } from '../../../shared/common/types/game.type.ts';
 import { useUser } from '../hooks/useUser.ts';
 
 function Profil() {
@@ -58,14 +57,14 @@ function Profil() {
     'flex-wrap',
   ].join(' ');
 
-  useEffect(() => {
-    axiosInstance
-      .get('game/myGames')
-      .then((res) => {
-        setGames(res.data);
-      })
-      .catch(() => {});
-  }, []);
+  // useEffect(() => {
+  //   axiosInstance
+  //     .get('game/myGames')
+  //     .then((res) => {
+  //       setGames(res.data);
+  //     })
+  //     .catch(() => {});
+  // }, []);
 
   useEffect(() => {
     axiosInstance
@@ -100,7 +99,7 @@ function Profil() {
     setChangingAvatar(false);
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: any) => {
     const img = {
       preview: URL.createObjectURL(e.target.files[0]),
       data: e.target.files[0],

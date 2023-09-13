@@ -1,29 +1,20 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import MiniUserCard from '../../MiniUserCard';
 import { PublicUser } from '../../../../../shared/common/types/user.type';
 import NiceBox from '../../ui/NiceBox';
+import { useSearchParams } from 'react-router-dom';
 
 type GameSelectFriendProps = {
   selectedFriend: number | null;
-  setSelectedFriend: Dispatch<SetStateAction<number | null>>;
-  setSelectedFriendName: Dispatch<SetStateAction<string>>;
+  // setSelectedFriend: Dispatch<SetStateAction<number | null>>;
+  // setSelectedFriendName: Dispatch<SetStateAction<string>>;
 };
 
-// type Friend = {
-//   id: number;
-//   name: string;
-//   level: number;
-//   avatar: string;
-// };
-
-function GameSelectFriend({
-  selectedFriend,
-  setSelectedFriend,
-  setSelectedFriendName,
-}: GameSelectFriendProps) {
+function GameSelectFriend({ selectedFriend }: GameSelectFriendProps) {
   const axiosInstance = useAxiosPrivate();
   const [friendList, setFriendList] = useState<PublicUser[]>([]);
+  const [_, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     axiosInstance
@@ -44,8 +35,15 @@ function GameSelectFriend({
             <div
               key={friend.id}
               onClick={() => {
-                setSelectedFriend(friend.id);
-                setSelectedFriendName(friend.name);
+                setSearchParams(
+                  {
+                    friend: friend.id.toString(),
+                    name: friend.name,
+                  },
+                  { replace: true },
+                );
+                // setSelectedFriend(friend.id);
+                // setSelectedFriendName(friend.name);
               }}
             >
               <MiniUserCard
@@ -58,9 +56,6 @@ function GameSelectFriend({
       </div>
       {/* <p>{`You selected ${selectedFriend}`}</p> */}
     </NiceBox>
-
-    // <div className="flex-row-center flex-wrap space-x-4">
-    // </div>
   );
 }
 

@@ -19,7 +19,7 @@ function GameCreateSelect({ friendId = null }: GameCreateSelectProps) {
   const [p2PaddleSize, setP2PaddleSize] = useState<number>(0.1);
   const { myId } = useUser();
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
 
   function handleCreateGame() {
     if (selectedFriend !== null) {
@@ -39,14 +39,14 @@ function GameCreateSelect({ friendId = null }: GameCreateSelectProps) {
     const friendName: string | null = searchParams.get('name');
     if (friendId) setSelectedFriend(Number(friendId));
     if (friendName) setSelectedFriendName(friendName);
-  }, []);
+  }, [searchParams]);
 
   return (
     <div className="w-[80%] flex-col-center">
       <GameSelectFriend
         selectedFriend={selectedFriend}
-        setSelectedFriend={setSelectedFriend}
-        setSelectedFriendName={setSelectedFriendName}
+        // setSelectedFriend={setSelectedFriend}
+        // setSelectedFriendName={setSelectedFriendName}
       />
 
       {selectedFriend && (
