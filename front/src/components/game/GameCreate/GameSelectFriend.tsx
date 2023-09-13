@@ -2,10 +2,12 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import MiniUserCard from '../../MiniUserCard';
 import { PublicUser } from '../../../../../shared/common/types/user.type';
+import NiceBox from '../../ui/NiceBox';
 
 type GameSelectFriendProps = {
-  selectedFriend: number;
-  setSelectedFriend: Dispatch<SetStateAction<number>>;
+  selectedFriend: number | null;
+  setSelectedFriend: Dispatch<SetStateAction<number | null>>;
+  setSelectedFriendName: Dispatch<SetStateAction<string>>;
 };
 
 // type Friend = {
@@ -18,6 +20,7 @@ type GameSelectFriendProps = {
 function GameSelectFriend({
   selectedFriend,
   setSelectedFriend,
+  setSelectedFriendName,
 }: GameSelectFriendProps) {
   const axiosInstance = useAxiosPrivate();
   const [friendList, setFriendList] = useState<PublicUser[]>([]);
@@ -34,23 +37,30 @@ function GameSelectFriend({
   }, []);
 
   return (
-    <div className="flex-row-center flex-wrap space-x-4">
-      {friendList.map((friend) => {
-        return (
-          <div
-            key={friend.id}
-            onClick={() => {
-              setSelectedFriend(friend.id);
-            }}
-          >
-            <MiniUserCard
-              user={friend}
-              selected={friend.id === selectedFriend ? true : false}
-            />
-          </div>
-        );
-      })}
-    </div>
+    <NiceBox title="Select a Friend">
+      <div className="flex-row-center flex-wrap">
+        {friendList.map((friend) => {
+          return (
+            <div
+              key={friend.id}
+              onClick={() => {
+                setSelectedFriend(friend.id);
+                setSelectedFriendName(friend.name);
+              }}
+            >
+              <MiniUserCard
+                user={friend}
+                selected={friend.id === selectedFriend ? true : false}
+              />
+            </div>
+          );
+        })}
+      </div>
+      {/* <p>{`You selected ${selectedFriend}`}</p> */}
+    </NiceBox>
+
+    // <div className="flex-row-center flex-wrap space-x-4">
+    // </div>
   );
 }
 
