@@ -42,7 +42,7 @@ export default function ChatHeader() {
           if (pathname.includes('options')) {
             navigate(`/chat/${channelState.self.id}`);
           } else {
-            navigate('options/members');
+            navigate(`options/members?isDM=${isDM}`);
           }
         }}
       >

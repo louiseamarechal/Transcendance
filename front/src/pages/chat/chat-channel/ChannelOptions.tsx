@@ -1,9 +1,18 @@
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 
 export default function ChannelOptions() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  console.log({ pathname });
   const optionLoc: string = pathname.substring(pathname.lastIndexOf('/') + 1);
+  console.log({ optionLoc });
+  const [searchParams] = useSearchParams();
+  const isDM: boolean = searchParams.get('isDM') === 'true';
 
   return (
     <div className="options-window">
@@ -11,7 +20,7 @@ export default function ChannelOptions() {
         <div
           className={'options-tab'}
           onClick={() => {
-            navigate('members');
+            navigate(`members?isDM=${isDM}`);
           }}
         >
           <p
@@ -25,7 +34,7 @@ export default function ChannelOptions() {
         <div
           className="options-tab"
           onClick={() => {
-            navigate('settings');
+            navigate(`settings?isDM=${isDM}`);
           }}
         >
           <p
