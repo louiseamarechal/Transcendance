@@ -24,7 +24,7 @@ function GameHistory({ id }: GameHistoryProps) {
   }, [id]);
 
   const gameList = games.map((g) => {
-    return <GameHistoryCard game={g} id={id} />;
+    return <GameHistoryCard game={g} id={id} key={g.id} />;
   });
 
   return (
