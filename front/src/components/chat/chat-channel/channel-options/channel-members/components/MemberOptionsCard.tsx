@@ -8,6 +8,7 @@ import BlockButton from './components/BlockButton';
 import useChannel from '../../../../../../hooks/useChannel';
 import { PublicUser } from '../../../../../../../../shared/common/types/user.type';
 import GameRequestButton from './components/GameRequestButton';
+import { useSearchParams } from 'react-router-dom';
 
 function MemberOptionsCard({
   member,
@@ -24,6 +25,8 @@ function MemberOptionsCard({
   const { myId } = useUser();
   const myRole: number = determineRole(myId);
   const [userRole, setUserRole] = useState<number>(determineRole(member.id));
+  const [searchParams] = useSearchParams();
+  const isDM: boolean = searchParams.get('isDM') === 'true';
 
   function determineRole(id: number): number {
     const adminIds: number[] = channelState.self.admins.map(
@@ -47,31 +50,37 @@ function MemberOptionsCard({
         <div />
       ) : (
         <div className="action-buttons">
-          <PromoteButton
-            key={`option-${member.id}-promote`}
-            user={member}
-            userRole={userRole}
-            setUserRole={setUserRole}
-            myRole={myRole}
-            setAdmins={setAdmins}
-          />
-          <MuteButton key={`option-${member.id}-mute`} user={member} />
-          <KickButton
-            key={`option-${member.id}-kick`}
-            user={member}
-            userRole={userRole}
-            myRole={myRole}
-            members={members}
-            setMembers={setMembers}
-          />
-          <BlockButton
-            key={`option-${member.id}-block`}
-            user={member}
-            userRole={userRole}
-            myRole={myRole}
-            members={members}
-            setMembers={setMembers}
-          />
+          {isDM ? (
+            <div />
+          ) : (
+            <>
+              <PromoteButton
+                key={`option-${member.id}-promote`}
+                user={member}
+                userRole={userRole}
+                setUserRole={setUserRole}
+                myRole={myRole}
+                setAdmins={setAdmins}
+              />
+              <MuteButton key={`option-${member.id}-mute`} user={member} />
+              <KickButton
+                key={`option-${member.id}-kick`}
+                user={member}
+                userRole={userRole}
+                myRole={myRole}
+                members={members}
+                setMembers={setMembers}
+              />
+              <BlockButton
+                key={`option-${member.id}-block`}
+                user={member}
+                userRole={userRole}
+                myRole={myRole}
+                members={members}
+                setMembers={setMembers}
+              />
+            </>
+          )}
           <GameRequestButton key={`option-${member.id}-game`} user={member} />
         </div>
       )}

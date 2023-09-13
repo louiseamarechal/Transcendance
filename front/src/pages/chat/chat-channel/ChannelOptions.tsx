@@ -8,9 +8,7 @@ import {
 export default function ChannelOptions() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  console.log({ pathname });
   const optionLoc: string = pathname.substring(pathname.lastIndexOf('/') + 1);
-  console.log({ optionLoc });
   const [searchParams] = useSearchParams();
   const isDM: boolean = searchParams.get('isDM') === 'true';
 
