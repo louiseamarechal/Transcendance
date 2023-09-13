@@ -7,6 +7,7 @@ import KickButton from './components/KickButton';
 import BlockButton from './components/BlockButton';
 import useChannel from '../../../../../../hooks/useChannel';
 import { PublicUser } from '../../../../../../../../shared/common/types/user.type';
+import GameRequestButton from './components/GameRequestButton';
 
 function MemberOptionsCard({
   member,
@@ -54,10 +55,7 @@ function MemberOptionsCard({
             myRole={myRole}
             setAdmins={setAdmins}
           />
-          <MuteButton
-            key={`option-${member.id}-mute`}
-            user={member}
-          />
+          <MuteButton key={`option-${member.id}-mute`} user={member} />
           <KickButton
             key={`option-${member.id}-kick`}
             user={member}
@@ -74,6 +72,7 @@ function MemberOptionsCard({
             members={members}
             setMembers={setMembers}
           />
+          <GameRequestButton key={`option-${member.id}-game`} user={member} />
         </div>
       )}
       <div />
