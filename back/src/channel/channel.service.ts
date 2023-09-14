@@ -524,6 +524,16 @@ export class ChannelService {
     if (admin === null && ownerId !== userId) {
       throw new ForbiddenException('User not a member');
     }
+    await this.prisma.blockedOnChannels.deleteMany({
+      where: {
+        channelId: {
+          equals: channelId,
+        },
+        userId: {
+          in: newIds,
+        },
+      },
+    });
     await this.prisma.membersOnChannels.createMany({
       data: newIds.map(
         (userId: number): { channelId: number; userId: number } => {
