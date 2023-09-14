@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { GameSchema } from '../../../../shared/common/types/game.type';
 import { useUser } from '../../hooks/useUser';
-import NiceBox from '../box/NiceBox';
+import NiceBox from '../ui/NiceBox';
 import GameHistoryCard from './GameHistoryCard';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 

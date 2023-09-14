@@ -1,20 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import GameSelectFriend from './GameSelectFriend';
 import { ClientPayloads } from '../../../../../shared/client/ClientPayloads';
 import { ClientEvents } from '../../../../../shared/client/ClientEvents';
 import { useUser } from '../../../hooks/useUser';
 import { gameSocket } from '../../../api/socket';
 import GameSelectPaddleSize from './GameSelectPaddleSize';
-import HorizontalNet from '../../utils/HorizontalNet';
+import NiceButton from '../../ui/NiceButton';
+import { useSearchParams } from 'react-router-dom';
 
-function GameCreateSelect() {
-  const [selectedFriend, setSelectedFriend] = useState<number>(-1);
+type GameCreateSelectProps = {
+  friendId?: number | null;
+};
+
+function GameCreateSelect({ friendId = null }: GameCreateSelectProps) {
+  const [selectedFriend, setSelectedFriend] = useState<number | null>(friendId);
+  const [selectedFriendName, setSelectedFriendName] = useState<string>('');
   const [p1PaddleSize, setP1PaddleSize] = useState<number>(0.1);
   const [p2PaddleSize, setP2PaddleSize] = useState<number>(0.1);
   const { myId } = useUser();
 
+  const [searchParams, _] = useSearchParams();
+
   function handleCreateGame() {
-    if (selectedFriend !== -1) {
+    if (selectedFriend !== null) {
       console.log('handleCreateGame');
       const payload: ClientPayloads[ClientEvents.GameCreateGame] = {
         p1Id: myId,
@@ -26,27 +34,34 @@ function GameCreateSelect() {
     }
   }
 
+  useEffect(() => {
+    const friendId: string | null = searchParams.get('friend');
+    const friendName: string | null = searchParams.get('name');
+    if (friendId) setSelectedFriend(Number(friendId));
+    if (friendName) setSelectedFriendName(friendName);
+  }, [searchParams]);
+
   return (
-    <div className="w-[80%] flex-col-center h-full">
-      <div>Select a friend</div>
+    <div className="w-[80%] flex-col-center">
       <GameSelectFriend
         selectedFriend={selectedFriend}
-        setSelectedFriend={setSelectedFriend}
+        // setSelectedFriend={setSelectedFriend}
+        // setSelectedFriendName={setSelectedFriendName}
       />
-      <p>{`You selected ${selectedFriend}`}</p>
-      <HorizontalNet />
-      <GameSelectPaddleSize
-        text="Select P1 Paddle Size"
-        paddleSize={p1PaddleSize}
-        setPaddleSize={setP1PaddleSize}
-      />
-      <GameSelectPaddleSize
-        text="Select P2 Paddle Size"
-        paddleSize={p2PaddleSize}
-        setPaddleSize={setP2PaddleSize}
-      />
-      <HorizontalNet />
-      <button onClick={handleCreateGame}>Create Game</button>
+
+      {selectedFriend && (
+        <>
+          <GameSelectPaddleSize
+            selectedFriendName={selectedFriendName}
+            P1PaddleSize={p1PaddleSize}
+            setP1PaddleSize={setP1PaddleSize}
+            P2PaddleSize={p2PaddleSize}
+            setP2PaddleSize={setP2PaddleSize}
+          />
+
+          <NiceButton onClick={handleCreateGame}>Create Game</NiceButton>
+        </>
+      )}
     </div>
   );
 }

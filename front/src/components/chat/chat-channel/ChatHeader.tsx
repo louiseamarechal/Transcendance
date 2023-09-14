@@ -36,26 +36,22 @@ export default function ChatHeader() {
     <div className="chat-header">
       <Avatar file={channelAvatar} small={true} />
       <p>{channelName}</p>
-      {isDM ? (
-        <div /> // If direct messages no options available.
-      ) : (
-        <div
-          className="options-menu"
-          onClick={() => {
-            if (pathname.includes('options')) {
-              navigate(`/chat/${channelState.self.id}`);
-            } else {
-              navigate('options/members');
-            }
-          }}
-        >
-          <FontAwesomeIcon
-            className="fa-lg"
-            icon={faEllipsisVertical}
-            style={{ color: 'var(--black)' }}
-          />
-        </div>
-      )}
+      <div
+        className="options-menu"
+        onClick={() => {
+          if (pathname.includes('options')) {
+            navigate(`/chat/${channelState.self.id}`);
+          } else {
+            navigate(`options/members?isDM=${isDM}`);
+          }
+        }}
+      >
+        <FontAwesomeIcon
+          className="fa-lg"
+          icon={faEllipsisVertical}
+          style={{ color: 'var(--black)' }}
+        />
+      </div>
     </div>
   );
 }

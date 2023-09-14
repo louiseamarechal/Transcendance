@@ -1,26 +1,20 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import MiniUserCard from '../../MiniUserCard';
 import { PublicUser } from '../../../../../shared/common/types/user.type';
+import NiceBox from '../../ui/NiceBox';
+import { useSearchParams } from 'react-router-dom';
 
 type GameSelectFriendProps = {
-  selectedFriend: number;
-  setSelectedFriend: Dispatch<SetStateAction<number>>;
+  selectedFriend: number | null;
+  // setSelectedFriend: Dispatch<SetStateAction<number | null>>;
+  // setSelectedFriendName: Dispatch<SetStateAction<string>>;
 };
 
-// type Friend = {
-//   id: number;
-//   name: string;
-//   level: number;
-//   avatar: string;
-// };
-
-function GameSelectFriend({
-  selectedFriend,
-  setSelectedFriend,
-}: GameSelectFriendProps) {
+function GameSelectFriend({ selectedFriend }: GameSelectFriendProps) {
   const axiosInstance = useAxiosPrivate();
   const [friendList, setFriendList] = useState<PublicUser[]>([]);
+  const [_, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     axiosInstance
@@ -34,23 +28,34 @@ function GameSelectFriend({
   }, []);
 
   return (
-    <div className="flex-row-center flex-wrap space-x-4">
-      {friendList.map((friend) => {
-        return (
-          <div
-            key={friend.id}
-            onClick={() => {
-              setSelectedFriend(friend.id);
-            }}
-          >
-            <MiniUserCard
-              user={friend}
-              selected={friend.id === selectedFriend ? true : false}
-            />
-          </div>
-        );
-      })}
-    </div>
+    <NiceBox title="Select a Friend">
+      <div className="flex-row-center flex-wrap">
+        {friendList.map((friend) => {
+          return (
+            <div
+              key={friend.id}
+              onClick={() => {
+                setSearchParams(
+                  {
+                    friend: friend.id.toString(),
+                    name: friend.name,
+                  },
+                  { replace: true },
+                );
+                // setSelectedFriend(friend.id);
+                // setSelectedFriendName(friend.name);
+              }}
+            >
+              <MiniUserCard
+                user={friend}
+                selected={friend.id === selectedFriend ? true : false}
+              />
+            </div>
+          );
+        })}
+      </div>
+      {/* <p>{`You selected ${selectedFriend}`}</p> */}
+    </NiceBox>
   );
 }
 
