@@ -23,11 +23,9 @@ model User {
   online Boolean    @default(false)
   status UserStatus @default(OFFLINE)
 
-  level         Float     @default(1)
-  avatar        String?
-  s2fa          Status2fa @default(NOTSET)
-  statTotalGame Int       @default(0)
-  statTotalWin  Int       @default(0)
+  level  Float     @default(1)
+  avatar String?
+  s2fa   Status2fa @default(NOTSET)
 
   blockedUsers  BlockedUser[] @relation(name: "blocker")
   blockedByUser BlockedUser[] @relation(name: "blocked")

@@ -27,8 +27,6 @@ export class UserService {
         name: true,
         level: true,
         avatar: true,
-        statTotalGame: true,
-        statTotalWin: true,
         s2fa: true,
         status: true,
         blockedUsers: {
@@ -64,14 +62,7 @@ export class UserService {
     }
   }
 
-  async getAll(userId: number): Promise<
-    {
-      id: number | null;
-      name: string | null;
-      avatar: string | null;
-      level: number | null;
-    }[]
-  > {
+  async getAll(userId: number): Promise<PublicUser[]> {
     return await this.prisma.user.findMany({
       where: {
         id: {
@@ -80,9 +71,12 @@ export class UserService {
       },
       select: {
         id: true,
+        login: true,
         name: true,
-        avatar: true,
         level: true,
+        avatar: true,
+        s2fa: true,
+        status: true,
       },
     });
   }

@@ -41,14 +41,7 @@ export class UserController {
   }
 
   @Get('all')
-  getAll(@GetUserId() userId: number): Promise<
-    {
-      id: number | null;
-      name: string | null;
-      avatar: string | null;
-      level: number | null;
-    }[]
-  > {
+  getAll(@GetUserId() userId: number): Promise<PublicUser[]> {
     return this.userService.getAll(userId);
   }
 
@@ -56,15 +49,7 @@ export class UserController {
   editUser(
     @GetUserId() userId: number,
     @Body() dto: EditUserDto,
-  ): Promise<{
-    id: number | null;
-    login: string | null;
-    name: string | null;
-    level: number | null;
-    avatar: string | null;
-    statTotalGame: number | null;
-    statTotalWin: number | null;
-  }> {
+  ): Promise<PublicUser> {
     return this.userService.editUser(userId, dto);
   }
 
