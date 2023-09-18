@@ -11,6 +11,9 @@ import Avatar from '../components/Avatar.tsx';
 import { PublicUser } from '../../../shared/common/types/user.type.ts';
 import GameHistory from '../components/profile/GameHistory.tsx';
 import { useUser } from '../hooks/useUser.ts';
+import { GameSchema } from '../../../shared/common/types/game.type.ts';
+import ProfileStatistics from '../components/profile/ProfileStatistics.tsx';
+import ProfileSettings from '../components/profile/ProfileSettings.tsx';
 
 function Profil() {
   // Profil page will depend on the user id => see later on
@@ -22,7 +25,7 @@ function Profil() {
   const [is2FAset, setIs2FAEnabled] = useState(false);
   const [image, setImage] = useState({ preview: '', data: '' });
   const [changingAvatar, setChangingAvatar] = useState(false);
-  // const [games, setGames] = useState<GameSchema[]>([]);
+  const [games, setGames] = useState<GameSchema[]>([]);
   const { myId } = useUser();
 
   console.log('Entering Profil component');
@@ -57,14 +60,14 @@ function Profil() {
     'flex-wrap',
   ].join(' ');
 
-  // useEffect(() => {
-  //   axiosInstance
-  //     .get('game/myGames')
-  //     .then((res) => {
-  //       setGames(res.data);
-  //     })
-  //     .catch(() => {});
-  // }, []);
+  useEffect(() => {
+    axiosInstance
+      .get(`game/${myId}`)
+      .then((res) => {
+        setGames(res.data);
+      })
+      .catch(() => {});
+  }, [myId]);
 
   useEffect(() => {
     axiosInstance
@@ -166,7 +169,11 @@ function Profil() {
         </button>
       </div>
 
-      <GameHistory id={myId} />
+      <ProfileStatistics games={games} userId={myId} />
+
+      <GameHistory games={games} id={myId} />
+
+      <ProfileSettings />
 
       {/* <Settings setReload={setReload} /> */}
     </div>
