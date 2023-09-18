@@ -1,14 +1,17 @@
 import NiceBox from '../ui/NiceBox';
 import NiceButton from '../ui/NiceButton';
 
-type ProfileSettingsProps = {};
+type ProfileSettingsProps = {
+  is2FASet: boolean;
+  handle2FA: () => void;
+};
 
-function ProfileSettings() {
+function ProfileSettings({ is2FASet, handle2FA }: ProfileSettingsProps) {
+  const buttonLabel = is2FASet ? 'Unset 2FA' : 'Set 2FA';
+
   return (
     <NiceBox title="Settings">
-      <NiceButton onClick={() => {}}>Coucou</NiceButton>
-      <p>Change profile pic here</p>
-      <p>change name here ?</p>
+      <NiceButton onClick={handle2FA}>{buttonLabel}</NiceButton>
     </NiceBox>
   );
 }

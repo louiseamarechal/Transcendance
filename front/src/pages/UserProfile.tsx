@@ -10,6 +10,8 @@ import Avatar from '../components/Avatar';
 import ActivityStatus from '../components/ActivityStatus';
 import { notifSocket } from '../api/socket';
 import GameHistory from '../components/profile/GameHistory';
+import { GameSchema } from '../../../shared/common/types/game.type';
+import ProfileStatistics from '../components/profile/ProfileStatistics';
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -20,22 +22,9 @@ export default function UserProfile() {
   const navigate = useNavigate();
   const [FR, setFR] = useState<FriendRequest>({});
   const [refresh, setRefresh] = useState(false);
+  const [games, setGames] = useState<GameSchema[]>([]);
 
   console.log('Entering UserProfile component with id =', id);
-
-  const divStyle = [
-    'w-3/5',
-    'h-3/5',
-    'flex flex-row items-start justify-evenly gap-10 pt-6',
-    'border-t-[1px]',
-    'border-r-[2px]',
-    'border-b-[2px]',
-    'border-l-[1px]',
-    'border-[#0000001C]',
-    'rounded-[50px]',
-    'shadow-lg',
-    'flex-wrap',
-  ].join(' ');
 
   useEffect(() => {
     if (myId.toString() === id) {
@@ -78,6 +67,15 @@ export default function UserProfile() {
       notifSocket.off('reconnect', getUserInfo);
     };
   }, [id, refresh, axiosInstance]);
+
+  useEffect(() => {
+    axiosInstance
+      .get(`game/${id}`)
+      .then((res) => {
+        setGames(res.data);
+      })
+      .catch(() => {});
+  }, [id]);
 
   if (isLoading) {
     return <div className="grid place-items-center h-screen">Loading...</div>;
@@ -137,11 +135,13 @@ export default function UserProfile() {
       </div>
       {`Level ${Math.floor(user.level)} `}
       <ProgressBar user={user} />
-      <div className={divStyle}>
-        <ProfilStat user={user} />
-      </div>
 
-      {id && <GameHistory id={Number(id)} />}
+      {id && (
+        <>
+          <ProfileStatistics games={games} userId={Number(id)} />
+          <GameHistory games={games} id={Number(id)} />
+        </>
+      )}
     </div>
   );
 }

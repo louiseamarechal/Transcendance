@@ -3,8 +3,6 @@ import { GameSchema } from '../../../../shared/common/types/game.type';
 import { useUser } from '../../hooks/useUser';
 import NiceBox from '../ui/NiceBox';
 import GameHistoryCard from './GameHistoryCard';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-
 type GameHistoryProps = {
   games: GameSchema[];
   id: number;

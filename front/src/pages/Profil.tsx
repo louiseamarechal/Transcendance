@@ -1,6 +1,5 @@
 // import React from "react";
 import { useEffect, useState } from 'react';
-import { ProfilStat } from '../components/ProfilStat.tsx';
 import ProgressBar from '../components/ProgressBar.tsx';
 import '../style/pages/Profil.css';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
@@ -36,30 +35,6 @@ function Profil() {
     });
   }, []);
 
-  const handle2FA = () => {
-    if (is2FAset === false) {
-      axiosInstance.patch('user/me', { s2fa: 'SET' });
-      setIs2FAEnabled(true);
-    }
-    if (is2FAset === true) {
-      axiosInstance.patch('user/me', { s2fa: 'NOTSET' });
-      setIs2FAEnabled(false);
-    }
-  };
-  const divStyle = [
-    'w-3/5',
-    'h-3/5',
-    'flex flex-row items-start justify-evenly gap-10 pt-6',
-    'border-t-[1px]',
-    'border-r-[2px]',
-    'border-b-[2px]',
-    'border-l-[1px]',
-    'border-[#0000001C]',
-    'rounded-[50px]',
-    'shadow-lg',
-    'flex-wrap',
-  ].join(' ');
-
   useEffect(() => {
     axiosInstance
       .get(`game/${myId}`)
@@ -80,9 +55,16 @@ function Profil() {
     console.log({ user });
   }, [reload]);
 
-  if (isLoading) {
-    return <div className="grid place-items-center h-screen">Loading...</div>;
-  }
+  const handle2FA = () => {
+    if (is2FAset === false) {
+      axiosInstance.patch('user/me', { s2fa: 'SET' });
+      setIs2FAEnabled(true);
+    }
+    if (is2FAset === true) {
+      axiosInstance.patch('user/me', { s2fa: 'NOTSET' });
+      setIs2FAEnabled(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -110,6 +92,10 @@ function Profil() {
     setImage(img);
     setChangingAvatar(true);
   };
+
+  if (isLoading) {
+    return <div className="grid place-items-center h-screen">Loading...</div>;
+  }
 
   return (
     // <div className="grid grid-cols-1 place-items-center pt-[10%]">
@@ -156,10 +142,9 @@ function Profil() {
       </div>
       {`Level ${Math.floor(user.level)} `}
       <ProgressBar user={user} />
-      <div className={divStyle}>
+      {/* <div className={divStyle}>
         <ProfilStat user={user} />
         <div className="line"></div>
-        {/* <div className="game-history"></div> */}
         <button
           className="small-button friend-request-button"
           onClick={handle2FA}
@@ -167,15 +152,13 @@ function Profil() {
           {' '}
           {is2FAset ? 'Unset 2FA' : 'Set 2FA'}{' '}
         </button>
-      </div>
+      </div> */}
 
       <ProfileStatistics games={games} userId={myId} />
 
       <GameHistory games={games} id={myId} />
 
-      <ProfileSettings />
-
-      {/* <Settings setReload={setReload} /> */}
+      <ProfileSettings is2FASet={is2FAset} handle2FA={handle2FA} />
     </div>
   );
 }
