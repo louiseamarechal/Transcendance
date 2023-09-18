@@ -12,6 +12,7 @@ import { notifSocket } from '../api/socket';
 import GameHistory from '../components/profile/GameHistory';
 import { GameSchema } from '../../../shared/common/types/game.type';
 import ProfileStatistics from '../components/profile/ProfileStatistics';
+import ProfileAchievements from '../components/profile/ProfileAchievements';
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -139,6 +140,7 @@ export default function UserProfile() {
       {id && (
         <>
           <ProfileStatistics games={games} userId={Number(id)} />
+          <ProfileAchievements />
           <GameHistory games={games} id={Number(id)} />
         </>
       )}

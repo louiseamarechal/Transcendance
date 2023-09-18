@@ -13,6 +13,7 @@ import { useUser } from '../hooks/useUser.ts';
 import { GameSchema } from '../../../shared/common/types/game.type.ts';
 import ProfileStatistics from '../components/profile/ProfileStatistics.tsx';
 import ProfileSettings from '../components/profile/ProfileSettings.tsx';
+import ProfileAchievements from '../components/profile/ProfileAchievements.tsx';
 
 function Profil() {
   // Profil page will depend on the user id => see later on
@@ -155,6 +156,8 @@ function Profil() {
       </div> */}
 
       <ProfileStatistics games={games} userId={myId} />
+
+      <ProfileAchievements />
 
       <GameHistory games={games} id={myId} />
 
