@@ -31,6 +31,11 @@ export class UserService {
         statTotalWin: true,
         s2fa: true,
         status: true,
+        achievement: {
+          select: {
+            achievementName: true,
+          }
+        }
       },
     });
 
@@ -90,6 +95,22 @@ export class UserService {
         },
         data: {
           ...dto,
+        },
+        select: {
+          id: true,
+          login: true,
+          name: true,
+          level: true,
+          avatar: true,
+          statTotalGame: true,
+          statTotalWin: true,
+          s2fa: true,
+          status: true,
+          achievement: {
+            select: {
+              achievementName: true,
+            }
+          }
         },
       })
       .catch((error) => {

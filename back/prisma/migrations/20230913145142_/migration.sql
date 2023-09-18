@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "users" ADD COLUMN     "FirstVictory" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "Level10" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "TenVictories" BOOLEAN NOT NULL DEFAULT false;

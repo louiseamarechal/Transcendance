@@ -10,7 +10,7 @@ export default function GameLobby() {
 
       <div className="net-container">
         <Link to={'/game/search'}>
-          <div className="searchgame-button mr-2">Search game</div>
+          <div className="searchgame-button">Search game</div>
         </Link>
 
         <div className="net"></div>

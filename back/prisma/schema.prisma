@@ -26,6 +26,7 @@ model User {
   level         Float     @default(1)
   avatar        String?
   s2fa          Status2fa @default(NOTSET)
+
   statTotalGame Int       @default(0)
   statTotalWin  Int       @default(0)
 
@@ -47,6 +48,8 @@ model User {
   wonGames          Game[]                 @relation("winner")
   mutedOnChannel    MutedByUserOnChannel[] @relation("mutedUser")
   hasMutedOnChannel MutedByUserOnChannel[] @relation("mutedByUser")
+
+  achievement Achievements[] @relation("user")
 
   @@map("users")
 }
@@ -191,4 +194,22 @@ model Game {
   score2 Int?
 
   @@map("games")
+}
+
+enum Achievement_type {
+  NONE
+  TENVICTORIES 
+  FIRSTVICTORY
+  LEVEL10
+  LOOSER
+}
+
+model Achievements {
+  id              Int      @id @default(autoincrement())
+  achievementName Achievement_type @default(NONE) @map("achievment_name")
+
+  user User @relation(name: "user", fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  @@map("achievements")
 }

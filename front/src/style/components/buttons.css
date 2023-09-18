@@ -121,6 +121,9 @@
     text-align: center;
     color: var(--black);
     padding: 5% 5%;
+
+    display: flex;
+    align-items: center;
 }
 /* <button className='small-button' style={{backgroundColor:'var(--green)'}}> */
 

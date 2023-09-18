@@ -10,6 +10,8 @@ import { ServerEvents } from '../../../../shared/server/ServerEvents';
 import { getGameByUserId } from '../utils/game.utils';
 import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
 import { ClientEvents } from '../../../../shared/client/ClientEvents';
+import { AchievementDbService } from './AchievementDb.service';
+
 
 @Injectable()
 export class GameManagerService {
@@ -19,6 +21,7 @@ export class GameManagerService {
   constructor(
     private gameDb: GameDbService,
     private userService: UserService,
+    private achievementDb: AchievementDbService,
   ) {}
 
   public joinQueue(client: Socket) {
@@ -241,7 +244,9 @@ export class GameManagerService {
     if (game.status === GameStatus.Done) {
       console.log('Remove game. Cause: Game is done');
       this.gameDb.writeToDb(game);
-      this.removeGame(game);
+      // this.gameDb.writeAchievementToDb(game);
+      this.achievementDb.writeAchievementToDb(game);
+      this.removeGame(game); 
       return true;
     }
     return false;

@@ -572,6 +572,11 @@ export class ChannelService {
                 statTotalGame: true,
                 statTotalWin: true,
                 status: true,
+                achievement: {
+                  select: {
+                    achievementName: true,
+                  }
+                }
               },
             },
           },

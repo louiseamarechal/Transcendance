@@ -43,7 +43,6 @@ export class GameDbService {
       data: { level: { increment: 0.2 } },
     });
   }
-
   // async getMyGames(userId: number): Promise<GameSchema[]> {
   //   const games: GameSchema[] = await this.prisma.game.findMany({
   //     where: { OR: [{ player1Id: userId }, { player2Id: userId }] },
@@ -57,6 +56,40 @@ export class GameDbService {
     });
     return games;
   }
+
+  // async writeAchievementToDb(game: Game) {
+  //   const p1Id = game.p1.user.id;
+  //   const p2Id = game.p2.user.id;; 
+  //   const nbvictoriesp1 = this.prisma.user.findUnique({
+  //     where: { id: p1Id },  
+  //     select: { wonGames : true },
+  //   });
+  //   const nbvictoriesp2 = this.prisma.user.findUnique({
+  //     where: { id: p1Id },  
+  //     select: { wonGames : true },
+  //   });
+  //   console.log('numbers of victories player one', nbvictoriesp1);
+  //   if (Number(nbvictoriesp1) >= 2)
+  //   {
+  //     await this.prisma.achievements.create({
+  //       data: {
+  //         id : p1Id,
+  //         achievementName : "TENVICTORIES",
+  //         userId : p1Id,
+  //       },
+  //     });
+  //   }
+  //   if (Number(nbvictoriesp2) >= 10)
+  //   {
+  //     await this.prisma.achievements.create({
+  //       data: {
+  //         id : Number(p2Id),
+  //         achievementName : "TENVICTORIES",
+  //         userId : Number(p2Id),
+  //       },
+  //     });
+  //   }
+  // }
 
   // async createGame(game: Game) {
   //   console.log('[GameDb] createGame', game.gameId);
@@ -112,3 +145,5 @@ export class GameDbService {
   //   }
   // }
 }
+
+// write achievements on Db

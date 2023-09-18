@@ -9,6 +9,7 @@ import { GameGateway } from './game.gateway';
 import { GameController } from './game.controller';
 import { GameManagerService } from './services/gameManager.service';
 import { GameDbService } from './services/gameDb.service';
+import { AchievementDbService } from './services/AchievementDb.service';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { GameDbService } from './services/gameDb.service';
     UserModule,
     SocketModule,
   ],
-  providers: [GameGateway, GameManagerService, GameDbService],
+  providers: [GameGateway, GameManagerService, GameDbService, AchievementDbService],
   controllers: [GameController],
 })
 export class GameModule {}
