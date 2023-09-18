@@ -9,7 +9,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
 import {
-  BlockedOnChannels,
+  BannedOnChannels,
   Channel,
   MembersOnChannels,
   VisType,
@@ -115,11 +115,7 @@ export class ChannelService {
       };
     }[];
     admins: { userId: number }[];
-    blocked: { userId: number }[];
-    muted: {
-      mutedUserId: number;
-      mutedByUserId: number;
-    }[];
+    banned: { userId: number }[];
   } | null> {
     const channel = this.prisma.membersOnChannels.findUnique({
       where: {
@@ -130,7 +126,7 @@ export class ChannelService {
       },
     });
     if (!channel) throw new ForbiddenException('User not a member');
-    const forbidden = this.prisma.blockedOnChannels.findUnique({
+    const forbidden = this.prisma.bannedOnChannels.findUnique({
       where: {
         channelId_userId: {
           channelId,
@@ -169,15 +165,9 @@ export class ChannelService {
             userId: true,
           },
         },
-        blocked: {
+        banned: {
           select: {
             userId: true,
-          },
-        },
-        muted: {
-          select: {
-            mutedUserId: true,
-            mutedByUserId: true,
           },
         },
       },
@@ -295,7 +285,7 @@ export class ChannelService {
       return element.channelId;
     });
     const blockedIds: number[] = (
-      await this.prisma.blockedOnChannels.findMany({
+      await this.prisma.bannedOnChannels.findMany({
         where: {
           userId,
         },
@@ -303,7 +293,7 @@ export class ChannelService {
           channelId: true,
         },
       })
-    ).map((element: BlockedOnChannels) => {
+    ).map((element: BannedOnChannels) => {
       return element.channelId;
     });
 
@@ -416,63 +406,63 @@ export class ChannelService {
                             Muted On Channel
 ==============================================================================*/
 
-  async createMutedOnChannel(
-    channelId: number,
-    mutedByUserId: number,
-    mutedUserId: number,
-  ): Promise<MutedOnChannel> {
-    return this.prisma.mutedByUserOnChannel
-      .create({
-        data: {
-          channelId,
-          mutedUserId,
-          mutedByUserId,
-        },
-      })
-      .catch((error) => {
-        if (error.code === 'P2002')
-          throw new ConflictException('Already exists');
-        throw error;
-      });
-  }
+  // async createMutedOnChannel(
+  //   channelId: number,
+  //   mutedByUserId: number,
+  //   mutedUserId: number,
+  // ): Promise<MutedOnChannel> {
+  //   return this.prisma.mutedByUserOnChannel
+  //     .create({
+  //       data: {
+  //         channelId,
+  //         mutedUserId,
+  //         mutedByUserId,
+  //       },
+  //     })
+  //     .catch((error) => {
+  //       if (error.code === 'P2002')
+  //         throw new ConflictException('Already exists');
+  //       throw error;
+  //     });
+  // }
 
-  getMutedOnChannel(
-    channelId: number,
-    mutedByUserId: number,
-    mutedUserId: number,
-  ): Promise<MutedOnChannel | null> {
-    return this.prisma.mutedByUserOnChannel.findUnique({
-      where: {
-        channelId_mutedUserId_mutedByUserId: {
-          channelId,
-          mutedUserId,
-          mutedByUserId,
-        },
-      },
-    });
-  }
+  // getMutedOnChannel(
+  //   channelId: number,
+  //   mutedByUserId: number,
+  //   mutedUserId: number,
+  // ): Promise<MutedOnChannel | null> {
+  //   return this.prisma.mutedByUserOnChannel.findUnique({
+  //     where: {
+  //       channelId_mutedUserId_mutedByUserId: {
+  //         channelId,
+  //         mutedUserId,
+  //         mutedByUserId,
+  //       },
+  //     },
+  //   });
+  // }
 
-  deleteMutedOnChannel(
-    channelId: number,
-    mutedByUserId: number,
-    mutedUserId: number,
-  ) {
-    this.prisma.mutedByUserOnChannel
-      .delete({
-        where: {
-          channelId_mutedUserId_mutedByUserId: {
-            channelId,
-            mutedUserId,
-            mutedByUserId,
-          },
-        },
-      })
-      .catch((error) => {
-        if (error.code === 'P2002')
-          throw new HttpException('Does not exist', HttpStatus.NO_CONTENT);
-        throw error;
-      });
-  }
+  // deleteMutedOnChannel(
+  //   channelId: number,
+  //   mutedByUserId: number,
+  //   mutedUserId: number,
+  // ) {
+  //   this.prisma.mutedByUserOnChannel
+  //     .delete({
+  //       where: {
+  //         channelId_mutedUserId_mutedByUserId: {
+  //           channelId,
+  //           mutedUserId,
+  //           mutedByUserId,
+  //         },
+  //       },
+  //     })
+  //     .catch((error) => {
+  //       if (error.code === 'P2002')
+  //         throw new HttpException('Does not exist', HttpStatus.NO_CONTENT);
+  //       throw error;
+  //     });
+  // }
 
   /*============================================================================
                             Members on channels
@@ -572,6 +562,11 @@ export class ChannelService {
                 statTotalGame: true,
                 statTotalWin: true,
                 status: true,
+                blockedUsers: {
+                  select: {
+                    blockedId: true,
+                  },
+                },
               },
             },
           },
@@ -653,7 +648,7 @@ export class ChannelService {
       throw new ForbiddenException('User not a member');
     }
     console.log(`Add banned member: ${blockedId}`);
-    return this.prisma.blockedOnChannels.create({
+    return this.prisma.bannedOnChannels.create({
       data: {
         channelId,
         userId: blockedId,

@@ -84,11 +84,7 @@ export class ChannelController {
       };
     }[];
     admins: { userId: number }[];
-    blocked: { userId: number }[];
-    muted: {
-      mutedUserId: number;
-      mutedByUserId: number;
-    }[];
+    banned: { userId: number }[];
   } | null> {
     console.log('Called Get channel id: ' + channelId);
     return this.channelService.getChannelById(userId, channelId);
@@ -152,37 +148,37 @@ export class ChannelController {
                             Muted On Channel
 ==============================================================================*/
 
-  @Post('muted/:channelId/')
-  addMutedOnChannel(
-    @GetUserId() userId: number,
-    @Param('channelId', ParseIntPipe) channelId: number,
-    @Body() dto: { mutedId: number },
-  ): Promise<MutedOnChannel> {
-    return this.channelService.createMutedOnChannel(
-      channelId,
-      userId,
-      dto.mutedId,
-    );
-  }
+  // @Post('muted/:channelId/')
+  // addMutedOnChannel(
+  //   @GetUserId() userId: number,
+  //   @Param('channelId', ParseIntPipe) channelId: number,
+  //   @Body() dto: { mutedId: number },
+  // ): Promise<MutedOnChannel> {
+  //   return this.channelService.createMutedOnChannel(
+  //     channelId,
+  //     userId,
+  //     dto.mutedId,
+  //   );
+  // }
 
-  @Get('muted/:channelId/:mutedId')
-  getMutedOnChannel(
-    @GetUserId() userId: number,
-    @Param('channelId', ParseIntPipe) channelId: number,
-    @Param('mutedId', ParseIntPipe) mutedId: number,
-  ): Promise<MutedOnChannel | null> {
-    return this.channelService.getMutedOnChannel(channelId, userId, mutedId);
-  }
+  // @Get('muted/:channelId/:mutedId')
+  // getMutedOnChannel(
+  //   @GetUserId() userId: number,
+  //   @Param('channelId', ParseIntPipe) channelId: number,
+  //   @Param('mutedId', ParseIntPipe) mutedId: number,
+  // ): Promise<MutedOnChannel | null> {
+  //   return this.channelService.getMutedOnChannel(channelId, userId, mutedId);
+  // }
 
-  @Delete('muted/:channelId/:mutedId')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  removeMutedOnChannel(
-    @GetUserId() userId: number,
-    @Param('channelId', ParseIntPipe) channelId: number,
-    @Param('mutedId', ParseIntPipe) mutedId: number,
-  ) {
-    return this.channelService.deleteMutedOnChannel(channelId, userId, mutedId);
-  }
+  // @Delete('muted/:channelId/:mutedId')
+  // @HttpCode(HttpStatus.NO_CONTENT)
+  // removeMutedOnChannel(
+  //   @GetUserId() userId: number,
+  //   @Param('channelId', ParseIntPipe) channelId: number,
+  //   @Param('mutedId', ParseIntPipe) mutedId: number,
+  // ) {
+  //   return this.channelService.deleteMutedOnChannel(channelId, userId, mutedId);
+  // }
 
   /*============================================================================
                             Members on channels

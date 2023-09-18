@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -87,5 +88,26 @@ export class UserController {
   @Get(':id')
   getUserById(@Param('id', ParseIntPipe) id: number) {
     return this.userService.getUserById(id);
+  }
+
+  @Post('block/:blockedId')
+  createBlockedUser(
+    @GetUserId() userId: number,
+    @Param('blockedId', ParseIntPipe) blockedId: number,
+  ) {
+    return this.userService.createBlockedUser(userId, blockedId);
+  }
+
+  @Get('blocked')
+  getBlockedUser(@GetUserId() userId: number): Promise<number[]> {
+    return this.userService.getBlockedUser(userId);
+  }
+
+  @Delete('block/:blockedId')
+  deleteBlockedUser(
+    @GetUserId() userId: number,
+    @Param('blockedId', ParseIntPipe) blockedId: number,
+  ) {
+    return this.userService.deleteBlockedUser(userId, blockedId);
   }
 }

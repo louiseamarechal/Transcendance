@@ -31,6 +31,11 @@ export class UserService {
         statTotalWin: true,
         s2fa: true,
         status: true,
+        blockedUsers: {
+          select: {
+            blockedId: true,
+          },
+        },
       },
     });
 
@@ -90,6 +95,22 @@ export class UserService {
         },
         data: {
           ...dto,
+        },
+        select: {
+          id: true,
+          login: true,
+          name: true,
+          level: true,
+          avatar: true,
+          statTotalGame: true,
+          statTotalWin: true,
+          s2fa: true,
+          status: true,
+          blockedUsers: {
+            select: {
+              blockedId: true,
+            },
+          },
         },
       })
       .catch((error) => {
@@ -179,5 +200,112 @@ export class UserService {
 
     // console.log(pendingFR?.receivedRequests);
     // return pendingFR?.receivedRequests;
+  }
+
+  async createBlockedUser(userId: number, blockedId: number) {
+    const dupId: { id: number } | null =
+      await this.prisma.blockedUser.findUnique({
+        where: {
+          blockedId_blockedById: {
+            blockedId,
+            blockedById: userId,
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+    if (dupId) throw new ConflictException('User already blocked !');
+    const FR: { id: number }[] = await this.prisma.friendRequest.findMany({
+      where: {
+        OR: [
+          {
+            fromId: userId,
+            toId: blockedId,
+          },
+          {
+            fromId: blockedId,
+            toId: userId,
+          },
+        ],
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (FR.length !== 1) throw new ConflictException('User not a friend !');
+    await this.prisma.friendRequest.update({
+      where: {
+        id: FR[0].id,
+      },
+      data: {
+        status: FRStatus.REFUSED,
+      },
+    });
+    this.prisma.blockedUser.create({
+      data: {
+        blockedId,
+        blockedById: userId,
+      },
+    });
+  }
+
+  async getBlockedUser(userId: number): Promise<number[]> {
+    const blockedUsers = await this.prisma.blockedUser.findMany({
+      where: {
+        blockedById: userId,
+      },
+      select: {
+        blockedId: true,
+      },
+    });
+    return blockedUsers.map((l: { blockedId: number }) => l.blockedId);
+  }
+
+  async deleteBlockedUser(userId: number, blockedId: number) {
+    const toDeleteId: { id: number } | null =
+      await this.prisma.blockedUser.findUnique({
+        where: {
+          blockedId_blockedById: {
+            blockedId,
+            blockedById: userId,
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+    if (!toDeleteId) throw new ConflictException('User not blocked !');
+    const FR: { id: number }[] = await this.prisma.friendRequest.findMany({
+      where: {
+        OR: [
+          {
+            fromId: userId,
+            toId: blockedId,
+          },
+          {
+            fromId: blockedId,
+            toId: userId,
+          },
+        ],
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (FR.length !== 1) throw new ConflictException('User not a friend !');
+    await this.prisma.friendRequest.update({
+      where: {
+        id: FR[0].id,
+      },
+      data: {
+        status: FRStatus.ACCEPTED,
+      },
+    });
+    return this.prisma.blockedUser.delete({
+      where: {
+        id: toDeleteId.id,
+      },
+    });
   }
 }

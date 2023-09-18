@@ -7,4 +7,5 @@ export type PublicUser = {
   statTotalGame: number;
   statTotalWin: number;
   status: string;
+  blockedUsers: { blockedId: number }[];
 };

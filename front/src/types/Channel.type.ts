@@ -8,8 +8,7 @@ export type Channel = {
   ownerId: number;
   members: { user: PublicUser }[];
   admins: { userId: number }[];
-  blocked: { userId: number }[];
-  muted: { mutedUserId: number; mutedByUserId: number }[];
+  banned: { userId: number }[];
 };
 
 export type ChannelShort = {
@@ -29,6 +28,5 @@ export const emptyChannel: Channel = {
   ownerId: NaN,
   members: [],
   admins: [],
-  blocked: [],
-  muted: [],
+  banned: [],
 };
