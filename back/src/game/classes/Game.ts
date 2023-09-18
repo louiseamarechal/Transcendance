@@ -64,6 +64,7 @@ export class Game {
         this.status,
         this.visibility,
         this.#intervalId ? true : false,
+        new Date(this.createdAt).toISOString(),
       ],
       p1: this.p1,
       p2: this.p2,

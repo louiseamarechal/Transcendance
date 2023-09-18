@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { gameSocket } from '../../api/socket';
 import { ClientEvents } from '../../../../shared/client/ClientEvents';
+import NiceButton from '../../components/ui/NiceButton';
 
 export default function GameSearch() {
   const [isQueuing, setIsQueuing] = useState<boolean>(false);
@@ -29,13 +30,13 @@ export default function GameSearch() {
       <br />
       <div className="spinner"></div>
       <br />
-      <button onClick={leaveQueue}>Leave</button>
+      <NiceButton onClick={leaveQueue}>Leave</NiceButton>
     </>
   );
 
   const noQueuingJSX = (
     <>
-      <button onClick={joinQueue}>Queue</button>
+      <NiceButton onClick={joinQueue}>Queue</NiceButton>
     </>
   );
 

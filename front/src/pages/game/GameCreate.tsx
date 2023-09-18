@@ -5,6 +5,7 @@ import { ServerEvents } from '../../../../shared/server/ServerEvents';
 import { ServerPayloads } from '../../../../shared/server/ServerPayloads';
 import { useNavigate } from 'react-router-dom';
 import GameCreateSelect from '../../components/game/GameCreate/GameCreateSelect';
+import NiceButton from '../../components/ui/NiceButton';
 
 export default function GameCreate() {
   const [isWaitingOpponent, setIsWaitingOpponent] = useState<boolean>(false);
@@ -15,6 +16,7 @@ export default function GameCreate() {
   useEffect(() => {
     function handlePrivateGameCreatedEvent() {
       console.log('handlePrivateGameCreatedEvent');
+      setError('');
       setIsWaitingOpponent(true);
     }
 
@@ -55,8 +57,14 @@ export default function GameCreate() {
     };
   }, []);
 
+  function onClickCancel() {
+    setError('');
+    setIsWaitingOpponent(false);
+    // Emit to notify the back to delete the game
+  }
+
   return (
-    <div className="h-full flex-row-center overflow-auto">
+    <div className="h-full flex-col-center overflow-auto">
       {!isWaitingOpponent ? (
         <>
           <GameCreateSelect />
@@ -64,7 +72,11 @@ export default function GameCreate() {
         </>
       ) : (
         <>
-          <div>Waiting for your opponent</div>
+          <p>Waiting for your opponent</p>
+          <br />
+          <div className="spinner"></div>
+          <br />
+          <NiceButton onClick={onClickCancel}>Cancel</NiceButton>
           {error && <p className="text-red-500">{error}</p>}
         </>
       )}
