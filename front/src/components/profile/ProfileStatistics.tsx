@@ -38,7 +38,7 @@ function ProfileStatistics({ games, userId }: ProfileStatisticsProps) {
             style={{ color: 'var(--faded-blue)' }}
           />
           <p>Winrate:</p>
-          <p>{winrate * 100}%</p>
+          <p>{Math.round(winrate * 100)}%</p>
         </div>
       </div>
     </NiceBox>
