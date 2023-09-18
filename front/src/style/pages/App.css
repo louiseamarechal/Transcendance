@@ -12,7 +12,7 @@
       #efbd99 84.79%
     );
   min-width: 700px;
-  min-height: 500px;
+  /* min-height: 500px; */
 }
 
 .app {
