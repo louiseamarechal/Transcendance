@@ -7,8 +7,8 @@ type GameOverlayTimerProps = {
 export default function GameOverlayTimer({ data }: GameOverlayTimerProps) {
   if (data.timerval !== undefined) {
     return (
-      <div className="absolute border-4 border-pink-700 w-full  flex justify-center items-center">
-        <div className="text-7xl border-2 border-black flex-1 flex justify-center items-center">
+      <div className="absolute w-full flex-row-center">
+        <div className="text-7xl">
           {data.timerval > 0 ? data.timerval : 'GO'}
         </div>
       </div>
