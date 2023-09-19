@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import '../../style/flexUtils.css';
-import { gameSocket } from '../../api/socket';
-import { ServerEvents } from '../../../../shared/server/ServerEvents';
-import { ServerPayloads } from '../../../../shared/server/ServerPayloads';
+import { gameSocket } from '../../../api/socket';
+import { ServerEvents } from '../../../../../shared/server/ServerEvents';
+import { ServerPayloads } from '../../../../../shared/server/ServerPayloads';
 import { Outlet, useNavigate } from 'react-router-dom';
-import GameCreateSelect from '../../components/game/GameCreate/GameCreateSelect';
-import NiceButton from '../../components/ui/NiceButton';
+import GameCreateSelect from '../../../components/game/GameCreate/GameCreateSelect';
+import NiceButton from '../../../components/ui/NiceButton';
 
 export default function GameCreate() {
   const [isWaitingOpponent, setIsWaitingOpponent] = useState<boolean>(false);

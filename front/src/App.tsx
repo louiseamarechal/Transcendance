@@ -22,6 +22,7 @@ import './style/components/avatar.css';
 import './style/color.css';
 import './style/pages/App.css';
 import './style/components/notification.css';
+import './style/flexUtils.css';
 
 import OldGame from './pages/OldGame/OldGame.tsx';
 import OldWaitingForGame from './pages/OldGame/OldWaitingForGamePage.tsx';
@@ -43,6 +44,8 @@ import ChannelMessaging from './pages/chat/chat-channel/ChannelMessaging.tsx';
 import ChannelMembers from './pages/chat/chat-channel/channel-options/ChannelMembers.tsx';
 import ChannelOptions from './pages/chat/chat-channel/ChannelOptions.tsx';
 import ChannelSettings from './pages/chat/chat-channel/channel-options/ChannelSettings.tsx';
+import GameCreateLayout from './pages/game/GameCreate/GameCreateLayout.tsx';
+import GameCreateIndex from './pages/game/GameCreate/GameCreateIndex.tsx';
 
 function App() {
   const router = createBrowserRouter(
@@ -59,9 +62,12 @@ function App() {
         </Route>
         <Route path="/game" Component={GameLayout}>
           <Route index Component={GameLobby} />
-          <Route path="search" Component={GameSearch} />
-          <Route path="create" Component={GameCreate} />
           <Route path=":gameId" Component={GameGame} />
+          <Route path="search" Component={GameSearch} />
+          <Route path="create" Component={GameCreateLayout}>
+            <Route index Component={GameCreateIndex} />
+            <Route path="wait" />
+          </Route>
         </Route>
         <Route path="/chat" Component={ChatLayout}>
           <Route index Component={() => <div className="w-full" />} />
