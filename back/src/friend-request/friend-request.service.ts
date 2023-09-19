@@ -3,7 +3,7 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { FRStatus, FriendRequest, VisType } from '@prisma/client';
+import { BlockedUser, FRStatus, FriendRequest, VisType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFriendRequestDto } from './dto';
 import { CreateChannelDto } from 'src/channel/dto';
@@ -219,14 +219,32 @@ export class FriendRequestService {
         id: friendRequestId,
       },
     });
-
     // Check ownership
     if (
       !friendRequest ||
       (friendRequest.fromId !== userId && friendRequest.toId !== userId)
     )
       throw new ForbiddenException('Access to ressource denied');
-
+    const blockedUser: { id: number }[] =
+      await this.prisma.blockedUser.findMany({
+        where: {
+          OR: [
+            {
+              blockedId: friendRequest.fromId,
+              blockedById: friendRequest.toId,
+            },
+            {
+              blockedById: friendRequest.fromId,
+              blockedId: friendRequest.toId,
+            },
+          ],
+        },
+        select: {
+          id: true,
+        },
+      });
+    if (blockedUser.length > 0)
+      throw new ConflictException('User is blocking you.');
     const deletedUser = await this.prisma.friendRequest.delete({
       where: {
         id: friendRequestId,

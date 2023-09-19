@@ -76,9 +76,16 @@ function ActionButtons({ activity }: ActionButtonsProps) {
 
   function handleRemoveFR() {
     if (!FR) return;
-    axiosInstance.delete(`friend-request/${FR.id}`).then(() => {
-      setFR(null);
-    });
+    axiosInstance
+      .delete(`friend-request/${FR.id}`)
+      .then(() => {
+        setFR(null);
+      })
+      .catch((err) => {
+        if (err.response.status === 409) {
+          alert(err.response.data.message);
+        }
+      });
   }
 
   function handleBlockUser() {
@@ -91,7 +98,7 @@ function ActionButtons({ activity }: ActionButtonsProps) {
       })
       .catch((err) => {
         if (err.response.status === 409) {
-          alert(err.response.data);
+          alert(err.response.data.message);
         }
       });
   }
@@ -132,9 +139,7 @@ function ActionButtons({ activity }: ActionButtonsProps) {
     } else if (blockedBy) {
       return (
         <div className="flex flex-col gap-2 justify-end w-[55%] items-end">
-          <button className="small-button">
-            Blocked
-          </button>
+          <button className="small-button">Blocked</button>
         </div>
       );
     }
