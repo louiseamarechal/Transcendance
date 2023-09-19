@@ -96,8 +96,6 @@ export class UserService {
           name: true,
           level: true,
           avatar: true,
-          statTotalGame: true,
-          statTotalWin: true,
           s2fa: true,
           status: true,
           achievement: {
