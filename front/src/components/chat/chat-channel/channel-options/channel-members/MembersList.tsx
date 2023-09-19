@@ -7,9 +7,14 @@ import useChannel from '../../../../../hooks/useChannel';
 import '../../../../../style/components/chat/chat-container/chat-messaging/chat-options.css';
 import MemberOptionsCard from './components/MemberOptionsCard';
 import AddMemberList from './components/AddMemberList';
+import { useSearchParams } from 'react-router-dom';
+import { useUser } from '../../../../../hooks/useUser';
 
 export default function MembersList() {
+  const { myId } = useUser();
   const channelState = useChannel();
+  const [searchParams] = useSearchParams();
+  const isDM: boolean = searchParams.get('isDM') === 'true';
   const [members, setMembers] = useState<{ user: PublicUser }[]>(
     channelState.self.members.map((m) => {
       return {
@@ -36,12 +41,14 @@ export default function MembersList() {
       <AddMemberList
         memberIds={members.map((m) => m.user.id)}
         setShowAddMember={setShowAddMember}
+        setMembers={setMembers}
       />
     );
   } else {
     return (
       <ul className={'member-list'}>
         {channelState.self.members.map((member) => {
+          if (isDM && myId == member.user.id) return <li />;
           return (
             <li key={`member-list-${member.user.id}`}>
               <MemberOptionsCard
@@ -54,15 +61,19 @@ export default function MembersList() {
             </li>
           );
         })}
-        <li key={`add-member`}>
-          <div className="add-member" onClick={() => setShowAddMember(true)}>
-            <FontAwesomeIcon
-              className="fa-3x"
-              icon={faPlusCircle}
-              style={{ color: 'black' }}
-            />
-          </div>
-        </li>
+        {isDM ? (
+          <div />
+        ) : (
+          <li key={`add-member`}>
+            <div className="add-member" onClick={() => setShowAddMember(true)}>
+              <FontAwesomeIcon
+                className="fa-3x"
+                icon={faPlusCircle}
+                style={{ color: 'black' }}
+              />
+            </div>
+          </li>
+        )}
       </ul>
     );
   }

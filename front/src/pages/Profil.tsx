@@ -1,6 +1,5 @@
 // import React from "react";
 import { useEffect, useState } from 'react';
-import { ProfilStat } from '../components/ProfilStat.tsx';
 import ProgressBar from '../components/ProgressBar.tsx';
 import '../style/pages/Profil.css';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
@@ -10,8 +9,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Avatar from '../components/Avatar.tsx';
 import { PublicUser } from '../../../shared/common/types/user.type.ts';
 import GameHistory from '../components/profile/GameHistory.tsx';
-import { GameSchema } from '../../../shared/common/types/game.type.ts';
 import { useUser } from '../hooks/useUser.ts';
+import { GameSchema } from '../../../shared/common/types/game.type.ts';
+import ProfileStatistics from '../components/profile/ProfileStatistics.tsx';
+import ProfileSettings from '../components/profile/ProfileSettings.tsx';
+import ProfileAchievements from '../components/profile/ProfileAchievements.tsx';
 
 function Profil() {
   // Profil page will depend on the user id => see later on
@@ -23,7 +25,7 @@ function Profil() {
   const [is2FAset, setIs2FAEnabled] = useState(false);
   const [image, setImage] = useState({ preview: '', data: '' });
   const [changingAvatar, setChangingAvatar] = useState(false);
-  // const [games, setGames] = useState<GameSchema[]>([]);
+  const [games, setGames] = useState<GameSchema[]>([]);
   const { myId } = useUser();
 
   console.log('Entering Profil component');
@@ -34,38 +36,14 @@ function Profil() {
     });
   }, []);
 
-  const handle2FA = () => {
-    if (is2FAset === false) {
-      axiosInstance.patch('user/me', { s2fa: 'SET' });
-      setIs2FAEnabled(true);
-    }
-    if (is2FAset === true) {
-      axiosInstance.patch('user/me', { s2fa: 'NOTSET' });
-      setIs2FAEnabled(false);
-    }
-  };
-  const divStyle = [
-    'w-3/5',
-    'h-3/5',
-    'flex flex-row items-start justify-evenly gap-10 pt-6',
-    'border-t-[1px]',
-    'border-r-[2px]',
-    'border-b-[2px]',
-    'border-l-[1px]',
-    'border-[#0000001C]',
-    'rounded-[50px]',
-    'shadow-lg',
-    'flex-wrap',
-  ].join(' ');
-
   useEffect(() => {
     axiosInstance
-      .get('game/myGames')
+      .get(`game/${myId}`)
       .then((res) => {
         setGames(res.data);
       })
       .catch(() => {});
-  }, []);
+  }, [myId]);
 
   useEffect(() => {
     axiosInstance
@@ -78,9 +56,16 @@ function Profil() {
     console.log({ user });
   }, [reload]);
 
-  if (isLoading) {
-    return <div className="grid place-items-center h-screen">Loading...</div>;
-  }
+  const handle2FA = () => {
+    if (is2FAset === false) {
+      axiosInstance.patch('user/me', { s2fa: 'SET' });
+      setIs2FAEnabled(true);
+    }
+    if (is2FAset === true) {
+      axiosInstance.patch('user/me', { s2fa: 'NOTSET' });
+      setIs2FAEnabled(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -100,7 +85,7 @@ function Profil() {
     setChangingAvatar(false);
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: any) => {
     const img = {
       preview: URL.createObjectURL(e.target.files[0]),
       data: e.target.files[0],
@@ -108,6 +93,10 @@ function Profil() {
     setImage(img);
     setChangingAvatar(true);
   };
+
+  if (isLoading) {
+    return <div className="grid place-items-center h-screen">Loading...</div>;
+  }
 
   return (
     // <div className="grid grid-cols-1 place-items-center pt-[10%]">
@@ -154,10 +143,9 @@ function Profil() {
       </div>
       {`Level ${Math.floor(user.level)} `}
       <ProgressBar user={user} />
-      <div className={divStyle}>
+      {/* <div className={divStyle}>
         <ProfilStat user={user} />
         <div className="line"></div>
-        {/* <div className="game-history"></div> */}
         <button
           className="small-button friend-request-button"
           onClick={handle2FA}
@@ -165,11 +153,15 @@ function Profil() {
           {' '}
           {is2FAset ? 'Unset 2FA' : 'Set 2FA'}{' '}
         </button>
-      </div>
+      </div> */}
 
-      <GameHistory id={myId} />
+      <ProfileStatistics games={games} userId={myId} />
 
-      {/* <Settings setReload={setReload} /> */}
+      <ProfileAchievements />
+
+      <GameHistory games={games} id={myId} />
+
+      <ProfileSettings is2FASet={is2FAset} handle2FA={handle2FA} />
     </div>
   );
 }

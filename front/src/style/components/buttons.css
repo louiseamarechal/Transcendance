@@ -103,27 +103,30 @@
 }
 
 .searchgame-button:hover {
-  transition: all 0.6s ease;
+  transition: all 0.2s ease;
   border: solid 3px var(--black);
 }
 
-.searchgame-button{
+.searchgame-button {
   width: 138px;
-    height: 136px;    
-    border-radius: 32px;
-    border: none;
-    
-    /* Text */
-    font-style: normal;
-    font-weight: 500;
-    font-size: 22px;
-    line-height: 30px;
-    text-align: center;
-    color: var(--black);
-    padding: 5% 5%;
+  height: 136px;
+  border-radius: 32px;
+  border: none;
 
-    display: flex;
-    align-items: center;
+  /* Flex */
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  /* Text */
+  font-style: normal;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 30px;
+  text-align: center;
+  color: var(--black);
+  padding: 5% 5%;
 }
 /* <button className='small-button' style={{backgroundColor:'var(--green)'}}> */
 

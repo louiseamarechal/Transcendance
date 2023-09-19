@@ -4,15 +4,18 @@ import { createPortal } from 'react-dom';
 import useChannel from '../../../../hooks/useChannel';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 import CancelPrompt from '../../../../components/CancelPrompt';
+import { useSearchParams } from 'react-router-dom';
 
 export default function ChannelSettings() {
-  const { myId } = useUser();
+  const axiosPrivate = useAxiosPrivate();
   const channelState = useChannel();
+  const { myId } = useUser();
   const [nameEdit, setNameEdit] = useState<string>('');
   const [avatarEdit, setAvatarEdit] = useState<string>('');
   const [passwordEdit, setPasswordEdit] = useState<string>('');
   const [showModal, setShowModal] = useState<boolean>(false);
-  const axiosPrivate = useAxiosPrivate();
+  const [searchParams] = useSearchParams();
+  const isDM: boolean = searchParams.get('isDM') === 'true';
 
   async function changeChannelName() {
     if (!nameEdit || nameEdit === '') {
@@ -60,7 +63,9 @@ export default function ChannelSettings() {
     });
   }
 
-  if (
+  if (isDM) {
+    return <div />;
+  } else if (
     channelState.self.ownerId !== myId &&
     !channelState.self.admins.some(
       (admin: { userId: number }) => admin.userId === myId,

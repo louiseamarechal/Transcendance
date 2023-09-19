@@ -90,18 +90,13 @@ export default function GameLobby() {
   }
 
   return (
-    <div
-      className="border-8 border-red-700 h-full flex flex-col justify-center items-center"
-      onPointerMove={handlePointerMove}
-    >
+    <div className="h-full flex-col-center" onPointerMove={handlePointerMove}>
       <div
         ref={divRef}
-        className="relative h-4/5 w-4/5 border-8 border-blue-600 flex flex-col justify-center items-center"
+        className="relative h-4/5 w-4/5 border-8 border-black border-dashed flex-col-center"
       >
         <GameBackground />
-        {gameData ? (
-          <GameCanvas p1={gameData.p1} p2={gameData.p2} ball={gameData.ball} />
-        ) : null}
+        {gameData ? <GameCanvas {...gameData} /> : null}
         <GameOverlay type={overlayType} data={overlayData} />
       </div>
     </div>

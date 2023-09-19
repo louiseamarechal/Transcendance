@@ -9,6 +9,7 @@ import { EditFriendRequestDto } from './dto';
 import { CreateChannelDto } from 'src/channel/dto';
 import { ChannelService } from 'src/channel/channel.service';
 import { NotifService } from 'src/notif/notif.service';
+import { PublicUser } from '../../../shared/common/types/user.type';
 
 @Injectable()
 export class FriendRequestService {
@@ -51,7 +52,7 @@ export class FriendRequestService {
     return friendRequest;
   }
 
-  async getMyFriends(userId: number) {
+  async getMyFriends(userId: number): Promise<PublicUser[]> {
     const acceptedRequests: FriendRequest[] =
       await this.prisma.friendRequest.findMany({
         where: {
@@ -91,9 +92,12 @@ export class FriendRequestService {
       },
       select: {
         id: true,
+        login: true,
         name: true,
         level: true,
         avatar: true,
+        s2fa: true,
+        status: true,
       },
     });
   }
