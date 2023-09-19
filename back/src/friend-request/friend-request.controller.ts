@@ -45,14 +45,6 @@ export class FriendRequestController {
     return this.friendRequestService.getFRs(userId);
   }
 
-  @Get(':id')
-  getFRById(
-    @GetUserId() userId: number,
-    @Param('id', ParseIntPipe) id: number,
-  ) {
-    return this.friendRequestService.getFRById(userId, id);
-  }
-
   @Get('received')
   getReceivedFR(@GetUserId() userId: number) {
     return this.friendRequestService.getReceivedFR(userId);
@@ -71,7 +63,7 @@ export class FriendRequestController {
     @GetUserId() userId: number,
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: EditFriendRequestDto,
-  ) {
+  ): Promise<FriendRequest> {
     return this.friendRequestService.editFRById(userId, id, dto);
   }
 
@@ -82,5 +74,13 @@ export class FriendRequestController {
     @Param('id', ParseIntPipe) id: number,
   ) {
     return this.friendRequestService.deleteFRById(userId, id);
+  }
+
+  @Get(':id')
+  getFRById(
+    @GetUserId() userId: number,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.friendRequestService.getFRById(userId, id);
   }
 }

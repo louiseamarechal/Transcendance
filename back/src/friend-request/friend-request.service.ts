@@ -183,6 +183,7 @@ export class FriendRequestService {
       };
       this.channelService.createChannel(userId, dto, 'FR');
     }
+    return updatedRequest;
   }
 
   async editFRByToId(fromId: number, toId: number, dto: EditFriendRequestDto) {
