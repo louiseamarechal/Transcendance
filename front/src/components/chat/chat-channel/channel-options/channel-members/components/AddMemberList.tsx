@@ -3,13 +3,16 @@ import useAxiosPrivate from '../../../../../../hooks/useAxiosPrivate';
 import useChannel from '../../../../../../hooks/useChannel';
 import UserSmallCard from '../../../../chat-create/components/UserSmallCard';
 import '../../../../../../style/components/buttons.css';
+import { PublicUser } from '../../../../../../../../shared/common/types/user.type';
 
 export default function AddMemberList({
   memberIds,
   setShowAddMember,
+  setMembers,
 }: {
   memberIds: number[];
   setShowAddMember: Dispatch<SetStateAction<boolean>>;
+  setMembers: Dispatch<SetStateAction<{ user: PublicUser }[]>>;
 }) {
   const channelState = useChannel();
   const [friends, setFriends] = useState<
@@ -37,6 +40,7 @@ export default function AddMemberList({
       });
       axiosPrivate.get('channel/' + channelState.self.id).then((res) => {
         channelState.reset(res.data);
+        setMembers(res.data.members);
       });
     }
     setShowAddMember(false);
