@@ -12,7 +12,6 @@ import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
 import { ClientEvents } from '../../../../shared/client/ClientEvents';
 import { AchievementDbService } from './AchievementDb.service';
 
-
 @Injectable()
 export class GameManagerService {
   public server: Namespace;
@@ -243,10 +242,11 @@ export class GameManagerService {
   private checkGameDone(game: Game): boolean {
     if (game.status === GameStatus.Done) {
       console.log('Remove game. Cause: Game is done');
-      this.gameDb.writeToDb(game);
+      this.gameDb.writeToDb(game).then(() => {
+        this.achievementDb.writeAchievementToDb(game);
+        this.removeGame(game);
+      })
       // this.gameDb.writeAchievementToDb(game);
-      this.achievementDb.writeAchievementToDb(game);
-      this.removeGame(game); 
       return true;
     }
     return false;
