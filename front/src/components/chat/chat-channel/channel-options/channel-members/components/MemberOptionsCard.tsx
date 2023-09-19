@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import { useUser } from '../../../../../../hooks/useUser';
 import UserCard from '../../../../../UserCard';
 import PromoteButton from './components/PromoteButton';
-import MuteButton from './components/MuteButton';
 import KickButton from './components/KickButton';
 import BlockButton from './components/BlockButton';
 import useChannel from '../../../../../../hooks/useChannel';
@@ -62,7 +61,6 @@ function MemberOptionsCard({
                 myRole={myRole}
                 setAdmins={setAdmins}
               />
-              <MuteButton key={`option-${member.id}-mute`} user={member} />
               <KickButton
                 key={`option-${member.id}-kick`}
                 user={member}
