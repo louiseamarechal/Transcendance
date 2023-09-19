@@ -42,7 +42,7 @@ function Friends() {
             {array.map((elem, index) => {
               return (
                 <div className="friend-card" key={index}>
-                  <UserCard user={elem} />
+                  <UserCard user={elem} showStatus={true} />
                 </div>
               );
             })}

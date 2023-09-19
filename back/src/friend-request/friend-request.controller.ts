@@ -14,6 +14,7 @@ import { FriendRequestService } from './friend-request.service';
 import { GetUserId } from 'src/common/decorators';
 import { CreateFriendRequestDto, EditFriendRequestDto } from './dto';
 import { FriendRequest } from '@prisma/client';
+import { PublicUser } from '../../../shared/common/types/user.type';
 
 @Controller('friend-request')
 export class FriendRequestController {
@@ -36,7 +37,7 @@ export class FriendRequestController {
   }
 
   @Get('my-friends')
-  getMyFriends(@GetUserId() userId: number) {
+  getMyFriends(@GetUserId() userId: number): Promise<PublicUser[]> {
     return this.friendRequestService.getMyFriends(userId);
   }
 
