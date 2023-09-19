@@ -579,8 +579,6 @@ export class ChannelService {
                 name: true,
                 level: true,
                 avatar: true,
-                statTotalGame: true,
-                statTotalWin: true,
                 status: true,
               },
             },
