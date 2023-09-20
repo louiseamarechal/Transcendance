@@ -85,26 +85,28 @@ function ActionButtons({ activity }: ActionButtonsProps) {
         if (err.response.status === 409) {
           alert(err.response.data.message);
           setBlockedBy(true);
+          setFR({ ...FR, status: 'REFUSED' });
         } else {
-          throw err;
+          console.error(err);
         }
       });
   }
 
   function handleBlockUser() {
+    if (!FR) return;
     axiosInstance
       .post(`user/block/${profileId}`)
       .then(() => {
         setBlocked(true);
-        if (!FR) return;
         setFR({ ...FR, status: 'REFUSED' });
       })
       .catch((err) => {
         if (err.response.status === 409) {
           alert(err.response.data.message);
           setBlockedBy(true);
+          setFR({ ...FR, status: 'REFUSED' });
         } else {
-          throw err;
+          console.error(err);
         }
       });
   }
