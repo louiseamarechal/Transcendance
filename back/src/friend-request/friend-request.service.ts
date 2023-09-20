@@ -98,6 +98,11 @@ export class FriendRequestService {
         avatar: true,
         s2fa: true,
         status: true,
+        blockedUsers: {
+          select: {
+            blockedId: true,
+          },
+        },
       },
     });
   }
