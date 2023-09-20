@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { gameSocket } from '../../../../api/socket';
 import { OverlayData } from '../../../../../../shared/server/ServerPayloads';
+import NiceButton from '../../../ui/NiceButton';
 
 type GameOverlayReadyProps = {
   data: OverlayData;
@@ -8,6 +9,20 @@ type GameOverlayReadyProps = {
 
 export default function GameOverlayReady({ data }: GameOverlayReadyProps) {
   const { gameId } = useParams();
+
+  const styleP1 = {
+    backgroundColor: data.p1ready ? 'rgb(187, 247, 208)' : 'rgb(254, 202, 202)',
+    width: '33%',
+    padding: '8px',
+    borderRadius: '8px',
+  };
+
+  const styleP2 = {
+    backgroundColor: data.p2ready ? 'rgb(187, 247, 208)' : 'rgb(254, 202, 202)',
+    width: '33%',
+    padding: '8px',
+    borderRadius: '8px',
+  };
 
   function handleReadyClick() {
     const payload: any = {
@@ -17,32 +32,14 @@ export default function GameOverlayReady({ data }: GameOverlayReadyProps) {
   }
 
   return (
-    <div className="absolute border-4 border-fuchsia-300 w-full h-full flex flex-col justify-center items-center">
-      <div className="border-4 border-pink-700 w-full  flex justify-center items-center">
-        <div className="border-2 border-black flex-1 flex justify-center items-center">
-          <div
-            className={
-              'border border-yellow-700 w-1/2 text-center ' +
-              (data.p1ready ? 'bg-green-200' : 'bg-red-200')
-            }
-          >
-            {data.p1ready ? 'Ready' : 'Not Ready'}
-          </div>
-        </div>
-        <div className="border-2 border-black flex-1 flex justify-center items-center">
-          <div
-            className={
-              'border border-yellow-700 w-1/2 text-center ' +
-              (data.p2ready ? 'bg-green-200' : 'bg-red-200')
-            }
-          >
-            {data.p2ready ? 'Ready' : 'Not Ready'}
-          </div>
-        </div>
+    <div className="absolute w-full h-full flex-col-center text-center">
+      <div className="w-full flex items-center justify-around">
+        <div style={styleP1}>{data.p1ready ? 'Ready' : 'Not Ready'}</div>
+        <div style={styleP2}>{data.p2ready ? 'Ready' : 'Not Ready'}</div>
       </div>
-      <div className="border-4 border-pink-700 h-[10%]"></div>
-      <div className="text-7xl border-4 border-pink-700 flex justify-center items-center">
-        <button onClick={handleReadyClick}>Ready</button>
+      <div className="h-[10%]"></div>
+      <div className="text-4xl text-center">
+        <NiceButton onClick={handleReadyClick}>Ready</NiceButton>
       </div>
     </div>
   );

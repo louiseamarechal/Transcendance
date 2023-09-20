@@ -41,6 +41,7 @@ export default function MembersList() {
       <AddMemberList
         memberIds={members.map((m) => m.user.id)}
         setShowAddMember={setShowAddMember}
+        setMembers={setMembers}
       />
     );
   } else {
