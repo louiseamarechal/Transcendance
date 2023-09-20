@@ -84,6 +84,9 @@ function ActionButtons({ activity }: ActionButtonsProps) {
       .catch((err) => {
         if (err.response.status === 409) {
           alert(err.response.data.message);
+          setBlockedBy(true);
+        } else {
+          throw err;
         }
       });
   }
@@ -99,6 +102,9 @@ function ActionButtons({ activity }: ActionButtonsProps) {
       .catch((err) => {
         if (err.response.status === 409) {
           alert(err.response.data.message);
+          setBlockedBy(true);
+        } else {
+          throw err;
         }
       });
   }
