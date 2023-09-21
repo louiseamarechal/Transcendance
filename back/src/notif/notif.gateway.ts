@@ -1,4 +1,5 @@
 import {
+  ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -60,9 +61,9 @@ export class NotifGateway
       const room: string = client.data.user.login;
       console.log({ dataHandleConnection: client.data.user });
       client.join(room);
-      this.userService.editUser(client.data.user.id, {
-        status: UserStatus.ONLINE,
-      });
+      // this.userService.editUser(client.data.user.id, {
+      //   status: UserStatus.ONLINE,
+      // });
     } catch (error) {
       console.log('[NotifGateway] handleConnection threw:', error.message);
       client.disconnect();
@@ -84,6 +85,14 @@ export class NotifGateway
   handleChatNotif(@MessageBody() roomName: string) {
     console.log(`receiving chat notif on socket for ${roomName}`);
     this.notifService.handleChatNotif(roomName);
+  }
+
+  @SubscribeMessage('client.notif.ping')
+  handleNotifPing(
+    @MessageBody() location: string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    this.notifService.handleNotifPing(location, client);
   }
 
   // handleGamesNotif(@MessageBody() data: string) {
