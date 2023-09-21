@@ -5,4 +5,5 @@ export type PublicUser = {
   level: number;
   avatar: string | null;
   status: string;
+  blockedUsers: { blockedId: number }[];
 };

@@ -3,15 +3,15 @@ import { GameSchema } from '../../../../shared/common/types/game.type';
 
 type GameHistoryCardProps = {
   game: GameSchema;
-  id: number;
+  profileId: number;
 };
 
-function GameHistoryCard({ game, id }: GameHistoryCardProps) {
+function GameHistoryCard({ game, profileId }: GameHistoryCardProps) {
   const navigate = useNavigate();
 
   let style = 'flex-row-center m-2 rounded-lg whitespace-nowrap';
 
-  if (game.winnerId === id) {
+  if (game.winnerId === profileId) {
     style += ' bg-[#cee2fb]';
   } else {
     style += ' bg-[#f9d2b6]';
@@ -20,10 +20,10 @@ function GameHistoryCard({ game, id }: GameHistoryCardProps) {
   function handleClickToProfile(
     event: React.MouseEvent<HTMLButtonElement>,
     toId: number,
-    id: number,
+    profileId: number,
   ) {
     event.preventDefault();
-    if (id != toId) {
+    if (profileId != toId) {
       navigate(`/profil/${toId}`);
     }
   }
@@ -35,7 +35,7 @@ function GameHistoryCard({ game, id }: GameHistoryCardProps) {
         <div className="w-[5%]"></div>
         <button
           className="w-[20%] text-ellipsis overflow-hidden hover:font-bold"
-          onClick={(e) => handleClickToProfile(e, game.player1Id, id)}
+          onClick={(e) => handleClickToProfile(e, game.player1Id, profileId)}
         >
           {game.player1Name}
         </button>
@@ -44,7 +44,7 @@ function GameHistoryCard({ game, id }: GameHistoryCardProps) {
         <div className="w-[5%]"></div>
         <button
           className="w-[20%] text-ellipsis overflow-hidden hover:font-bold"
-          onClick={(e) => handleClickToProfile(e, game.player2Id!, id)}
+          onClick={(e) => handleClickToProfile(e, game.player2Id!, profileId)}
         >
           {game.player2Name}
         </button>

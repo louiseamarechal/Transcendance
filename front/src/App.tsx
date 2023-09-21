@@ -78,7 +78,7 @@ function App() {
         </Route>
         <Route path="/friends" Component={Friends} />
         <Route path="/profil" Component={Profil} />
-        <Route path="/profil/:id" Component={UserProfile} />
+        <Route path="/profil/:profileId" Component={UserProfile} />
         <Route path="/findfriends" Component={FindFriends} />
       </Route>,
     ]),
