@@ -5,5 +5,5 @@ export type PublicUser = {
   level: number;
   avatar: string | null;
   status: string;
-  // achievement: {achievementName: string}[] ;
+  achievement: {achievementName: string}[] ;
 };

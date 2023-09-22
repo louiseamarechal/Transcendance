@@ -98,6 +98,7 @@ export class FriendRequestService {
         avatar: true,
         s2fa: true,
         status: true,
+        achievement : true,
       },
     });
   }

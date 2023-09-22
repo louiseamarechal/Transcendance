@@ -77,6 +77,7 @@ export class UserService {
         avatar: true,
         s2fa: true,
         status: true,
+        achievement : true,
       },
     });
   }

@@ -157,7 +157,7 @@ function Profil() {
 
       <ProfileStatistics games={games} userId={myId} />
 
-      <ProfileAchievements />
+      <ProfileAchievements achievement = {user.achievement}/>
 
       <GameHistory games={games} id={myId} />
 
