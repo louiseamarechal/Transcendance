@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -17,6 +18,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from 'src/config/multer.config';
 import { Response } from 'express';
 import { PublicUser } from '../../../shared/common/types/user.type';
+import { BlockedUser } from '@prisma/client';
 
 @Controller('user')
 export class UserController {
@@ -67,6 +69,35 @@ export class UserController {
     console.log({ userId });
     console.log('[user/pending-request]: accessed controller');
     return this.userService.getPendingFR(userId);
+  }
+
+  @Post('block/:blockedId')
+  createBlockedUser(
+    @GetUserId() userId: number,
+    @Param('blockedId', ParseIntPipe) blockedId: number,
+  ) {
+    return this.userService.createBlockedUser(userId, blockedId);
+  }
+
+  @Get('blocked')
+  getBlockedUser(@GetUserId() userId: number): Promise<number[]> {
+    return this.userService.getBlockedUser(userId);
+  }
+
+  @Get('blockedBy/:blockerId')
+  getBlockedByUser(
+    @GetUserId() userId: number,
+    @Param('blockerId', ParseIntPipe) blockerId: number,
+  ): Promise<BlockedUser | null> {
+    return this.userService.getBlockedByUser(userId, blockerId);
+  }
+
+  @Delete('block/:blockedId')
+  deleteBlockedUser(
+    @GetUserId() userId: number,
+    @Param('blockedId', ParseIntPipe) blockedId: number,
+  ) {
+    return this.userService.deleteBlockedUser(userId, blockedId);
   }
 
   @Get(':id')

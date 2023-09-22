@@ -1,16 +1,14 @@
-import { useEffect, useState } from 'react';
 import { GameSchema } from '../../../../shared/common/types/game.type';
-import { useUser } from '../../hooks/useUser';
 import NiceBox from '../ui/NiceBox';
 import GameHistoryCard from './GameHistoryCard';
 type GameHistoryProps = {
   games: GameSchema[];
-  id: number;
+  profileId: number;
 };
 
-function GameHistory({ games, id }: GameHistoryProps) {
+function GameHistory({ games, profileId }: GameHistoryProps) {
   const gameList = games.map((g) => {
-    return <GameHistoryCard game={g} id={id} key={g.id} />;
+    return <GameHistoryCard game={g} profileId={profileId} key={g.id} />;
   });
 
   return (

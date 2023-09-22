@@ -13,16 +13,10 @@ export default function ChatBody() {
   const axiosInstance = useAxiosPrivate();
   const { myId, myLogin } = useUser();
   const channelState = useChannel();
+  const [blockedUsers, setBlockedUsers] = useState<number[]>([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [messageList, setMessageList] = useState<Message[]>([]);
   const [MessageReceived, setMessageReceived] = useState(false);
-  // const [reloadMessage, setReloadMessage] = useState(true);
-
-  function userIsMuted(senderId: number): boolean {
-    return channelState.self.muted.some((user) => {
-      return user.mutedUserId === senderId && myId === user.mutedByUserId;
-    });
-  }
 
   const sendMessage = async () => {
     if (currentMessage !== '') {
@@ -52,6 +46,13 @@ export default function ChatBody() {
     return date.toLocaleString();
   }
 
+  useEffect(() => {
+    console.log('Call blocked users.');
+    axiosInstance.get(`user/blocked`).then((res) => {
+      setBlockedUsers(res.data);
+    });
+  }, []);
+
   async function updateMessages() {
     await axiosInstance.get(`message/${channelState.self.id}`).then((res) => {
       setMessageList(res.data);
@@ -66,6 +67,7 @@ export default function ChatBody() {
   channelSocket.on('server.channel.messageUpdate', () =>
     setMessageReceived(true),
   );
+
   useEffect(() => {
     updateMessages();
     return () => {
@@ -92,12 +94,12 @@ export default function ChatBody() {
                   <div
                     className="message-content"
                     id={
-                      userIsMuted(messageContent.senderId)
+                      blockedUsers.includes(messageContent.senderId)
                         ? 'muted-message'
                         : ''
                     }
                   >
-                    {userIsMuted(messageContent.senderId) ? (
+                    {blockedUsers.includes(messageContent.senderId) ? (
                       <p></p>
                     ) : (
                       <p>{messageContent.body}</p>

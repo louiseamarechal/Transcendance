@@ -27,24 +27,24 @@ model User {
   avatar String?
   s2fa   Status2fa @default(NOTSET)
 
-  friends  User[] @relation(name: "friends")
-  friendOf User[] @relation(name: "friends")
+  blockedUsers  BlockedUser[] @relation(name: "blocker")
+  blockedByUser BlockedUser[] @relation(name: "blocked")
 
   sentRequests     FriendRequest[] @relation("sender")
   receivedRequests FriendRequest[] @relation("receiver")
 
-  ownedChannels   Channel[]           @relation("channelOwner")
-  adminChannels   AdminsOnChannels[]
-  memberChannels  MembersOnChannels[]
-  blockedChannels BlockedOnChannels[]
+  ownedChannels  Channel[]           @relation("channelOwner")
+  adminChannels  AdminsOnChannels[]
+  memberChannels MembersOnChannels[]
+  bannedChannels BannedOnChannels[]
 
   sentMessages Message[] @relation("sender")
 
-  initGames         Game[]                 @relation("player1")
-  invitedGames      Game[]                 @relation("player2")
-  wonGames          Game[]                 @relation("winner")
-  mutedOnChannel    MutedByUserOnChannel[] @relation("mutedUser")
-  hasMutedOnChannel MutedByUserOnChannel[] @relation("mutedByUser")
+  initGames    Game[] @relation("player1")
+  invitedGames Game[] @relation("player2")
+  wonGames     Game[] @relation("winner")
+  // mutedOnChannel    MutedByUserOnChannel[] @relation("mutedUser")
+  // hasMutedOnChannel MutedByUserOnChannel[] @relation("mutedByUser")
 
   achievement Achievements[] @relation("user")
 
@@ -63,7 +63,7 @@ enum Status2fa {
 }
 
 model FriendRequest {
-  id        Int      @id @default(autoincrement())
+  id        Int      @id @unique @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -84,6 +84,20 @@ enum FRStatus {
   ACCEPTED
 }
 
+model BlockedUser {
+  id        Int      @id @unique @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  blocked     User @relation(name: "blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+  blockedId   Int  @map("blocked_user_id")
+  blockedBy   User @relation(name: "blocker", fields: [blockedById], references: [id], onDelete: Cascade)
+  blockedById Int  @map("blocker_user_id")
+
+  @@unique([blockedId, blockedById])
+  @@map("blocked_users")
+}
+
 model Channel {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
@@ -96,8 +110,8 @@ model Channel {
 
   admins  AdminsOnChannels[]
   members MembersOnChannels[]
-  blocked BlockedOnChannels[]
-  muted   MutedByUserOnChannel[] @relation("mutedOnChannel")
+  banned  BannedOnChannels[]
+  // muted   MutedByUserOnChannel[] @relation("mutedOnChannel")
 
   messages Message[] @relation("channel")
 
@@ -131,7 +145,7 @@ model AdminsOnChannels {
   @@id([channelId, userId])
 }
 
-model BlockedOnChannels {
+model BannedOnChannels {
   channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId Int
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -140,17 +154,17 @@ model BlockedOnChannels {
   @@id([channelId, userId])
 }
 
-model MutedByUserOnChannel {
-  channel   Channel @relation(name: "mutedOnChannel", fields: [channelId], references: [id])
-  channelId Int     @map("channel_id")
+// model MutedByUserOnChannel {
+//   channel   Channel @relation(name: "mutedOnChannel", fields: [channelId], references: [id])
+//   channelId Int     @map("channel_id")
 
-  mutedUser     User @relation(name: "mutedUser", fields: [mutedUserId], references: [id])
-  mutedUserId   Int  @map("muted_user_id")
-  mutedByUser   User @relation(name: "mutedByUser", fields: [mutedByUserId], references: [id])
-  mutedByUserId Int  @map("muted_by_user_id")
+//   mutedUser     User @relation(name: "mutedUser", fields: [mutedUserId], references: [id])
+//   mutedUserId   Int  @map("muted_user_id")
+//   mutedByUser   User @relation(name: "mutedByUser", fields: [mutedByUserId], references: [id])
+//   mutedByUserId Int  @map("muted_by_user_id")
 
-  @@id([channelId, mutedUserId, mutedByUserId])
-}
+//   @@id([channelId, mutedUserId, mutedByUserId])
+// }
 
 model Message {
   id        Int      @id @default(autoincrement())

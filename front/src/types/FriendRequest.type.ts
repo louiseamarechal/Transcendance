@@ -1,7 +1,6 @@
-export type FriendRequest = 
-{
-    id?: number;
-    fromId?: string;
-    toId?: number;
-    status?: string;
-}
+export type FriendRequest = {
+  id: number;
+  fromId: number;
+  toId: number;
+  status: string;
+};

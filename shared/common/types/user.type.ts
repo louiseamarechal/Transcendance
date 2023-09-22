@@ -6,4 +6,5 @@ export type PublicUser = {
   avatar: string | null;
   status: string;
   achievement: {achievementName: string}[] ;
+  blockedUsers: { blockedId: number }[];
 };
