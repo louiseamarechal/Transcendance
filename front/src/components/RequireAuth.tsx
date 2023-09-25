@@ -11,25 +11,35 @@ const RequireAuth = () => {
   const location = useLocation();
   const navbar = useNavbar();
   const refresh = useRefreshToken();
-  
-  function refreshToken () {
+
+  function onConnectError(error: Error) {
+    console.log({ reconnectError: error.message });
     refresh();
   }
 
   useEffect(() => {
     notifSocket.auth = { token: auth.access_token };
-    console.log('Connect notifSocket')
+    console.log('Connect notifSocket');
+
     notifSocket.connect();
-    notifSocket.on('connect_error', (error) => {
-      console.log({reconnectError: error.message});
-      refreshToken();
-    })
+    notifSocket.on('connect_error', onConnectError);
+
     return () => {
       console.log('Disconnect notifSocket');
-      notifSocket.off("connect_error");
+      notifSocket.off('connect_error', onConnectError);
       notifSocket.disconnect();
     };
   }, [auth]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      notifSocket.emit('client.notif.ping', location.pathname);
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [location]);
 
   return auth.access_token ? ( // is the user logged in ?
     <>
