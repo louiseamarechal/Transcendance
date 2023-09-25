@@ -10,8 +10,10 @@ import { NoParamCallback, createReadStream, existsSync, rename, rm } from 'fs';
 import { BlockedUser, FRStatus, FriendRequest } from '@prisma/client';
 import { join } from 'path';
 import { Response } from 'express';
-import { PublicUser } from '../../../shared/common/types/user.type';
-import { transformDocument } from '@prisma/client/runtime';
+import {
+  PublicUser,
+  PublicUserSelect,
+} from '../../../shared/common/types/user.type';
 
 @Injectable()
 export class UserService {
@@ -22,25 +24,7 @@ export class UserService {
       where: {
         id: userId,
       },
-      select: {
-        id: true,
-        login: true,
-        name: true,
-        level: true,
-        avatar: true,
-        s2fa: true,
-        status: true,
-        achievement: {
-          select: {
-            achievementName: true,
-          }
-        },
-        blockedUsers: {
-          select: {
-            blockedId: true,
-          },
-        },
-      },
+      select: PublicUserSelect,
     });
 
     if (!user) {
@@ -75,52 +59,16 @@ export class UserService {
           not: userId,
         },
       },
-      select: {
-        id: true,
-        login: true,
-        name: true,
-        level: true,
-        avatar: true,
-        s2fa: true,
-        status: true,
-        achievement : true,
-        blockedUsers: {
-          select: {
-            blockedId: true,
-          },
-        },
-      },
+      select: PublicUserSelect,
     });
   }
 
   async editUser(userId: number, dto: EditUserDto): Promise<PublicUser> {
     const user = await this.prisma.user
       .update({
-        where: {
-          id: userId,
-        },
-        data: {
-          ...dto,
-        },
-        select: {
-          id: true,
-          login: true,
-          name: true,
-          level: true,
-          avatar: true,
-          s2fa: true,
-          status: true,
-          achievement: {
-            select: {
-              achievementName: true,
-            }
-          },
-          blockedUsers: {
-            select: {
-              blockedId: true,
-            },
-          },
-        },
+        where: { id: userId },
+        data: { ...dto },
+        select: PublicUserSelect,
       })
       .catch((error) => {
         if (error.code === 'P2002') {
@@ -135,7 +83,7 @@ export class UserService {
     file: Express.Multer.File,
     userLogin: string,
     userId: number,
-  ) {
+  ): Promise<string> {
     const oldname: string = file.path;
     const newname: string = `assets/${userLogin}.jpg`;
     console.log(file);

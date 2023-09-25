@@ -43,6 +43,7 @@ import ChannelMessaging from './pages/chat/chat-channel/ChannelMessaging.tsx';
 import ChannelMembers from './pages/chat/chat-channel/channel-options/ChannelMembers.tsx';
 import ChannelOptions from './pages/chat/chat-channel/ChannelOptions.tsx';
 import ChannelSettings from './pages/chat/chat-channel/channel-options/ChannelSettings.tsx';
+import FirstConnection from './pages/core/FirstConnection.tsx';
 
 function App() {
   const router = createBrowserRouter(
@@ -52,6 +53,7 @@ function App() {
       <Route path="/2FApage" Component={TwoFApage} />,
       // PROTECTED ROUTES
       <Route Component={RequireAuth}>
+        <Route path="first-connection" Component={FirstConnection} />
         <Route path="/oldgame" Component={OldGame}>
           <Route index Component={OldGameLobby} />
           <Route path="/oldgame/oldplaygame" Component={OldPlayGame} />

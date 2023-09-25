@@ -20,7 +20,10 @@ import { MembersOnChannel, MutedOnChannel, UpdateChannel } from './types';
 import { NotifService } from 'src/notif/notif.service';
 import { channel } from 'diagnostics_channel';
 import { NoParamCallback, rename } from 'fs';
-import { PublicUser } from '../../../shared/common/types/user.type';
+import {
+  PublicUser,
+  PublicUserSelect,
+} from '../../../shared/common/types/user.type';
 
 @Injectable()
 export class ChannelService {
@@ -562,26 +565,7 @@ export class ChannelService {
             userId: userId,
           },
           select: {
-            user: {
-              select: {
-                id: true,
-                login: true,
-                name: true,
-                level: true,
-                avatar: true,
-                status: true,
-                achievement: {
-                  select: {
-                    achievementName: true,
-                  }
-                },
-                blockedUsers: {
-                  select: {
-                    blockedId: true,
-                  },
-                },
-              },
-            },
+            user: { select: PublicUserSelect },
           },
         })
       ).user;
