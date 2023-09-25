@@ -12,12 +12,8 @@ export default function ChatHeader() {
   const { pathname } = useLocation();
   const axiosPrivate = useAxiosPrivate();
   const channelState = useChannel();
-  const [channelName, setChannelName] = useState<string>(
-    channelState.self.name,
-  );
-  const [channelAvatar, setChannelAvatar] = useState<string>(
-    channelState.self.avatar,
-  );
+  const [channelName, setChannelName] = useState<string>();
+  const [channelAvatar, setChannelAvatar] = useState<string>();
   const isDM: boolean =
     channelState.self.name === '' && channelState.self.avatar === '';
 
@@ -29,6 +25,9 @@ export default function ChatHeader() {
           setChannelName(res.data.name);
           setChannelAvatar(res.data.avatar);
         });
+    } else {
+      setChannelName(channelState.self.name);
+      setChannelAvatar(channelState.self.avatar);
     }
   }, [channelState]);
 
