@@ -7,27 +7,17 @@ type AvatarProps = {
 };
 
 export default function Avatar({ id, file, small }: AvatarProps) {
+  let url: string;
+
   if (id) {
-    return (
-      <img
-        className={`avatar${small ? '-sm' : ''}`}
-        alt="avatar"
-        src={`${BACK_URL}/user/avatarById/${id}`}
-      />
-    );
+    url = `${BACK_URL}/user/avatarById/${id}?random=${performance.now()}`;
+  } else if (file) {
+    url = `${BACK_URL}/user/avatarByFile/${file}?random=${performance.now()}`;
+  } else {
+    return null;
   }
 
-  if (file) {
-    // console.log(file);
-
-    return (
-      <img
-        className={`avatar${small ? '-sm' : ''}`}
-        alt="avatar"
-        src={`${BACK_URL}/user/avatarByFile/${file}`}
-      />
-    );
-  }
-
-  return null;
+  return (
+    <img className={`avatar${small ? '-sm' : ''}`} alt="avatar" src={url} />
+  );
 }

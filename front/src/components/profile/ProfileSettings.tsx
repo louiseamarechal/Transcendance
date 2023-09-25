@@ -8,7 +8,6 @@ type ProfileSettingsProps = {
 
 function ProfileSettings({ is2FASet, handle2FA }: ProfileSettingsProps) {
   const buttonLabel = is2FASet ? 'Unset 2FA' : 'Set 2FA';
-
   return (
     <NiceBox title="Settings">
       <NiceButton onClick={handle2FA}>{buttonLabel}</NiceButton>

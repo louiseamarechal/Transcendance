@@ -1,9 +1,8 @@
 // import React from "react";
-import { useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import ProgressBar from '../components/ProgressBar.tsx';
 import '../style/pages/Profil.css';
 import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
-import { ChangeName } from '../components/Settings.tsx';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Avatar from '../components/Avatar.tsx';
@@ -14,21 +13,25 @@ import { GameSchema } from '../../../shared/common/types/game.type.ts';
 import ProfileStatistics from '../components/profile/ProfileStatistics.tsx';
 import ProfileSettings from '../components/profile/ProfileSettings.tsx';
 import ProfileAchievements from '../components/profile/ProfileAchievements.tsx';
+import { ChangeName } from '../components/profile/ChangeName.tsx';
+
+type Image = {
+  preview: string;
+  data: File;
+};
 
 function Profil() {
-  // Profil page will depend on the user id => see later on
   const axiosInstance = useAxiosPrivate();
+  const { myId } = useUser();
+
   const [user, setUser] = useState<PublicUser>({} as PublicUser);
   const [isLoading, setLoading] = useState<boolean>(true);
   const [reload, setReload] = useState<number>(0);
   const [changingUsername, setChangingUsername] = useState(false);
   const [is2FAset, setIs2FAEnabled] = useState(false);
-  const [image, setImage] = useState({ preview: '', data: '' });
+  const [image, setImage] = useState<Image>({} as Image);
   const [changingAvatar, setChangingAvatar] = useState(false);
   const [games, setGames] = useState<GameSchema[]>([]);
-  const { myId } = useUser();
-
-  console.log('Entering Profil component');
 
   useEffect(() => {
     axiosInstance.get('user/me').then((res) => {
@@ -67,7 +70,11 @@ function Profil() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    if (!image) {
+      return;
+    }
+
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', image.data);
@@ -80,12 +87,16 @@ function Profil() {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
     setChangingAvatar(false);
   };
 
-  const handleFileChange = (e: any) => {
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) {
+      return;
+    }
+
     const img = {
       preview: URL.createObjectURL(e.target.files[0]),
       data: e.target.files[0],
@@ -99,20 +110,19 @@ function Profil() {
   }
 
   return (
-    // <div className="grid grid-cols-1 place-items-center pt-[10%]">
     <div className="profil-container">
       <div className="profil-card">
-        <div className="inline-block relative flex flex-row items-end">
+        <div className="relative flex flex-row items-end">
           {image.data ? (
             image.preview && <img src={image.preview} className="avatar" />
           ) : (
             <Avatar id={user.id} />
           )}
+
           <form onSubmit={handleSubmit}>
             <input
               type="file"
               onChange={handleFileChange}
-              // onChange={(event) => changeAvatar(event.target.value)}
               className="avatar-sm form-avatar"
             />
             {changingAvatar ? (
@@ -143,17 +153,6 @@ function Profil() {
       </div>
       {`Level ${Math.floor(user.level)} `}
       <ProgressBar user={user} />
-      {/* <div className={divStyle}>
-        <ProfilStat user={user} />
-        <div className="line"></div>
-        <button
-          className="small-button friend-request-button"
-          onClick={handle2FA}
-        >
-          {' '}
-          {is2FAset ? 'Unset 2FA' : 'Set 2FA'}{' '}
-        </button>
-      </div> */}
 
       <ProfileStatistics games={games} userId={myId} />
 
