@@ -589,7 +589,7 @@ export class ChannelService {
         },
       },
     });
-    if (admin === null && ownerId !== userId) {
+    if (admin === null && ownerId !== userId && removeId !== userId) {
       throw new ForbiddenException('Access denied');
     }
     const userAdmin = await this.prisma.adminsOnChannels.findUnique({
