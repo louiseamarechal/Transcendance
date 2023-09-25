@@ -1,13 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import useNavbar from '../hooks/useNavbar';
+import useNavbar from '../../hooks/useNavbar';
 import NavBarLinks from './NavBarLinks';
 
-import '../style/components/navbar.css';
+import '../../style/components/navbar.css';
 import { useEffect } from 'react';
-import useAxiosPrivate from '../hooks/useAxiosPrivate';
-import useNotif from '../hooks/useNotif';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import useNotif from '../../hooks/useNotif';
 
 const NavBar = () => {
   const navbar = useNavbar();

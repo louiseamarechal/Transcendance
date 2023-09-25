@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import '../../../../style/components/chat/channel-nav/channel-list/channel-card.css';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
-import Avatar from '../../../Avatar';
+import Avatar from '../../../ui/Avatar';
 import { ChannelShort } from '../../../../types/Channel.type';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
@@ -35,9 +35,9 @@ function ChannelCard({ channel }: { channel: ChannelShort }) {
         }
         onClick={() => navigate(`${channel.id}`)}
       >
-        <Avatar file={channelAvatar} small={true}/>
+        <Avatar file={channelAvatar} small={true} />
         <div>
-          <p className='pl-[5%]'>{channelName}</p>
+          <p className="pl-[5%]">{channelName}</p>
         </div>
         <div>
           {channel.visibility === 'PROTECTED' &&
