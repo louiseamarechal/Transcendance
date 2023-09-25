@@ -19,6 +19,7 @@ function KickButton({
   setMembers: Dispatch<SetStateAction<{ user: PublicUser }[]>>;
 }) {
   const channelState = useChannel();
+
   async function kick() {
     const DeletedMemberOnChannel: { userId: number; channelId: number } = (
       await axiosPrivate.delete(
@@ -38,6 +39,7 @@ function KickButton({
       );
     }
   }
+
   if (userRole < myRole) {
     return (
       <div className="option-button" onClick={() => kick()}>
