@@ -32,6 +32,16 @@ function TwoFApage() {
     axiosInstance
       .get('user/me')
       .then((res) => {
+        const creationDate: number = new Date(res.data.createdAt).getTime();
+        const now: number = Date.now();
+        console.log({ time: creationDate });
+        console.log({ time: now - creationDate });
+
+        if (now - creationDate < 5000) {
+          navigate('/first-connection');
+          return;
+        }
+
         if (res.data.s2fa === 'NOTSET') {
           navigate('/game');
         } else {

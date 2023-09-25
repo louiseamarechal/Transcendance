@@ -60,7 +60,7 @@ export class UserController {
     @UploadedFile() file: Express.Multer.File,
     @GetUser('login') userLogin: string,
     @GetUser('sub') userId: number,
-  ) {
+  ): Promise<string> {
     return this.userService.uploadAvatar(file, userLogin, userId);
   }
 
@@ -101,7 +101,7 @@ export class UserController {
   }
 
   @Get(':id')
-  getUserById(@Param('id', ParseIntPipe) id: number) {
+  getUserById(@Param('id', ParseIntPipe) id: number): Promise<PublicUser> {
     return this.userService.getUserById(id);
   }
 }

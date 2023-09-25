@@ -9,7 +9,10 @@ import { EditFriendRequestDto } from './dto';
 import { CreateChannelDto } from 'src/channel/dto';
 import { ChannelService } from 'src/channel/channel.service';
 import { NotifService } from 'src/notif/notif.service';
-import { PublicUser } from '../../../shared/common/types/user.type';
+import {
+  PublicUser,
+  PublicUserSelect,
+} from '../../../shared/common/types/user.type';
 
 @Injectable()
 export class FriendRequestService {
@@ -90,20 +93,7 @@ export class FriendRequestService {
           in: friendIds,
         },
       },
-      select: {
-        id: true,
-        login: true,
-        name: true,
-        level: true,
-        avatar: true,
-        s2fa: true,
-        status: true,
-        blockedUsers: {
-          select: {
-            blockedId: true,
-          },
-        },
-      },
+      select: PublicUserSelect,
     });
   }
 
