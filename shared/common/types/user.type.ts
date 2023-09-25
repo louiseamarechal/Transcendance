@@ -6,6 +6,7 @@ export type PublicUser = {
   level: number;
   avatar: string | null;
   status: string;
+  achievement: { achievementName: string }[];
   blockedUsers: { blockedId: number }[];
 };
 
@@ -18,6 +19,11 @@ export const PublicUserSelect = {
   avatar: true,
   s2fa: true,
   status: true,
+  achievement: {
+    select: {
+      achievementName: true,
+    },
+  },
   blockedUsers: {
     select: {
       blockedId: true,

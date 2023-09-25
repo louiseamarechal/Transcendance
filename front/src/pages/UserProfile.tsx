@@ -85,8 +85,8 @@ export default function UserProfile() {
 
       {profileId && (
         <>
+          <ProfileAchievements  achievement={user.achievement}/>
           <ProfileStatistics games={games} userId={Number(profileId)} />
-          <ProfileAchievements />
           <GameHistory games={games} profileId={Number(profileId)} />
         </>
       )}

@@ -43,7 +43,6 @@ export class GameDbService {
       data: { level: { increment: 0.2 } },
     });
   }
-
   // async getMyGames(userId: number): Promise<GameSchema[]> {
   //   const games: GameSchema[] = await this.prisma.game.findMany({
   //     where: { OR: [{ player1Id: userId }, { player2Id: userId }] },
@@ -57,6 +56,7 @@ export class GameDbService {
     });
     return games;
   }
+
 
   // async createGame(game: Game) {
   //   console.log('[GameDb] createGame', game.gameId);
@@ -112,3 +112,4 @@ export class GameDbService {
   //   }
   // }
 }
+

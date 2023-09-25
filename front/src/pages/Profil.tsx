@@ -157,9 +157,9 @@ function Profil() {
 
       <ProfileStatistics games={games} userId={myId} />
 
-      <ProfileAchievements />
+      <ProfileAchievements achievement = {user.achievement}/>
 
-      <GameHistory games={games} id={myId} />
+      <GameHistory games={games} profileId={myId} />
 
       <ProfileSettings is2FASet={is2FAset} handle2FA={handle2FA} />
     </div>

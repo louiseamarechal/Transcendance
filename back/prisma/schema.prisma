@@ -46,6 +46,8 @@ model User {
   // mutedOnChannel    MutedByUserOnChannel[] @relation("mutedUser")
   // hasMutedOnChannel MutedByUserOnChannel[] @relation("mutedByUser")
 
+  achievement Achievements[] @relation("user")
+
   @@map("users")
 }
 
@@ -203,4 +205,22 @@ model Game {
   score2 Int?
 
   @@map("games")
+}
+
+enum Achievement_type {
+  TENVICTORIES 
+  FIRSTVICTORY
+  LEVEL10
+  LOOSER
+}
+
+model Achievements {
+  achievementName Achievement_type  @map("achievment_name")
+
+  user User @relation(name: "user", fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  @@map("achievements")
+
+  @@unique([userId,achievementName])
 }
