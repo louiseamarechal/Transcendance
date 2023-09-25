@@ -5,10 +5,13 @@ import useChannel from '../../../../hooks/useChannel';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 import CancelPrompt from '../../../../components/CancelPrompt';
 import { useSearchParams } from 'react-router-dom';
+import useChannelList from '../../../../hooks/useChannelList';
+import { ChannelShort } from '../../../../types/Channel.type';
 
 export default function ChannelSettings() {
   const axiosPrivate = useAxiosPrivate();
   const channelState = useChannel();
+  const channelListState = useChannelList();
   const { myId } = useUser();
   const [nameEdit, setNameEdit] = useState<string>('');
   const [avatarEdit, setAvatarEdit] = useState<string>('');
@@ -26,8 +29,16 @@ export default function ChannelSettings() {
           name: nameEdit,
         })
         .then((res) => {
-          console.log('changing name.');
           channelState.reset({ ...channelState.self, name: res.data.name });
+          channelListState.reset(
+            channelListState.self.map((ch: ChannelShort) => {
+              if (ch.id === channelState.self.id) {
+                return { ...ch, name: res.data.name };
+              } else {
+                return ch;
+              }
+            }),
+          );
         });
     }
   }
@@ -42,6 +53,15 @@ export default function ChannelSettings() {
         })
         .then((res) => {
           channelState.reset({ ...channelState.self, avatar: res.data.avatar });
+          channelListState.reset(
+            channelListState.self.map((ch: ChannelShort) => {
+              if (ch.id === channelState.self.id) {
+                return { ...ch, avatar: res.data.avatar };
+              } else {
+                return ch;
+              }
+            }),
+          );
         });
     }
   }
@@ -60,6 +80,9 @@ export default function ChannelSettings() {
     setShowModal(false);
     await axiosPrivate.delete(`channel/${channelState.self.id}`).then((_) => {
       console.log(`channel ${channelState.self.id} deleted`);
+      channelListState.reset(
+        channelListState.self.filter((ch) => ch.id !== channelState.self.id),
+      );
     });
   }
 
