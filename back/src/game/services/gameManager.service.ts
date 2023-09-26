@@ -28,8 +28,8 @@ export class GameManagerService {
     const userId = client.data.user.id;
 
     // Check if already in a game
-    const userGame: Game | null = getGameByUserId(this.#games, userId);
-    if (userGame) {
+    const userGame: Game[] = getGameByUserId(this.#games, userId);
+    if (userGame.length !== 0) {
       console.log('[GameManager] joinQueue > User already in a game');
       return;
     }
@@ -100,8 +100,8 @@ export class GameManagerService {
     payload: ClientPayloads[ClientEvents.GameCreateGame],
   ) {
     // Check if already in a game
-    const userGame: Game | null = getGameByUserId(this.#games, payload.p1Id);
-    if (userGame) {
+    const userGame: Game[] = getGameByUserId(this.#games, payload.p1Id);
+    if (userGame.length !== 0) {
       console.log('[GameManager] createPrivateGame > User already in a game');
       client.emit(ServerEvents.privateGameNotCreated, {
         why: 'Failed ! You are already in a game.',
@@ -245,7 +245,7 @@ export class GameManagerService {
       this.gameDb.writeToDb(game).then(() => {
         this.achievementDb.writeAchievementToDb(game);
         this.removeGame(game);
-      })
+      });
       // this.gameDb.writeAchievementToDb(game);
       return true;
     }

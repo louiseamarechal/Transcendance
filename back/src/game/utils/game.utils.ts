@@ -3,7 +3,7 @@ import { Game } from '../classes/Game';
 export function getGameByUserId(
   games: Map<string, Game>,
   userId: number,
-): Game | null {
+): Game[] {
   let foundGames: Game[] = [];
   for (const [key, game] of games) {
     console.log({ key });
@@ -16,11 +16,13 @@ export function getGameByUserId(
     `[getGameByUserId] Found ${foundGames.length} game for user #${userId}`,
   );
 
-  if (foundGames.length === 0) {
-    return null;
-  } else if (foundGames.length === 1) {
-    return foundGames[0];
-  } else {
-    throw '[getGameByUserId] More than 1 game exist for a user';
-  }
+  return foundGames;
+
+  // if (foundGames.length === 0) {
+  //   return null;
+  // } else if (foundGames.length === 1) {
+  //   return foundGames[0];
+  // } else {
+  //   throw '[getGameByUserId] More than 1 game exist for a user';
+  // }
 }
