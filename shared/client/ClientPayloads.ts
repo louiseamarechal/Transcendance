@@ -11,4 +11,5 @@ export type ClientPayloads = {
   };
   [ClientEvents.GameAcceptGR]: { gameId: string };
   [ClientEvents.GameRefuseGR]: { gameId: string };
+  [ClientEvents.GameDestroyGR]: { gameId: string };
 };

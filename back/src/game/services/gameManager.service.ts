@@ -144,6 +144,20 @@ export class GameManagerService {
       });
   }
 
+  public getGameCreatedById(id: number): GameRequest[] {
+    return Array.from(this.#games.values())
+      .filter((game) => game.visibility === GameVisibility.Private)
+      .filter((game) => game.status === GameStatus.Waiting)
+      .filter((game) => game.p1.user.id === id)
+      .map((game) => {
+        return {
+          gameId: game.gameId,
+          p1: game.p1.user,
+          p2: game.p2.user,
+        };
+      });
+  }
+
   public acceptGameRequest(client: Socket, gameId: string) {
     const game = this.#games.get(gameId);
     if (!game) return;
@@ -185,6 +199,13 @@ export class GameManagerService {
       } else if (game[0].p2.user.id === userId) {
         game[0].p2.lastPing = Date.now();
       }
+    }
+  }
+
+  public destroyGameRequest(client: Socket, gameId: string) {
+    const currGame = this.#games.get(gameId);
+    if (currGame && currGame.p1.user.id === client.data.user.id) {
+      this.removeGame(currGame);
     }
   }
 

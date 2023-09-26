@@ -120,6 +120,14 @@ export class GameGateway
     this.gameManager.ping(client.data.user.id);
   }
 
+  @SubscribeMessage(ClientEvents.GameDestroyGR)
+  handleDestroyGR(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: ClientPayloads[ClientEvents.GameDestroyGR],
+  ) {
+    this.gameManager.destroyGameRequest(client, payload.gameId);
+  }
+
   // @Cron('*/5 * * * * *')
   // private debug() {
   //   console.log('[Debug GameGateway] ', { rooms: this.server.adapter.rooms });

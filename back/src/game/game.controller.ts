@@ -1,9 +1,7 @@
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 
 import { GetUserId } from 'src/common/decorators';
-import { CreateGameDto } from './dto/create-game.dto';
 import { GameManagerService } from './services/gameManager.service';
-import { Game } from './classes/Game';
 import { GameRequest } from '../../../shared/common/types/game.type';
 import { GameDbService } from './services/gameDb.service';
 
@@ -23,6 +21,11 @@ export class GameController {
   @Get('myGameRequests')
   getMyGameRequest(@GetUserId() userId: number): GameRequest[] {
     return this.gameManager.getGameRequestById(userId);
+  }
+
+  @Get('myGameCreated')
+  getMyGameCreated(@GetUserId() userId: number): GameRequest[] {
+    return this.gameManager.getGameCreatedById(userId);
   }
 
   @Get(':id')
