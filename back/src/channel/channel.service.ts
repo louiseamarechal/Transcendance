@@ -541,6 +541,7 @@ export class ChannelService {
     channelId: number,
     password: string | undefined,
   ): Promise<PublicUser> {
+    console.log(`Joining channel ${channelId} with password ${password}`);
     const channel: Channel | null = await this.prisma.channel.findUnique({
       where: {
         id: channelId,
@@ -550,26 +551,27 @@ export class ChannelService {
       throw new ForbiddenException('Channel id not found.');
     } else if (channel.visibility === VisType.PRIVATE) {
       throw new ForbiddenException('Cannot join PRIVATE channel');
-    } else if (
-      channel.visibility === VisType.PROTECTED &&
-      (!password ||
-        (channel.passwordHash &&
-          (await argon.verify(channel.passwordHash, password))))
-    ) {
-      throw new ConflictException('Wrong password');
-    } else {
-      return (
-        await this.prisma.membersOnChannels.create({
-          data: {
-            channelId,
-            userId: userId,
-          },
-          select: {
-            user: { select: PublicUserSelect },
-          },
-        })
-      ).user;
+    } else if (channel.visibility === VisType.PROTECTED) {
+      if (!password || !channel.passwordHash) {
+        throw new ConflictException('No password given.');
+      }
+      const passwordOK = await argon.verify(channel.passwordHash, password);
+      if (!passwordOK) {
+        console.log(`password not correct.`);
+        throw new ConflictException('Wrong password');
+      }
     }
+    return (
+      await this.prisma.membersOnChannels.create({
+        data: {
+          channelId,
+          userId: userId,
+        },
+        select: {
+          user: { select: PublicUserSelect },
+        },
+      })
+    ).user;
   }
 
   async removeMemberOnChannel(
