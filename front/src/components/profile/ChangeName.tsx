@@ -43,6 +43,7 @@ export function ChangeName({
       <label>
         <input
           type="text"
+          maxLength={15}
           value={name}
           onChange={(e) => setName(e.target.value)}
           style={formStyle}

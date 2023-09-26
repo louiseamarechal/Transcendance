@@ -1,9 +1,10 @@
 import { VisType } from '@prisma/client';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class EditChannelDto {
   @IsOptional()
   @IsString()
+  @MaxLength(15)
   name?: string;
 
   @IsOptional()
@@ -12,5 +13,6 @@ export class EditChannelDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(15)
   password?: string | undefined;
 }
