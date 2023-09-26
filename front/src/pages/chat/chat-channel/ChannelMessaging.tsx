@@ -9,7 +9,9 @@ export default function ChannelMessaging() {
   const channelState = useChannel();
 
   if (
-    !channelState.self.members.some((m: { user: PublicUser }) => m.user.id === myId)
+    !channelState.self.members.some(
+      (m: { user: PublicUser }) => m.user.id === myId,
+    )
   ) {
     return <JoinChannel />;
   } else {
