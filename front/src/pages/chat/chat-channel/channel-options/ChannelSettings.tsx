@@ -3,7 +3,7 @@ import { useUser } from '../../../../hooks/useUser';
 import { createPortal } from 'react-dom';
 import useChannel from '../../../../hooks/useChannel';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
-import CancelPrompt from '../../../../components/CancelPrompt';
+import CancelPrompt from '../../../../components/ui/CancelPrompt';
 import { useSearchParams } from 'react-router-dom';
 
 export default function ChannelSettings() {

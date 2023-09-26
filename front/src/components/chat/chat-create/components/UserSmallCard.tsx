@@ -1,6 +1,6 @@
 import { SetStateAction } from 'react';
 import '../../../../style/components/chat/chat-container/create-channel-form/user-small-card.css';
-import Avatar from '../../../Avatar';
+import Avatar from '../../../ui/Avatar';
 
 const UserSmallCard = ({
   friend,
@@ -31,7 +31,7 @@ const UserSmallCard = ({
       <div>
         <p>{friend.name}</p>
       </div>
-			<div/>
+      <div />
     </div>
   );
 };

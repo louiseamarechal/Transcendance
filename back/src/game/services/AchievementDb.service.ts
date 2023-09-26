@@ -25,7 +25,7 @@ export class AchievementDbService {
     try {
       const wongamesp1 = await this.getWonGames(p1Id);
       const wongamesp2 = await this.getWonGames(p2Id);
-      // const wongamewinner = await this.getWonGames(game.)
+
       if (wongamesp1 > 0) {
         await this.prisma.achievements.upsert({
           where: {
@@ -116,7 +116,9 @@ export class AchievementDbService {
       });
     }
     console.log(game.p1.user.level);
-    if (levelp1 === null || levelp2===null) {throw new ConflictException("level p1 or p2 null") }
+    if (levelp1 === null || levelp2 === null) {
+      throw new ConflictException('level p1 or p2 null');
+    }
     if (levelp1.level >= 10.0) {
       await this.prisma.achievements.upsert({
         where: {

@@ -1,4 +1,4 @@
-import { PublicUser } from '../../../shared/common/types/user.type';
+import { PublicUser } from '../../../../shared/common/types/user.type';
 import Avatar from './Avatar';
 
 type MiniUserCardProps = {

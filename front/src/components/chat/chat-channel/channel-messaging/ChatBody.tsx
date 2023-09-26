@@ -7,7 +7,6 @@ import { Message } from '../../../../types/Message.type';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 import useChannel from '../../../../hooks/useChannel';
-import '../../../../style/components/chat/chat-container/chat-messaging/chat-body.css';
 
 export default function ChatBody() {
   const axiosInstance = useAxiosPrivate();

@@ -1,11 +1,9 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import axios from '../api/axios';
+import axios from '../../api/axios';
 import { useEffect, useState } from 'react';
-import useAuth from '../hooks/useAuth';
+import useAuth from '../../hooks/useAuth';
 import jwtDecode from 'jwt-decode';
-import { useUser } from '../hooks/useUser';
-
-import '../style/components/spinner.css';
+import { useUser } from '../../hooks/useUser';
 
 type JwtDecoded = {
   id: number;
@@ -26,7 +24,6 @@ export function Callback() {
   console.log({ callback: window.location.origin });
 
   useEffect(() => {
-    // let isMounted = true;
     const controller = new AbortController(); // to cancel our request if the component unMount
 
     async function getCode() {
@@ -61,7 +58,6 @@ export function Callback() {
     getCode();
 
     return () => {
-      // isMounted = false;
       controller.abort();
     };
   }, []);

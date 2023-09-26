@@ -1,19 +1,18 @@
 // import React from "react";
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import ProgressBar from '../components/ProgressBar.tsx';
-import '../style/pages/Profil.css';
-import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
+import ProgressBar from '../../components/ui/ProgressBar.js';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate.js';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Avatar from '../components/Avatar.tsx';
-import { PublicUser } from '../../../shared/common/types/user.type.ts';
-import GameHistory from '../components/profile/GameHistory.tsx';
-import { useUser } from '../hooks/useUser.ts';
-import { GameSchema } from '../../../shared/common/types/game.type.ts';
-import ProfileStatistics from '../components/profile/ProfileStatistics.tsx';
-import ProfileSettings from '../components/profile/ProfileSettings.tsx';
-import ProfileAchievements from '../components/profile/ProfileAchievements.tsx';
-import { ChangeName } from '../components/profile/ChangeName.tsx';
+import Avatar from '../../components/ui/Avatar.js';
+import { PublicUser } from '../../../../shared/common/types/user.type.js';
+import GameHistory from '../../components/profile/GameHistory.js';
+import { useUser } from '../../hooks/useUser.js';
+import { GameSchema } from '../../../../shared/common/types/game.type.js';
+import ProfileStatistics from '../../components/profile/ProfileStatistics.js';
+import ProfileSettings from '../../components/profile/ProfileSettings.js';
+import ProfileAchievements from '../../components/profile/ProfileAchievements.js';
+import { ChangeName } from '../../components/profile/ChangeName.js';
 
 type Image = {
   preview: string;
@@ -86,9 +85,7 @@ function Profil() {
         data: formData,
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-    } catch (error) {
-      // console.log(error);
-    }
+    } catch {}
     setChangingAvatar(false);
   };
 
@@ -156,7 +153,7 @@ function Profil() {
 
       <ProfileStatistics games={games} userId={myId} />
 
-      <ProfileAchievements achievement = {user.achievement}/>
+      <ProfileAchievements achievement={user.achievement} />
 
       <GameHistory games={games} profileId={myId} />
 

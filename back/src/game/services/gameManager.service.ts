@@ -239,16 +239,12 @@ export class GameManagerService {
   private async addGame(game: Game) {
     console.log(`[GameManager] addGame ${game.gameId}`);
     this.#games.set(game.gameId, game);
-    // this.gameDb.createGame(game);
   }
 
   private async removeGame(game: Game) {
     console.log(`[GameManager] removeGame ${game.gameId}`);
     this.server.adapter.rooms.delete(game.gameId);
     game.stopGameLoop();
-    // if (game.status !== GameStatus.Done) {
-    //   this.gameDb.deleteGame(game);
-    // }
     this.#games.delete(game.gameId);
   }
 
@@ -272,7 +268,6 @@ export class GameManagerService {
         this.achievementDb.writeAchievementToDb(game);
         this.removeGame(game);
       });
-      // this.gameDb.writeAchievementToDb(game);
       return true;
     }
     return false;
@@ -327,7 +322,6 @@ export class GameManagerService {
       console.log('Remove game. Cause: Existing for more than 30mins');
       this.server.to(game.gameId).emit(ServerEvents.gameAbort);
       this.removeGame(game);
-      // This should be unnecessary of well coded
       return true;
     }
     return false;

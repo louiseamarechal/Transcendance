@@ -30,7 +30,7 @@ import { NotifModule } from './notif/notif.module';
   providers: [
     {
       provide: APP_GUARD,
-      useClass: AtGuard, // Change name for global guard !
+      useClass: AtGuard,
     },
   ],
 })

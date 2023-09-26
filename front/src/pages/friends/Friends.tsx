@@ -1,10 +1,9 @@
-import '../style/pages/Friends.css';
-import UserCard from '../components/UserCard.tsx';
+import UserCard from '../../components/ui/UserCard.js';
 import { useEffect, useState } from 'react';
-import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate.js';
 import { Link } from 'react-router-dom';
-import PendingFriends from '../components/PendingFriends.tsx';
-import { PublicUser } from '../../../shared/common/types/user.type.ts';
+import PendingFriends from '../../components/PendingFriends.js';
+import { PublicUser } from '../../../../shared/common/types/user.type.js';
 
 function Friends() {
   const axiosInstance = useAxiosPrivate();
@@ -53,7 +52,6 @@ function Friends() {
   }
   return (
     <div className="friends-container">
-      {/* <div className="friend-inside-container"> */}
       <PendingFriends pendingFR={pendingFR} setPendingFR={setPendingFR} />
       <div className="w-full">
         <h2>Friends :</h2>
@@ -62,7 +60,6 @@ function Friends() {
         </Link>
       </div>
     </div>
-    // </div>
   );
 }
 
