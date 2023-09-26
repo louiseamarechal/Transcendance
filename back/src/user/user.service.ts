@@ -14,6 +14,7 @@ import {
   PublicUser,
   PublicUserSelect,
 } from '../../../shared/common/types/user.type';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class UserService {
@@ -84,8 +85,9 @@ export class UserService {
     userLogin: string,
     userId: number,
   ): Promise<string> {
+    const random = uuid();
     const oldname: string = file.path;
-    const newname: string = `assets/${userLogin}.jpg`;
+    const newname: string = `assets/${userLogin}${random}.jpg`;
     console.log(file);
     console.log(oldname);
     console.log(newname);
@@ -97,12 +99,9 @@ export class UserService {
 
     try {
       rename(oldname, newname, cb);
-    } catch (err) {
-      console.log(err);
-      new InternalServerErrorException('Rename failed in uploadAvatar');
-    }
+    } catch {}
 
-    this.editUser(userId, { avatar: `${userLogin}.jpg` });
+    this.editUser(userId, { avatar: `${userLogin}${random}.jpg` });
     return `${userLogin}.jpg`;
   }
 

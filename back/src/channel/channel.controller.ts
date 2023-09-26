@@ -21,7 +21,6 @@ import { MembersOnChannel, MutedOnChannel } from './types';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from 'src/config/multer.config';
 
-import { channel } from 'diagnostics_channel';
 import { PublicUser } from '../../../shared/common/types/user.type';
 
 @Controller('channel')
@@ -120,8 +119,12 @@ export class ChannelController {
 
   @Post('upload-avatar')
   @UseInterceptors(FileInterceptor('file', multerOptions))
-  uploadAvatar(@UploadedFile() file: Express.Multer.File) {
-    return this.channelService.uploadAvatar(file);
+  uploadAvatar(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('channelId') channelId: string,
+  ) {
+    console.log({ channelId });
+    return this.channelService.uploadAvatar(file, Number(channelId));
   }
 
   /*============================================================================

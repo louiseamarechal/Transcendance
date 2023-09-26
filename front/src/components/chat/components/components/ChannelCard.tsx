@@ -18,13 +18,16 @@ function ChannelCard({ channel }: { channel: ChannelShort }) {
   const channelId: number | undefined = Number(routeParams?.channelId);
 
   useEffect(() => {
+    setChannelAvatar(channel.avatar);
+    setChannelName(channel.name);
     if (channel.name === '' && channel.avatar === '') {
+      console.log('Dans le if');
       axiosPrivate.get('channel/correspondent/' + channel.id).then((res) => {
         setChannelName(res.data.name);
         setChannelAvatar(res.data.avatar);
       });
     }
-  });
+  }, [channel]);
 
   return (
     <div className="channel-div">

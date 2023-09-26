@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useUser } from '../../../../hooks/useUser';
 import { createPortal } from 'react-dom';
 import useChannel from '../../../../hooks/useChannel';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 import CancelPrompt from '../../../../components/CancelPrompt';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import useChannelList from '../../../../hooks/useChannelList';
 import { ChannelShort } from '../../../../types/Channel.type';
 
@@ -15,10 +15,12 @@ export default function ChannelSettings() {
   const channelListState = useChannelList();
   const { myId } = useUser();
   const [nameEdit, setNameEdit] = useState<string>('');
-  const [avatarEdit, setAvatarEdit] = useState<string>('');
+  const [avatarEdit, setAvatarEdit] = useState<File>();
   const [passwordEdit, setPasswordEdit] = useState<string>('');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
+  const { channelId } = useParams();
+
   const isDM: boolean = searchParams.get('isDM') === 'true';
   const isOwner: boolean = channelState.self.ownerId === myId;
 
@@ -35,6 +37,7 @@ export default function ChannelSettings() {
           channelListState.reset(
             channelListState.self.map((ch: ChannelShort) => {
               if (ch.id === channelState.self.id) {
+                console.log({ channel: ch });
                 return { ...ch, name: res.data.name };
               } else {
                 return ch;
@@ -46,26 +49,74 @@ export default function ChannelSettings() {
   }
 
   async function changeChannelAvatar() {
-    if (!avatarEdit || avatarEdit === '') {
-      alert('Cannot have empty avatar for channel.');
-    } else {
-      await axiosPrivate
-        .patch(`channel/${channelState.self.id}`, {
-          avatar: avatarEdit,
-        })
-        .then((res) => {
-          channelState.reset({ ...channelState.self, avatar: res.data.avatar });
-          channelListState.reset(
-            channelListState.self.map((ch: ChannelShort) => {
-              if (ch.id === channelState.self.id) {
-                return { ...ch, avatar: res.data.avatar };
-              } else {
-                return ch;
-              }
-            }),
-          );
-        });
+    if (!avatarEdit) return;
+
+    const formData = new FormData();
+    formData.append('file', avatarEdit);
+    if (channelId) {
+      formData.append('channelId', channelId);
     }
+
+    try {
+      await axiosPrivate({
+        method: 'post',
+        url: '/channel/upload-avatar',
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }).then(() => {
+        console.log({ name: avatarEdit.name });
+        channelState.reset({ ...channelState.self, avatar: avatarEdit.name });
+
+        axiosPrivate.get('channel/my-channels').then((res) => {
+          console.log(res.data);
+          channelListState.reset(res.data);
+        });
+        // channelListState.reset(
+        //   channelListState.self.map((ch: ChannelShort) => {
+        //     if (ch.id === channelState.self.id) {
+        //       return { ...ch, avatar: avatarEdit.name };
+        //     } else {
+        //       return ch;
+        //     }
+        //   }),
+        // );
+        // axiosPrivate.get('channel/my-channels').then((res) => {
+        //   channelListState.reset(res.data);
+      });
+      // channelState.fetch();
+      // channelListState.fetch();
+      // channelState.reset({ ...channelState.self, avatar: res.data.avatar });
+      // channelListState.reset(
+      //   channelListState.self.map((ch: ChannelShort) => {
+      //     if (ch.id === channelState.self.id) {
+      //       return { ...ch, avatar: res.data.avatar };
+      //     } else {
+      //       return ch;
+      //     }
+      //   }),
+      // );
+      // });
+    } catch {}
+    // if (!avatarEdit || avatarEdit === '') {
+    //   alert('Cannot have empty avatar for channel.');
+    // } else {
+    //   await axiosPrivate
+    //     .patch(`channel/${channelState.self.id}`, {
+    //       avatar: avatarEdit,
+    //     })
+    //     .then((res) => {
+    //       channelState.reset({ ...channelState.self, avatar: res.data.avatar });
+    //       channelListState.reset(
+    //         channelListState.self.map((ch: ChannelShort) => {
+    //           if (ch.id === channelState.self.id) {
+    //             return { ...ch, avatar: res.data.avatar };
+    //           } else {
+    //             return ch;
+    //           }
+    //         }),
+    //       );
+    //     });
+    // }
   }
 
   async function changeChannelPassword() {
@@ -111,6 +162,11 @@ export default function ChannelSettings() {
         navigate('/chat');
       })
       .catch((e) => console.error(e));
+  }
+
+  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files) return;
+    setAvatarEdit(e.target.files[0]);
   }
 
   if (isDM) {
@@ -160,11 +216,7 @@ export default function ChannelSettings() {
           </div>
           <div className="change-option">
             <p>Change channel avatar: </p>
-            <input
-              id="edit-avatar"
-              type="file"
-              onChange={(e) => setAvatarEdit(e.target.value)}
-            />
+            <input id="edit-avatar" type="file" onChange={handleFileChange} />
             <button className="small-button" onClick={changeChannelAvatar}>
               apply
             </button>

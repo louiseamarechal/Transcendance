@@ -248,7 +248,7 @@ export class ChannelService {
   }
 
   // async uploadAvatar(file: Express.Multer.File) {
-  async uploadAvatar(file: Express.Multer.File) {
+  async uploadAvatar(file: Express.Multer.File, channelId: number) {
     // const pictureName: string = `channel_.jpg`;
     // const pictureName: string = `channel_${channelId}.jpg`;
     const oldname: string = file.path;
@@ -268,6 +268,11 @@ export class ChannelService {
     //   console.log(err);
     //   new InternalServerErrorException('Rename failed in uploadAvatar');
     // }
+
+    await this.prisma.channel.update({
+      where: { id: channelId },
+      data: { avatar: file.originalname },
+    });
   }
 
   /* =============================================================================

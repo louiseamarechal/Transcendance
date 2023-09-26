@@ -19,7 +19,7 @@ const FormHeader = ({
   const [changingAvatar, setChangingAvatar] = useState(true);
 
   const handleSubmit = async (e) => {
-    console.log({avatar});
+    console.log({ avatar });
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', image.data);
@@ -42,8 +42,8 @@ const FormHeader = ({
     if (!changingAvatar) {
       setChangingAvatar(true);
     }
-    console.log({targetFile: e.target.files[0]});
-    console.log({targetFileType: typeof(e.target.files[0])});
+    console.log({ targetFile: e.target.files[0] });
+    console.log({ targetFileType: typeof e.target.files[0] });
     const img = {
       preview: URL.createObjectURL(e.target.files[0]),
       data: e.target.files[0],
