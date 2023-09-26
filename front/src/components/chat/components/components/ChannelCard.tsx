@@ -35,9 +35,9 @@ function ChannelCard({ channel }: { channel: ChannelShort }) {
         }
         onClick={() => navigate(`${channel.id}`)}
       >
-        <Avatar file={channelAvatar} small={true}/>
+        <Avatar file={channelAvatar} small={true} />
         <div>
-          <p className='pl-[5%]'>{channelName}</p>
+          <p className="pl-[5%]">{channelName}</p>
         </div>
         <div>
           {channel.visibility === 'PROTECTED' &&
