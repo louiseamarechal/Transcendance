@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { useNavigate } from 'react-router-dom';
+import '../style/pages/2FApage.css';
 
 function TwoFApage() {
   const axiosInstance = useAxiosPrivate();
@@ -16,10 +17,10 @@ function TwoFApage() {
     if (event.key === 'Enter') {
       axiosInstance
         .post('auth/checkcode', { code })
-        .then(() => {
+        .then((res) => {
           navigate('/game');
         })
-        .catch(() => {
+        .catch((e) => {
           alert('Wrong code/code has expired');
           navigate('/');
         });

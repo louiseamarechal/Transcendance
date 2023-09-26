@@ -8,6 +8,7 @@ import {
   Param,
   ParseIntPipe,
   UploadedFile,
+  ParseUUIDPipe,
   UseInterceptors,
   Patch,
   Post,
@@ -20,6 +21,7 @@ import { MembersOnChannel, MutedOnChannel } from './types';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from 'src/config/multer.config';
 
+import { channel } from 'diagnostics_channel';
 import { PublicUser } from '../../../shared/common/types/user.type';
 
 @Controller('channel')
@@ -89,18 +91,7 @@ export class ChannelController {
   }
 
   @Get()
-  getChannels(@GetUserId() userId: number): Promise<
-    {
-      id: number;
-      createdAt: Date;
-      updatedAt: Date;
-      ownerId: number;
-      name: string;
-      avatar: string | null;
-      passwordHash: string | null;
-      visibility: VisType;
-    }[]
-  > {
+  getChannels(@GetUserId() userId: number) {
     return this.channelService.getChannels(userId);
   }
 
@@ -113,6 +104,7 @@ export class ChannelController {
     id: number | null;
     name: string | null;
     avatar: string | null;
+    // visibility: VisType | null;
   }> {
     return this.channelService.editChannelById(userId, channelId, dto);
   }
@@ -148,12 +140,45 @@ export class ChannelController {
   removeAdminOnChannel(
     @Param('id', ParseIntPipe) channelId: number,
     @Body() dto: { userId: number },
-  ): Promise<{
-    channelId: number;
-    userId: number;
-  }> {
-    return this.channelService.deleteAdminOnChannel(channelId, dto.userId);
+  ) {
+    this.channelService.deleteAdminOnChannel(channelId, dto.userId);
   }
+
+  /*============================================================================
+                            Muted On Channel
+==============================================================================*/
+
+  // @Post('muted/:channelId/')
+  // addMutedOnChannel(
+  //   @GetUserId() userId: number,
+  //   @Param('channelId', ParseIntPipe) channelId: number,
+  //   @Body() dto: { mutedId: number },
+  // ): Promise<MutedOnChannel> {
+  //   return this.channelService.createMutedOnChannel(
+  //     channelId,
+  //     userId,
+  //     dto.mutedId,
+  //   );
+  // }
+
+  // @Get('muted/:channelId/:mutedId')
+  // getMutedOnChannel(
+  //   @GetUserId() userId: number,
+  //   @Param('channelId', ParseIntPipe) channelId: number,
+  //   @Param('mutedId', ParseIntPipe) mutedId: number,
+  // ): Promise<MutedOnChannel | null> {
+  //   return this.channelService.getMutedOnChannel(channelId, userId, mutedId);
+  // }
+
+  // @Delete('muted/:channelId/:mutedId')
+  // @HttpCode(HttpStatus.NO_CONTENT)
+  // removeMutedOnChannel(
+  //   @GetUserId() userId: number,
+  //   @Param('channelId', ParseIntPipe) channelId: number,
+  //   @Param('mutedId', ParseIntPipe) mutedId: number,
+  // ) {
+  //   return this.channelService.deleteMutedOnChannel(channelId, userId, mutedId);
+  // }
 
   /*============================================================================
                             Members on channels
@@ -213,7 +238,7 @@ export class ChannelController {
     @GetUserId() userId: number,
     @Param('channelId', ParseIntPipe) channelId: number,
     @Param('blockedId', ParseIntPipe) blockedId: number,
-  ): Promise<MembersOnChannel | undefined> {
+  ) {
     return this.channelService.createBlockedOnChannel(
       userId,
       channelId,

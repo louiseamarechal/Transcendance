@@ -154,6 +154,9 @@ export class UserService {
         avatar: true,
       },
     });
+
+    // console.log(pendingFR?.receivedRequests);
+    // return pendingFR?.receivedRequests;
   }
 
   async createBlockedUser(userId: number, blockedId: number) {

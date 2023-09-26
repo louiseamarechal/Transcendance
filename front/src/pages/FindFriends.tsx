@@ -1,8 +1,10 @@
+import '../style/pages/FindFriends.css';
+
 import { useEffect, useState } from 'react';
-import UserCard from '../../components/ui/UserCard.js';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate.js';
+import UserCard from '../components/UserCard.tsx';
+import useAxiosPrivate from '../hooks/useAxiosPrivate.ts';
 import { Link } from 'react-router-dom';
-import { PublicUser } from '../../../../shared/common/types/user.type.js';
+import { PublicUser } from '../../../shared/common/types/user.type.ts';
 
 function FindFriends() {
   const axiosInstance = useAxiosPrivate();
@@ -24,8 +26,7 @@ function FindFriends() {
 
   const unkownUsers = allUsers.filter(
     (user: PublicUser) =>
-      myFriends.find((friend: PublicUser) => friend.id === user.id) ===
-      undefined,
+      myFriends.find((friend: PublicUser) => friend.id === user.id) === undefined,
   );
 
   if (unkownUsers.length > 0) {
@@ -46,9 +47,7 @@ function FindFriends() {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <p>It seems you are already friends with all our users ...</p>
-      <Link to="/friends">
-        Go check out your friends <strong>here</strong> !
-      </Link>
+      <Link to="/friends">Go check out your friends <strong>here</strong> !</Link>
     </div>
   );
 }

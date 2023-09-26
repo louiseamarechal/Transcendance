@@ -1,16 +1,16 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { useEffect, useState } from 'react';
-import { useUser } from '../../hooks/useUser';
-import { PublicUser } from '../../../../shared/common/types/user.type';
-import ProgressBar from '../../components/ui/ProgressBar';
-import Avatar from '../../components/ui/Avatar';
-import { notifSocket } from '../../api/socket';
-import GameHistory from '../../components/profile/GameHistory';
-import { GameSchema } from '../../../../shared/common/types/game.type';
-import ProfileStatistics from '../../components/profile/ProfileStatistics';
-import ProfileAchievements from '../../components/profile/ProfileAchievements';
-import ActionButtons from '../../components/profile/ActionButtons';
+import { useUser } from '../hooks/useUser';
+import { PublicUser } from '../../../shared/common/types/user.type';
+import ProgressBar from '../components/ProgressBar';
+import Avatar from '../components/Avatar';
+import { notifSocket } from '../api/socket';
+import GameHistory from '../components/profile/GameHistory';
+import { GameSchema } from '../../../shared/common/types/game.type';
+import ProfileStatistics from '../components/profile/ProfileStatistics';
+import ProfileAchievements from '../components/profile/ProfileAchievements';
+import ActionButtons from '../components/profile/ActionButtons';
 
 export default function UserProfile() {
   const { profileId } = useParams();
@@ -19,6 +19,7 @@ export default function UserProfile() {
   const [isLoading, setLoading] = useState<boolean>(true);
   const { myId } = useUser();
   const navigate = useNavigate();
+  // const [refresh, setRefresh] = useState(false);
   const [games, setGames] = useState<GameSchema[]>([]);
 
   console.log('Entering UserProfile component with id =', profileId);
@@ -73,14 +74,18 @@ export default function UserProfile() {
             <p className="user-name">{user?.name}</p>
           </div>
         </div>
-        <ActionButtons activity={user.status} />
+        <ActionButtons
+          activity={user.status}
+          // refresh={refresh}
+          // setRefresh={setRefresh}
+        />
       </div>
       {`Level ${Math.floor(user.level)} `}
       <ProgressBar user={user} />
 
       {profileId && (
         <>
-          <ProfileAchievements achievement={user.achievement} />
+          <ProfileAchievements  achievement={user.achievement}/>
           <ProfileStatistics games={games} userId={Number(profileId)} />
           <GameHistory games={games} profileId={Number(profileId)} />
         </>

@@ -1,20 +1,20 @@
 import { Controller, Get } from '@nestjs/common';
 import { GetUserId } from 'src/common/decorators';
 import { NotifService } from './notif.service';
-import { FriendRequest } from '@prisma/client';
-import { GameSchema } from '../../../shared/common/types/game.type';
 
 @Controller('notif')
 export class NotifController {
   constructor(private notifService: NotifService) {}
-
   @Get('friend')
-  getFriendsNotif(@GetUserId() myId: number): Promise<FriendRequest[]> {
+  getFriendsNotif(@GetUserId() myId: number) {
     return this.notifService.getFriendsNotif(myId);
   }
-
   @Get('game')
-  getGamesNotif(@GetUserId() myId: number): Promise<GameSchema[]> {
+  getGamesNotif(@GetUserId() myId: number) {
     return this.notifService.getGamesNotif(myId);
   }
+  // @Get('chat')
+  // getChatNotif(@GetUserId() myId: number, channelId: number) {
+  //   return this.notifService.getChatNotif(myId, channelId);
+  // }
 }

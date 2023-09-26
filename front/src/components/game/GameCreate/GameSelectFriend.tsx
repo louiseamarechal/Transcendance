@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
-import MiniUserCard from '../../ui/MiniUserCard';
+import MiniUserCard from '../../MiniUserCard';
 import { PublicUser } from '../../../../../shared/common/types/user.type';
 import NiceBox from '../../ui/NiceBox';
 import { useSearchParams } from 'react-router-dom';

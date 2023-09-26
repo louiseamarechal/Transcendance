@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import useChannel from '../../../hooks/useChannel';
-import Avatar from '../../ui/Avatar';
+import Avatar from '../../Avatar';
 import '../../../style/components/chat/chat-container/chat-messaging/chat-header.css';
 
 export default function ChatHeader() {

@@ -1,6 +1,7 @@
 import { extname } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { diskStorage } from 'multer';
+import { v4 as uuid } from 'uuid';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 // Multer configuration

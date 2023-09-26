@@ -1,4 +1,4 @@
-import BACK_URL from '../../api/backUrl';
+import BACK_URL from '../api/backUrl';
 
 type AvatarProps = {
   id?: number;

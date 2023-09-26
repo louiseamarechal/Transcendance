@@ -1,12 +1,8 @@
 import { motion, useInView, useAnimation } from 'framer-motion';
-import { PropsWithChildren, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 // import React from 'react';
 
-type RevealProps = PropsWithChildren<{
-  width: string;
-}>;
-
-const Reveal = ({ children, width }: RevealProps) => {
+const Reveal = ({ children, width }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 

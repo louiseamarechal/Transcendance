@@ -94,6 +94,8 @@ export class Game {
   }
 
   async gameLoop() {
+    // console.log('[Game] gameLoop');
+
     if (this.status === GameStatus.Ready) {
       this.gameLoopReady();
     } else if (this.status === GameStatus.Timer) {
@@ -128,6 +130,8 @@ export class Game {
    *
    ****************************************************************************/
   private gameLoopReady() {
+    // console.log('  Ready');
+
     if (this.p1.ready && this.p2.ready) {
       this.status = GameStatus.Timer;
       this.gameStartedAt = Date.now() + 4000;
@@ -145,6 +149,8 @@ export class Game {
   }
 
   private gameLoopTimer() {
+    // console.log('  Timer');
+
     if (Date.now() > this.gameStartedAt) {
       this.lastBallAcceleration = Date.now();
       this.status = GameStatus.Playing;
@@ -162,6 +168,8 @@ export class Game {
   }
 
   private gameLoopPlaying() {
+    // console.log('  Playing');
+
     this.computeNextState();
 
     if (this.isWinCondition() === true) {

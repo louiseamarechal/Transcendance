@@ -1,12 +1,17 @@
-import '../../style/components/progress-bar.css';
+import '../style/components/progress-bar.css';
+// import { useUser } from "../context/UserProvider";
 import { CSSProperties } from 'react';
-import { PublicUser } from '../../../../shared/common/types/user.type';
+import { PublicUser } from '../../../shared/common/types/user.type'; 
 
 type Props = {
-  user: PublicUser;
+  completed?: string;
+  user?: PublicUser;
 };
 
 function ProgressBar({ user }: Props) {
+  // const { completed } = props;
+  // const { level } = useUser();
+
   const containerStyles: CSSProperties = {
     height: 20,
     width: '50%',
@@ -40,13 +45,11 @@ function ProgressBar({ user }: Props) {
   return (
     <div className="progress-bar" style={containerStyles}>
       <div style={fillerStyles}>
-        <span style={labelStyles}>
-          {`${
-            user.level
-              ? Math.round((user.level - Math.floor(user.level)) * 100)
-              : 0
-          }%`}
-        </span>
+        <span style={labelStyles}>{`${
+          user?.level
+            ? Math.round((user.level - Math.floor(user.level)) * 100)
+            : 0
+        }%`}</span>
       </div>
     </div>
   );

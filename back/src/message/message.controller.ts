@@ -48,4 +48,10 @@ export class MessageController {
     console.log('Called get messages on channel ' + channelId);
     return this.messageService.getChannelMessages(channelId);
   }
+
+  @Patch()
+  patchMessage() {}
+
+  @Delete()
+  deleteMessage() {}
 }

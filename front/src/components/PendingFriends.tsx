@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
-import UserCard from './ui/UserCard';
+import UserCard from './UserCard';
 import { PublicUser } from '../../../shared/common/types/user.type';
 import { notifSocket } from '../api/socket';
 
@@ -11,6 +11,7 @@ type PendingFriendsProps = {
 
 const PendingFriends = (props: PendingFriendsProps) => {
   const axiosInstance = useAxiosPrivate();
+  // const [pendingFR, setPendingFR] = useState([]);
 
   useEffect(() => {
     function getPendingRequests() {
@@ -23,7 +24,7 @@ const PendingFriends = (props: PendingFriendsProps) => {
     }
 
     getPendingRequests();
-
+    
     notifSocket.on('server.notif.friends', getPendingRequests);
 
     return () => {
@@ -34,6 +35,7 @@ const PendingFriends = (props: PendingFriendsProps) => {
   if (props.pendingFR.length > 0) {
     return (
       <div>
+        {/* <div className="friend-inside-container"> */}
         <h2>Pending Requests : </h2>
         <div className="all-friends-cards">
           {props.pendingFR.map((user, index) => {

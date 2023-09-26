@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { useUser } from '../../../../../../hooks/useUser';
-import UserCard from '../../../../../ui/UserCard';
+import UserCard from '../../../../../UserCard';
 import PromoteButton from './components/PromoteButton';
 import KickButton from './components/KickButton';
 import BlockButton from './components/BlockButton';

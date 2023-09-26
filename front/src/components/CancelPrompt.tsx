@@ -1,5 +1,5 @@
 import { MouseEventHandler } from 'react';
-import '../../style/components/cancel-prompt.css';
+import "../style/components/cancel-prompt.css"
 
 type PromptProps = {
   message: string;
@@ -16,12 +16,8 @@ export default function CancelPrompt({
     <div className="prompt">
       <p>{message}</p>
       <div className="prompt-buttons">
-        <button id="continue-button" onClick={onContinue}>
-          Continue
-        </button>
-        <button id="cancel-button" onClick={onCancel}>
-          Cancel
-        </button>
+        <button id='continue-button' onClick={onContinue}>Continue</button>
+        <button id='cancel-button' onClick={onCancel}>Cancel</button>
       </div>
     </div>
   );

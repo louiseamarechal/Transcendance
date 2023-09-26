@@ -3,7 +3,7 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { FRStatus, FriendRequest, VisType } from '@prisma/client';
+import { BlockedUser, FRStatus, FriendRequest, VisType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditFriendRequestDto } from './dto';
 import { CreateChannelDto } from 'src/channel/dto';
@@ -21,7 +21,6 @@ export class FriendRequestService {
     private channelService: ChannelService,
     private notifService: NotifService,
   ) {}
-
   async createFR(userId1: number, userId2: number): Promise<FriendRequest> {
     const FRs = await this.prisma.friendRequest.findMany({
       where: {
@@ -106,7 +105,7 @@ export class FriendRequestService {
     });
   }
 
-  getFRById(fromId: number, friendRequestId: number): Promise<FriendRequest[]> {
+  getFRById(fromId: number, friendRequestId: number) {
     return this.prisma.friendRequest.findMany({
       where: {
         id: friendRequestId,
@@ -115,7 +114,7 @@ export class FriendRequestService {
     });
   }
 
-  getFRByToId(userId1: number, userId2: number): Promise<FriendRequest[]> {
+  getFRByToId(userId1: number, userId2: number) {
     return this.prisma.friendRequest.findMany({
       where: {
         OR: [
@@ -152,7 +151,7 @@ export class FriendRequestService {
     userId: number,
     friendRequestId: number,
     dto: EditFriendRequestDto,
-  ): Promise<FriendRequest> {
+  ) {
     const friendRequest = await this.prisma.friendRequest.findUnique({
       where: {
         id: friendRequestId,
@@ -186,11 +185,7 @@ export class FriendRequestService {
     return updatedRequest;
   }
 
-  async editFRByToId(
-    fromId: number,
-    toId: number,
-    dto: EditFriendRequestDto,
-  ): Promise<FriendRequest> {
+  async editFRByToId(fromId: number, toId: number, dto: EditFriendRequestDto) {
     const friendRequest = await this.prisma.friendRequest.findUnique({
       where: {
         fromId_toId: {

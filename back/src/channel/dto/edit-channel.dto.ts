@@ -13,4 +13,8 @@ export class EditChannelDto {
   @IsOptional()
   @IsString()
   password?: string | undefined;
+
+  // @IsOptional()
+  // @IsEnum(VisType)
+  // visibility: VisType;
 }
