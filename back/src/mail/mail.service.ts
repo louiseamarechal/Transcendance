@@ -35,7 +35,6 @@ export class MailService {
       return;
     } catch (error) {
       console.error("Erreur lors de l'envoi de l'e-mail :", error);
-      throw new Error("Impossible d'envoyer l'e-mail.");
     }
   }
 }

@@ -99,7 +99,6 @@ export class AuthService {
 
     const isMatch = await argon.verify(user.code2FA, code);
     if (!isMatch) throw new ForbiddenException('Access Denied');
-    //return isMatch;
   }
 
   async logout(userId: number) {

@@ -1,4 +1,4 @@
-import { PropsWithChildren, createContext, useContext, useState } from 'react';
+import { PropsWithChildren, createContext, useState } from 'react';
 
 export const UserContext = createContext({
   myId: 0,
@@ -41,7 +41,3 @@ export const UserProvider = ({ children }: Props) => {
     </UserContext.Provider>
   );
 };
-
-// export const useUser = () => {
-//   return useContext(UserContext);
-// };

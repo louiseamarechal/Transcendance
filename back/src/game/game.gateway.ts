@@ -17,9 +17,6 @@ import { ClientPayloads } from '../../../shared/client/ClientPayloads';
 import { Logger } from '@nestjs/common';
 import { GameManagerService } from './services/gameManager.service';
 
-// @UseGuards(WsJwtGuard)
-
-// @UseInterceptors(LoggingInterceptor)
 @WebSocketGateway({
   cors: { origin: '*' },
   namespace: 'game',

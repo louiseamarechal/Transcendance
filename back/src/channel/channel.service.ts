@@ -1,10 +1,7 @@
 import {
   ConflictException,
   ForbiddenException,
-  HttpException,
-  HttpStatus,
   Injectable,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChannelDto, EditChannelDto } from './dto';
@@ -16,10 +13,8 @@ import {
 } from '@prisma/client';
 import * as argon from 'argon2';
 import { Socket, Namespace } from 'socket.io';
-import { MembersOnChannel, MutedOnChannel, UpdateChannel } from './types';
+import { MembersOnChannel, UpdateChannel } from './types';
 import { NotifService } from 'src/notif/notif.service';
-import { channel } from 'diagnostics_channel';
-import { NoParamCallback, rename } from 'fs';
 import {
   PublicUser,
   PublicUserSelect,
@@ -50,7 +45,7 @@ export class ChannelService {
   }> {
     let hash: string | undefined = undefined;
     if (password) {
-      const hash: string = await argon.hash(password);
+      hash = await argon.hash(password);
     }
     const channel = await this.prisma.channel.create({
       data: {
@@ -185,7 +180,6 @@ export class ChannelService {
     id: number | null;
     name: string | null;
     avatar: string | null;
-    // visibility: VisType | null;
   }> {
     const channel = await this.prisma.channel.findUnique({
       where: {
@@ -406,68 +400,6 @@ export class ChannelService {
   }
 
   /*============================================================================
-                            Muted On Channel
-==============================================================================*/
-
-  // async createMutedOnChannel(
-  //   channelId: number,
-  //   mutedByUserId: number,
-  //   mutedUserId: number,
-  // ): Promise<MutedOnChannel> {
-  //   return this.prisma.mutedByUserOnChannel
-  //     .create({
-  //       data: {
-  //         channelId,
-  //         mutedUserId,
-  //         mutedByUserId,
-  //       },
-  //     })
-  //     .catch((error) => {
-  //       if (error.code === 'P2002')
-  //         throw new ConflictException('Already exists');
-  //       throw error;
-  //     });
-  // }
-
-  // getMutedOnChannel(
-  //   channelId: number,
-  //   mutedByUserId: number,
-  //   mutedUserId: number,
-  // ): Promise<MutedOnChannel | null> {
-  //   return this.prisma.mutedByUserOnChannel.findUnique({
-  //     where: {
-  //       channelId_mutedUserId_mutedByUserId: {
-  //         channelId,
-  //         mutedUserId,
-  //         mutedByUserId,
-  //       },
-  //     },
-  //   });
-  // }
-
-  // deleteMutedOnChannel(
-  //   channelId: number,
-  //   mutedByUserId: number,
-  //   mutedUserId: number,
-  // ) {
-  //   this.prisma.mutedByUserOnChannel
-  //     .delete({
-  //       where: {
-  //         channelId_mutedUserId_mutedByUserId: {
-  //           channelId,
-  //           mutedUserId,
-  //           mutedByUserId,
-  //         },
-  //       },
-  //     })
-  //     .catch((error) => {
-  //       if (error.code === 'P2002')
-  //         throw new HttpException('Does not exist', HttpStatus.NO_CONTENT);
-  //       throw error;
-  //     });
-  // }
-
-  /*============================================================================
                             Members on channels
 ==============================================================================*/
 
@@ -660,8 +592,6 @@ export class ChannelService {
   handleJoinRoom(client: Socket, roomName: string) {
     const room = roomName;
     client.join(room);
-    // const rooms = Object.keys(client.rooms);
-    // console.log(rooms);
     client.to(room).emit('welcome');
   }
 
