@@ -1,14 +1,32 @@
 import { useEffect, useState } from 'react';
 import { gameSocket } from '../../api/socket';
 import { ClientEvents } from '../../../../shared/client/ClientEvents';
+import { useNavigate } from 'react-router-dom';
+import NiceButton from '../../components/ui/NiceButton';
 
 export default function GameSearch() {
+  const navigate = useNavigate();
+
   const [isQueuing, setIsQueuing] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
   function joinQueue() {
     console.log('joinQueue');
-    gameSocket.emit(ClientEvents.GameJoinQueue);
-    setIsQueuing(true);
+    gameSocket.emit(ClientEvents.GameJoinQueue, (response: string) => {
+      console.log(response);
+      switch (response) {
+        case 'Already in game':
+          setError(response);
+          break;
+
+        case 'Game created':
+          setIsQueuing(true);
+          break;
+
+        default:
+          break;
+      }
+    });
   }
 
   function leaveQueue() {
@@ -29,13 +47,14 @@ export default function GameSearch() {
       <br />
       <div className="spinner"></div>
       <br />
-      <button onClick={leaveQueue}>Leave</button>
+      <NiceButton onClick={leaveQueue}>Leave Queue</NiceButton>
     </>
   );
 
   const noQueuingJSX = (
     <>
-      <button onClick={joinQueue}>Queue</button>
+      <NiceButton onClick={joinQueue}>Join Queue</NiceButton>
+      {error && <p className="text-red-400">{error}</p>}
     </>
   );
 

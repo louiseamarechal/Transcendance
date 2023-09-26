@@ -7,7 +7,7 @@ import { UserService } from 'src/user/user.service';
 import { PublicUser } from '../../../../shared/common/types/user.type';
 import { GameRequest } from '../../../../shared/common/types/game.type';
 import { ServerEvents } from '../../../../shared/server/ServerEvents';
-import { getGameByUserId } from '../utils/game.utils';
+import { getGameByUserId, getPublicGameByUserId } from '../utils/game.utils';
 import { ClientPayloads } from '../../../../shared/client/ClientPayloads';
 import { ClientEvents } from '../../../../shared/client/ClientEvents';
 import { AchievementDbService } from './AchievementDb.service';
@@ -28,10 +28,10 @@ export class GameManagerService {
     const userId = client.data.user.id;
 
     // Check if already in a game
-    const userGame: Game[] = getGameByUserId(this.#games, userId);
+    const userGame: Game[] = getPublicGameByUserId(this.#games, userId);
     if (userGame.length !== 0) {
       console.log('[GameManager] joinQueue > User already in a game');
-      return;
+      return 'Already in game';
     }
 
     const filtGames = this.getGames(GameVisibility.Public, GameStatus.Waiting);
@@ -41,8 +41,9 @@ export class GameManagerService {
       newGame.p1.user = client.data.user;
       client.join(newGame.gameId);
       this.addGame(newGame);
+      return 'Game created';
     } else if (filtGames[0].p1.user.id !== client.data.user.id) {
-      console.log('[GameManager] joinQueue > Found game');
+      console.log('[GameManager] joinQueue > Found game to join');
       const game = filtGames[0];
       game.p2.user = client.data.user;
       game.status = GameStatus.Ready;
@@ -102,7 +103,9 @@ export class GameManagerService {
     // Check if already in a game
     const userGame: Game[] = getGameByUserId(this.#games, payload.p1Id);
     if (userGame.length !== 0) {
-      console.log('[GameManager] createPrivateGame > User already in a game');
+      console.log(
+        '[GameManager] createPrivateGame > User already in a game > Sending GameNotCreated',
+      );
       client.emit(ServerEvents.privateGameNotCreated, {
         why: 'Failed ! You are already in a game.',
       });
@@ -111,17 +114,19 @@ export class GameManagerService {
 
     const newGame = new Game(this.server);
     newGame.visibility = GameVisibility.Private;
-    const p1: PublicUser = await this.userService.getUserById(payload.p1Id);
-    const p2: PublicUser = await this.userService.getUserById(payload.p2Id);
-    newGame.p1.user = p1;
-    newGame.p2.user = p2;
-    newGame.p1.paddle.size = Number(payload.p1PaddleSize);
-    newGame.p2.paddle.size = Number(payload.p2PaddleSize);
+    try {
+      const p1: PublicUser = await this.userService.getUserById(payload.p1Id);
+      const p2: PublicUser = await this.userService.getUserById(payload.p2Id);
+      newGame.p1.user = p1;
+      newGame.p2.user = p2;
+      newGame.p1.paddle.size = Number(payload.p1PaddleSize);
+      newGame.p2.paddle.size = Number(payload.p2PaddleSize);
 
-    client.join(newGame.gameId);
-    this.addGame(newGame);
+      client.join(newGame.gameId);
+      this.addGame(newGame);
 
-    this.server.to(newGame.gameId).emit(ServerEvents.privateGameCreated);
+      this.server.to(newGame.gameId).emit(ServerEvents.privateGameCreated);
+    } catch {}
     // SEND NOTIF
   }
 

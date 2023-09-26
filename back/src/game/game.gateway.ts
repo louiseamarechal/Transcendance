@@ -75,7 +75,7 @@ export class GameGateway
 
   @SubscribeMessage(ClientEvents.GameJoinQueue)
   handleJoinQueue(@ConnectedSocket() client: Socket) {
-    this.gameManager.joinQueue(client);
+    return this.gameManager.joinQueue(client);
   }
 
   @SubscribeMessage(ClientEvents.GameLeaveQueue)
