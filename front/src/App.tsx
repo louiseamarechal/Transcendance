@@ -21,6 +21,7 @@ import './style/components/spinner.css';
 import './style/pages/FindFriends.css';
 import './style/pages/Friends.css';
 import './style/components/chat/chat-container/chat-messaging/chat-body.css';
+import './style/pages/Game/WaitingForGamePage.css';
 
 import WelcomePage from './pages/core/WelcomePage.tsx';
 import Callback from './pages/core/Callback.tsx';
