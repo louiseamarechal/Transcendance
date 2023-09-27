@@ -54,7 +54,9 @@ export default function JoinChannel() {
     }
   }
 
-  if (channelState.self.visibility === 'PUBLIC') {
+  if (channelState.self.members.some((m) => m.user.id === myId)) {
+    return null;
+  } else if (channelState.self.visibility === 'PUBLIC') {
     return (
       <div className="join-div">
         <NiceBox title="join channel">

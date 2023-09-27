@@ -71,6 +71,7 @@ function ChannelVisibility({
           <input
             value={channelPassword}
             placeholder="password"
+            maxLength={15}
             onChange={(event) => setChannelPassword(event.target.value)}
           ></input>
         </div>

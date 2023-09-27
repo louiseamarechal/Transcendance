@@ -66,7 +66,8 @@ export default function UserProfile() {
 
   return (
     <div className="profil-container">
-      <div className="flex flex-row w-[55%] justify-end">
+      <div className="flex flex-row w-3/5 justify-evenly">
+        <div className='w-[55%]'></div>
         <div className="profil-card">
           <Avatar id={user.id} />
           <div className="flex flex-row items-center">
