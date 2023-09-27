@@ -88,6 +88,7 @@ const FormHeader = ({
       </div>
       <input
         className="channel-name"
+        maxLength={15}
         placeholder="Channel name..."
         onChange={(event) => setChannelName(event.target.value)}
       ></input>

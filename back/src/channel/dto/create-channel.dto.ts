@@ -13,6 +13,7 @@ const validVisibility = ['PUBLIC', 'PROTECTED', 'PRIVATE'];
 export class CreateChannelDto {
   @IsString()
   @IsOptional()
+  @MaxLength(15)
   name: string;
 
   @IsString()

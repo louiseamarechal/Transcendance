@@ -56,6 +56,7 @@ function FirstConnection() {
         <input
           type="text"
           value={newName}
+          maxLength={15}
           onChange={(e) => setNewName(e.target.value)}
         />
         <NiceButton onClick={handleChangeName}>Change Name</NiceButton>

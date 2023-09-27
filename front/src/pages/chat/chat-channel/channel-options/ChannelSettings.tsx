@@ -80,6 +80,7 @@ export default function ChannelSettings() {
             <p>Change channel name: </p>
             <input
               type="text"
+              maxLength={15}
               placeholder="new channel name"
               onChange={(e) => setNameEdit(e.target.value)}
             />
@@ -103,6 +104,7 @@ export default function ChannelSettings() {
               <p>Change channel password: </p>
               <input
                 type="text"
+                maxLength={15}
                 placeholder="new channel password"
                 onChange={(e) => setPasswordEdit(e.target.value)}
               />

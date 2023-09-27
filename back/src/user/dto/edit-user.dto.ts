@@ -1,5 +1,5 @@
 import { Status2fa, UserStatus } from '@prisma/client';
-import { IsEnum, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsPositive, IsString, MaxLength } from 'class-validator';
 
 export class EditUserDto {
   @IsOptional()
@@ -8,6 +8,7 @@ export class EditUserDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(15)
   name?: string;
 
   @IsOptional()
