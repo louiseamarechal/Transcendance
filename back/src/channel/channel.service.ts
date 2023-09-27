@@ -618,7 +618,7 @@ export class ChannelService {
         },
       });
     }
-    return this.prisma.membersOnChannels.delete({
+    const userExist = await this.prisma.membersOnChannels.findUnique({
       where: {
         channelId_userId: {
           channelId,
@@ -626,6 +626,25 @@ export class ChannelService {
         },
       },
     });
+    if (userExist === null) throw new ConflictException('User does not exist');
+    const deletedUser = await this.prisma.membersOnChannels
+      .delete({
+        where: {
+          channelId_userId: {
+            channelId,
+            userId: removeId,
+          },
+        },
+      })
+      .catch((err) => {
+        if (err.code === 'P2016') {
+          console.log(`user ${removeId} not on channel.`);
+          throw new ConflictException('User does not exist');
+        } else {
+          throw err;
+        }
+      });
+    return deletedUser;
   }
 
   /*============================================================================

@@ -45,6 +45,7 @@ export default function ChannelSettings() {
             }),
           );
         });
+      setNameEdit('');
     }
   }
 
@@ -161,7 +162,19 @@ export default function ChannelSettings() {
         );
         navigate('/chat');
       })
-      .catch((e) => console.error(e));
+      .catch((err) => {
+        if (err.response.status === 409) {
+          alert('You have already been kicked or banned.');
+          channelListState.reset(
+            channelListState.self.filter(
+              (ch) => ch.id !== channelState.self.id,
+            ),
+          );
+          navigate('/chat');
+        } else {
+          console.error(err);
+        }
+      });
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
@@ -208,6 +221,7 @@ export default function ChannelSettings() {
             <input
               type="text"
               placeholder="new channel name"
+              value={nameEdit}
               onChange={(e) => setNameEdit(e.target.value)}
             />
             <button className="small-button" onClick={changeChannelName}>
