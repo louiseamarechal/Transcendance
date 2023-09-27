@@ -35,7 +35,6 @@ function ChannelList() {
           </ul>
         </div>
         <div>
-          {/* <h3 className="channel-group">Channels you can join</h3> */}
           <h3 className="channel-group">Public Channels</h3>
           <ul>
             {channelListState.self

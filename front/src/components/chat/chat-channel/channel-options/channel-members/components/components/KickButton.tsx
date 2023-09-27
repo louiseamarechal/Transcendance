@@ -19,12 +19,29 @@ function KickButton({
   setMembers: Dispatch<SetStateAction<{ user: PublicUser }[]>>;
 }) {
   const channelState = useChannel();
+
   async function kick() {
-    const DeletedMemberOnChannel: { userId: number; channelId: number } = (
-      await axiosPrivate.delete(
-        `channel/member/${channelState.self.id}/${user.id}`,
-      )
-    ).data;
+    const res = await axiosPrivate
+      .delete(`channel/member/${channelState.self.id}/${user.id}`)
+      .catch((e) => {
+        if (e.response.status === 409) {
+          alert('User already removed.');
+          setMembers(
+            members.filter((memberUser: { user: PublicUser }) => {
+              if (memberUser.user.id === user.id) {
+                return false;
+              } else {
+                return true;
+              }
+            }),
+          );
+        } else {
+          console.error(e);
+        }
+        return;
+      });
+    const DeletedMemberOnChannel: { userId: number; channelId: number } =
+      res?.data;
     console.log(`kick member: ${DeletedMemberOnChannel.userId}`);
     if (DeletedMemberOnChannel !== undefined) {
       setMembers(
@@ -38,6 +55,7 @@ function KickButton({
       );
     }
   }
+
   if (userRole < myRole) {
     return (
       <div className="option-button" onClick={() => kick()}>

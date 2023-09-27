@@ -40,11 +40,11 @@ export class NotifGateway
     // this is debug, not necessary for production
     server.use((client: Socket, next) => {
       client.use((event, next) => {
-        console.log(
-          '\x1b[36m%s\x1b[0m',
-          'Middleware: New socket event',
-          event[0],
-        );
+        // console.log(
+        //   '\x1b[36m%s\x1b[0m',
+        //   'Middleware: New socket event',
+        //   event[0],
+        // );
         next();
       });
       next();

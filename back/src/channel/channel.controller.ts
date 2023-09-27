@@ -128,8 +128,12 @@ export class ChannelController {
 
   @Post('upload-avatar')
   @UseInterceptors(FileInterceptor('file', multerOptions))
-  uploadAvatar(@UploadedFile() file: Express.Multer.File) {
-    return this.channelService.uploadAvatar(file);
+  uploadAvatar(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('channelId') channelId: string,
+  ) {
+    console.log({ channelId });
+    return this.channelService.uploadAvatar(file, Number(channelId));
   }
 
   /*============================================================================

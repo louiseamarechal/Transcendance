@@ -9,6 +9,7 @@ docker image rm -f $(docker image ls -aq)
 docker network rm -f transcendance_client-side transcendance_server-side
 
 docker volume rm -f transcendance_db-data
+docker volume rm -f transcendance_assets-data
 
 echo ""
 

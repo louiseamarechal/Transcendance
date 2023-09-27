@@ -5,6 +5,8 @@ import { PublicUser } from '../../../../../../shared/common/types/user.type';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 import useChannelList from '../../../../hooks/useChannelList';
 import useChannel from '../../../../hooks/useChannel';
+import '../../../../style/components/chat/chat-container/chat-messaging.css';
+import NiceBox from '../../../ui/NiceBox';
 
 export default function JoinChannel() {
   const axiosPrivate = useAxiosPrivate();
@@ -56,20 +58,28 @@ export default function JoinChannel() {
     return null;
   } else if (channelState.self.visibility === 'PUBLIC') {
     return (
-      <div className="small-button">
-        <button onClick={joinChannel}>Join</button>
+      <div className="join-div">
+        <NiceBox title="join channel">
+          <button className="small-button" onClick={joinChannel}>
+            Join
+          </button>
+        </NiceBox>
       </div>
     );
   } else {
     return (
-      <div className="div-protected">
-        <input
-          className="password-input"
-          type="password"
-          placeholder="channel password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button onClick={joinChannel}>Join</button>
+      <div className="join-div">
+        <NiceBox title="join protected channel">
+          <input
+            className="password-input"
+            type="password"
+            placeholder="channel password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button className="small-button" onClick={joinChannel}>
+            Join
+          </button>
+        </NiceBox>
       </div>
     );
   }

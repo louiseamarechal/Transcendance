@@ -242,7 +242,7 @@ export class ChannelService {
   }
 
   // async uploadAvatar(file: Express.Multer.File) {
-  async uploadAvatar(file: Express.Multer.File) {
+  async uploadAvatar(file: Express.Multer.File, channelId: number) {
     // const pictureName: string = `channel_.jpg`;
     // const pictureName: string = `channel_${channelId}.jpg`;
     const oldname: string = file.path;
@@ -262,6 +262,11 @@ export class ChannelService {
     //   console.log(err);
     //   new InternalServerErrorException('Rename failed in uploadAvatar');
     // }
+
+    await this.prisma.channel.update({
+      where: { id: channelId },
+      data: { avatar: file.originalname },
+    });
   }
 
   /* =============================================================================
@@ -473,6 +478,7 @@ export class ChannelService {
     channelId: number,
     password: string | undefined,
   ): Promise<PublicUser> {
+    console.log(`Joining channel ${channelId} with password ${password}`);
     const channel: Channel | null = await this.prisma.channel.findUnique({
       where: {
         id: channelId,
@@ -482,26 +488,27 @@ export class ChannelService {
       throw new ForbiddenException('Channel id not found.');
     } else if (channel.visibility === VisType.PRIVATE) {
       throw new ForbiddenException('Cannot join PRIVATE channel');
-    } else if (
-      channel.visibility === VisType.PROTECTED &&
-      (!password ||
-        (channel.passwordHash &&
-          (await argon.verify(channel.passwordHash, password))))
-    ) {
-      throw new ConflictException('Wrong password');
-    } else {
-      return (
-        await this.prisma.membersOnChannels.create({
-          data: {
-            channelId,
-            userId: userId,
-          },
-          select: {
-            user: { select: PublicUserSelect },
-          },
-        })
-      ).user;
+    } else if (channel.visibility === VisType.PROTECTED) {
+      if (!password || !channel.passwordHash) {
+        throw new ConflictException('No password given.');
+      }
+      const passwordOK = await argon.verify(channel.passwordHash, password);
+      if (!passwordOK) {
+        console.log(`password not correct.`);
+        throw new ConflictException('Wrong password');
+      }
     }
+    return (
+      await this.prisma.membersOnChannels.create({
+        data: {
+          channelId,
+          userId: userId,
+        },
+        select: {
+          user: { select: PublicUserSelect },
+        },
+      })
+    ).user;
   }
 
   async removeMemberOnChannel(
@@ -521,7 +528,7 @@ export class ChannelService {
         },
       },
     });
-    if (admin === null && ownerId !== userId) {
+    if (admin === null && ownerId !== userId && removeId !== userId) {
       throw new ForbiddenException('Access denied');
     }
     const userAdmin = await this.prisma.adminsOnChannels.findUnique({
@@ -543,7 +550,7 @@ export class ChannelService {
         },
       });
     }
-    return this.prisma.membersOnChannels.delete({
+    const userExist = await this.prisma.membersOnChannels.findUnique({
       where: {
         channelId_userId: {
           channelId,
@@ -551,6 +558,25 @@ export class ChannelService {
         },
       },
     });
+    if (userExist === null) throw new ConflictException('User does not exist');
+    const deletedUser = await this.prisma.membersOnChannels
+      .delete({
+        where: {
+          channelId_userId: {
+            channelId,
+            userId: removeId,
+          },
+        },
+      })
+      .catch((err) => {
+        if (err.code === 'P2016') {
+          console.log(`user ${removeId} not on channel.`);
+          throw new ConflictException('User does not exist');
+        } else {
+          throw err;
+        }
+      });
+    return deletedUser;
   }
 
   /*============================================================================

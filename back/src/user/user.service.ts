@@ -14,6 +14,7 @@ import {
   PublicUser,
   PublicUserSelect,
 } from '../../../shared/common/types/user.type';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class UserService {
@@ -35,21 +36,35 @@ export class UserService {
 
   async getAvatarById(userId: number, res: Response) {
     const user: PublicUser = await this.getUserById(userId);
-    const avatar = user.avatar;
+    const avatar = user?.avatar;
 
     if (!avatar) {
-      throw new Error('No avatar in getAvatar');
+      return;
     }
 
-    const file = createReadStream(join(process.cwd(), 'assets', avatar));
+    let file;
+    if (existsSync(join(process.cwd(), 'assets', avatar))) {
+      file = createReadStream(join(process.cwd(), 'assets', avatar));
+    } else if (existsSync(join(process.cwd(), 'assets', 'default.jpg'))) {
+      file = createReadStream(join(process.cwd(), 'assets', 'default.jpg'));
+    } else {
+      return;
+    }
+
     file.pipe(res);
   }
 
   async getAvatarByFile(file: string, res: Response) {
+    let stream;
     if (existsSync(join(process.cwd(), 'assets', file))) {
-      const stream = createReadStream(join(process.cwd(), 'assets', file));
-      stream.pipe(res);
+      stream = createReadStream(join(process.cwd(), 'assets', file));
+    } else if (existsSync(join(process.cwd(), 'assets', 'default.jpg'))) {
+      stream = createReadStream(join(process.cwd(), 'assets', 'default.jpg'));
+    } else {
+      return;
     }
+
+    stream.pipe(res);
   }
 
   async getAll(userId: number): Promise<PublicUser[]> {
@@ -84,8 +99,9 @@ export class UserService {
     userLogin: string,
     userId: number,
   ): Promise<string> {
+    const random = uuid();
     const oldname: string = file.path;
-    const newname: string = `assets/${userLogin}.jpg`;
+    const newname: string = `assets/${userLogin}${random}.jpg`;
     console.log(file);
     console.log(oldname);
     console.log(newname);
@@ -97,12 +113,9 @@ export class UserService {
 
     try {
       rename(oldname, newname, cb);
-    } catch (err) {
-      console.log(err);
-      new InternalServerErrorException('Rename failed in uploadAvatar');
-    }
+    } catch {}
 
-    this.editUser(userId, { avatar: `${userLogin}.jpg` });
+    this.editUser(userId, { avatar: `${userLogin}${random}.jpg` });
     return `${userLogin}.jpg`;
   }
 

@@ -135,6 +135,11 @@
   background-color: var(--faded-blue);
 }
 
+.leave-channel-button {
+  background-color: red;
+  align-self: center;
+}
+
 #delete-channel-button {
   background-color: red;
   align-self: center;

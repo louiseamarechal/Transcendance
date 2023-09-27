@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import useChannelList from '../../hooks/useChannelList';
@@ -10,7 +10,6 @@ import useAuth from '../../hooks/useAuth';
 export default function ChatLayout() {
   const channelListState = useChannelList();
   const axiosPrivate = useAxiosPrivate();
-  const [navChatOpen, setNavChatOpen] = useState(true);
   const { auth } = useAuth();
 
   useEffect(() => {
@@ -31,12 +30,11 @@ export default function ChatLayout() {
     };
   }, [auth]);
 
-    return (
-      <div className="chat-page">
-        <ChannelNav />
-        <div id="chat-net"></div>
-        <Outlet />
-      </div>
-    );
-
+  return (
+    <div className="chat-page">
+      <ChannelNav />
+      <div id="chat-net"></div>
+      <Outlet />
+    </div>
+  );
 }
