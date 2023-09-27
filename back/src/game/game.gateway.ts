@@ -72,7 +72,7 @@ export class GameGateway
 
   @SubscribeMessage(ClientEvents.GameJoinQueue)
   handleJoinQueue(@ConnectedSocket() client: Socket) {
-    this.gameManager.joinQueue(client);
+    return this.gameManager.joinQueue(client);
   }
 
   @SubscribeMessage(ClientEvents.GameLeaveQueue)
@@ -115,6 +115,14 @@ export class GameGateway
   @SubscribeMessage(ClientEvents.GamePing)
   handlePing(@ConnectedSocket() client: Socket) {
     this.gameManager.ping(client.data.user.id);
+  }
+
+  @SubscribeMessage(ClientEvents.GameDestroyGR)
+  handleDestroyGR(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: ClientPayloads[ClientEvents.GameDestroyGR],
+  ) {
+    this.gameManager.destroyGameRequest(client, payload.gameId);
   }
 
   // @Cron('*/5 * * * * *')

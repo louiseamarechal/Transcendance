@@ -8,4 +8,5 @@ export enum ClientEvents {
   GameCreateGame = "client.game.createGame",
   GameAcceptGR = "client.game.acceptGR",
   GameRefuseGR = "client.game.refuseGR",
+  GameDestroyGR = "client.game.destroyGR",
 }

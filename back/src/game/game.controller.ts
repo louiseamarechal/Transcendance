@@ -19,6 +19,11 @@ export class GameController {
     return this.gameManager.getGameRequestById(userId);
   }
 
+  @Get('myGameCreated')
+  getMyGameCreated(@GetUserId() userId: number): GameRequest[] {
+    return this.gameManager.getGameCreatedById(userId);
+  }
+
   @Get(':id')
   getGamesById(@Param('id', ParseIntPipe) id: number): Promise<GameSchema[]> {
     return this.gameDb.getGamesById(id);

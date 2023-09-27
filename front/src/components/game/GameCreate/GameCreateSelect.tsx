@@ -42,7 +42,7 @@ function GameCreateSelect({ friendId = null }: GameCreateSelectProps) {
   }, [searchParams]);
 
   return (
-    <div className="w-[80%] flex-col-center">
+    <div className="w-full flex-col-center">
       <GameSelectFriend
         selectedFriend={selectedFriend}
         // setSelectedFriend={setSelectedFriend}
