@@ -72,52 +72,8 @@ export default function ChannelSettings() {
           console.log(res.data);
           channelListState.reset(res.data);
         });
-        // channelListState.reset(
-        //   channelListState.self.map((ch: ChannelShort) => {
-        //     if (ch.id === channelState.self.id) {
-        //       return { ...ch, avatar: avatarEdit.name };
-        //     } else {
-        //       return ch;
-        //     }
-        //   }),
-        // );
-        // axiosPrivate.get('channel/my-channels').then((res) => {
-        //   channelListState.reset(res.data);
       });
-      // channelState.fetch();
-      // channelListState.fetch();
-      // channelState.reset({ ...channelState.self, avatar: res.data.avatar });
-      // channelListState.reset(
-      //   channelListState.self.map((ch: ChannelShort) => {
-      //     if (ch.id === channelState.self.id) {
-      //       return { ...ch, avatar: res.data.avatar };
-      //     } else {
-      //       return ch;
-      //     }
-      //   }),
-      // );
-      // });
     } catch {}
-    // if (!avatarEdit || avatarEdit === '') {
-    //   alert('Cannot have empty avatar for channel.');
-    // } else {
-    //   await axiosPrivate
-    //     .patch(`channel/${channelState.self.id}`, {
-    //       avatar: avatarEdit,
-    //     })
-    //     .then((res) => {
-    //       channelState.reset({ ...channelState.self, avatar: res.data.avatar });
-    //       channelListState.reset(
-    //         channelListState.self.map((ch: ChannelShort) => {
-    //           if (ch.id === channelState.self.id) {
-    //             return { ...ch, avatar: res.data.avatar };
-    //           } else {
-    //             return ch;
-    //           }
-    //         }),
-    //       );
-    //     });
-    // }
   }
 
   async function changeChannelPassword() {
@@ -241,6 +197,7 @@ export default function ChannelSettings() {
               <input
                 type="text"
                 placeholder="new channel password"
+                value={passwordEdit}
                 onChange={(e) => setPasswordEdit(e.target.value)}
               />
               <button className="small-button" onClick={changeChannelPassword}>
