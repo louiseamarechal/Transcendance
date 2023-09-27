@@ -1,30 +1,22 @@
-IN PROCESS
+===============================================================================
 
------------------------- FRONT ------------------------
+# FT_TRANSCENDANCE
 
-=> Lancer le front:
+===============================================================================
 
-    cd front
-    npm run dev
+To start playing: `docker compose up`
+Needed; `.env` with format:
+```bash
+DATABASE_URL=YOURDBURL
 
---------------------------------------------------------
+CLIENT_ID=YOUR42APICLIENTID
+CLIENT_SECRET=YOUR42APICLIENTSECRET
 
-------------------------- BACK -------------------------
+JWT_ACCESS_SECRET=YOURJWTACESSSECRET
+JWT_REFRESH_SECRET=YOURJWTREFRESHSECRET
 
-=> Lancer le back:
-    
-    cd back
-    npm run db:dev:up
-    npm run start
+MAILPASS=MAILPASSWD #2FA
 
-=> Lancer en mode test:
-    npm run db:test:up
-		npm run start:dev
-
-=> Redemarrer apres changement du schema de la db
-    npm run db:dev/test:restart
-
-=> Lancer les tests
-    npm run test:e2e
-
---------------------------------------------------------
+POSTGRES_DB=YOURDBNAME
+POSTGRES_PASSWORD=YOURDBPASSWD
+```
