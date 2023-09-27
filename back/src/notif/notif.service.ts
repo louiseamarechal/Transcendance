@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FRStatus, UserStatus } from '@prisma/client';
+import { FRStatus, FriendRequest, UserStatus } from '@prisma/client';
 import { Socket } from 'socket.io';
 import { Namespace } from 'socket.io';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -9,6 +9,7 @@ import { validate as isUUID } from 'uuid';
 @Injectable()
 export class NotifService {
   server: Namespace;
+
   constructor(
     private prisma: PrismaService,
     private userService: UserService,
@@ -27,7 +28,7 @@ export class NotifService {
     this.server.to(roomName).emit('server.notif.chat');
   }
 
-  async getFriendsNotif(myId: number) {
+  async getFriendsNotif(myId: number): Promise<FriendRequest[]> {
     const receivedFRRequests = await this.prisma.friendRequest.findMany({
       where: {
         toId: myId,

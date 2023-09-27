@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import '../../../../style/components/chat/channel-nav/channel-list/channel-card.css';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
-import Avatar from '../../../Avatar';
+import Avatar from '../../../ui/Avatar';
 import { ChannelShort } from '../../../../types/Channel.type';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey } from '@fortawesome/free-solid-svg-icons';

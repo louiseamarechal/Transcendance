@@ -1,15 +1,14 @@
-import { Notification } from './notif/Notification';
-import { useUser } from '../hooks/useUser';
+import { Notification } from '../notif/Notification';
+import { useUser } from '../../hooks/useUser';
 import { Link } from 'react-router-dom';
-import useNavbar from '../hooks/useNavbar';
-import Avatar from './Avatar';
-import useNotif from '../hooks/useNotif';
+import useNavbar from '../../hooks/useNavbar';
+import Avatar from '../ui/Avatar';
+import useNotif from '../../hooks/useNotif';
 
 const NavBarLinks = () => {
   const { myId } = useUser();
   const notif = useNotif();
   const navbar = useNavbar();
-
 
   function handleClick(
     link:
@@ -32,7 +31,7 @@ const NavBarLinks = () => {
   const navElems = [
     { to: '/profil', content: <Avatar id={myId} /> },
     { to: '/game', content: 'Game' },
-    { to: '/oldgame', content: 'OldGame' },
+    // { to: '/oldgame', content: 'OldGame' },
     { to: '/chat', content: 'Chat' },
     { to: '/friends', content: 'Friends' },
     { to: '/FindFriends', content: 'FindFriends' },
@@ -64,7 +63,7 @@ const NavBarLinks = () => {
         return (
           <div key={index}>
             {typeof elem.content === 'string' ? (
-              <Notification element={elem.content}/>
+              <Notification element={elem.content} />
             ) : (
               ''
             )}

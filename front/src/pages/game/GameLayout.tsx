@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth.ts';
 import { gameSocket } from '../../api/socket.ts';
-// import { useUser } from '../../hooks/useUser.ts';
 
 export default function GameLayout() {
   const { auth } = useAuth();
@@ -13,7 +12,6 @@ export default function GameLayout() {
 
     gameSocket.auth = {
       token: auth.access_token,
-      // data: { id: myId, name: myName },
     };
     gameSocket.connect();
 
@@ -29,11 +27,9 @@ export default function GameLayout() {
       navigate(value.to);
     }
 
-    // gameSocket.on('server.game.navigateGame', onServerGameNavigateGame);
     gameSocket.on('server.game.navigate', onServerGameNavigate);
 
     return () => {
-      // gameSocket.off('server.game.navigateGame', onServerGameNavigateGame);
       gameSocket.off('server.game.navigate', onServerGameNavigate);
     };
   }, []);

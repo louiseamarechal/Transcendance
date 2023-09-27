@@ -3,7 +3,7 @@ import { useUser } from '../../../../hooks/useUser';
 import { createPortal } from 'react-dom';
 import useChannel from '../../../../hooks/useChannel';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
-import CancelPrompt from '../../../../components/CancelPrompt';
+import CancelPrompt from '../../../../components/ui/CancelPrompt';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import useChannelList from '../../../../hooks/useChannelList';
 import { ChannelShort } from '../../../../types/Channel.type';

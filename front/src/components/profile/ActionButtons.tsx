@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import ActivityStatus from '../ActivityStatus';
+import ActivityStatus from '../ui/ActivityStatus';
 import { useEffect, useState } from 'react';
 import { FriendRequest } from '../../types/FriendRequest.type';
 import { useUser } from '../../hooks/useUser';

@@ -65,7 +65,14 @@ export class UserController {
   }
 
   @Get('pending-request')
-  getPendingFR(@GetUserId() userId: number) {
+  getPendingFR(@GetUserId() userId: number): Promise<
+    {
+      id: number;
+      name: string;
+      level: number;
+      avatar: string | null;
+    }[]
+  > {
     console.log({ userId });
     console.log('[user/pending-request]: accessed controller');
     return this.userService.getPendingFR(userId);
@@ -96,7 +103,7 @@ export class UserController {
   deleteBlockedUser(
     @GetUserId() userId: number,
     @Param('blockedId', ParseIntPipe) blockedId: number,
-  ) {
+  ): Promise<BlockedUser> {
     return this.userService.deleteBlockedUser(userId, blockedId);
   }
 

@@ -2,7 +2,7 @@ import { SetStateAction, useState } from 'react';
 // import '../../../../style/components/chat/chat-container/create-channel-form/form-header.css';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import '../../../style/components/chat/chat-container/create-channel-form/form-header.css';
-import Avatar from '../../Avatar';
+import Avatar from '../../ui/Avatar';
 import useChannel from '../../../hooks/useChannel';
 
 const FormHeader = ({

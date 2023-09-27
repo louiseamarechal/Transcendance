@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
-import MiniUserCard from '../../MiniUserCard';
+import MiniUserCard from '../../ui/MiniUserCard';
 import { GameRequest } from '../../../../../shared/common/types/game.type';
 import { gameSocket } from '../../../api/socket';
 import { ClientEvents } from '../../../../../shared/client/ClientEvents';
