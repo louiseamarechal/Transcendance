@@ -33,6 +33,8 @@ services:
       - client-side
     depends_on:
       - db
+    volumes:
+      - assets-data:/code/back/assets
 
   frontend:
     build:
@@ -52,3 +54,4 @@ networks:
 
 volumes:
   db-data: {}
+  assets-data: {}
